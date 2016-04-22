@@ -7,7 +7,7 @@ import okhttp3.Request.Builder;
 import okhttp3.Response;
 
 /**
- * Created by Administrator on 2016/4/13.
+ * Created by Floatingmuseum on 2016/4/13.
  */
 public class DefaultIntercept implements Interceptor {
     @Override

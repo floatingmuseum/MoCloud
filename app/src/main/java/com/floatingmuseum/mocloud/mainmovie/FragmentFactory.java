@@ -1,13 +1,15 @@
-package com.floatingmuseum.mocloud.base;
+package com.floatingmuseum.mocloud.mainmovie;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
+import com.floatingmuseum.mocloud.mainmovie.Trending.TrendingPresenter;
 import com.floatingmuseum.mocloud.mainmovie.view.MovieAnticipatedFragment;
 import com.floatingmuseum.mocloud.mainmovie.view.MovieBoxOfficeFragment;
 import com.floatingmuseum.mocloud.mainmovie.view.MovieCollectedFragment;
 import com.floatingmuseum.mocloud.mainmovie.view.MoviePlayedFragment;
 import com.floatingmuseum.mocloud.mainmovie.view.MoviePopularFragment;
-import com.floatingmuseum.mocloud.mainmovie.view.MovieTrendingFragment;
+import com.floatingmuseum.mocloud.mainmovie.Trending.MovieTrendingFragment;
 import com.floatingmuseum.mocloud.mainmovie.view.MovieWatchedFragment;
 
 /**
