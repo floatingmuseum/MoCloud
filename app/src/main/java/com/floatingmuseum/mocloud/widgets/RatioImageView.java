@@ -25,12 +25,9 @@ public class RatioImageView extends ImageView{
 
     public RatioImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-//        attrValue = attrs.getAttributeFloatValue("http://schemas.android.com/apk/res-auto","image_ratio",0);
-        Logger.d("RatioImageView");
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.RationImageView);
         attrValue = ta.getFloat(R.styleable.RationImageView_image_ratio,0);
         ta.recycle();
-//        attrValue = attrs.getAttributeFloatValue(R.styleable.RationImageView_image_ratio,0);
     }
 
     @Override

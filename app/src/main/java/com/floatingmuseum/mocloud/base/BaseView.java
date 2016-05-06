@@ -5,4 +5,5 @@ package com.floatingmuseum.mocloud.base;
  */
 public interface BaseView<T> {
     void setPresenter(T presenter);
+    void stopRefresh();
 }

@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.mainmovie.trending;
+package com.floatingmuseum.mocloud.mainmovie.collected;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,21 +22,22 @@ import butterknife.ButterKnife;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class MovieTrendingFragment extends BaseFragment implements MovieTrendingContract.View, SwipeRefreshLayout.OnRefreshListener {
+public class MovieCollectedFragment extends BaseFragment implements MovieCollectedContract.View, SwipeRefreshLayout.OnRefreshListener{
+
     @Bind(R.id.rv)
     RecyclerView rv;
     @Bind(R.id.srl)
     SwipeRefreshLayout srl;
 
-    public final static String MOVIE_TRENDING_FRAGMENT = "MovieTrendingFragment";
-    private List<BaseMovie> trendingList;
-    private MovieTrendingAdapter adapter;
-    private MovieTrendingContract.Presenter mTrendingPresenter;
+    public final static String MOVIE_COLLECTED_FRAGMENT = "MovieCollectedFragment";
+    private List<BaseMovie> collectedList;
+    private MovieCollectedAdapter adapter;
+    private MovieCollectedContract.Presenter mCollectedPresenter;
     private GridLayoutManager manager;
     private boolean alreadyGetAllData = false;
 
-    public static MovieTrendingFragment newInstance() {
-        MovieTrendingFragment fragment = new MovieTrendingFragment();
+    public static MovieCollectedFragment newInstance() {
+        MovieCollectedFragment fragment = new MovieCollectedFragment();
         return fragment;
     }
 
@@ -45,14 +46,14 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
-        new MovieTrendingPresenter(this);
+        new MovieCollectedPresenter(this);
         initRecyclerView();
         return rootView;
     }
 
     private void initRecyclerView() {
-        trendingList = new ArrayList<>();
-        adapter =  new MovieTrendingAdapter(trendingList,context);
+        collectedList = new ArrayList<>();
+        adapter =  new MovieCollectedAdapter(collectedList,context);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context,3);
         rv.setLayoutManager(manager);
@@ -75,35 +76,35 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
                 super.onScrolled(recyclerView, dx, dy);
                 int lastItemPosition = manager.findLastVisibleItemPosition();
                 if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData){
-                    mTrendingPresenter.start(false);
+                    mCollectedPresenter.start(false);
                 }
             }
         });
     }
 
     @Override
-    public void setPresenter(MovieTrendingContract.Presenter presenter) {
-        mTrendingPresenter = presenter;
+    public void onRefresh() {
+        mCollectedPresenter.start(true);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void refreshData(List<BaseMovie> newData,boolean shouldClean) {
+    public void refreshData(List<BaseMovie> newData, boolean shouldClean) {
         if(newData.size()<10){
             alreadyGetAllData = true;
         }
 
         if(shouldClean){
-            trendingList.clear();
+            collectedList.clear();
         }
-        trendingList.addAll(newData);
+        collectedList.addAll(newData);
         adapter.notifyDataSetChanged();
 
         srl.setRefreshing(false);
+    }
+
+    @Override
+    public void setPresenter(MovieCollectedContract.Presenter presenter) {
+        mCollectedPresenter = presenter;
     }
 
     @Override
@@ -111,16 +112,5 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
         if(srl!=null){
             srl.setRefreshing(false);
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
-
-    @Override
-    public void onRefresh() {
-        mTrendingPresenter.start(true);
     }
 }

@@ -9,7 +9,7 @@ import okhttp3.Response;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class DefaultIntercept implements Interceptor {
+public class HeaderIntercept implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Builder builder = chain.request().newBuilder();

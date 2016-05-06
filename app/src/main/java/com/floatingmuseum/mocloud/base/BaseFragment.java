@@ -14,4 +14,5 @@ public class BaseFragment extends Fragment {
         super.onAttach(context);
         this.context = context;
     }
+
 }

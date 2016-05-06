@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.mainmovie.trending;
+package com.floatingmuseum.mocloud.mainmovie.popular;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
-import com.floatingmuseum.mocloud.model.entity.BaseMovie;
+import com.floatingmuseum.mocloud.model.entity.Movie;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,21 +23,20 @@ import butterknife.ButterKnife;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class MovieTrendingFragment extends BaseFragment implements MovieTrendingContract.View, SwipeRefreshLayout.OnRefreshListener {
+public class MoviePopularFragment extends BaseFragment implements MoviePopularContract.View,SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.rv)
     RecyclerView rv;
     @Bind(R.id.srl)
     SwipeRefreshLayout srl;
 
-    public final static String MOVIE_TRENDING_FRAGMENT = "MovieTrendingFragment";
-    private List<BaseMovie> trendingList;
-    private MovieTrendingAdapter adapter;
-    private MovieTrendingContract.Presenter mTrendingPresenter;
+    public final static String MOVIE_POPILAR_FRAGMENT = "MoviePopularFragment";
+    private List<Movie> popularList;
+    private MoviePopularAdapter adapter;
+    private MoviePopularContract.Presenter mPopularPresenter;
     private GridLayoutManager manager;
     private boolean alreadyGetAllData = false;
-
-    public static MovieTrendingFragment newInstance() {
-        MovieTrendingFragment fragment = new MovieTrendingFragment();
+    public static MoviePopularFragment newInstance() {
+        MoviePopularFragment fragment = new MoviePopularFragment();
         return fragment;
     }
 
@@ -45,23 +45,20 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
-        new MovieTrendingPresenter(this);
+        new MoviePopularPresenter(this);
         initRecyclerView();
         return rootView;
     }
 
     private void initRecyclerView() {
-        trendingList = new ArrayList<>();
-        adapter =  new MovieTrendingAdapter(trendingList,context);
+        popularList = new ArrayList<>();
+        adapter =  new MoviePopularAdapter(popularList,context);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context,3);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
         srl.setOnRefreshListener(this);
-        /**
-         * 虽然这里通过View.post方法在SwipeRefreshLayout初始化完毕后显示刷新，
-         * 但是刷新监听中的onRefresh方法并不会被执行，所以下面手动调用一下
-         */
+
         srl.post(new Runnable() {
             @Override
             public void run() {
@@ -75,15 +72,15 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
                 super.onScrolled(recyclerView, dx, dy);
                 int lastItemPosition = manager.findLastVisibleItemPosition();
                 if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData){
-                    mTrendingPresenter.start(false);
+                    mPopularPresenter.start(false);
                 }
             }
         });
     }
 
     @Override
-    public void setPresenter(MovieTrendingContract.Presenter presenter) {
-        mTrendingPresenter = presenter;
+    public void setPresenter(MoviePopularContract.Presenter presenter) {
+        mPopularPresenter = presenter;
     }
 
     @Override
@@ -92,15 +89,15 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
     }
 
     @Override
-    public void refreshData(List<BaseMovie> newData,boolean shouldClean) {
+    public void refreshData(List<Movie> newData, boolean shouldClean) {
         if(newData.size()<10){
             alreadyGetAllData = true;
         }
 
         if(shouldClean){
-            trendingList.clear();
+            popularList.clear();
         }
-        trendingList.addAll(newData);
+        popularList.addAll(newData);
         adapter.notifyDataSetChanged();
 
         srl.setRefreshing(false);
@@ -121,6 +118,6 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
 
     @Override
     public void onRefresh() {
-        mTrendingPresenter.start(true);
+        mPopularPresenter.start(true);
     }
 }
