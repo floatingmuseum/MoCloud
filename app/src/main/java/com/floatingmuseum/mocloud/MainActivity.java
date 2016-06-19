@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,11 +13,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.mainmovie.MainMovieFragment;
 import com.floatingmuseum.mocloud.model.entity.Actor;
 import com.floatingmuseum.mocloud.model.net.MoCloudFactory;
+import com.github.moduth.blockcanary.BlockCanary;
 import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     @Bind(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
+    ImageView iv_avatar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +49,7 @@ public class MainActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
+        iv_avatar = (ImageView) navView.getHeaderView(0).findViewById(R.id.iv_avatar);
         setSupportActionBar(toolbar);
 
         initView();
@@ -62,6 +68,14 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_main,fragment)
                 .commit();
+
+        iv_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -117,5 +131,12 @@ public class MainActivity extends AppCompatActivity
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        stopService(new Intent(this,NetFlowService.class));
     }
 }

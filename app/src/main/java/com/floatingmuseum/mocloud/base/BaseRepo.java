@@ -11,9 +11,11 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Floatingmuseum on 2016/5/1.
@@ -21,7 +23,7 @@ import rx.schedulers.Schedulers;
 public class BaseRepo {
     protected MoCloudService service;
     protected DataCallback callback;
-
+    protected CompositeSubscription mCompositeSubscription;
     public BaseRepo(){
         service = MoCloudFactory.getInstance();
     }
@@ -37,7 +39,7 @@ public class BaseRepo {
     }
 
     protected void getImagesByBaseMoive(final List<BaseMovie> movies){
-        Observable.from(movies).flatMap(new Func1<BaseMovie, Observable<Movie>>() {
+        Subscription s = Observable.from(movies).flatMap(new Func1<BaseMovie, Observable<Movie>>() {
             @Override
             public Observable<Movie> call(BaseMovie trending) {
                 return getMovieImage(trending.getMovie().getIds().getSlug());
@@ -60,10 +62,11 @@ public class BaseRepo {
                         mergeImageAndBaseMovie(movies,movie);
                     }
                 });
+        addToCompositeSubscription(s);
     }
 
     public void getImagesByMovie(final List<Movie> movies){
-        Observable.from(movies).flatMap(new Func1<Movie, Observable<Movie>>() {
+        Subscription s = Observable.from(movies).flatMap(new Func1<Movie, Observable<Movie>>() {
             @Override
             public Observable<Movie> call(Movie movie) {
                 return getMovieImage(movie.getIds().getSlug());
@@ -86,6 +89,7 @@ public class BaseRepo {
                         mergeImageAndMovie(movies,movie);
                     }
                 });
+        addToCompositeSubscription(s);
     }
 
     /**
@@ -107,6 +111,21 @@ public class BaseRepo {
             if(t.getTitle().equals(movie.getTitle())){
                 t.setImages(movie.getImages());
             }
+        }
+    }
+
+    protected void addToCompositeSubscription(Subscription s){
+        if(mCompositeSubscription==null){
+            mCompositeSubscription = new CompositeSubscription();
+        }
+
+        mCompositeSubscription.add(s);
+    }
+
+    public void destroyCompositeSubscription(){
+        Logger.d("destroy");
+        if (mCompositeSubscription!=null){
+            mCompositeSubscription.unsubscribe();
         }
     }
 }

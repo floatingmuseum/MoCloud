@@ -17,6 +17,7 @@ import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingAdapter;
 import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingContract;
 import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingPresenter;
 import com.floatingmuseum.mocloud.model.entity.BaseMovie;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,8 +109,7 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
         }
         playedList.addAll(newData);
         adapter.notifyDataSetChanged();
-
-        srl.setRefreshing(false);
+        stopRefresh();
     }
 
 
@@ -123,6 +123,7 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mPlayedPresenter.onDestroy();
         ButterKnife.unbind(this);
     }
 

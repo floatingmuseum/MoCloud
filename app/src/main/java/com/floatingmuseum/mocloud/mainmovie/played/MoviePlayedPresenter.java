@@ -3,6 +3,7 @@ package com.floatingmuseum.mocloud.mainmovie.played;
 
 import com.floatingmuseum.mocloud.base.BaseRepo;
 import com.floatingmuseum.mocloud.model.entity.BaseMovie;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -32,11 +33,12 @@ public class MoviePlayedPresenter implements MoviePlayedContract.Presenter, Base
 
     @Override
     public void onDestroy() {
-
+        repo.destroyCompositeSubscription();
     }
 
     @Override
     public void onSuccess(List<BaseMovie> baseMovies) {
+        Logger.d("onSuccess"+mPlayedView);
         mPlayedView.refreshData(baseMovies,shouldClean);
     }
 

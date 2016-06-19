@@ -26,7 +26,7 @@ public class MainMovieFragment extends Fragment{
     @Bind(R.id.viewpager)
     ViewPager viewpager;
 
-
+    private FragmentManager fm;
     private MainMovieAdapter adapter;
 
     public static MainMovieFragment newInstance() {
@@ -41,8 +41,8 @@ public class MainMovieFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_mainmoview, container, false);
         ButterKnife.bind(this, rootView);
-
-        adapter = new MainMovieAdapter(getFragmentManager());
+        fm = getChildFragmentManager();
+        adapter = new MainMovieAdapter(fm);
         viewpager.setAdapter(adapter);
         tablayout.setupWithViewPager(viewpager);
         return rootView;
@@ -51,6 +51,7 @@ public class MainMovieFragment extends Fragment{
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override

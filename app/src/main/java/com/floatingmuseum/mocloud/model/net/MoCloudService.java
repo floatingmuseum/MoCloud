@@ -4,10 +4,14 @@ package com.floatingmuseum.mocloud.model.net;
 import com.floatingmuseum.mocloud.model.entity.Actor;
 import com.floatingmuseum.mocloud.model.entity.BaseMovie;
 import com.floatingmuseum.mocloud.model.entity.Movie;
+import com.floatingmuseum.mocloud.model.entity.TokenRequest;
+import com.floatingmuseum.mocloud.model.entity.TraktToken;
 
 import java.util.List;
 
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -24,6 +28,9 @@ public interface MoCloudService {
     @GET("people/{id}")
     Observable<Actor> getActor(@Path("id") String name);
 
+//*******************************************OAUTH*******************************************
+    @POST("oauth/token")
+    Observable<TraktToken> getToken(@Body TokenRequest tokenRequest);
 
 //*******************************************电  影*******************************************
     /**

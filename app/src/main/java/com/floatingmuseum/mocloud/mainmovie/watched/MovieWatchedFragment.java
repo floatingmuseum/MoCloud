@@ -99,7 +99,7 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
         }
         watchedList.addAll(newData);
         adapter.notifyDataSetChanged();
-        srl.setRefreshing(false);
+            srl.setRefreshing(false);
     }
 
     @Override
