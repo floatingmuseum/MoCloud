@@ -6,6 +6,8 @@ import com.floatingmuseum.mocloud.model.entity.BaseMovie;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by Floatingmuseum on 2016/4/19.
  */
@@ -16,11 +18,12 @@ public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, 
     private int pageNum = 1;
     protected Boolean shouldClean;
 
-    public MovieTrendingPresenter(MovieTrendingContract.View trendingView){
+    MovieTrendingPresenter(MovieTrendingContract.View trendingView){
         mTrendingView = trendingView;
         mTrendingView.setPresenter(this);
         repo = new MovieTrendingRepo(this);
     }
+    
 
     @Override
     public void start(final boolean shouldClean) {
