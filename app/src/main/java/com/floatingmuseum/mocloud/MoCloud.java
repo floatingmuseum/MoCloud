@@ -16,6 +16,4 @@ public class MoCloud extends Application {
         super.onCreate();
         context = this;
     }
-
-
 }
