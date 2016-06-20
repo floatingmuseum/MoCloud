@@ -1,5 +1,7 @@
 package com.floatingmuseum.mocloud.model.net;
 
+import com.floatingmuseum.mocloud.BuildConfig;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -15,7 +17,7 @@ public class HeaderIntercept implements Interceptor {
         Builder builder = chain.request().newBuilder();
         builder.addHeader("Content-Type","application/json")
                 .addHeader("trakt-api-version","2")
-                .addHeader("trakt-api-key","6fa4d5c19efedfd51545deb2075831e7b467deb3e0cfd6d7b66c6f907a229ff1");
+                .addHeader("trakt-api-key", BuildConfig.TraktID);
 
         return chain.proceed(builder.build());
     }

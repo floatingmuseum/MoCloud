@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.model.entity.BaseMovie;
 import com.floatingmuseum.mocloud.model.entity.Movie;
+import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
 
 import java.util.List;
@@ -41,10 +42,7 @@ public class MovieTrendingAdapter extends RecyclerView.Adapter<MovieTrendingAdap
     public void onBindViewHolder(TrendingViewHolder holder, int position) {
         Movie movie = list.get(position).getMovie();
         holder.tv_title.setText(movie.getTitle());
-
-        Glide.with(context)
-                .load(movie.getImages().getPoster().getMedium())
-                .into(holder.iv_poster);
+        ImageLoader.load(context,movie.getImages().getPoster().getMedium(),holder.iv_poster);
     }
 
     @Override
