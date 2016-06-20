@@ -26,8 +26,8 @@ public class LoginActivity extends AppCompatActivity{
     @Bind(R.id.webview)
     WebView wv;
 
-    String TRAKT_ID = BuildConfig.TRAKT_ID;
-    String TRAKT_SECRET = BuildConfig.TRAKT_SECRET;
+    String TRAKT_ID = BuildConfig.TraktID;
+    String TRAKT_SECRET = BuildConfig.TraktSecret;
     String REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

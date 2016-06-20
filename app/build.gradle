@@ -16,7 +16,27 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        applicationVariants.all{variant->
+            variant.buildConfigField "String","TraktID","\""+getID()+"\""
+        }
+
+        applicationVariants.all{variant->
+            variant.buildConfigField "String","TraktSecret","\""+getSecret()+"\""
+        }
     }
+}
+
+def getID(){
+    def Properties properties = new Properties();
+    properties.load(new FileInputStream(new File('secrets.properties')))
+    return properties['TraktID'];
+}
+
+def getSecret(){
+    def Properties properties = new Properties();
+    properties.load(new FileInputStream(new File('secrets.properties')))
+    return properties['TraktSecret'];
 }
 
 dependencies {
