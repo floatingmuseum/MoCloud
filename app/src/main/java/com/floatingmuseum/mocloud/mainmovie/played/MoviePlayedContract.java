@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class MoviePlayedContract {
 
-    interface View extends BaseView<Presenter> {
+    public interface View extends BaseView<Presenter> {
         void refreshData(List<BaseMovie> newData, boolean shouldClean);
     }
 

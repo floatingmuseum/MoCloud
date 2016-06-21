@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
+import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
+import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
 import com.floatingmuseum.mocloud.mainmovie.played.MoviePlayedAdapter;
 import com.floatingmuseum.mocloud.mainmovie.played.MoviePlayedContract;
 import com.floatingmuseum.mocloud.mainmovie.played.MoviePlayedPresenter;
@@ -21,6 +23,8 @@ import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,7 +42,8 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
     public final static String MOVIE_WATCHED_FRAGMENT = "MovieWatchedFragment";
     private List<BaseMovie> watchedList;
     private MovieWatchedAdapter adapter;
-    private MovieWatchedContract.Presenter mWatchedPresenter;
+    @Inject
+    MovieWatchedPresenter mWatchedPresenter;
     private GridLayoutManager manager;
     private boolean alreadyGetAllData = false;
 
@@ -52,7 +57,12 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
-        new MovieWatchedPresenter(this);
+
+        DaggerMoviePresenterComponent.builder()
+                .moviePresenterModule(new MoviePresenterModule(this))
+                .build()
+                .inject(this);
+
         initRecyclerView();
         return rootView;
     }
@@ -100,11 +110,6 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
         watchedList.addAll(newData);
         adapter.notifyDataSetChanged();
             srl.setRefreshing(false);
-    }
-
-    @Override
-    public void setPresenter(MovieWatchedContract.Presenter presenter) {
-        mWatchedPresenter = presenter;
     }
 
     @Override

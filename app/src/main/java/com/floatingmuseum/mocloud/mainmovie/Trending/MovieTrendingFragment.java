@@ -9,12 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.floatingmuseum.mocloud.MainActivity;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
+import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
+import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
 import com.floatingmuseum.mocloud.model.entity.BaseMovie;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,7 +37,9 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
     public final static String MOVIE_TRENDING_FRAGMENT = "MovieTrendingFragment";
     private List<BaseMovie> trendingList;
     private MovieTrendingAdapter adapter;
-    private MovieTrendingContract.Presenter mTrendingPresenter;
+
+    @Inject
+    MovieTrendingPresenter mTrendingPresenter;
     private GridLayoutManager manager;
     private boolean alreadyGetAllData = false;
 
@@ -45,7 +53,13 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
-        new MovieTrendingPresenter(this);
+
+        DaggerMoviePresenterComponent.builder()
+                .moviePresenterModule(new MoviePresenterModule(this))
+                .build()
+                .inject(this);
+
+        Logger.d("presenter:"+mTrendingPresenter);
         initRecyclerView();
         return rootView;
     }
@@ -79,11 +93,6 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
                 }
             }
         });
-    }
-
-    @Override
-    public void setPresenter(MovieTrendingContract.Presenter presenter) {
-        mTrendingPresenter = presenter;
     }
 
     @Override

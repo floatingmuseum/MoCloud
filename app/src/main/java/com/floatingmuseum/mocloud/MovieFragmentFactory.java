@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.mainmovie;
+package com.floatingmuseum.mocloud;
 
 import android.support.v4.app.Fragment;
 
@@ -13,7 +13,7 @@ import com.floatingmuseum.mocloud.mainmovie.watched.MovieWatchedFragment;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class FragmentFactory {
+public class MovieFragmentFactory {
     public static Fragment create(int position){
         Fragment fragment = null;
         switch (position){

@@ -5,6 +5,8 @@ import com.floatingmuseum.mocloud.model.entity.BaseMovie;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by Floatingmuseum on 2016/5/6.
  */
@@ -16,9 +18,9 @@ public class MovieAnticipatedPresenter implements MovieAnticipatedContract.Prese
     private String period = "weekly";
     protected Boolean shouldClean;
 
+    @Inject
     public MovieAnticipatedPresenter(MovieAnticipatedContract.View AnticipatedView){
         mAnticipatedView = AnticipatedView;
-        mAnticipatedView.setPresenter(this);
         repo = new MovieAnticipatedRepo(this);
     }
 

@@ -7,6 +7,8 @@ import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by Floatingmuseum on 2016/5/5.
  */
@@ -18,9 +20,9 @@ public class MoviePlayedPresenter implements MoviePlayedContract.Presenter, Base
     private String period = "weekly";
     protected Boolean shouldClean;
 
+    @Inject
     public MoviePlayedPresenter(MoviePlayedContract.View playedView){
         mPlayedView = playedView;
-        mPlayedView.setPresenter(this);
         repo = new MoviePlayedRepo(this);
     }
 

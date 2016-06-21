@@ -11,11 +11,14 @@ import android.view.ViewGroup;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
+import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
+import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
 import com.floatingmuseum.mocloud.model.entity.Movie;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,7 +35,8 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
     public final static String MOVIE_POPILAR_FRAGMENT = "MoviePopularFragment";
     private List<Movie> popularList;
     private MoviePopularAdapter adapter;
-    private MoviePopularContract.Presenter mPopularPresenter;
+    @Inject
+    MoviePopularPresenter mPopularPresenter;
     private GridLayoutManager manager;
     private boolean alreadyGetAllData = false;
     public static MoviePopularFragment newInstance() {
@@ -45,7 +49,13 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
-        new MoviePopularPresenter(this);
+//        new MoviePopularPresenter(this);
+
+        DaggerMoviePresenterComponent.builder()
+                .moviePresenterModule(new MoviePresenterModule(this))
+                .build()
+                .inject(this);
+
         initRecyclerView();
         return rootView;
     }
@@ -76,11 +86,6 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
                 }
             }
         });
-    }
-
-    @Override
-    public void setPresenter(MoviePopularContract.Presenter presenter) {
-        mPopularPresenter = presenter;
     }
 
     @Override

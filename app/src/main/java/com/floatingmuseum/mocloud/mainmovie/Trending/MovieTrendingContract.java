@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Floatingmuseum on 2016/4/19.
  */
 public interface MovieTrendingContract {
-    interface View extends BaseView<Presenter>{
+    public interface View extends BaseView<Presenter>{
         void refreshData(List<BaseMovie> newData, boolean shouldClean);
     }
 

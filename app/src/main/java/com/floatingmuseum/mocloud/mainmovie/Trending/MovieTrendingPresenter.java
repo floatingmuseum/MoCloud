@@ -18,12 +18,13 @@ public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, 
     private int pageNum = 1;
     protected Boolean shouldClean;
 
+    @Inject
     MovieTrendingPresenter(MovieTrendingContract.View trendingView){
         mTrendingView = trendingView;
-        mTrendingView.setPresenter(this);
+//        mTrendingView.setPresenter(this);
         repo = new MovieTrendingRepo(this);
     }
-    
+
 
     @Override
     public void start(final boolean shouldClean) {

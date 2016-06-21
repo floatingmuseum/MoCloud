@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
+import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
+import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
 import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingAdapter;
 import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingContract;
 import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingPresenter;
@@ -21,6 +23,8 @@ import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,7 +42,8 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
     public final static String MOVIE_PLAYED_FRAGMENT = "MoviePlayedFragment";
     private List<BaseMovie> playedList;
     private MoviePlayedAdapter adapter;
-    private MoviePlayedContract.Presenter mPlayedPresenter;
+    @Inject
+    MoviePlayedPresenter mPlayedPresenter;
     private GridLayoutManager manager;
     private boolean alreadyGetAllData = false;
 
@@ -52,7 +57,12 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
-        new MoviePlayedPresenter(this);
+
+        DaggerMoviePresenterComponent.builder()
+                .moviePresenterModule(new MoviePresenterModule(this))
+                .build()
+                .inject(this);
+
         initRecyclerView();
         return rootView;
     }
@@ -86,11 +96,6 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
                 }
             }
         });
-    }
-
-    @Override
-    public void setPresenter(MoviePlayedContract.Presenter presenter) {
-        mPlayedPresenter = presenter;
     }
 
     @Override

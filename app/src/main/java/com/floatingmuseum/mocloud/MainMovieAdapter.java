@@ -1,18 +1,14 @@
-package com.floatingmuseum.mocloud.mainmovie;
+package com.floatingmuseum.mocloud;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
-import com.floatingmuseum.mocloud.R;
-import com.floatingmuseum.mocloud.base.BaseFragment;
-import com.floatingmuseum.mocloud.mainmovie.played.MoviePlayedFragment;
 import com.floatingmuseum.mocloud.utils.ResUtil;
-import com.orhanobut.logger.Logger;
 
 /**
- * Created by Floatingmuseum on 2016/4/22.
+ * Created by Floatingmuseum on 2016/6/21.
  */
 public class MainMovieAdapter extends FragmentPagerAdapter {
     private FragmentManager fm;
@@ -23,7 +19,7 @@ public class MainMovieAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return FragmentFactory.create(position);
+        return MovieFragmentFactory.create(position);
     }
 
     @Override

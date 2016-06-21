@@ -11,10 +11,14 @@ import android.view.ViewGroup;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
+import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
+import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
 import com.floatingmuseum.mocloud.model.entity.BaseMovie;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,7 +36,8 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
     public final static String MOVIE_COLLECTED_FRAGMENT = "MovieCollectedFragment";
     private List<BaseMovie> collectedList;
     private MovieCollectedAdapter adapter;
-    private MovieCollectedContract.Presenter mCollectedPresenter;
+    @Inject
+    MovieCollectedPresenter mCollectedPresenter;
     private GridLayoutManager manager;
     private boolean alreadyGetAllData = false;
 
@@ -46,7 +51,12 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
-        new MovieCollectedPresenter(this);
+
+        DaggerMoviePresenterComponent.builder()
+                .moviePresenterModule(new MoviePresenterModule(this))
+                .build()
+                .inject(this);
+
         initRecyclerView();
         return rootView;
     }
@@ -100,11 +110,6 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
         adapter.notifyDataSetChanged();
 
         srl.setRefreshing(false);
-    }
-
-    @Override
-    public void setPresenter(MovieCollectedContract.Presenter presenter) {
-        mCollectedPresenter = presenter;
     }
 
     @Override

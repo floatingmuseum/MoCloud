@@ -3,7 +3,9 @@ package com.floatingmuseum.mocloud;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,31 +13,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.floatingmuseum.mocloud.mainmovie.MainMovieFragment;
-import com.floatingmuseum.mocloud.model.entity.Actor;
-import com.floatingmuseum.mocloud.model.net.MoCloudFactory;
-import com.github.moduth.blockcanary.BlockCanary;
-import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.content_main)
-    FrameLayout contentMain;
+//    @Bind(R.id.content_main)
+//    FrameLayout contentMain;
+    @Bind(R.id.mainViewPager)
+    ViewPager mainViewPager;
+    @Bind(R.id.mainTablayout)
+    TabLayout mainTablayout;
+
     @Bind(R.id.nav_view)
     NavigationView navView;
     @Bind(R.id.drawer_layout)
@@ -63,11 +57,9 @@ public class MainActivity extends AppCompatActivity
 
         navView.setNavigationItemSelectedListener(this);
 
-        MainMovieFragment fragment = MainMovieFragment.newInstance();
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_main,fragment)
-                .commit();
+        MainMovieAdapter adapter = new MainMovieAdapter(getSupportFragmentManager());
+        mainViewPager.setAdapter(adapter);
+        mainTablayout.setupWithViewPager(mainViewPager);
 
         iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,5 +128,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ButterKnife.unbind(this);
     }
 }

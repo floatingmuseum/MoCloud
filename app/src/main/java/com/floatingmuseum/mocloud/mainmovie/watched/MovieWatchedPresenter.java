@@ -5,6 +5,8 @@ import com.floatingmuseum.mocloud.model.entity.BaseMovie;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by Floatingmuseum on 2016/5/5.
  */
@@ -15,9 +17,9 @@ public class MovieWatchedPresenter implements MovieWatchedContract.Presenter,Bas
     private String period = "weekly";
     protected Boolean shouldClean;
 
+    @Inject
     public MovieWatchedPresenter(MovieWatchedContract.View WatchedView){
         mWatchedView = WatchedView;
-        mWatchedView.setPresenter(this);
         repo = new MovieWatchedRepo(this);
     }
 

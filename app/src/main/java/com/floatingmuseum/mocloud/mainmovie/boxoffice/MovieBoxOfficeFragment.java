@@ -13,11 +13,15 @@ import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
+import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
+import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
 import com.floatingmuseum.mocloud.mainmovie.collected.MovieCollectedContract;
 import com.floatingmuseum.mocloud.model.entity.BaseMovie;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -35,7 +39,8 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
     public final static String MOVIE_BOXOFFICE_FRAGMENT = "MovieBoxOfficeFragment";
     private List<BaseMovie> boxOfficeList;
     private MovieBoxOfficeAdapter adapter;
-    private MovieBoxOfficeContract.Presenter mBoxOfficePresenter;
+    @Inject
+    MovieBoxOfficePresenter mBoxOfficePresenter;
     private GridLayoutManager manager;
 
     public static MovieBoxOfficeFragment newInstance() {
@@ -48,7 +53,12 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
-        new MovieBoxOfficePresenter(this);
+
+        DaggerMoviePresenterComponent.builder()
+                .moviePresenterModule(new MoviePresenterModule(this))
+                .build()
+                .inject(this);
+
         initRecyclerView();
         return rootView;
     }
@@ -85,11 +95,6 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
         boxOfficeList.addAll(newData);
         adapter.notifyDataSetChanged();
         srl.setRefreshing(false);
-    }
-
-    @Override
-    public void setPresenter(MovieBoxOfficeContract.Presenter presenter) {
-        mBoxOfficePresenter = presenter;
     }
 
     @Override
