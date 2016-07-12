@@ -1,6 +1,9 @@
 package com.floatingmuseum.mocloud.mainmovie.boxoffice;
 
+import android.support.annotation.NonNull;
+
 import com.floatingmuseum.mocloud.base.BaseRepo;
+import com.floatingmuseum.mocloud.date.Repository;
 import com.floatingmuseum.mocloud.model.entity.BaseMovie;
 
 import java.util.List;
@@ -12,30 +15,31 @@ import javax.inject.Inject;
  */
 public class MovieBoxOfficePresenter implements MovieBoxOfficeContract.Presenter, BaseRepo.DataCallback<List<BaseMovie>> {
 
-    private MovieBoxOfficeContract.View mBoxOfficeView;
-    private MovieBoxOfficeRepo repo;
+    private MovieBoxOfficeContract.View boxOfficeView;
+    private Repository repository;
     protected Boolean shouldClean;
 
     @Inject
-    public MovieBoxOfficePresenter(MovieBoxOfficeContract.View BoxOfficeView){
-        mBoxOfficeView = BoxOfficeView;
-        repo = new MovieBoxOfficeRepo(this);
+    public MovieBoxOfficePresenter(@NonNull MovieBoxOfficeContract.View boxOfficeView,@NonNull Repository repository){
+        this.boxOfficeView = boxOfficeView;
+        this.repository = repository;
     }
 
     @Override
     public void start() {
-        repo.getData();
+        repository.getMovieBoxOfficeData(this);
     }
 
     @Override
     public void onSuccess(List<BaseMovie> baseMovies) {
-        mBoxOfficeView.refreshData(baseMovies);
+        boxOfficeView.refreshData(baseMovies);
+        boxOfficeView.stopRefresh();
     }
 
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        mBoxOfficeView.stopRefresh();
+        boxOfficeView.stopRefresh();
     }
 
     @Override

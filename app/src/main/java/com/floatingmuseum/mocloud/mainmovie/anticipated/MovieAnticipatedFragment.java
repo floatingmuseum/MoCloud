@@ -40,7 +40,6 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
     @Inject
     MovieAnticipatedPresenter mAnticipatedPresenter;
     private GridLayoutManager manager;
-    private boolean alreadyGetAllData = false;
 
     public static MovieAnticipatedFragment newInstance() {
         MovieAnticipatedFragment fragment = new MovieAnticipatedFragment();
@@ -54,8 +53,8 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
 
         DaggerMoviePresenterComponent.builder()
                 .moviePresenterModule(new MoviePresenterModule(this))
-                .build()
-                .inject(this);
+                .repoComponent(moCloud.getRepoComponent())
+                .build().inject(this);
 
         initRecyclerView();
         return rootView;
@@ -84,8 +83,9 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int lastItemPosition = manager.findLastVisibleItemPosition();
-                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData){
+                int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
+                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData&& firstSeeLastItem){
+                    firstSeeLastItem = false;
                     mAnticipatedPresenter.start(false);
                 }
             }
@@ -108,14 +108,10 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
         }
         anticipatedList.addAll(newData);
         adapter.notifyDataSetChanged();
-
-        srl.setRefreshing(false);
     }
 
     @Override
     public void stopRefresh() {
-        if(srl!=null){
-            srl.setRefreshing(false);
-        }
+        stopRefresh(srl);
     }
 }

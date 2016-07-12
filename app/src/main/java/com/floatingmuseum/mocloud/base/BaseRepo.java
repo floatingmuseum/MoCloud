@@ -22,7 +22,6 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class BaseRepo {
     protected MoCloudService service;
-    protected DataCallback callback;
     protected CompositeSubscription mCompositeSubscription;
     public BaseRepo(){
         service = MoCloudFactory.getInstance();
@@ -38,7 +37,7 @@ public class BaseRepo {
                 .subscribeOn(Schedulers.io());
     }
 
-    protected void getImagesByBaseMoive(final List<BaseMovie> movies){
+    protected void getImagesByBaseMoive(final List<BaseMovie> movies, final DataCallback callback){
         Subscription s = Observable.from(movies).flatMap(new Func1<BaseMovie, Observable<Movie>>() {
             @Override
             public Observable<Movie> call(BaseMovie trending) {
@@ -65,7 +64,7 @@ public class BaseRepo {
         addToCompositeSubscription(s);
     }
 
-    public void getImagesByMovie(final List<Movie> movies){
+    public void getImagesByMovie(final List<Movie> movies, final DataCallback callback){
         Subscription s = Observable.from(movies).flatMap(new Func1<Movie, Observable<Movie>>() {
             @Override
             public Observable<Movie> call(Movie movie) {
@@ -123,7 +122,6 @@ public class BaseRepo {
     }
 
     public void destroyCompositeSubscription(){
-        Logger.d("destroy");
         if (mCompositeSubscription!=null){
             mCompositeSubscription.unsubscribe();
         }

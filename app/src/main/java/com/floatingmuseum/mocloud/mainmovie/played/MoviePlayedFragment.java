@@ -11,13 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
-import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingAdapter;
-import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingContract;
-import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingPresenter;
 import com.floatingmuseum.mocloud.model.entity.BaseMovie;
 import com.orhanobut.logger.Logger;
 
@@ -43,9 +41,8 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
     private List<BaseMovie> playedList;
     private MoviePlayedAdapter adapter;
     @Inject
-    MoviePlayedPresenter mPlayedPresenter;
+    MoviePlayedPresenter playedPresenter;
     private GridLayoutManager manager;
-    private boolean alreadyGetAllData = false;
 
     public static MoviePlayedFragment newInstance() {
         MoviePlayedFragment fragment = new MoviePlayedFragment();
@@ -60,8 +57,8 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
 
         DaggerMoviePresenterComponent.builder()
                 .moviePresenterModule(new MoviePresenterModule(this))
-                .build()
-                .inject(this);
+                .repoComponent(moCloud.getRepoComponent())
+                .build().inject(this);
 
         initRecyclerView();
         return rootView;
@@ -90,9 +87,10 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int lastItemPosition = manager.findLastVisibleItemPosition();
-                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData){
-                    mPlayedPresenter.start(false);
+                int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
+                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData&& firstSeeLastItem){
+                    firstSeeLastItem=false;
+                    playedPresenter.start(false);
                 }
             }
         });
@@ -114,27 +112,29 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
         }
         playedList.addAll(newData);
         adapter.notifyDataSetChanged();
-        stopRefresh();
     }
 
 
     @Override
     public void stopRefresh() {
-        if(srl!=null){
-            srl.setRefreshing(false);
-        }
+        stopRefresh(srl);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mPlayedPresenter.onDestroy();
+        playedPresenter.onDestroy();
         ButterKnife.unbind(this);
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public void onRefresh() {
-        mPlayedPresenter.start(true);
+        playedPresenter.start(true);
     }
 }
 

@@ -14,6 +14,7 @@ import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
 import com.floatingmuseum.mocloud.model.entity.BaseMovie;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +38,8 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
     private List<BaseMovie> collectedList;
     private MovieCollectedAdapter adapter;
     @Inject
-    MovieCollectedPresenter mCollectedPresenter;
+    MovieCollectedPresenter collectedPresenter;
     private GridLayoutManager manager;
-    private boolean alreadyGetAllData = false;
 
     public static MovieCollectedFragment newInstance() {
         MovieCollectedFragment fragment = new MovieCollectedFragment();
@@ -54,8 +54,8 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
 
         DaggerMoviePresenterComponent.builder()
                 .moviePresenterModule(new MoviePresenterModule(this))
-                .build()
-                .inject(this);
+                .repoComponent(moCloud.getRepoComponent())
+                .build().inject(this);
 
         initRecyclerView();
         return rootView;
@@ -84,9 +84,10 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int lastItemPosition = manager.findLastVisibleItemPosition();
-                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData){
-                    mCollectedPresenter.start(false);
+                int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
+                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData&& firstSeeLastItem){
+                    firstSeeLastItem = false;
+                    collectedPresenter.start(false);
                 }
             }
         });
@@ -94,7 +95,7 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
 
     @Override
     public void onRefresh() {
-        mCollectedPresenter.start(true);
+        collectedPresenter.start(true);
     }
 
     @Override
@@ -108,14 +109,10 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
         }
         collectedList.addAll(newData);
         adapter.notifyDataSetChanged();
-
-        srl.setRefreshing(false);
     }
 
     @Override
     public void stopRefresh() {
-        if(srl!=null){
-            srl.setRefreshing(false);
-        }
+        stopRefresh(srl);
     }
 }

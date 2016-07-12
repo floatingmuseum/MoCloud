@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
@@ -43,9 +44,8 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
     private List<BaseMovie> watchedList;
     private MovieWatchedAdapter adapter;
     @Inject
-    MovieWatchedPresenter mWatchedPresenter;
+    MovieWatchedPresenter watchedPresenter;
     private GridLayoutManager manager;
-    private boolean alreadyGetAllData = false;
 
     public static MovieWatchedFragment newInstance() {
         MovieWatchedFragment fragment = new MovieWatchedFragment();
@@ -60,8 +60,8 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
 
         DaggerMoviePresenterComponent.builder()
                 .moviePresenterModule(new MoviePresenterModule(this))
-                .build()
-                .inject(this);
+                .repoComponent(moCloud.getRepoComponent())
+                .build().inject(this);
 
         initRecyclerView();
         return rootView;
@@ -90,9 +90,10 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int lastItemPosition = manager.findLastVisibleItemPosition();
-                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData){
-                    mWatchedPresenter.start(false);
+                int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
+                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData&&firstSeeLastItem){
+                    firstSeeLastItem = false;
+                    watchedPresenter.start(false);
                 }
             }
         });
@@ -109,14 +110,11 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
         }
         watchedList.addAll(newData);
         adapter.notifyDataSetChanged();
-            srl.setRefreshing(false);
     }
 
     @Override
     public void stopRefresh() {
-        if(srl!=null){
-            srl.setRefreshing(false);
-        }
+        stopRefresh(srl);
     }
 
     @Override
@@ -126,7 +124,12 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public void onRefresh() {
-        mWatchedPresenter.start(true);
+        watchedPresenter.start(true);
     }
 }

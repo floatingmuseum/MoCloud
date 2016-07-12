@@ -1,6 +1,9 @@
 package com.floatingmuseum.mocloud.mainmovie.popular;
 
+import android.support.annotation.NonNull;
+
 import com.floatingmuseum.mocloud.base.BaseRepo;
+import com.floatingmuseum.mocloud.date.Repository;
 import com.floatingmuseum.mocloud.model.entity.Movie;
 
 import java.util.List;
@@ -12,37 +15,37 @@ import javax.inject.Inject;
  */
 public class MoviePopularPresenter implements MoviePopularContract.Presenter,BaseRepo.DataCallback<List<Movie>> {
 
-    private MoviePopularContract.View mPopularView;
-    private MoviePopularRepo repo;
+    private MoviePopularContract.View popularView;
     private int pageNum = 1;
     protected Boolean shouldClean;
+    private Repository repository;
 
     @Inject
-    public MoviePopularPresenter(MoviePopularContract.View popularView){
-        mPopularView = popularView;
-//        mPopularView.setPresenter(this);
-        repo = new MoviePopularRepo(this);
-    }
-
-    @Override
-    public void onDestroy() {
-
+    public MoviePopularPresenter(@NonNull MoviePopularContract.View popularView, @NonNull Repository repository){
+        this.popularView = popularView;
+        this.repository = repository;
     }
 
     @Override
     public void start(boolean shouldClean) {
         pageNum = shouldClean?1:++pageNum;
         this.shouldClean =shouldClean;
-        repo.getData(pageNum);
+        repository.getMoviePopularData(pageNum,this);
     }
 
     @Override
     public void onSuccess(List<Movie> movies) {
-        mPopularView.refreshData(movies,shouldClean);
+        popularView.refreshData(movies,shouldClean);
+        popularView.stopRefresh();
     }
 
     @Override
     public void onError(Throwable e) {
-        mPopularView.stopRefresh();
+        popularView.stopRefresh();
+    }
+
+    @Override
+    public void onDestroy() {
+
     }
 }

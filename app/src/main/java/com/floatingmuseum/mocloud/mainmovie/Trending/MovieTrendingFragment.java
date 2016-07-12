@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.floatingmuseum.mocloud.MainActivity;
+import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
@@ -39,9 +39,8 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
     private MovieTrendingAdapter adapter;
 
     @Inject
-    MovieTrendingPresenter mTrendingPresenter;
+    MovieTrendingPresenter trendingPresenter;
     private GridLayoutManager manager;
-    private boolean alreadyGetAllData = false;
 
     public static MovieTrendingFragment newInstance() {
         MovieTrendingFragment fragment = new MovieTrendingFragment();
@@ -56,13 +55,14 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
 
         DaggerMoviePresenterComponent.builder()
                 .moviePresenterModule(new MoviePresenterModule(this))
-                .build()
-                .inject(this);
+                .repoComponent(moCloud.getRepoComponent())
+                .build().inject(this);
 
-        Logger.d("presenter:"+mTrendingPresenter);
         initRecyclerView();
         return rootView;
     }
+
+
 
     private void initRecyclerView() {
         trendingList = new ArrayList<>();
@@ -88,8 +88,10 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int lastItemPosition = manager.findLastVisibleItemPosition();
-                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData){
-                    mTrendingPresenter.start(false);
+                // TODO: 2016/7/11 可以在倒数3 4个item时开始请求新数据 
+                if(lastItemPosition==(adapter.getItemCount()-1) && !alreadyGetAllData && firstSeeLastItem){
+                    firstSeeLastItem = false;
+                    trendingPresenter.start(false);
                 }
             }
         });
@@ -111,15 +113,11 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
         }
         trendingList.addAll(newData);
         adapter.notifyDataSetChanged();
-
-        srl.setRefreshing(false);
     }
 
     @Override
     public void stopRefresh() {
-        if(srl!=null){
-            srl.setRefreshing(false);
-        }
+        stopRefresh(srl);
     }
 
     @Override
@@ -129,7 +127,13 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Logger.d(MOVIE_TRENDING_FRAGMENT+"...onDestroy");
+    }
+
+    @Override
     public void onRefresh() {
-        mTrendingPresenter.start(true);
+        trendingPresenter.start(true);
     }
 }

@@ -1,8 +1,13 @@
 package com.floatingmuseum.mocloud.mainmovie.trending;
 
 
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+
 import com.floatingmuseum.mocloud.base.BaseRepo;
+import com.floatingmuseum.mocloud.date.Repository;
 import com.floatingmuseum.mocloud.model.entity.BaseMovie;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -13,24 +18,22 @@ import javax.inject.Inject;
  */
 public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, BaseRepo.DataCallback<List<BaseMovie>> {
 
-    private MovieTrendingContract.View mTrendingView;
-    private MovieTrendingRepo repo;
+    private MovieTrendingContract.View trendingView;
     private int pageNum = 1;
     protected Boolean shouldClean;
+    private Repository repository;
 
     @Inject
-    MovieTrendingPresenter(MovieTrendingContract.View trendingView){
-        mTrendingView = trendingView;
-//        mTrendingView.setPresenter(this);
-        repo = new MovieTrendingRepo(this);
+    MovieTrendingPresenter(@NonNull MovieTrendingContract.View trendingView,@NonNull Repository repository){
+        this.repository = repository;
+        this.trendingView = trendingView;
     }
-
 
     @Override
     public void start(final boolean shouldClean) {
         pageNum = shouldClean?1:++pageNum;
         this.shouldClean =shouldClean;
-        repo.getData(pageNum);
+        repository.getMovieTrendingData(pageNum,this);
     }
 
     @Override
@@ -40,12 +43,15 @@ public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, 
 
     @Override
     public void onSuccess(List<BaseMovie> t) {
-        mTrendingView.refreshData(t,shouldClean);
+        Logger.d("onSuccess");
+        trendingView.refreshData(t,shouldClean);
+        trendingView.stopRefresh();
     }
 
     @Override
     public void onError(Throwable e) {
+        Logger.d("onError");
         e.printStackTrace();
-        mTrendingView.stopRefresh();
+        trendingView.stopRefresh();
     }
 }

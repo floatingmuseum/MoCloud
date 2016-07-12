@@ -1,5 +1,7 @@
 package com.floatingmuseum.mocloud.dagger.presenter;
 
+import com.floatingmuseum.mocloud.dagger.FragmentScoped;
+import com.floatingmuseum.mocloud.dagger.repo.RepoComponent;
 import com.floatingmuseum.mocloud.mainmovie.anticipated.MovieAnticipatedFragment;
 import com.floatingmuseum.mocloud.mainmovie.boxoffice.MovieBoxOfficeFragment;
 import com.floatingmuseum.mocloud.mainmovie.collected.MovieCollectedFragment;
@@ -13,7 +15,8 @@ import dagger.Component;
 /**
  * Created by Floatingmuseum on 2016/6/21.
  */
-@Component(modules = MoviePresenterModule.class)
+@FragmentScoped
+@Component(dependencies = RepoComponent.class,modules = MoviePresenterModule.class)
 public interface MoviePresenterComponent {
     void inject(MovieTrendingFragment movieTrendingFragment);
     void inject(MoviePopularFragment moviePopularFragment);

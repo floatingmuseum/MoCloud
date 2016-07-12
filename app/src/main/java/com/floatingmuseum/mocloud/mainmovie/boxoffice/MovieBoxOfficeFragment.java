@@ -15,8 +15,8 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
-import com.floatingmuseum.mocloud.mainmovie.collected.MovieCollectedContract;
 import com.floatingmuseum.mocloud.model.entity.BaseMovie;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
     private List<BaseMovie> boxOfficeList;
     private MovieBoxOfficeAdapter adapter;
     @Inject
-    MovieBoxOfficePresenter mBoxOfficePresenter;
+    MovieBoxOfficePresenter boxOfficePresenter;
     private GridLayoutManager manager;
 
     public static MovieBoxOfficeFragment newInstance() {
@@ -56,8 +56,8 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
 
         DaggerMoviePresenterComponent.builder()
                 .moviePresenterModule(new MoviePresenterModule(this))
-                .build()
-                .inject(this);
+                .repoComponent(moCloud.getRepoComponent())
+                .build().inject(this);
 
         initRecyclerView();
         return rootView;
@@ -86,7 +86,7 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
 
     @Override
     public void onRefresh() {
-        mBoxOfficePresenter.start();
+        boxOfficePresenter.start();
     }
 
     @Override
@@ -94,13 +94,10 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
         boxOfficeList.clear();
         boxOfficeList.addAll(newData);
         adapter.notifyDataSetChanged();
-        srl.setRefreshing(false);
     }
 
     @Override
     public void stopRefresh() {
-        if(srl!=null){
-            srl.setRefreshing(false);
-        }
+        stopRefresh(srl);
     }
 }

@@ -9,11 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
 import com.floatingmuseum.mocloud.model.entity.Movie;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +38,8 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
     private List<Movie> popularList;
     private MoviePopularAdapter adapter;
     @Inject
-    MoviePopularPresenter mPopularPresenter;
+    MoviePopularPresenter popularPresenter;
     private GridLayoutManager manager;
-    private boolean alreadyGetAllData = false;
     public static MoviePopularFragment newInstance() {
         MoviePopularFragment fragment = new MoviePopularFragment();
         return fragment;
@@ -49,12 +50,11 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
-//        new MoviePopularPresenter(this);
 
         DaggerMoviePresenterComponent.builder()
                 .moviePresenterModule(new MoviePresenterModule(this))
-                .build()
-                .inject(this);
+                .repoComponent(moCloud.getRepoComponent())
+                .build().inject(this);
 
         initRecyclerView();
         return rootView;
@@ -80,9 +80,9 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int lastItemPosition = manager.findLastVisibleItemPosition();
-                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData){
-                    mPopularPresenter.start(false);
+                int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
+                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData&&firstSeeLastItem){
+                    popularPresenter.start(false);
                 }
             }
         });
@@ -104,15 +104,11 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
         }
         popularList.addAll(newData);
         adapter.notifyDataSetChanged();
-
-        srl.setRefreshing(false);
     }
 
     @Override
     public void stopRefresh() {
-        if(srl!=null){
-            srl.setRefreshing(false);
-        }
+        stopRefresh(srl);
     }
 
     @Override
@@ -122,7 +118,12 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public void onRefresh() {
-        mPopularPresenter.start(true);
+        popularPresenter.start(true);
     }
 }

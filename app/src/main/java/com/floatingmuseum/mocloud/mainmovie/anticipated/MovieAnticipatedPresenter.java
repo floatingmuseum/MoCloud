@@ -1,6 +1,9 @@
 package com.floatingmuseum.mocloud.mainmovie.anticipated;
 
+import android.support.annotation.NonNull;
+
 import com.floatingmuseum.mocloud.base.BaseRepo;
+import com.floatingmuseum.mocloud.date.Repository;
 import com.floatingmuseum.mocloud.model.entity.BaseMovie;
 
 import java.util.List;
@@ -12,34 +15,35 @@ import javax.inject.Inject;
  */
 public class MovieAnticipatedPresenter implements MovieAnticipatedContract.Presenter, BaseRepo.DataCallback<List<BaseMovie>>{
 
-    private MovieAnticipatedContract.View mAnticipatedView;
-    private MovieAnticipatedRepo repo;
+    private MovieAnticipatedContract.View anticipatedView;
+    private Repository repository;
     private int pageNum = 1;
     private String period = "weekly";
     protected Boolean shouldClean;
 
     @Inject
-    public MovieAnticipatedPresenter(MovieAnticipatedContract.View AnticipatedView){
-        mAnticipatedView = AnticipatedView;
-        repo = new MovieAnticipatedRepo(this);
+    public MovieAnticipatedPresenter(@NonNull MovieAnticipatedContract.View anticipatedView, @NonNull Repository repository){
+        this.anticipatedView = anticipatedView;
+        this.repository = repository;
     }
 
     @Override
     public void start(boolean shouldClean) {
         pageNum = shouldClean?1:++pageNum;
         this.shouldClean =shouldClean;
-        repo.getData(period,pageNum);
+        repository.getMovieAnticipatedData(period,pageNum,this);
     }
 
     @Override
     public void onSuccess(List<BaseMovie> baseMovies) {
-        mAnticipatedView.refreshData(baseMovies,shouldClean);
+        anticipatedView.refreshData(baseMovies,shouldClean);
+        anticipatedView.stopRefresh();
     }
 
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        mAnticipatedView.stopRefresh();
+        anticipatedView.stopRefresh();
     }
 
     @Override

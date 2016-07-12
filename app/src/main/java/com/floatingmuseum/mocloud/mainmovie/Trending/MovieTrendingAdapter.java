@@ -13,6 +13,7 @@ import com.floatingmuseum.mocloud.model.entity.BaseMovie;
 import com.floatingmuseum.mocloud.model.entity.Movie;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
