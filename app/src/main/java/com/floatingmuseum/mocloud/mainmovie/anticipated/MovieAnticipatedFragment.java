@@ -38,7 +38,7 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
     private List<BaseMovie> anticipatedList;
     private MovieAnticipatedAdapter adapter;
     @Inject
-    MovieAnticipatedPresenter mAnticipatedPresenter;
+    MovieAnticipatedPresenter anticipatedPresenter;
     private GridLayoutManager manager;
 
     public static MovieAnticipatedFragment newInstance() {
@@ -86,7 +86,7 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
                 int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
                 if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData&& firstSeeLastItem){
                     firstSeeLastItem = false;
-                    mAnticipatedPresenter.start(false);
+                    anticipatedPresenter.start(false);
                 }
             }
         });
@@ -94,7 +94,7 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
 
     @Override
     public void onRefresh() {
-        mAnticipatedPresenter.start(true);
+        anticipatedPresenter.start(true);
     }
 
     @Override

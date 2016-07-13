@@ -1,7 +1,6 @@
 package com.floatingmuseum.mocloud.mainmovie.trending;
 
 
-import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
 import com.floatingmuseum.mocloud.base.BaseRepo;
@@ -16,17 +15,19 @@ import javax.inject.Inject;
 /**
  * Created by Floatingmuseum on 2016/4/19.
  */
-public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, BaseRepo.DataCallback<List<BaseMovie>> {
+public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, Repository.DataCallback<List<BaseMovie>> {
 
     private MovieTrendingContract.View trendingView;
     private int pageNum = 1;
     protected Boolean shouldClean;
     private Repository repository;
+    private TrendingRepo repo;
 
     @Inject
     MovieTrendingPresenter(@NonNull MovieTrendingContract.View trendingView,@NonNull Repository repository){
         this.repository = repository;
         this.trendingView = trendingView;
+//        repo = new TrendingRepo();
     }
 
     @Override
@@ -43,7 +44,7 @@ public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, 
 
     @Override
     public void onSuccess(List<BaseMovie> t) {
-        Logger.d("onSuccess");
+//        Logger.d("onSuccess");
         trendingView.refreshData(t,shouldClean);
         trendingView.stopRefresh();
     }

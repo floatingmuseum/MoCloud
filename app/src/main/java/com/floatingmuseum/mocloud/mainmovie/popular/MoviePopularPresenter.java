@@ -13,7 +13,7 @@ import javax.inject.Inject;
 /**
  * Created by Floatingmuseum on 2016/5/1.
  */
-public class MoviePopularPresenter implements MoviePopularContract.Presenter,BaseRepo.DataCallback<List<Movie>> {
+public class MoviePopularPresenter implements MoviePopularContract.Presenter,Repository.DataCallback<List<Movie>> {
 
     private MoviePopularContract.View popularView;
     private int pageNum = 1;

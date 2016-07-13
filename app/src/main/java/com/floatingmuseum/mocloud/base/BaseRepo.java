@@ -48,6 +48,7 @@ public class BaseRepo {
                 .subscribe(new Subscriber<Movie>() {
                     @Override
                     public void onCompleted() {
+                        Logger.d("onCompleted...callback:"+callback);
                         callback.onSuccess(movies);
                     }
 
@@ -58,6 +59,7 @@ public class BaseRepo {
 
                     @Override
                     public void onNext(Movie movie) {
+                        Logger.d("getImagesByBaseMoive...onNext:"+movie.getTitle());
                         mergeImageAndBaseMovie(movies,movie);
                     }
                 });

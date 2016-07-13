@@ -13,7 +13,7 @@ import javax.inject.Inject;
 /**
  * Created by Floatingmuseum on 2016/5/6.
  */
-public class MovieBoxOfficePresenter implements MovieBoxOfficeContract.Presenter, BaseRepo.DataCallback<List<BaseMovie>> {
+public class MovieBoxOfficePresenter implements MovieBoxOfficeContract.Presenter, Repository.DataCallback<List<BaseMovie>> {
 
     private MovieBoxOfficeContract.View boxOfficeView;
     private Repository repository;

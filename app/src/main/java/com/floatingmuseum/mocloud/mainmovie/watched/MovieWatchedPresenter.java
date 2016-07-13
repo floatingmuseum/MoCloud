@@ -11,7 +11,7 @@ import javax.inject.Inject;
 /**
  * Created by Floatingmuseum on 2016/5/5.
  */
-public class MovieWatchedPresenter implements MovieWatchedContract.Presenter,BaseRepo.DataCallback<List<BaseMovie>>{
+public class MovieWatchedPresenter implements MovieWatchedContract.Presenter,Repository.DataCallback<List<BaseMovie>>{
     private MovieWatchedContract.View watchedView;
     private int pageNum = 1;
     private String period = "weekly";

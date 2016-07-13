@@ -30,7 +30,7 @@ public class MoCloudRetrofit {
 
         Retrofit retrofit = new Retrofit.Builder()
                 //baseUrl方法指定了请求地址的前半部分，即服务器地址
-                .baseUrl("https://api-v2launch.trakt.tv/")
+                .baseUrl("https://api.trakt.tv/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

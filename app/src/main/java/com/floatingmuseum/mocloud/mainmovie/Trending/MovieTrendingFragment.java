@@ -129,7 +129,6 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Logger.d(MOVIE_TRENDING_FRAGMENT+"...onDestroy");
     }
 
     @Override

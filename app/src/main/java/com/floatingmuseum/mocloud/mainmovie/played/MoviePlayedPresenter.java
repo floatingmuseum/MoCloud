@@ -13,7 +13,7 @@ import javax.inject.Inject;
 /**
  * Created by Floatingmuseum on 2016/5/5.
  */
-public class MoviePlayedPresenter implements MoviePlayedContract.Presenter, BaseRepo.DataCallback<List<BaseMovie>> {
+public class MoviePlayedPresenter implements MoviePlayedContract.Presenter, Repository.DataCallback<List<BaseMovie>> {
 
     private MoviePlayedContract.View playedView;
     private Repository repository;
