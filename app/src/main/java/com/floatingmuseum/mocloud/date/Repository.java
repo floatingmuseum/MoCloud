@@ -34,7 +34,6 @@ public class Repository extends BaseRepo{
     }
 
     public void getMovieTrendingData(int pageNum, final DataCallback<List<BaseMovie>> callback){
-        Logger.d("getMovieTrendingData()");
         service.getMovieTrending(pageNum)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -49,9 +48,8 @@ public class Repository extends BaseRepo{
                     }
 
                     @Override
-                    public void onNext(List<BaseMovie> movieTrendings) {
-                        Logger.d("onNext:"+movieTrendings.get(0).getMovie().getTitle());
-                        getImagesByBaseMoive(movieTrendings,callback);
+                    public void onNext(List<BaseMovie> movies) {
+                        getImagesByBaseMoive(movies,callback);
                     }
                 });
     }
@@ -71,7 +69,6 @@ public class Repository extends BaseRepo{
 
                     @Override
                     public void onNext(List<Movie> movies) {
-                        Logger.d("Popular...onNext:"+movies.get(0).getTitle()+"..."+callback);
                         getImagesByMovie(movies,callback);
                     }
                 });
@@ -180,9 +177,6 @@ public class Repository extends BaseRepo{
 
     protected MoCloudService service;
     protected CompositeSubscription mCompositeSubscription;
-//    public Repository(){
-//        service = MoCloudFactory.getInstance();
-//    }
 
     public interface DataCallback<T extends Object>{
         void onSuccess(T t);
@@ -195,11 +189,9 @@ public class Repository extends BaseRepo{
     }
 
     protected void getImagesByBaseMoive(final List<BaseMovie> movies, final DataCallback callback){
-//        Subscription s =
                 Observable.from(movies).flatMap(new Func1<BaseMovie, Observable<Movie>>() {
             @Override
             public Observable<Movie> call(BaseMovie trending) {
-                Logger.d("getMovieImage");
                 return getMovieImage(trending.getMovie().getIds().getSlug());
             }
         }).subscribeOn(Schedulers.io())
@@ -207,7 +199,6 @@ public class Repository extends BaseRepo{
                 .subscribe(new Subscriber<Movie>() {
                     @Override
                     public void onCompleted() {
-                        Logger.d("onCompleted...callback:"+callback);
                         callback.onSuccess(movies);
                     }
 
@@ -218,15 +209,12 @@ public class Repository extends BaseRepo{
 
                     @Override
                     public void onNext(Movie movie) {
-                        Logger.d("getImagesByBaseMoive...onNext:"+movie.getTitle());
                         mergeImageAndBaseMovie(movies,movie);
                     }
                 });
-//        addToCompositeSubscription(s);
     }
 
     public void getImagesByMovie(final List<Movie> movies, final DataCallback callback){
-//        Subscription s =
                 Observable.from(movies).flatMap(new Func1<Movie, Observable<Movie>>() {
             @Override
             public Observable<Movie> call(Movie movie) {
@@ -248,11 +236,9 @@ public class Repository extends BaseRepo{
 
                     @Override
                     public void onNext(Movie movie) {
-                        Logger.d("Popular..getImagesByMovie..onNext:"+movie.getTitle()+"..."+callback);
                         mergeImageAndMovie(movies,movie);
                     }
                 });
-//        addToCompositeSubscription(s);
     }
 
     /**
