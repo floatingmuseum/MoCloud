@@ -2,9 +2,8 @@ package com.floatingmuseum.mocloud.mainmovie.anticipated;
 
 import android.support.annotation.NonNull;
 
-import com.floatingmuseum.mocloud.base.BaseRepo;
 import com.floatingmuseum.mocloud.date.Repository;
-import com.floatingmuseum.mocloud.model.entity.BaseMovie;
+import com.floatingmuseum.mocloud.date.entity.BaseMovie;
 
 import java.util.List;
 
@@ -18,7 +17,6 @@ public class MovieAnticipatedPresenter implements MovieAnticipatedContract.Prese
     private MovieAnticipatedContract.View anticipatedView;
     private Repository repository;
     private int pageNum = 1;
-    private String period = "weekly";
     protected Boolean shouldClean;
 
     @Inject
@@ -31,7 +29,7 @@ public class MovieAnticipatedPresenter implements MovieAnticipatedContract.Prese
     public void start(boolean shouldClean) {
         pageNum = shouldClean?1:++pageNum;
         this.shouldClean =shouldClean;
-        repository.getMovieAnticipatedData(period,pageNum,this);
+        repository.getMovieAnticipatedData(pageNum,this);
     }
 
     @Override

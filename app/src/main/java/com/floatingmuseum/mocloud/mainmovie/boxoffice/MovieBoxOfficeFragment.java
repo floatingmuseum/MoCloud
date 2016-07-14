@@ -2,21 +2,18 @@ package com.floatingmuseum.mocloud.mainmovie.boxoffice;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
-import com.floatingmuseum.mocloud.model.entity.BaseMovie;
-import com.orhanobut.logger.Logger;
+import com.floatingmuseum.mocloud.date.entity.BaseMovie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +37,7 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
     private List<BaseMovie> boxOfficeList;
     private MovieBoxOfficeAdapter adapter;
     @Inject
-    MovieBoxOfficePresenter boxOfficePresenter;
+    MovieBoxOfficePresenter presenter;
     private GridLayoutManager manager;
 
     public static MovieBoxOfficeFragment newInstance() {
@@ -65,7 +62,7 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
 
     private void initRecyclerView() {
         boxOfficeList = new ArrayList<>();
-        adapter =  new MovieBoxOfficeAdapter(boxOfficeList,context);
+        adapter =  new MovieBoxOfficeAdapter(boxOfficeList);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context,3);
         rv.setLayoutManager(manager);
@@ -86,7 +83,7 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
 
     @Override
     public void onRefresh() {
-        boxOfficePresenter.start();
+        presenter.start();
     }
 
     @Override

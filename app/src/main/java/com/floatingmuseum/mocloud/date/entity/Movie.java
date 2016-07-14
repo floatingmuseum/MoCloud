@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.model.entity;
+package com.floatingmuseum.mocloud.date.entity;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ public class Movie {
     private String released;
     private int runtime;
     private String updated_at;
-    private Object trailer;
+    private String trailer;
     private String homepage;
-    private int rating;
+    private double rating;
     private int votes;
     private String language;
     private String certification;
@@ -100,7 +100,7 @@ public class Movie {
         return trailer;
     }
 
-    public void setTrailer(Object trailer) {
+    public void setTrailer(String trailer) {
         this.trailer = trailer;
     }
 
@@ -112,7 +112,7 @@ public class Movie {
         this.homepage = homepage;
     }
 
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 

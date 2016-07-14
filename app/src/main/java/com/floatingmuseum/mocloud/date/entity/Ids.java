@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.model.entity;
+package com.floatingmuseum.mocloud.date.entity;
 
 /**
  * Created by Floatingmuseum on 2016/4/18.

@@ -2,9 +2,8 @@ package com.floatingmuseum.mocloud.mainmovie.popular;
 
 import android.support.annotation.NonNull;
 
-import com.floatingmuseum.mocloud.base.BaseRepo;
 import com.floatingmuseum.mocloud.date.Repository;
-import com.floatingmuseum.mocloud.model.entity.Movie;
+import com.floatingmuseum.mocloud.date.entity.Movie;
 
 import java.util.List;
 

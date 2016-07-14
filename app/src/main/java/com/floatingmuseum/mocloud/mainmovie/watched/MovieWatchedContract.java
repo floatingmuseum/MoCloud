@@ -3,7 +3,7 @@ package com.floatingmuseum.mocloud.mainmovie.watched;
 
 import com.floatingmuseum.mocloud.base.BasePresenter;
 import com.floatingmuseum.mocloud.base.BaseView;
-import com.floatingmuseum.mocloud.model.entity.BaseMovie;
+import com.floatingmuseum.mocloud.date.entity.BaseMovie;
 
 import java.util.List;
 

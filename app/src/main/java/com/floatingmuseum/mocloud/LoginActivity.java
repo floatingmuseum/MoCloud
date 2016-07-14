@@ -1,16 +1,14 @@
 package com.floatingmuseum.mocloud;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.floatingmuseum.mocloud.model.entity.TokenRequest;
-import com.floatingmuseum.mocloud.model.entity.TraktToken;
-import com.floatingmuseum.mocloud.model.net.MoCloudFactory;
-import com.floatingmuseum.mocloud.model.net.MoCloudRetrofit;
+import com.floatingmuseum.mocloud.date.entity.TokenRequest;
+import com.floatingmuseum.mocloud.date.entity.TraktToken;
+import com.floatingmuseum.mocloud.date.net.MoCloudFactory;
 import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;

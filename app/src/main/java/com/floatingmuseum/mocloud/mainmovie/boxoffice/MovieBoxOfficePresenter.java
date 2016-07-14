@@ -2,9 +2,8 @@ package com.floatingmuseum.mocloud.mainmovie.boxoffice;
 
 import android.support.annotation.NonNull;
 
-import com.floatingmuseum.mocloud.base.BaseRepo;
 import com.floatingmuseum.mocloud.date.Repository;
-import com.floatingmuseum.mocloud.model.entity.BaseMovie;
+import com.floatingmuseum.mocloud.date.entity.BaseMovie;
 
 import java.util.List;
 

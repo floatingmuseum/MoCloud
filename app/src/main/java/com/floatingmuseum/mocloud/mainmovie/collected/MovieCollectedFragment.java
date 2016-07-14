@@ -13,8 +13,7 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
-import com.floatingmuseum.mocloud.model.entity.BaseMovie;
-import com.orhanobut.logger.Logger;
+import com.floatingmuseum.mocloud.date.entity.BaseMovie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,7 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
     private List<BaseMovie> collectedList;
     private MovieCollectedAdapter adapter;
     @Inject
-    MovieCollectedPresenter collectedPresenter;
+    MovieCollectedPresenter presenter;
     private GridLayoutManager manager;
 
     public static MovieCollectedFragment newInstance() {
@@ -63,7 +62,7 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
 
     private void initRecyclerView() {
         collectedList = new ArrayList<>();
-        adapter =  new MovieCollectedAdapter(collectedList,context);
+        adapter =  new MovieCollectedAdapter(collectedList);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context,3);
         rv.setLayoutManager(manager);
@@ -84,18 +83,14 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
-                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData&& firstSeeLastItem){
-                    firstSeeLastItem = false;
-                    collectedPresenter.start(false);
-                }
+                loadMore(manager,adapter,presenter,srl);
             }
         });
     }
 
     @Override
     public void onRefresh() {
-        collectedPresenter.start(true);
+        presenter.start(true);
     }
 
     @Override

@@ -1,11 +1,10 @@
 package com.floatingmuseum.mocloud.date;
 
 import com.floatingmuseum.mocloud.base.BaseRepo;
-import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingFragment;
-import com.floatingmuseum.mocloud.model.entity.BaseMovie;
-import com.floatingmuseum.mocloud.model.entity.Movie;
-import com.floatingmuseum.mocloud.model.net.MoCloudFactory;
-import com.floatingmuseum.mocloud.model.net.MoCloudService;
+import com.floatingmuseum.mocloud.date.entity.BaseMovie;
+import com.floatingmuseum.mocloud.date.entity.Movie;
+import com.floatingmuseum.mocloud.date.net.MoCloudFactory;
+import com.floatingmuseum.mocloud.date.net.MoCloudService;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -16,17 +15,22 @@ import javax.inject.Singleton;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Floatingmuseum on 2016/7/11.
  */
 @Singleton
-public class Repository extends BaseRepo{
+public class Repository{
+
+    protected MoCloudService service;
+
+    public interface DataCallback<T extends Object>{
+        void onSuccess(T t);
+        void onError(Throwable e);
+    }
 
     @Inject
     public Repository(){
@@ -34,6 +38,7 @@ public class Repository extends BaseRepo{
     }
 
     public void getMovieTrendingData(int pageNum, final DataCallback<List<BaseMovie>> callback){
+        Logger.d("getMovieTrendingData");
         service.getMovieTrending(pageNum)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -49,7 +54,7 @@ public class Repository extends BaseRepo{
 
                     @Override
                     public void onNext(List<BaseMovie> movies) {
-                        getImagesByBaseMoive(movies,callback);
+                        callback.onSuccess(movies);
                     }
                 });
     }
@@ -57,6 +62,7 @@ public class Repository extends BaseRepo{
     public void getMoviePopularData(int pageNum,final DataCallback callback){
         service.getMoviePopular(pageNum)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<Movie>>() {
                     @Override
                     public void onCompleted() {
@@ -69,7 +75,7 @@ public class Repository extends BaseRepo{
 
                     @Override
                     public void onNext(List<Movie> movies) {
-                        getImagesByMovie(movies,callback);
+                        callback.onSuccess(movies);
                     }
                 });
     }
@@ -77,6 +83,7 @@ public class Repository extends BaseRepo{
     public void getMoviePlayedData(String period,int pageNum,final DataCallback callback){
         service.getMoviePlayed(period,pageNum)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<BaseMovie>>() {
                     @Override
                     public void onCompleted() {
@@ -89,7 +96,7 @@ public class Repository extends BaseRepo{
 
                     @Override
                     public void onNext(List<BaseMovie> movies) {
-                        getImagesByBaseMoive(movies,callback);
+                        callback.onSuccess(movies);
                     }
                 });
     }
@@ -97,6 +104,7 @@ public class Repository extends BaseRepo{
     public void getMovieWatchedData(String period,int pageNum,final DataCallback callback){
         service.getMovieWatched(period,pageNum)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<BaseMovie>>() {
                     @Override
                     public void onCompleted() {
@@ -109,14 +117,15 @@ public class Repository extends BaseRepo{
 
                     @Override
                     public void onNext(List<BaseMovie> movies) {
-                        getImagesByBaseMoive(movies,callback);
+                        callback.onSuccess(movies);
                     }
                 });
     }
 
     public void getMovieCollectedData(String period, int pageNum, final DataCallback callback){
-        service.getMovieCollocted(period,pageNum)
+        service.getMovieCollected(period,pageNum)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<BaseMovie>>() {
                     @Override
                     public void onCompleted() {
@@ -129,14 +138,15 @@ public class Repository extends BaseRepo{
 
                     @Override
                     public void onNext(List<BaseMovie> movies) {
-                        getImagesByBaseMoive(movies,callback);
+                        callback.onSuccess(movies);
                     }
                 });
     }
 
-    public void getMovieAnticipatedData(String period,int pageNum,final DataCallback callback){
-        service.getMovieCollocted(period,pageNum)
+    public void getMovieAnticipatedData(int pageNum,final DataCallback callback){
+        service.getMovieAnticipated(pageNum)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<BaseMovie>>() {
                     @Override
                     public void onCompleted() {
@@ -149,7 +159,7 @@ public class Repository extends BaseRepo{
 
                     @Override
                     public void onNext(List<BaseMovie> movies) {
-                        getImagesByBaseMoive(movies,callback);
+                        callback.onSuccess(movies);
                     }
                 });
     }
@@ -157,6 +167,7 @@ public class Repository extends BaseRepo{
     public void getMovieBoxOfficeData(final DataCallback callback){
         service.getMovieBoxOffice()
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<BaseMovie>>() {
                     @Override
                     public void onCompleted() {
@@ -169,18 +180,9 @@ public class Repository extends BaseRepo{
 
                     @Override
                     public void onNext(List<BaseMovie> movies) {
-                        getImagesByBaseMoive(movies,callback);
+                        callback.onSuccess(movies);
                     }
                 });
-    }
-
-
-    protected MoCloudService service;
-    protected CompositeSubscription mCompositeSubscription;
-
-    public interface DataCallback<T extends Object>{
-        void onSuccess(T t);
-        void onError(Throwable e);
     }
 
     public Observable<Movie> getMovieImage(String movieId){
@@ -218,7 +220,6 @@ public class Repository extends BaseRepo{
                 Observable.from(movies).flatMap(new Func1<Movie, Observable<Movie>>() {
             @Override
             public Observable<Movie> call(Movie movie) {
-                Logger.d("getMovieImage:"+movie.getTitle());
                 return getMovieImage(movie.getIds().getSlug());
             }
         }).subscribeOn(Schedulers.io())
@@ -260,20 +261,6 @@ public class Repository extends BaseRepo{
             if(t.getTitle().equals(movie.getTitle())){
                 t.setImages(movie.getImages());
             }
-        }
-    }
-
-    protected void addToCompositeSubscription(Subscription s){
-        if(mCompositeSubscription==null){
-            mCompositeSubscription = new CompositeSubscription();
-        }
-
-        mCompositeSubscription.add(s);
-    }
-
-    public void destroyCompositeSubscription(){
-        if (mCompositeSubscription!=null){
-            mCompositeSubscription.unsubscribe();
         }
     }
 }

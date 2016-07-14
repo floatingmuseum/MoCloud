@@ -62,4 +62,5 @@ dependencies {
     apt 'com.google.dagger:dagger-compiler:2.4'
     //java注解
     compile 'org.glassfish:javax.annotation:10.0-b28'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v1.9.0'
 }

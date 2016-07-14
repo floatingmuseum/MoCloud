@@ -9,13 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
-import com.floatingmuseum.mocloud.model.entity.Movie;
-import com.orhanobut.logger.Logger;
+import com.floatingmuseum.mocloud.date.entity.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +36,7 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
     private List<Movie> popularList;
     private MoviePopularAdapter adapter;
     @Inject
-    MoviePopularPresenter popularPresenter;
+    MoviePopularPresenter presenter;
     private GridLayoutManager manager;
     public static MoviePopularFragment newInstance() {
         MoviePopularFragment fragment = new MoviePopularFragment();
@@ -62,7 +60,7 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
 
     private void initRecyclerView() {
         popularList = new ArrayList<>();
-        adapter =  new MoviePopularAdapter(popularList,context);
+        adapter =  new MoviePopularAdapter(popularList);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context,3);
         rv.setLayoutManager(manager);
@@ -80,10 +78,7 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
-                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData&&firstSeeLastItem){
-                    popularPresenter.start(false);
-                }
+                loadMore(manager,adapter,presenter,srl);
             }
         });
     }
@@ -124,6 +119,6 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
 
     @Override
     public void onRefresh() {
-        popularPresenter.start(true);
+        presenter.start(true);
     }
 }

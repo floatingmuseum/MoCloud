@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.mainmovie.trending;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,12 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.floatingmuseum.mocloud.MoCloud;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
-import com.floatingmuseum.mocloud.model.entity.BaseMovie;
+import com.floatingmuseum.mocloud.date.entity.BaseMovie;
+import com.floatingmuseum.mocloud.mainmovie.MovieDetailActivity;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class MovieTrendingFragment extends BaseFragment implements MovieTrendingContract.View, SwipeRefreshLayout.OnRefreshListener {
+public class MovieTrendingFragment extends BaseFragment implements MovieTrendingContract.View, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.OnRecyclerViewItemClickListener {
     @Bind(R.id.rv)
     RecyclerView rv;
     @Bind(R.id.srl)
@@ -39,7 +41,7 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
     private MovieTrendingAdapter adapter;
 
     @Inject
-    MovieTrendingPresenter trendingPresenter;
+    MovieTrendingPresenter presenter;
     private GridLayoutManager manager;
 
     public static MovieTrendingFragment newInstance() {
@@ -66,7 +68,7 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
 
     private void initRecyclerView() {
         trendingList = new ArrayList<>();
-        adapter =  new MovieTrendingAdapter(trendingList,context);
+        adapter =  new MovieTrendingAdapter(trendingList);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context,3);
         rv.setLayoutManager(manager);
@@ -87,14 +89,11 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int lastItemPosition = manager.findLastVisibleItemPosition();
-                // TODO: 2016/7/11 可以在倒数3 4个item时开始请求新数据 
-                if(lastItemPosition==(adapter.getItemCount()-1) && !alreadyGetAllData && firstSeeLastItem){
-                    firstSeeLastItem = false;
-                    trendingPresenter.start(false);
-                }
+                loadMore(manager,adapter,presenter,srl);
             }
         });
+
+        adapter.setOnRecyclerViewItemClickListener(this);
     }
 
     @Override
@@ -133,6 +132,13 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
 
     @Override
     public void onRefresh() {
-        trendingPresenter.start(true);
+        presenter.start(true);
+    }
+
+    @Override
+    public void onItemClick(View view, int i) {
+        Intent intent = new Intent(context, MovieDetailActivity.class);
+        intent.putExtra(MovieDetailActivity.MOVIE_ID,trendingList.get(i).getMovie().getIds().getSlug());
+        context.startActivity(intent);
     }
 }

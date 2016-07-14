@@ -2,22 +2,18 @@ package com.floatingmuseum.mocloud.mainmovie.played;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
-import com.floatingmuseum.mocloud.model.entity.BaseMovie;
-import com.orhanobut.logger.Logger;
+import com.floatingmuseum.mocloud.date.entity.BaseMovie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +37,7 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
     private List<BaseMovie> playedList;
     private MoviePlayedAdapter adapter;
     @Inject
-    MoviePlayedPresenter playedPresenter;
+    MoviePlayedPresenter presenter;
     private GridLayoutManager manager;
 
     public static MoviePlayedFragment newInstance() {
@@ -66,7 +62,7 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
 
     private void initRecyclerView() {
         playedList = new ArrayList<>();
-        adapter =  new MoviePlayedAdapter(playedList,context);
+        adapter =  new MoviePlayedAdapter(playedList);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context,3);
         rv.setLayoutManager(manager);
@@ -87,11 +83,7 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
-                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData&& firstSeeLastItem){
-                    firstSeeLastItem=false;
-                    playedPresenter.start(false);
-                }
+                loadMore(manager,adapter,presenter,srl);
             }
         });
     }
@@ -123,7 +115,6 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        playedPresenter.onDestroy();
         ButterKnife.unbind(this);
     }
 
@@ -134,7 +125,7 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
 
     @Override
     public void onRefresh() {
-        playedPresenter.start(true);
+        presenter.start(true);
     }
 }
 

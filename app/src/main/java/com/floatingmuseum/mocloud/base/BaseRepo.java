@@ -1,12 +1,11 @@
 package com.floatingmuseum.mocloud.base;
 
-import com.floatingmuseum.mocloud.model.entity.BaseMovie;
-import com.floatingmuseum.mocloud.model.entity.Movie;
-import com.floatingmuseum.mocloud.model.net.MoCloudFactory;
-import com.floatingmuseum.mocloud.model.net.MoCloudService;
+import com.floatingmuseum.mocloud.date.entity.BaseMovie;
+import com.floatingmuseum.mocloud.date.entity.Movie;
+import com.floatingmuseum.mocloud.date.net.MoCloudFactory;
+import com.floatingmuseum.mocloud.date.net.MoCloudService;
 import com.orhanobut.logger.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;

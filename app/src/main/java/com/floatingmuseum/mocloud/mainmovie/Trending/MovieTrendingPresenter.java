@@ -3,9 +3,8 @@ package com.floatingmuseum.mocloud.mainmovie.trending;
 
 import android.support.annotation.NonNull;
 
-import com.floatingmuseum.mocloud.base.BaseRepo;
 import com.floatingmuseum.mocloud.date.Repository;
-import com.floatingmuseum.mocloud.model.entity.BaseMovie;
+import com.floatingmuseum.mocloud.date.entity.BaseMovie;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -21,11 +20,13 @@ public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, 
     private int pageNum = 1;
     protected Boolean shouldClean;
     private Repository repository;
-
+    private TrendingRepo repo;
     @Inject
     MovieTrendingPresenter(@NonNull MovieTrendingContract.View trendingView,@NonNull Repository repository){
         this.repository = repository;
         this.trendingView = trendingView;
+
+//        repo = new TrendingRepo();
     }
 
     @Override

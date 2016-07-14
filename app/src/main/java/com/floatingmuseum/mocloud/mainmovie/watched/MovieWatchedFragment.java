@@ -2,25 +2,18 @@ package com.floatingmuseum.mocloud.mainmovie.watched;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
-import com.floatingmuseum.mocloud.mainmovie.played.MoviePlayedAdapter;
-import com.floatingmuseum.mocloud.mainmovie.played.MoviePlayedContract;
-import com.floatingmuseum.mocloud.mainmovie.played.MoviePlayedPresenter;
-import com.floatingmuseum.mocloud.model.entity.BaseMovie;
-import com.orhanobut.logger.Logger;
+import com.floatingmuseum.mocloud.date.entity.BaseMovie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +37,7 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
     private List<BaseMovie> watchedList;
     private MovieWatchedAdapter adapter;
     @Inject
-    MovieWatchedPresenter watchedPresenter;
+    MovieWatchedPresenter presenter;
     private GridLayoutManager manager;
 
     public static MovieWatchedFragment newInstance() {
@@ -69,7 +62,7 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
 
     private void initRecyclerView() {
         watchedList = new ArrayList<>();
-        adapter =  new MovieWatchedAdapter(watchedList,context);
+        adapter =  new MovieWatchedAdapter(watchedList);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context,3);
         rv.setLayoutManager(manager);
@@ -90,11 +83,7 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
-                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData&&firstSeeLastItem){
-                    firstSeeLastItem = false;
-                    watchedPresenter.start(false);
-                }
+                loadMore(manager,adapter,presenter,srl);
             }
         });
     }
@@ -130,6 +119,6 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
 
     @Override
     public void onRefresh() {
-        watchedPresenter.start(true);
+        presenter.start(true);
     }
 }

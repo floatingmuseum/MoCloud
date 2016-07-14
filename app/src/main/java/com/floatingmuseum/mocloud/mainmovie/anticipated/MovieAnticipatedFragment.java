@@ -1,20 +1,18 @@
 package com.floatingmuseum.mocloud.mainmovie.anticipated;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
-import com.floatingmuseum.mocloud.model.entity.BaseMovie;
+import com.floatingmuseum.mocloud.date.entity.BaseMovie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +36,7 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
     private List<BaseMovie> anticipatedList;
     private MovieAnticipatedAdapter adapter;
     @Inject
-    MovieAnticipatedPresenter anticipatedPresenter;
+    MovieAnticipatedPresenter presenter;
     private GridLayoutManager manager;
 
     public static MovieAnticipatedFragment newInstance() {
@@ -62,7 +60,7 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
 
     private void initRecyclerView() {
         anticipatedList = new ArrayList<>();
-        adapter =  new MovieAnticipatedAdapter(anticipatedList,context);
+        adapter =  new MovieAnticipatedAdapter(anticipatedList);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context,3);
         rv.setLayoutManager(manager);
@@ -83,18 +81,14 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
-                if(lastItemPosition==(adapter.getItemCount()-1)&&!alreadyGetAllData&& firstSeeLastItem){
-                    firstSeeLastItem = false;
-                    anticipatedPresenter.start(false);
-                }
+                loadMore(manager,adapter,presenter,srl);
             }
         });
     }
 
     @Override
     public void onRefresh() {
-        anticipatedPresenter.start(true);
+        presenter.start(true);
     }
 
     @Override
