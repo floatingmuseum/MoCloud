@@ -13,7 +13,7 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
-import com.floatingmuseum.mocloud.date.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.Movie;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.floatingmuseum.mocloud.dagger.repo;
 
-import com.floatingmuseum.mocloud.date.Repository;
+import com.floatingmuseum.mocloud.data.Repository;
 
 import javax.inject.Singleton;
 

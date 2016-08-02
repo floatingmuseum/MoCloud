@@ -5,6 +5,7 @@ import com.floatingmuseum.mocloud.dagger.repo.RepoComponent;
 import com.floatingmuseum.mocloud.mainmovie.anticipated.MovieAnticipatedFragment;
 import com.floatingmuseum.mocloud.mainmovie.boxoffice.MovieBoxOfficeFragment;
 import com.floatingmuseum.mocloud.mainmovie.collected.MovieCollectedFragment;
+import com.floatingmuseum.mocloud.mainmovie.moviedetail.MovieDetailActivity;
 import com.floatingmuseum.mocloud.mainmovie.played.MoviePlayedFragment;
 import com.floatingmuseum.mocloud.mainmovie.popular.MoviePopularFragment;
 import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingFragment;
@@ -25,4 +26,5 @@ public interface MoviePresenterComponent {
     void inject(MovieCollectedFragment movieCollectedFragment);
     void inject(MovieAnticipatedFragment movieAnticipatedFragment);
     void inject(MovieBoxOfficeFragment movieBoxOfficeFragment);
+    void inject(MovieDetailActivity movieDetailActivity);
 }

@@ -15,9 +15,8 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
-import com.floatingmuseum.mocloud.date.entity.BaseMovie;
-import com.floatingmuseum.mocloud.mainmovie.MovieDetailActivity;
-import com.orhanobut.logger.Logger;
+import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.floatingmuseum.mocloud.mainmovie.moviedetail.MovieDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,11 @@
-package com.floatingmuseum.mocloud.date.net;
+package com.floatingmuseum.mocloud.data.net;
 
 
-import com.floatingmuseum.mocloud.date.entity.Actor;
-import com.floatingmuseum.mocloud.date.entity.BaseMovie;
-import com.floatingmuseum.mocloud.date.entity.Movie;
-import com.floatingmuseum.mocloud.date.entity.TokenRequest;
-import com.floatingmuseum.mocloud.date.entity.TraktToken;
+import com.floatingmuseum.mocloud.data.entity.Actor;
+import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.TokenRequest;
+import com.floatingmuseum.mocloud.data.entity.TraktToken;
 
 import java.util.List;
 

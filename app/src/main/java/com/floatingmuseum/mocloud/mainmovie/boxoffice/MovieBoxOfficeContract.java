@@ -1,7 +1,7 @@
 package com.floatingmuseum.mocloud.mainmovie.boxoffice;
 
 import com.floatingmuseum.mocloud.base.BaseView;
-import com.floatingmuseum.mocloud.date.entity.BaseMovie;
+import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 
 import java.util.List;
 

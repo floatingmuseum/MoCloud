@@ -1,10 +1,9 @@
-package com.floatingmuseum.mocloud.date;
+package com.floatingmuseum.mocloud.data;
 
-import com.floatingmuseum.mocloud.base.BaseRepo;
-import com.floatingmuseum.mocloud.date.entity.BaseMovie;
-import com.floatingmuseum.mocloud.date.entity.Movie;
-import com.floatingmuseum.mocloud.date.net.MoCloudFactory;
-import com.floatingmuseum.mocloud.date.net.MoCloudService;
+import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
+import com.floatingmuseum.mocloud.data.net.MoCloudService;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -12,6 +11,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import retrofit2.adapter.rxjava.HttpException;
+import retrofit2.http.HTTP;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -49,6 +50,10 @@ public class Repository{
 
                     @Override
                     public void onError(Throwable e) {
+                        if(e instanceof HttpException){
+                            HttpException exception = (HttpException)e;
+                            Logger.d("trending Data on Error:"+exception.response().errorBody().toString());
+                        }
                         callback.onError(e);
                     }
 
@@ -184,6 +189,33 @@ public class Repository{
                     }
                 });
     }
+
+    public void getMoiveDetail(String movieId,final DataCallback callback){
+        service.getMovieDetail(movieId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Movie>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(Movie movie) {
+                        callback.onSuccess(movie);
+                    }
+                });
+    }
+
+
+
+
+
 
     public Observable<Movie> getMovieImage(String movieId){
         return service.getMovieImage(movieId)

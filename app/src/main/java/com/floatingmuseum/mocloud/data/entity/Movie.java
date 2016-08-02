@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.date.entity;
+package com.floatingmuseum.mocloud.data.entity;
 
 import java.util.List;
 

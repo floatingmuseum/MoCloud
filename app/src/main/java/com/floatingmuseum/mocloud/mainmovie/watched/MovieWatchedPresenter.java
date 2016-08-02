@@ -1,7 +1,7 @@
 package com.floatingmuseum.mocloud.mainmovie.watched;
 
-import com.floatingmuseum.mocloud.date.Repository;
-import com.floatingmuseum.mocloud.date.entity.BaseMovie;
+import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.date.net;
+package com.floatingmuseum.mocloud.data.net;
 
 import com.floatingmuseum.mocloud.BuildConfig;
 

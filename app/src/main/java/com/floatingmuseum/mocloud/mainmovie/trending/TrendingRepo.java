@@ -1,10 +1,10 @@
 package com.floatingmuseum.mocloud.mainmovie.trending;
 
-import com.floatingmuseum.mocloud.date.Repository;
-import com.floatingmuseum.mocloud.date.entity.BaseMovie;
-import com.floatingmuseum.mocloud.date.entity.Movie;
-import com.floatingmuseum.mocloud.date.net.MoCloudFactory;
-import com.floatingmuseum.mocloud.date.net.MoCloudService;
+import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
+import com.floatingmuseum.mocloud.data.net.MoCloudService;
 
 import java.util.List;
 
