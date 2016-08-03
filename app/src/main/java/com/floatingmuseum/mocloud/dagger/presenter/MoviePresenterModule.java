@@ -1,6 +1,5 @@
 package com.floatingmuseum.mocloud.dagger.presenter;
 
-import com.floatingmuseum.mocloud.dagger.FragmentScoped;
 import com.floatingmuseum.mocloud.mainmovie.anticipated.MovieAnticipatedContract;
 import com.floatingmuseum.mocloud.mainmovie.boxoffice.MovieBoxOfficeContract;
 import com.floatingmuseum.mocloud.mainmovie.collected.MovieCollectedContract;
@@ -25,7 +24,7 @@ public class MoviePresenterModule {
     private MovieCollectedContract.View collectedView;
     private MovieAnticipatedContract.View anticipatedView;
     private MovieBoxOfficeContract.View boxOfficeView;
-    private MovieDetailActivity movieDetailActivity;
+//    private MovieDetailActivity movieDetailActivity;
 
     public MoviePresenterModule(MovieTrendingContract.View trendingView){
         this.trendingView = trendingView;
@@ -55,9 +54,9 @@ public class MoviePresenterModule {
         this.boxOfficeView = boxOfficeView;
     }
 
-    public MoviePresenterModule(MovieDetailActivity movieDetailActivity){
-        this.movieDetailActivity = movieDetailActivity;
-    }
+//    public MoviePresenterModule(MovieDetailActivity movieDetailActivity){
+//        this.movieDetailActivity = movieDetailActivity;
+//    }
 
     @Provides
     MovieTrendingContract.View provideTrendingMovieView(){
@@ -94,8 +93,8 @@ public class MoviePresenterModule {
         return boxOfficeView;
     }
 
-    @Provides
-    MovieDetailActivity provideMovieDetailActivity(){
-        return movieDetailActivity;
-    }
+//    @Provides
+//    MovieDetailActivity provideMovieDetailActivity(){
+//        return movieDetailActivity;
+//    }
 }
