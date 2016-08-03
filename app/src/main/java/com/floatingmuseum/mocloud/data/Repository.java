@@ -190,7 +190,7 @@ public class Repository{
                 });
     }
 
-    public void getMoiveDetail(String movieId,final DataCallback callback){
+    public void getMovieDetail(String movieId,final DataCallback callback){
         service.getMovieDetail(movieId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

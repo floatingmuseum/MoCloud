@@ -51,14 +51,14 @@ public class MainActivity extends AppCompatActivity
         iv_avatar = (ImageView) navView.getHeaderView(0).findViewById(R.id.iv_avatar);
         setSupportActionBar(toolbar);
 
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                ToastUtil.showToast("开发者模式："+Settings.Global.getInt(getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED));
-                Logger.d("开发者模式："+Settings.Global.getInt(getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED));
-            }
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//                ToastUtil.showToast("开发者模式："+Settings.Global.getInt(getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED));
+//                Logger.d("开发者模式："+Settings.Global.getInt(getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED));
+//            }
+//        } catch (Settings.SettingNotFoundException e) {
+//            e.printStackTrace();
+//        }
 
         initView();
     }

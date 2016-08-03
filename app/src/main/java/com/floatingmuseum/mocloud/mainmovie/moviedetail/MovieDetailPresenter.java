@@ -22,12 +22,12 @@ public class MovieDetailPresenter implements DataCallback<Movie> {
     }
 
     public void getData(String movieId){
-        repository.getMoiveDetail(movieId,this);
+        repository.getMovieDetail(movieId,this);
     }
 
     @Override
     public void onSuccess(Movie movie) {
-        activity.success(movie.getTitle());
+        activity.success(movie);
     }
 
     @Override
