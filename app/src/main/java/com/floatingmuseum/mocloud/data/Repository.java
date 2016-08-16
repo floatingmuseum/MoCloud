@@ -1,7 +1,12 @@
 package com.floatingmuseum.mocloud.data;
 
+import com.floatingmuseum.mocloud.data.callback.DataCallback;
+import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.MovieDetail;
+import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
 import com.floatingmuseum.mocloud.data.net.MoCloudService;
 import com.orhanobut.logger.Logger;
@@ -12,12 +17,12 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import retrofit2.adapter.rxjava.HttpException;
-import retrofit2.http.HTTP;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
 /**
@@ -27,11 +32,6 @@ import rx.schedulers.Schedulers;
 public class Repository{
 
     protected MoCloudService service;
-
-    public interface DataCallback<T extends Object>{
-        void onSuccess(T t);
-        void onError(Throwable e);
-    }
 
     @Inject
     public Repository(){
@@ -190,11 +190,11 @@ public class Repository{
                 });
     }
 
-    public void getMovieDetail(String movieId,final DataCallback callback){
-        service.getMovieDetail(movieId)
+    public void getMoviePeople(String movieId,final DataCallback callback){
+        service.getMoviePeople(movieId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Movie>() {
+                .subscribe(new Observer<People>() {
                     @Override
                     public void onCompleted() {
 
@@ -206,14 +206,45 @@ public class Repository{
                     }
 
                     @Override
-                    public void onNext(Movie movie) {
-                        callback.onSuccess(movie);
+                    public void onNext(People people) {
+                        Logger.d("actor:"+people.getCast().get(0).getPerson().getName()+"...director:"+people.getCrew().getDirecting().get(0).getPerson().getName());
                     }
                 });
     }
 
+    public void getMovieDetail(String movieId, final MovieDetailCallback callback){
+        Observable.zip(service.getMovieDetail(movieId), service.getMoviePeople(movieId), service.getComments(movieId), new Func3<Movie, People, List<Comment>, MovieDetail>() {
+            @Override
+            public MovieDetail call(Movie movie, People people, List<Comment> comments) {
+                MovieDetail movieDetail = new MovieDetail();
+                movieDetail.setMovie(movie);
+                movieDetail.setPeople(people);
+                movieDetail.setComments(comments);
+                return movieDetail;
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<MovieDetail>() {
+                    @Override
+                    public void onCompleted() {
+                        Logger.d("zip...onCompleted");
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("zip...onError:"+e.getMessage());
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
 
+                    @Override
+                    public void onNext(MovieDetail movieDetail) {
+                        callback.onSuccess(movieDetail);
+                        Logger.d("zip...onNext");
+                        Logger.d("title:"+movieDetail.getMovie().getTitle()+"...person:"+movieDetail.getPeople().getCast().get(0).getPerson().getName()+"...comment:"+movieDetail.getComments().get(0).getComment());
+                    }
+                });
+    }
 
 
 

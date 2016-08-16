@@ -11,6 +11,15 @@ public class Image {
     private Clearart clearart;
     private Banner banner;
     private Thumb thumb;
+    private HeadShot headshot;
+
+    public HeadShot getHeadshot() {
+        return headshot;
+    }
+
+    public void setHeadshot(HeadShot headshot) {
+        this.headshot = headshot;
+    }
 
     public Fanart getFanart() {
         return fanart;
@@ -66,6 +75,7 @@ public class Image {
     public class Clearart extends BaseImage{}
     public class Banner extends BaseImage{}
     public class Thumb extends BaseImage{}
+    public class HeadShot extends BaseImage{}
 
     public class BaseImage{
         public String getFull() {

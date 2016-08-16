@@ -3,14 +3,15 @@ package com.floatingmuseum.mocloud.mainmovie.moviedetail;
 import android.support.annotation.NonNull;
 
 import com.floatingmuseum.mocloud.data.Repository;
-import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.floatingmuseum.mocloud.data.Repository.DataCallback;
+import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
+import com.floatingmuseum.mocloud.data.entity.MovieDetail;
+
 import javax.inject.Inject;
 
 /**
  * Created by Floatingmuseum on 2016/7/14.
  */
-public class MovieDetailPresenter implements DataCallback<Movie> {
+public class MovieDetailPresenter implements MovieDetailCallback<MovieDetail> {
 
     MovieDetailActivity activity;
     Repository repository;
@@ -26,8 +27,8 @@ public class MovieDetailPresenter implements DataCallback<Movie> {
     }
 
     @Override
-    public void onSuccess(Movie movie) {
-        activity.success(movie);
+    public void onSuccess(MovieDetail o) {
+
     }
 
     @Override

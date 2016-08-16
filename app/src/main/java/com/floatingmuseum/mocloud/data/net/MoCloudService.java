@@ -1,7 +1,9 @@
 package com.floatingmuseum.mocloud.data.net;
 
 
-import com.floatingmuseum.mocloud.data.entity.Actor;
+import com.floatingmuseum.mocloud.data.entity.Comment;
+import com.floatingmuseum.mocloud.data.entity.People;
+import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
@@ -21,12 +23,12 @@ import rx.Observable;
  */
 public interface MoCloudService {
     /**
-     * Actor 演员
+     * Person
      * @param name
      * @return
      */
     @GET("people/{id}")
-    Observable<Actor> getActor(@Path("id") String name);
+    Observable<Person> getPerson(@Path("id") String name);
 
 //*******************************************OAUTH*******************************************
     @POST("oauth/token")
@@ -92,4 +94,16 @@ public interface MoCloudService {
      */
     @GET("movies/{id}?extended=full,images")
     Observable<Movie> getMovieDetail(@Path("id") String movieId);
+
+    /**
+     * 电影团队
+     */
+    @GET("movies/{id}/people?extended=images")
+    Observable<People> getMoviePeople(@Path("id") String movieId);
+
+    /**
+     * 评论
+     */
+    @GET("movies/{id}/comments/likes")
+    Observable<List<Comment>> getComments(@Path("id")String id);
 }

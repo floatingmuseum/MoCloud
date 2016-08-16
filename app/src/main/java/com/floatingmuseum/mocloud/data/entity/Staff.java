@@ -3,8 +3,8 @@ package com.floatingmuseum.mocloud.data.entity;
 /**
  * Created by yan on 2016/8/10.
  */
-public class Actor {
-    private String character;
+public class Staff {
+    private String job;
     private Person person;
 
     public Person getPerson() {
@@ -15,12 +15,11 @@ public class Actor {
         this.person = person;
     }
 
-    public String getCharacter() {
-        return character;
+    public String getJob() {
+        return job;
     }
 
-    public void setCharacter(String character) {
-        this.character = character;
+    public void setJob(String job) {
+        this.job = job;
     }
-
 }
