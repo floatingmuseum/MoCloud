@@ -11,7 +11,7 @@ import javax.inject.Inject;
 /**
  * Created by Floatingmuseum on 2016/7/14.
  */
-public class MovieDetailPresenter implements MovieDetailCallback<MovieDetail> {
+public class MovieDetailPresenter implements MovieDetailCallback {
 
     MovieDetailActivity activity;
     Repository repository;
@@ -27,8 +27,8 @@ public class MovieDetailPresenter implements MovieDetailCallback<MovieDetail> {
     }
 
     @Override
-    public void onSuccess(MovieDetail o) {
-
+    public void onSuccess(MovieDetail movieDetail) {
+        activity.onSuccess(movieDetail);
     }
 
     @Override

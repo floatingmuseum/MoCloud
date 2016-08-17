@@ -4,6 +4,7 @@ package com.floatingmuseum.mocloud.mainmovie.trending;
 import android.support.annotation.NonNull;
 
 import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.orhanobut.logger.Logger;
 
@@ -14,7 +15,7 @@ import javax.inject.Inject;
 /**
  * Created by Floatingmuseum on 2016/4/19.
  */
-public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, Repository.DataCallback<List<BaseMovie>> {
+public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, DataCallback<List<BaseMovie>> {
 
     private MovieTrendingContract.View trendingView;
     private int pageNum = 1;
@@ -47,8 +48,8 @@ public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, 
 
     @Override
     public void onError(Throwable e) {
+        trendingView.stopRefresh();
         Logger.d("onError");
         e.printStackTrace();
-        trendingView.stopRefresh();
     }
 }

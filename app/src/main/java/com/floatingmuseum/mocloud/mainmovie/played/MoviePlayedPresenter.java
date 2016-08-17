@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.mainmovie.played;
 
 
 import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import javax.inject.Inject;
 /**
  * Created by Floatingmuseum on 2016/5/5.
  */
-public class MoviePlayedPresenter implements MoviePlayedContract.Presenter, Repository.DataCallback<List<BaseMovie>> {
+public class MoviePlayedPresenter implements MoviePlayedContract.Presenter, DataCallback<List<BaseMovie>> {
 
     private MoviePlayedContract.View playedView;
     private Repository repository;

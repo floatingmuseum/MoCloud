@@ -7,6 +7,7 @@ import java.util.Objects;
 /**
  * Created by yan on 2016/8/15.
  */
-public interface MovieDetailCallback extends DataCallback {
-
+public interface MovieDetailCallback{
+    void onSuccess(MovieDetail movieDetail);
+    void onError(Throwable throwable);
 }

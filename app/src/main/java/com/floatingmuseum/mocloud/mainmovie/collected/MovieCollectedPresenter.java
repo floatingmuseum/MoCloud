@@ -3,6 +3,7 @@ package com.floatingmuseum.mocloud.mainmovie.collected;
 import android.support.annotation.NonNull;
 
 import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import javax.inject.Inject;
 /**
  * Created by Floatingmuseum on 2016/5/6.
  */
-public class MovieCollectedPresenter implements MovieCollectedContract.Presenter, Repository.DataCallback<List<BaseMovie>>{
+public class MovieCollectedPresenter implements MovieCollectedContract.Presenter, DataCallback<List<BaseMovie>> {
     private MovieCollectedContract.View collectedView;
     private Repository repository;
     private int pageNum = 1;

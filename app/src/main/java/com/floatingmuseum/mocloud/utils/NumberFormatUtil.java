@@ -35,6 +35,7 @@ public class NumberFormatUtil {
     }
 
     /**
+     * 似乎无效啊
      *
      * @param num
      *      被格式化的数字
@@ -44,6 +45,7 @@ public class NumberFormatUtil {
      *       保留几位
      * @return
      */
+    @Deprecated
     public static double doubleFormat(double num,boolean roundingUp,int maximumFraction){
         BigDecimal bg = new BigDecimal(num);
         if(roundingUp){

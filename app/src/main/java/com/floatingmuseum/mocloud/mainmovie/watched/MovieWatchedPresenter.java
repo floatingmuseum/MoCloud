@@ -1,6 +1,7 @@
 package com.floatingmuseum.mocloud.mainmovie.watched;
 
 import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import javax.inject.Inject;
 /**
  * Created by Floatingmuseum on 2016/5/5.
  */
-public class MovieWatchedPresenter implements MovieWatchedContract.Presenter,Repository.DataCallback<List<BaseMovie>>{
+public class MovieWatchedPresenter implements MovieWatchedContract.Presenter,DataCallback<List<BaseMovie>> {
     private MovieWatchedContract.View watchedView;
     private int pageNum = 1;
     private String period = "weekly";

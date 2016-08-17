@@ -3,6 +3,7 @@ package com.floatingmuseum.mocloud.mainmovie.popular;
 import android.support.annotation.NonNull;
 
 import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import javax.inject.Inject;
 /**
  * Created by Floatingmuseum on 2016/5/1.
  */
-public class MoviePopularPresenter implements MoviePopularContract.Presenter,Repository.DataCallback<List<Movie>> {
+public class MoviePopularPresenter implements MoviePopularContract.Presenter,DataCallback<List<Movie>> {
 
     private MoviePopularContract.View popularView;
     private int pageNum = 1;

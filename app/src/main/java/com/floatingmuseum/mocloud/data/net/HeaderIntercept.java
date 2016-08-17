@@ -1,6 +1,7 @@
 package com.floatingmuseum.mocloud.data.net;
 
 import com.floatingmuseum.mocloud.BuildConfig;
+import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
 
@@ -18,7 +19,6 @@ public class HeaderIntercept implements Interceptor {
         builder.addHeader("Content-Type","application/json")
                 .addHeader("trakt-api-version","2")
                 .addHeader("trakt-api-key", BuildConfig.TraktID);
-
         return chain.proceed(builder.build());
     }
 }
