@@ -105,6 +105,14 @@
         <TextView
             style="@style/detail_title"
             android:text="Comments"/>
+        <TextView
+            android:id="@+id/tv_no_comments"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:textColor="@color/detail_content"
+            android:visibility="gone"
+            android:text="There is no comments,add one?"/>
         <LinearLayout
             android:id="@+id/ll_comments"
             android:layout_width="match_parent"

@@ -32,7 +32,10 @@ import rx.schedulers.Schedulers;
 public class Repository{
 
     protected MoCloudService service;
-
+    public static final String COMMENTS_SORT_LIKES = "likes";
+    public static final String COMMENTS_SORT_NEWEST = "newest";
+    public static final String COMMENTS_SORT_OLDEST = "oldest";
+    public static final String COMMENTS_SORT_REPLIES = "replies";
     @Inject
     public Repository(){
         service = MoCloudFactory.getInstance();
@@ -190,7 +193,29 @@ public class Repository{
                 });
     }
 
-    public void getMoviePeople(String movieId,final DataCallback callback){
+    public void getMovieDetail(String movieId, final MovieDetailCallback callback){
+        service.getMovieDetail(movieId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Movie>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(Movie movie) {
+                        callback.onSuccess(movie);
+                    }
+                });
+    }
+
+    public void getMoviePeople(String movieId,final MovieDetailCallback callback){
         service.getMoviePeople(movieId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -207,41 +232,29 @@ public class Repository{
 
                     @Override
                     public void onNext(People people) {
-                        Logger.d("actor:"+people.getCast().get(0).getPerson().getName()+"...director:"+people.getCrew().getDirecting().get(0).getPerson().getName());
+                        callback.onPeopleSuccess(people);
                     }
                 });
     }
 
-    public void getMovieDetail(String movieId, final MovieDetailCallback callback){
-        Observable.zip(service.getMovieDetail(movieId), service.getMoviePeople(movieId), service.getComments(movieId), new Func3<Movie, People, List<Comment>, MovieDetail>() {
-            @Override
-            public MovieDetail call(Movie movie, People people, List<Comment> comments) {
-                MovieDetail movieDetail = new MovieDetail();
-                movieDetail.setMovie(movie);
-                movieDetail.setPeople(people);
-                movieDetail.setComments(comments);
-                return movieDetail;
-            }
-        }).subscribeOn(Schedulers.io())
+    public void getMovieComments(String movieId,String commentsSort,final MovieDetailCallback callback){
+        service.getComments(movieId,commentsSort)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MovieDetail>() {
+                .subscribe(new Observer<List<Comment>>() {
                     @Override
                     public void onCompleted() {
-                        Logger.d("zip...onCompleted");
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Logger.d("zip...onError:"+e.getMessage());
-                        e.printStackTrace();
                         callback.onError(e);
                     }
 
                     @Override
-                    public void onNext(MovieDetail movieDetail) {
-                        callback.onSuccess(movieDetail);
-                        Logger.d("zip...onNext");
-                        Logger.d("title:"+movieDetail.getMovie().getTitle()+"...person:"+movieDetail.getPeople().getCast().get(0).getPerson().getName()+"...comment:"+movieDetail.getComments().get(0).getComment());
+                    public void onNext(List<Comment> comments) {
+                        callback.onCommentsSuccess(comments);
                     }
                 });
     }
