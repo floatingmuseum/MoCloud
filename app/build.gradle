@@ -63,4 +63,5 @@ dependencies {
     //java注解
     compile 'org.glassfish:javax.annotation:10.0-b28'
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v1.9.0'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
 }

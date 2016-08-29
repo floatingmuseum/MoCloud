@@ -9,11 +9,16 @@ import java.util.TimeZone;
  */
 public class TimeUtil {
 
-    public String formatGmtTime(String gmtTime){
+    private static final String GMT_ISO8601_FORMAT = "yyyy-MM-dd'T'HH:mm'Z'";
+
+    public String formatGmtTime(String gmtTime,String timeFormat){
+        new SimpleDateFormat();
 //        TimeZone timeZone = TimeZone.getDefault();
 //
 //        Locale.getDefault()
 //        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ",timeZone.);
         return null;
     }
+
+
 }

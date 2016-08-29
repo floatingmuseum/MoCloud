@@ -1,7 +1,10 @@
 package com.floatingmuseum.mocloud.mainmovie.moviedetail;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.drawable.DrawableUtils;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,17 +27,20 @@ import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.NumberFormatUtil;
+import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 /**
@@ -134,7 +140,7 @@ public class MovieDetailActivity extends AppCompatActivity implements BaseDetail
         for (int i = 0; i < showSize; i++) {
             Comment comment = comments.get(i);
             LinearLayout comment_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.comment_item, ll_comments, false);
-            RatioImageView iv_userhead = (RatioImageView) comment_item.findViewById(R.id.iv_userhead);
+            CircleImageView iv_userhead = (CircleImageView) comment_item.findViewById(R.id.iv_userhead);
             TextView tv_username = (TextView) comment_item.findViewById(R.id.tv_username);
             TextView tv_updatetime = (TextView) comment_item.findViewById(R.id.tv_updatetime);
             TextView tv_comments_likes = (TextView) comment_item.findViewById(R.id.tv_comments_likes);
@@ -142,16 +148,35 @@ public class MovieDetailActivity extends AppCompatActivity implements BaseDetail
             TextView tv_comment = (TextView) comment_item.findViewById(R.id.tv_comment);
 
             Image image = comment.getUser().getImages();
-            if(image!=null){
-                ImageLoader.load(this,image.getAvatar().getFull(),iv_userhead);
+            if(image!=null && image.getAvatar()!=null){
+                String usedHeadUrl = StringUtil.removeBlank(image.getAvatar().getFull());
+                Logger.d("UserHead:"+image.getAvatar().getFull()+"..."+image.getAvatar().getFull().contains(" "));
+//                Drawable default_userhead = getResources().getDrawable(R.drawable.default_userhead);
+                ImageLoader.load(this,usedHeadUrl,iv_userhead,R.drawable.default_userhead);
+                Logger.d("1");
             }
             tv_username.setText(comment.getUser().getUsername());
+            Logger.d("2");
+
             tv_updatetime.setText(comment.getUpdated_at());
+            Logger.d("3");
+
             tv_comments_likes.setText(""+comment.getLikes());
+            Logger.d("4");
+
             tv_comments_replies.setText(""+comment.getReplies());
+            Logger.d("5");
+
             tv_comment.setText(comment.getComment());
+            Logger.d("6");
+
 
             ll_comments.addView(comment_item);
+            Logger.d("7");
+
         }
+
+        Logger.d("时区："+TimeZone.getTimeZone("GMT")+"..."+TimeZone.getTimeZone("UTC")+"..."+TimeZone.getDefault().getDisplayName(false,TimeZone.SHORT)+"..."+TimeZone.getDefault().getDisplayName(false,TimeZone.LONG)+"..."+TimeZone.getDefault().getID());
+
     }
 }

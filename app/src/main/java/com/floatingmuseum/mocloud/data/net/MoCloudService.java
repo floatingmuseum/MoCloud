@@ -104,6 +104,6 @@ public interface MoCloudService {
     /**
      * 评论
      */
-    @GET("movies/{id}/comments/{sort}")
+    @GET("movies/{id}/comments/{sort}?extended=images")
     Observable<List<Comment>> getComments(@Path("id")String id,@Path("sort")String sort);
 }

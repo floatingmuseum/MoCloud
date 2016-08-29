@@ -10,16 +10,16 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <com.floatingmuseum.mocloud.widgets.RatioImageView
-        android:layout_centerVertical="true"
-        android:id="@+id/iv_userhead"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_gravity="center_vertical"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        mocloud:image_ratio="1"
+        android:layout_height="60dp"
         android:layout_weight="2"
-        android:src="@drawable/default_userhead"/>
+        tools:src="@drawable/default_userhead"
+        mocloud:civ_border_width="2dp"
+        mocloud:civ_border_color="#FF000000" />
     <LinearLayout
-        android:layout_weight="4"
+        android:layout_weight="5"
         android:paddingLeft="6dp"
         android:orientation="vertical"
         android:layout_width="0dp"
@@ -40,7 +40,7 @@
             tools:text="2014-12-27T17:32:52.000Z"/>
     </LinearLayout>
     <RelativeLayout
-        android:layout_weight="4"
+        android:layout_weight="3"
         android:layout_width="0dp"
         android:layout_height="match_parent">
     <ImageView
