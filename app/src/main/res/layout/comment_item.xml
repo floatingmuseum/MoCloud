@@ -1,86 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mocloud="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    xmlns:mocloud="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-<LinearLayout
-    android:background="@color/comment_title_grey"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_gravity="center_vertical"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_weight="2"
-        tools:src="@drawable/default_userhead"
-        mocloud:civ_border_width="2dp"
-        mocloud:civ_border_color="#FF000000" />
+    android:orientation="vertical">
+
     <LinearLayout
-        android:layout_weight="5"
-        android:paddingLeft="6dp"
-        android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_height="match_parent">
-        <TextView
-            android:gravity="center_vertical"
-            android:id="@+id/tv_username"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            tools:text="Serggyo Alejandro"/>
-        <TextView
-            android:gravity="center_vertical"
-            android:id="@+id/tv_updatetime"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            tools:text="2014-12-27T17:32:52.000Z"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/comment_title_grey"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_userhead"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="2"
+            android:scaleType="centerCrop"
+            mocloud:civ_border_color="#FF000000"
+            mocloud:civ_border_width="2dp"
+            tools:src="@drawable/default_userhead" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:orientation="vertical"
+            android:paddingLeft="6dp">
+
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                tools:text="Serggyo Alejandro" />
+
+            <TextView
+                android:id="@+id/tv_updatetime"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                tools:text="2014-12-27T17:32:52.000Z" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_toLeftOf="@+id/tv_comments_likes"
+                android:src="@drawable/comment_like" />
+
+            <TextView
+                android:id="@+id/tv_comments_likes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:layout_marginTop="6dp"
+                android:layout_toLeftOf="@+id/iv_replies"
+                tools:text="137" />
+
+            <ImageView
+                android:id="@+id/iv_replies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_toLeftOf="@+id/tv_comments_replies"
+                android:src="@drawable/comment_reply" />
+
+            <TextView
+                android:id="@+id/tv_comments_replies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="6dp"
+                android:layout_marginTop="6dp"
+                tools:text="2" />
+        </RelativeLayout>
     </LinearLayout>
-    <RelativeLayout
-        android:layout_weight="3"
-        android:layout_width="0dp"
-        android:layout_height="match_parent">
-    <ImageView
-        android:layout_marginTop="6dp"
-        android:src="@drawable/comment_like"
-        android:layout_toLeftOf="@+id/tv_comments_likes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+
     <TextView
-        android:layout_marginTop="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_toLeftOf="@+id/iv_replies"
-        android:id="@+id/tv_comments_likes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="137"/>
-    <ImageView
-        android:layout_marginTop="6dp"
-        android:src="@drawable/comment_reply"
-        android:id="@+id/iv_replies"
-        android:layout_toLeftOf="@+id/tv_comments_replies"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:layout_marginTop="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_alignParentRight="true"
-        android:id="@+id/tv_comments_replies"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="2"/>
-    </RelativeLayout>
-</LinearLayout>
-    <TextView
-        android:background="@color/comment_content_grey"
-        android:layout_below="@+id/iv_userhead"
-        android:padding="6dp"
         android:id="@+id/tv_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Everyone keeps suggesting there is a paradox concerning the 5D future humans and their ability to save humanity in the past. It's really not a paradox at all. Everyone assumes humanity survived to ascend to the 5th dimension but how could humanity exist in the future if not for the actions of Cooper.. who was guided by future humans (begin endless loop).\n\nDid anyone ever consider the other important character in the movie? Amelia Brand carried on with the rest of her mission (thanks to Cooper). I postulate that Brand used the human seeds as intended and set up a colony. A colony that would thrive and eventually evolve beyond human. Thus Earth is of little importance, and may have indeed died. These colonists, and the generations that followed, would have been told the story of a great man (Cooper) who saved them from extinction. With the ability to manipulate space-time, they would pay homage to their hero God by helping him in the past so he may fulfill the mission most important to him, to once again see his daughter. Plan B worked beautifully. But the 5d humans, having the power to bend space-time, decided there's no reason why Plan A had to fail."
-        />
+        android:layout_below="@+id/iv_userhead"
+        android:background="@color/comment_content_grey"
+        android:padding="6dp"
+        tools:text="Everyone keeps suggesting there is a paradox concerning the 5D future humans and their ability to save humanity in the past. It's really not a paradox at all. Everyone assumes humanity survived to ascend to the 5th dimension but how could humanity exist in the future if not for the actions of Cooper.. who was guided by future humans (begin endless loop).\n\nDid anyone ever consider the other important character in the movie? Amelia Brand carried on with the rest of her mission (thanks to Cooper). I postulate that Brand used the human seeds as intended and set up a colony. A colony that would thrive and eventually evolve beyond human. Thus Earth is of little importance, and may have indeed died. These colonists, and the generations that followed, would have been told the story of a great man (Cooper) who saved them from extinction. With the ability to manipulate space-time, they would pay homage to their hero God by helping him in the past so he may fulfill the mission most important to him, to once again see his daughter. Plan B worked beautifully. But the 5d humans, having the power to bend space-time, decided there's no reason why Plan A had to fail." />
 </LinearLayout>

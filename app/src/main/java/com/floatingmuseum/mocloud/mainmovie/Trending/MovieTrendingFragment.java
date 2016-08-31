@@ -136,8 +136,6 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
 
     @Override
     public void onItemClick(View view, int i) {
-        Intent intent = new Intent(context, MovieDetailActivity.class);
-        intent.putExtra(MovieDetailActivity.MOVIE_ID,trendingList.get(i).getMovie().getIds().getSlug());
-        context.startActivity(intent);
+        openMovieDetailActivity(trendingList.get(i).getMovie().getIds().getSlug());
     }
 }

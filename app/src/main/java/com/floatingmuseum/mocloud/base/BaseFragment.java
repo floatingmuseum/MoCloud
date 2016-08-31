@@ -2,12 +2,14 @@ package com.floatingmuseum.mocloud.base;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
+import com.floatingmuseum.mocloud.mainmovie.moviedetail.MovieDetailActivity;
 import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingAdapter;
 import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingContract;
 import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingContract.Presenter;
@@ -50,5 +52,11 @@ public class BaseFragment extends Fragment {
         if(srl!=null){
             srl.setRefreshing(false);
         }
+    }
+
+    protected void openMovieDetailActivity(String movieId){
+        Intent intent = new Intent(context, MovieDetailActivity.class);
+        intent.putExtra(MovieDetailActivity.MOVIE_ID,movieId);
+        context.startActivity(intent);
     }
 }

@@ -149,34 +149,19 @@ public class MovieDetailActivity extends AppCompatActivity implements BaseDetail
 
             Image image = comment.getUser().getImages();
             if(image!=null && image.getAvatar()!=null){
-                String usedHeadUrl = StringUtil.removeBlank(image.getAvatar().getFull());
+                String userHeadUrl = StringUtil.removeBlank(image.getAvatar().getFull());
                 Logger.d("UserHead:"+image.getAvatar().getFull()+"..."+image.getAvatar().getFull().contains(" "));
-//                Drawable default_userhead = getResources().getDrawable(R.drawable.default_userhead);
-                ImageLoader.load(this,usedHeadUrl,iv_userhead,R.drawable.default_userhead);
+                ImageLoader.load(this,userHeadUrl,iv_userhead,R.drawable.default_userhead);
                 Logger.d("1");
             }
+
             tv_username.setText(comment.getUser().getUsername());
-            Logger.d("2");
-
             tv_updatetime.setText(comment.getUpdated_at());
-            Logger.d("3");
-
             tv_comments_likes.setText(""+comment.getLikes());
-            Logger.d("4");
-
             tv_comments_replies.setText(""+comment.getReplies());
-            Logger.d("5");
-
             tv_comment.setText(comment.getComment());
-            Logger.d("6");
-
-
             ll_comments.addView(comment_item);
-            Logger.d("7");
-
         }
-
         Logger.d("时区："+TimeZone.getTimeZone("GMT")+"..."+TimeZone.getTimeZone("UTC")+"..."+TimeZone.getDefault().getDisplayName(false,TimeZone.SHORT)+"..."+TimeZone.getDefault().getDisplayName(false,TimeZone.LONG)+"..."+TimeZone.getDefault().getID());
-
     }
 }

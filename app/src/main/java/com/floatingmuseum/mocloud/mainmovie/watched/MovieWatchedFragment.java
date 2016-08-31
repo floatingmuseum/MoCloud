@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
@@ -26,7 +27,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class MovieWatchedFragment extends BaseFragment implements MovieWatchedContract.View, SwipeRefreshLayout.OnRefreshListener{
+public class MovieWatchedFragment extends BaseFragment implements MovieWatchedContract.View, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.OnRecyclerViewItemClickListener {
 
     @Bind(R.id.rv)
     RecyclerView rv;
@@ -86,6 +87,8 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
                 loadMore(manager,adapter,presenter,srl);
             }
         });
+
+        adapter.setOnRecyclerViewItemClickListener(this);
     }
 
     @Override
@@ -120,5 +123,10 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
     @Override
     public void onRefresh() {
         presenter.start(true);
+    }
+
+    @Override
+    public void onItemClick(View view, int i) {
+        openMovieDetailActivity(watchedList.get(i).getMovie().getIds().getSlug());
     }
 }
