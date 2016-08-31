@@ -17,17 +17,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
+//    @Bind(R.id.toolbar)
+//    Toolbar toolbar;
 //    @Bind(R.id.content_main)
 //    FrameLayout contentMain;
     @Bind(R.id.mainViewPager)
@@ -41,10 +42,16 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout drawerLayout;
 
     ImageView iv_avatar;
+
+    @Override
+    protected int currentLayoutId() {
+        return R.layout.activity_main;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//        setContentView();
 
         ButterKnife.bind(this);
 
@@ -137,6 +144,11 @@ public class MainActivity extends AppCompatActivity
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected boolean canGoBack() {
+        return false;
     }
 
     @Override

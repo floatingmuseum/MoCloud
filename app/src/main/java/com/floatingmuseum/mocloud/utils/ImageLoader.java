@@ -21,8 +21,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class ImageLoader {
     public static void load(Context context,String url,ImageView view){
+        Drawable default_image;
+        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP){
+            default_image = context.getResources().getDrawable(R.drawable.default_movie_poster,null);
+        }else{
+            default_image = context.getResources().getDrawable(R.drawable.default_movie_poster);
+        }
         Glide.with(context)
                 .load(url)
+                .placeholder(default_image)
                 .into(view);
     }
 

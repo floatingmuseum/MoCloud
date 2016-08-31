@@ -1,20 +1,15 @@
 package com.floatingmuseum.mocloud.mainmovie.moviedetail;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.drawable.DrawableUtils;
-import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMovieDetailPresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MovieDetailPresenterModule;
@@ -22,13 +17,11 @@ import com.floatingmuseum.mocloud.data.entity.Actor;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Image;
 import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.floatingmuseum.mocloud.data.entity.MovieDetail;
 import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.NumberFormatUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
-import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
 
@@ -39,14 +32,13 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
 /**
  * Created by Floatingmuseum on 2016/6/20.
  */
-public class MovieDetailActivity extends AppCompatActivity implements BaseDetailActivity {
+public class MovieDetailActivity extends BaseActivity implements BaseDetailActivity {
     public static final String MOVIE_ID = "MOVIE_ID";
     @Inject
     MovieDetailPresenter presenter;
@@ -73,9 +65,14 @@ public class MovieDetailActivity extends AppCompatActivity implements BaseDetail
     TextView tv_no_comments;
 
     @Override
+    protected int currentLayoutId() {
+        return R.layout.activity_moviedetail;
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_moviedetail);
+//        setContentView();
         ButterKnife.bind(this);
         String movieID = getIntent().getStringExtra(MOVIE_ID);
 
