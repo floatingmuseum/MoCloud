@@ -9,11 +9,7 @@ import android.support.v7.widget.GridLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
-import com.floatingmuseum.mocloud.mainmovie.moviedetail.MovieDetailActivity;
-import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingAdapter;
-import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingContract;
-import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingContract.Presenter;
-import com.orhanobut.logger.Logger;
+import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 
 
 /**

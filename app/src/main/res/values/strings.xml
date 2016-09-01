@@ -12,6 +12,9 @@
     <string name="movie_title">Title</string>
     <string name="rating">Rating</string>
     <string name="overview">Over view</string>
+    <string name="comments">Comments</string>
+    <string name="see_more">More...</string>
+    <string name="crew">Crew</string>
 
     <string-array name="tab_names">
         <item>Trending</item>

@@ -25,11 +25,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity"></activity>
-
-        <activity android:name=".mainmovie.moviedetail.MovieDetailActivity">
-
-        </activity>
+        <activity android:name=".LoginActivity"/>
+        <activity android:name=".ui.mainmovie.detail.MovieDetailActivity"/>
+        <activity android:name=".ui.comments.CommentsActivity"/>
 
     </application>
 

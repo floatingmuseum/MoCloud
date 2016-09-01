@@ -1,9 +1,11 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by Floatingmuseum on 2016/4/18.
  */
-public class Image {
+public class Image implements Serializable{
 
     private Fanart fanart;
     private Poster poster;
@@ -78,17 +80,17 @@ public class Image {
         this.avatar = avatar;
     }
 
-    public class Fanart extends BaseImage{}
-    public class Poster extends BaseImage{}
-    public class Logo extends BaseImage{}
-    public class Clearart extends BaseImage{}
-    public class Banner extends BaseImage{}
-    public class Thumb extends BaseImage{}
-    public class HeadShot extends BaseImage{}
-    public class Avatar extends BaseImage{}
+    public class Fanart extends BaseImage implements Serializable{}
+    public class Poster extends BaseImage implements Serializable{}
+    public class Logo extends BaseImage implements Serializable{}
+    public class Clearart extends BaseImage implements Serializable{}
+    public class Banner extends BaseImage implements Serializable{}
+    public class Thumb extends BaseImage implements Serializable{}
+    public class HeadShot extends BaseImage implements Serializable{}
+    public class Avatar extends BaseImage implements Serializable{}
 
 
-    public class BaseImage{
+    public class BaseImage implements Serializable{
         public String getFull() {
             return full;
         }

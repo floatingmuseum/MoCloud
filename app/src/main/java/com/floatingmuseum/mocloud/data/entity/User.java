@@ -2,10 +2,12 @@ package com.floatingmuseum.mocloud.data.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by yan on 2016/8/15.
  */
-public class User {
+public class User implements Serializable{
     private String username;
     @SerializedName("private")
     private boolean privateX;

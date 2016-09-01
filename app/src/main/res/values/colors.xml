@@ -7,6 +7,8 @@
     <color name="detail_title">#000000</color>
     <color name="detail_content">#778899</color>
 
-    <color name="comment_title_grey">#E5E5E5</color>
-    <color name="comment_content_grey">#F1F1F1</color>
+    <color name="comment_title_grey">#F3F3F3</color>
+    <color name="comment_content_grey">#FAFAFA</color>
+    <color name="comment_vip_title_grey">#E5E5E5</color>
+    <color name="comment_vip_content_grey">#F1F1F1</color>
 </resources>

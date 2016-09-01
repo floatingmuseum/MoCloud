@@ -3,9 +3,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:mocloud="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include layout="@layout/layout_appbar" />
 
@@ -90,6 +90,7 @@
 
             <TextView
                 style="@style/detail_title"
+                android:layout_alignParentLeft="true"
                 android:text="@string/overview" />
 
             <TextView
@@ -100,7 +101,7 @@
 
             <TextView
                 style="@style/detail_title"
-                android:text="Crew" />
+                android:text="@string/crew" />
 
             <LinearLayout
                 android:id="@+id/ll_crew"
@@ -113,7 +114,7 @@
             <!--android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>-->
             <TextView
                 style="@style/detail_title"
-                android:text="Comments" />
+                android:text="@string/comments" />
 
             <TextView
                 android:id="@+id/tv_no_comments"
@@ -129,6 +130,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"></LinearLayout>
+            <TextView
+                android:id="@+id/tv_comments_more"
+                android:visibility="gone"
+                style="@style/detail_title"
+                android:layout_width="match_parent"
+                android:gravity="right"
+                android:text="@string/see_more"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
