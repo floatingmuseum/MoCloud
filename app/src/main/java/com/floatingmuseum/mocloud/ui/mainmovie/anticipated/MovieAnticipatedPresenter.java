@@ -18,6 +18,7 @@ public class MovieAnticipatedPresenter implements MovieAnticipatedContract.Prese
     private MovieAnticipatedContract.View anticipatedView;
     private Repository repository;
     private int pageNum = 1;
+    private int limit = 12;
     protected Boolean shouldClean;
 
     @Inject
@@ -30,13 +31,17 @@ public class MovieAnticipatedPresenter implements MovieAnticipatedContract.Prese
     public void start(boolean shouldClean) {
         pageNum = shouldClean?1:++pageNum;
         this.shouldClean =shouldClean;
-        repository.getMovieAnticipatedData(pageNum,this);
+        repository.getMovieAnticipatedData(pageNum,limit,this);
     }
 
     @Override
-    public void onSuccess(List<BaseMovie> baseMovies) {
+    public void onBaseDataSuccess(List<BaseMovie> baseMovies) {
         anticipatedView.refreshData(baseMovies,shouldClean);
         anticipatedView.stopRefresh();
+    }
+
+    public int getLimit(){
+        return limit;
     }
 
     @Override

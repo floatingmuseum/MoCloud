@@ -57,11 +57,11 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
                 .repoComponent(moCloud.getRepoComponent())
                 .build().inject(this);
 
-        initRecyclerView();
+        initView();
         return rootView;
     }
 
-    private void initRecyclerView() {
+    protected void initView() {
         boxOfficeList = new ArrayList<>();
         adapter =  new MovieBoxOfficeAdapter(boxOfficeList);
         rv.setHasFixedSize(true);

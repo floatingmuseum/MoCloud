@@ -55,11 +55,11 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
                 .repoComponent(moCloud.getRepoComponent())
                 .build().inject(this);
 
-        initRecyclerView();
+        initView();
         return rootView;
     }
 
-    private void initRecyclerView() {
+    protected void initView() {
         anticipatedList = new ArrayList<>();
         adapter =  new MovieAnticipatedAdapter(anticipatedList);
         rv.setHasFixedSize(true);
@@ -95,7 +95,7 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
 
     @Override
     public void refreshData(List<BaseMovie> newData, boolean shouldClean) {
-        if(newData.size()<10){
+        if(newData.size()<presenter.getLimit()){
             alreadyGetAllData = true;
         }
 

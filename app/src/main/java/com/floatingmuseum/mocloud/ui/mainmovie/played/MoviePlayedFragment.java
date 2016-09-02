@@ -57,11 +57,11 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
                 .repoComponent(moCloud.getRepoComponent())
                 .build().inject(this);
 
-        initRecyclerView();
+        initView();
         return rootView;
     }
 
-    private void initRecyclerView() {
+    protected void initView() {
         playedList = new ArrayList<>();
         adapter =  new MoviePlayedAdapter(playedList);
         rv.setHasFixedSize(true);
@@ -97,7 +97,7 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
 
     @Override
     public void refreshData(List<BaseMovie> newData,boolean shouldClean) {
-        if(newData.size()<10){
+        if(newData.size()<presenter.getLimit()){
             alreadyGetAllData = true;
         }
 

@@ -14,6 +14,7 @@ import javax.inject.Inject;
 public class MovieWatchedPresenter implements MovieWatchedContract.Presenter,DataCallback<List<BaseMovie>> {
     private MovieWatchedContract.View watchedView;
     private int pageNum = 1;
+    private int limit = 12;
     private String period = "weekly";
     private Repository repository;
     protected Boolean shouldClean;
@@ -28,16 +29,15 @@ public class MovieWatchedPresenter implements MovieWatchedContract.Presenter,Dat
     public void start(boolean shouldClean) {
         pageNum = shouldClean?1:++pageNum;
         this.shouldClean =shouldClean;
-        repository.getMovieWatchedData(period,pageNum,this);
+        repository.getMovieWatchedData(period,pageNum,limit,this);
+    }
+
+    public int getLimit(){
+        return limit;
     }
 
     @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
-    public void onSuccess(List<BaseMovie> baseMovies) {
+    public void onBaseDataSuccess(List<BaseMovie> baseMovies) {
         watchedView.refreshData(baseMovies,shouldClean);
         watchedView.stopRefresh();
     }
@@ -46,5 +46,10 @@ public class MovieWatchedPresenter implements MovieWatchedContract.Presenter,Dat
     public void onError(Throwable e) {
         e.printStackTrace();
         watchedView.stopRefresh();
+    }
+
+    @Override
+    public void onDestroy() {
+
     }
 }

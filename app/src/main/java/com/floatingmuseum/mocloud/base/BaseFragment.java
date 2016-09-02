@@ -15,12 +15,14 @@ import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 /**
  * Created by Floatingmuseum on 2016/4/19.
  */
-public class BaseFragment extends Fragment {
+abstract public class BaseFragment extends Fragment {
     protected Context context;
     protected MoCloud moCloud;
     protected boolean alreadyGetAllData = false;
     protected boolean firstSeeLastItem = true;
     protected boolean notFirstLoadData = false;
+
+    abstract protected void initView();
 
     @Override
     public void onAttach(Context context) {

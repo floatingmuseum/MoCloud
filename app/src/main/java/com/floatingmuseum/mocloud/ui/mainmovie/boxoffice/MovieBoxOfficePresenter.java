@@ -31,7 +31,7 @@ public class MovieBoxOfficePresenter implements MovieBoxOfficeContract.Presenter
     }
 
     @Override
-    public void onSuccess(List<BaseMovie> baseMovies) {
+    public void onBaseDataSuccess(List<BaseMovie> baseMovies) {
         boxOfficeView.refreshData(baseMovies);
         boxOfficeView.stopRefresh();
     }

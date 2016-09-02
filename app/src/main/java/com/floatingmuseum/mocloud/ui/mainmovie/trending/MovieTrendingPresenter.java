@@ -18,9 +18,11 @@ import javax.inject.Inject;
 public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, DataCallback<List<BaseMovie>> {
 
     private MovieTrendingContract.View trendingView;
+    private int limit = 12;
     private int pageNum = 1;
     protected Boolean shouldClean;
     private Repository repository;
+    
     @Inject
     MovieTrendingPresenter(@NonNull MovieTrendingContract.View trendingView,@NonNull Repository repository){
         this.repository = repository;
@@ -31,7 +33,7 @@ public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, 
     public void start(final boolean shouldClean) {
         pageNum = shouldClean?1:++pageNum;
         this.shouldClean =shouldClean;
-        repository.getMovieTrendingData(pageNum,this);
+        repository.getMovieTrendingData(pageNum,limit,this);
     }
 
     @Override
@@ -40,10 +42,13 @@ public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, 
     }
 
     @Override
-    public void onSuccess(List<BaseMovie> t) {
-//        Logger.d("onSuccess");
+    public void onBaseDataSuccess(List<BaseMovie> t) {
         trendingView.refreshData(t,shouldClean);
         trendingView.stopRefresh();
+    }
+
+    public int getLimit(){
+        return limit;
     }
 
     @Override

@@ -57,13 +57,11 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
                 .repoComponent(moCloud.getRepoComponent())
                 .build().inject(this);
 
-        initRecyclerView();
+        initView();
         return rootView;
     }
 
-
-
-    private void initRecyclerView() {
+    protected void initView() {
         trendingList = new ArrayList<>();
         adapter =  new MovieTrendingAdapter(trendingList);
         rv.setHasFixedSize(true);
@@ -78,10 +76,10 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
         srl.post(new Runnable() {
             @Override
             public void run() {
+                onRefresh();
                 srl.setRefreshing(true);
             }
         });
-        onRefresh();
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -89,7 +87,6 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
                 loadMore(manager,adapter,presenter,srl);
             }
         });
-
         adapter.setOnRecyclerViewItemClickListener(this);
     }
 
@@ -100,7 +97,7 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
 
     @Override
     public void refreshData(List<BaseMovie> newData,boolean shouldClean) {
-        if(newData.size()<10){
+        if(newData.size()<presenter.getLimit()){
             alreadyGetAllData = true;
         }
 

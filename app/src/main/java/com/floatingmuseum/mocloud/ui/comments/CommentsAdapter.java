@@ -31,10 +31,11 @@ public class CommentsAdapter extends BaseQuickAdapter<Comment> {
             ImageLoader.load(mContext,userHeadUrl,iv_userhead,R.drawable.default_userhead);
         }
 
-        if(comment.getUser().isVip()){
-            baseViewHolder.getView(R.id.tv_comment).setBackgroundColor(ResUtil.getColor(R.color.comment_vip_content_grey,null));
-            baseViewHolder.getView(R.id.comment_title).setBackgroundColor(ResUtil.getColor(R.color.comment_vip_title_grey,null));
+        if(comment.isReview()){
+            baseViewHolder.getView(R.id.tv_comment).setBackgroundColor(ResUtil.getColor(R.color.comment_review_content_grey,null));
+            baseViewHolder.getView(R.id.comment_title).setBackgroundColor(ResUtil.getColor(R.color.comment_review_title_grey,null));
         }
+
         baseViewHolder.setText(R.id.tv_username,comment.getUser().getName());
         baseViewHolder.setText(R.id.tv_updatetime, TimeUtil.formatGmtTime(comment.getUpdated_at()));
         baseViewHolder.setText(R.id.tv_comments_replies,""+comment.getReplies());

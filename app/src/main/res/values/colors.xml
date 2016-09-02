@@ -9,6 +9,6 @@
 
     <color name="comment_title_grey">#F3F3F3</color>
     <color name="comment_content_grey">#FAFAFA</color>
-    <color name="comment_vip_title_grey">#E5E5E5</color>
-    <color name="comment_vip_content_grey">#F1F1F1</color>
+    <color name="comment_review_title_grey">#E5E5E5</color>
+    <color name="comment_review_content_grey">#F1F1F1</color>
 </resources>

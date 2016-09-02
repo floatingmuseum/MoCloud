@@ -55,11 +55,11 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
                 .repoComponent(moCloud.getRepoComponent())
                 .build().inject(this);
 
-        initRecyclerView();
+        initView();
         return rootView;
     }
 
-    private void initRecyclerView() {
+    protected void initView() {
         popularList = new ArrayList<>();
         adapter =  new MoviePopularAdapter(popularList);
         rv.setHasFixedSize(true);
@@ -92,7 +92,7 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
 
     @Override
     public void refreshData(List<Movie> newData, boolean shouldClean) {
-        if(newData.size()<10){
+        if(newData.size()<presenter.getLimit()){
             alreadyGetAllData = true;
         }
 

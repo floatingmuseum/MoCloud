@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Created by yan on 2016/8/15.
  */
-public class User implements Serializable{
+public class User{
     private String username;
     @SerializedName("private")
     private boolean privateX;

@@ -66,6 +66,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     TextView tv_no_comments;
     @Bind(R.id.tv_comments_more)
     TextView tv_comments_more;
+    private String movieID;
 
     @Override
     protected int currentLayoutId() {
@@ -77,17 +78,22 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         super.onCreate(savedInstanceState);
 //        setContentView();
         ButterKnife.bind(this);
-        String movieID = getIntent().getStringExtra(MOVIE_ID);
+        movieID = getIntent().getStringExtra(MOVIE_ID);
 
         DaggerMovieDetailPresenterComponent.builder()
                 .movieDetailPresenterModule(new MovieDetailPresenterModule(this))
-                .repoComponent(((MoCloud) getApplication()).getRepoComponent())
+                .repoComponent(getRepoComponent())
                 .build().inject(this);
 
         presenter.getData(movieID);
     }
 
-    public void onSuccess(Movie movie) {
+    @Override
+    protected void initView() {
+
+    }
+
+    public void onBaseDataSuccess(Movie movie) {
         ImageLoader.load(this, movie.getImages().getPoster().getMedium(), iv_poster);
         tv_movie_title.setText(movie.getTitle());
         tv_released.setText(movie.getReleased());
@@ -143,9 +149,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MovieDetailActivity.this,CommentsActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(CommentsActivity.COMMENTS_DATA,(Serializable) comments);
-                    intent.putExtras(bundle);
+                    intent.putExtra(CommentsActivity.MOVIE_ID,movieID);
                     startActivity(intent);
                 }
             });

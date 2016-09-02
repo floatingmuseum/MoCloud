@@ -15,10 +15,12 @@ import javax.inject.Inject;
 /**
  * Created by Floatingmuseum on 2016/7/14.
  */
-public class MovieDetailPresenter implements MovieDetailCallback {
+public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
 
     MovieDetailActivity activity;
     Repository repository;
+    private int limit = 4;
+    private int page = 1;
 
     @Inject
     MovieDetailPresenter(@NonNull MovieDetailActivity activity,@NonNull Repository repository){
@@ -29,12 +31,12 @@ public class MovieDetailPresenter implements MovieDetailCallback {
     public void getData(String movieId){
         repository.getMovieDetail(movieId,this);
         repository.getMoviePeople(movieId,this);
-        repository.getMovieComments(movieId,Repository.COMMENTS_SORT_LIKES,this);
+        repository.getMovieComments(movieId,Repository.COMMENTS_SORT_LIKES,limit,page,this,null);
     }
 
     @Override
-    public void onSuccess(Movie movie) {
-        activity.onSuccess(movie);
+    public void onBaseDataSuccess(Movie movie) {
+        activity.onBaseDataSuccess(movie);
     }
 
     @Override

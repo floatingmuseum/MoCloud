@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by yan on 2016/8/11.
  */
-public class Comment implements Serializable{
+public class Comment{
         private long id;
         private String comment;
         private boolean spoiler;

@@ -17,6 +17,7 @@ public class MoviePopularPresenter implements MoviePopularContract.Presenter,Dat
 
     private MoviePopularContract.View popularView;
     private int pageNum = 1;
+    private int limit = 12;
     protected Boolean shouldClean;
     private Repository repository;
 
@@ -30,13 +31,17 @@ public class MoviePopularPresenter implements MoviePopularContract.Presenter,Dat
     public void start(boolean shouldClean) {
         pageNum = shouldClean?1:++pageNum;
         this.shouldClean =shouldClean;
-        repository.getMoviePopularData(pageNum,this);
+        repository.getMoviePopularData(pageNum,limit,this);
     }
 
     @Override
-    public void onSuccess(List<Movie> movies) {
+    public void onBaseDataSuccess(List<Movie> movies) {
         popularView.refreshData(movies,shouldClean);
         popularView.stopRefresh();
+    }
+
+    public int getLimit(){
+        return limit;
     }
 
     @Override

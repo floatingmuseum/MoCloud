@@ -16,6 +16,7 @@ public class MoviePlayedPresenter implements MoviePlayedContract.Presenter, Data
 
     private MoviePlayedContract.View playedView;
     private Repository repository;
+    private int limit = 12;
     private int pageNum = 1;
     private String period = "weekly";
     protected Boolean shouldClean;
@@ -30,15 +31,15 @@ public class MoviePlayedPresenter implements MoviePlayedContract.Presenter, Data
     public void start(boolean shouldClean) {
         pageNum = shouldClean?1:++pageNum;
         this.shouldClean =shouldClean;
-        repository.getMoviePlayedData(period,pageNum,this);
+        repository.getMoviePlayedData(period,pageNum,limit,this);
+    }
+
+    public int getLimit(){
+        return limit;
     }
 
     @Override
-    public void onDestroy() {
-    }
-
-    @Override
-    public void onSuccess(List<BaseMovie> baseMovies) {
+    public void onBaseDataSuccess(List<BaseMovie> baseMovies) {
         playedView.refreshData(baseMovies,shouldClean);
         playedView.stopRefresh();
     }
@@ -47,5 +48,9 @@ public class MoviePlayedPresenter implements MoviePlayedContract.Presenter, Data
     public void onError(Throwable e) {
         e.printStackTrace();
         playedView.stopRefresh();
+    }
+
+    @Override
+    public void onDestroy() {
     }
 }
