@@ -13,6 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
@@ -152,7 +156,9 @@ public class MovieDetailActivity extends AppCompatActivity implements BaseDetail
                 String usedHeadUrl = StringUtil.removeBlank(image.getAvatar().getFull());
                 Logger.d("UserHead:"+image.getAvatar().getFull()+"..."+image.getAvatar().getFull().contains(" "));
 //                Drawable default_userhead = getResources().getDrawable(R.drawable.default_userhead);
-                ImageLoader.load(this,usedHeadUrl,iv_userhead,R.drawable.default_userhead);
+//                ImageLoader.load(this,usedHeadUrl,iv_userhead,R.drawable.default_userhead);
+                Logger.d("0");
+                Glide.with(this).load(usedHeadUrl).listener(new LoggingListener<String, GlideDrawable>()).into(iv_userhead);
                 Logger.d("1");
             }
             tv_username.setText(comment.getUser().getUsername());
@@ -178,5 +184,16 @@ public class MovieDetailActivity extends AppCompatActivity implements BaseDetail
 
         Logger.d("时区："+TimeZone.getTimeZone("GMT")+"..."+TimeZone.getTimeZone("UTC")+"..."+TimeZone.getDefault().getDisplayName(false,TimeZone.SHORT)+"..."+TimeZone.getDefault().getDisplayName(false,TimeZone.LONG)+"..."+TimeZone.getDefault().getID());
 
+    }
+
+    public class LoggingListener<T, R> implements RequestListener<T, R> {
+        @Override public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+            Logger.d("onException");
+            e.printStackTrace();
+            return false;
+        }
+        @Override public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+            return false;
+        }
     }
 }
