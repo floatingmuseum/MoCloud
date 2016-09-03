@@ -1,9 +1,11 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by Floatingmuseum on 2016/4/18.
  */
-public class Ids {
+public class Ids{
     private int trakt;
     private String slug;
     private String imdb;

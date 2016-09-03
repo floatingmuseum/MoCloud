@@ -1,6 +1,6 @@
 package com.floatingmuseum.mocloud.dagger.presenter;
 
-import com.floatingmuseum.mocloud.mainmovie.moviedetail.MovieDetailActivity;
+import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 
 import dagger.Module;
 import dagger.Provides;

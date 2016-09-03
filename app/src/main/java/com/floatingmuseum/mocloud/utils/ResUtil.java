@@ -1,5 +1,7 @@
 package com.floatingmuseum.mocloud.utils;
 
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 
@@ -20,6 +22,14 @@ public class ResUtil {
             return MoCloud.context.getResources().getDrawable(resId, null);
         }else{
             return MoCloud.context.getResources().getDrawable(resId);
+        }
+    }
+
+    public static int getColor(int resId,Resources.Theme theme){
+        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.M){
+            return MoCloud.context.getResources().getColor(resId,theme);
+        }else{
+            return MoCloud.context.getResources().getColor(resId);
         }
     }
 

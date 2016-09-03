@@ -1,9 +1,11 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by Floatingmuseum on 2016/4/18.
  */
-public class Image {
+public class Image{
 
     private Fanart fanart;
     private Poster poster;

@@ -40,42 +40,42 @@ public interface MoCloudService {
      * Returns all movies being watched right now. Movies with the most users are returned first.
      * limit每页数据的数量
      */
-    @GET("movies/trending?limit=12;extended=images")
-    Observable<List<BaseMovie>> getMovieTrending(@Query("page") int page);
+    @GET("movies/trending?extended=images")
+    Observable<List<BaseMovie>> getMovieTrending(@Query("page") int page,@Query("limit")int limit);
 
     /**
      * 电影流行
      * Returns the most popular movies.Popularity is calculated using the rating percentage and the number of ratings.
      */
-    @GET("movies/popular?limit=12;extended=images")
-    Observable<List<Movie>> getMoviePopular(@Query("page") int page);
+    @GET("movies/popular?extended=images")
+    Observable<List<Movie>> getMoviePopular(@Query("page") int page,@Query("limit")int limit);
 
     /**
      * 电影播放最多
      * Returns the most played (a single user can watch multiple times) movies in the specified time period
      */
-    @GET("movies/played/{period}?limit=12;extended=images")
-    Observable<List<BaseMovie>> getMoviePlayed(@Path("period") String period,@Query("page") int page);
+    @GET("movies/played/{period}?extended=images")
+    Observable<List<BaseMovie>> getMoviePlayed(@Path("period") String period,@Query("page") int page,@Query("limit")int limit);
 
     /**
      * 电影观看最多
      * Returns the most watched (unique users) movies in the specified time period
      */
-    @GET("movies/watched/{period}?limit=12;extended=images")
-    Observable<List<BaseMovie>> getMovieWatched(@Path("period") String period,@Query("page") int page);
+    @GET("movies/watched/{period}?extended=images")
+    Observable<List<BaseMovie>> getMovieWatched(@Path("period") String period,@Query("page") int page,@Query("limit")int limit);
 
     /**
      * 电影被收藏最多
      * Returns the most collected (unique users) movies in the specified time period
      */
-    @GET("movies/collected/{period}?limit=12;extended=images")
-    Observable<List<BaseMovie>> getMovieCollected(@Path("period")String period,@Query("page") int page);
+    @GET("movies/collected/{period}?extended=images")
+    Observable<List<BaseMovie>> getMovieCollected(@Path("period")String period,@Query("page") int page,@Query("limit")int limit);
 
     /**
      * Returns the most anticipated movies based on the number of lists a movie appears on.
      */
-    @GET("movies/anticipated?limit=12;extended=images")
-    Observable<List<BaseMovie>> getMovieAnticipated(@Query("page") int page);
+    @GET("movies/anticipated?extended=images")
+    Observable<List<BaseMovie>> getMovieAnticipated(@Query("page") int page,@Query("limit")int limit);
 
     /**
      * Returns the top 10 grossing movies in the U.S. box office last weekend. Updated every Monday morning.
@@ -105,5 +105,5 @@ public interface MoCloudService {
      * 评论
      */
     @GET("movies/{id}/comments/{sort}?extended=images")
-    Observable<List<Comment>> getComments(@Path("id")String id,@Path("sort")String sort);
+    Observable<List<Comment>> getComments(@Path("id")String id,@Path("sort")String sort,@Query("limit")int limit,@Query("page")int page);
 }

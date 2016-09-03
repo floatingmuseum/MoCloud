@@ -1,13 +1,17 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by yan on 2016/8/11.
  */
-public class Comment {
+public class Comment{
         private long id;
         private String comment;
         private boolean spoiler;

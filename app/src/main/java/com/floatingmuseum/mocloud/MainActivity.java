@@ -17,17 +17,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
+//    @Bind(R.id.toolbar)
+//    Toolbar toolbar;
 //    @Bind(R.id.content_main)
 //    FrameLayout contentMain;
     @Bind(R.id.mainViewPager)
@@ -41,29 +42,26 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout drawerLayout;
 
     ImageView iv_avatar;
+
+    @Override
+    protected int currentLayoutId() {
+        return R.layout.activity_main;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//        setContentView();
 
         ButterKnife.bind(this);
 
         iv_avatar = (ImageView) navView.getHeaderView(0).findViewById(R.id.iv_avatar);
         setSupportActionBar(toolbar);
 
-//        try {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-//                ToastUtil.showToast("开发者模式："+Settings.Global.getInt(getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED));
-//                Logger.d("开发者模式："+Settings.Global.getInt(getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED));
-//            }
-//        } catch (Settings.SettingNotFoundException e) {
-//            e.printStackTrace();
-//        }
-
         initView();
     }
 
-    private void initView() {
+    protected void initView() {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.setDrawerListener(toggle);
@@ -137,6 +135,11 @@ public class MainActivity extends AppCompatActivity
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected boolean canGoBack() {
+        return false;
     }
 
     @Override

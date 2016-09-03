@@ -1,13 +1,12 @@
 package com.floatingmuseum.mocloud.dagger.presenter;
 
-import com.floatingmuseum.mocloud.mainmovie.anticipated.MovieAnticipatedContract;
-import com.floatingmuseum.mocloud.mainmovie.boxoffice.MovieBoxOfficeContract;
-import com.floatingmuseum.mocloud.mainmovie.collected.MovieCollectedContract;
-import com.floatingmuseum.mocloud.mainmovie.moviedetail.MovieDetailActivity;
-import com.floatingmuseum.mocloud.mainmovie.played.MoviePlayedContract;
-import com.floatingmuseum.mocloud.mainmovie.popular.MoviePopularContract;
-import com.floatingmuseum.mocloud.mainmovie.trending.MovieTrendingContract;
-import com.floatingmuseum.mocloud.mainmovie.watched.MovieWatchedContract;
+import com.floatingmuseum.mocloud.ui.mainmovie.anticipated.MovieAnticipatedContract;
+import com.floatingmuseum.mocloud.ui.mainmovie.boxoffice.MovieBoxOfficeContract;
+import com.floatingmuseum.mocloud.ui.mainmovie.collected.MovieCollectedContract;
+import com.floatingmuseum.mocloud.ui.mainmovie.played.MoviePlayedContract;
+import com.floatingmuseum.mocloud.ui.mainmovie.popular.MoviePopularContract;
+import com.floatingmuseum.mocloud.ui.mainmovie.trending.MovieTrendingContract;
+import com.floatingmuseum.mocloud.ui.mainmovie.watched.MovieWatchedContract;
 
 import dagger.Module;
 import dagger.Provides;
