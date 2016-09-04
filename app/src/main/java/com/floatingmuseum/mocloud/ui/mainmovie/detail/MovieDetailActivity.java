@@ -182,15 +182,4 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             ll_comments.addView(comment_item);
         }
     }
-
-    public class LoggingListener<T, R> implements RequestListener<T, R> {
-        @Override public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
-            Logger.d("onException");
-            e.printStackTrace();
-            return false;
-        }
-        @Override public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
-            return false;
-        }
-    }
 }
