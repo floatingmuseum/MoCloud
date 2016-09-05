@@ -29,7 +29,7 @@ public class CommentsPresenter implements CommentsContract.Presenter,MovieCommen
 
     @Override
     public void start(String movieId,boolean shouldClean) {
-        page = shouldClean?1:page++;
+        page = shouldClean?1:++page;
         repository.getMovieComments(movieId,Repository.COMMENTS_SORT_NEWEST,limit,page,null,this);
     }
 

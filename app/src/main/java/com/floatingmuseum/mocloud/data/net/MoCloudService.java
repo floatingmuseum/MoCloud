@@ -11,6 +11,7 @@ import com.floatingmuseum.mocloud.data.entity.TraktToken;
 
 import java.util.List;
 
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -105,5 +106,5 @@ public interface MoCloudService {
      * 评论
      */
     @GET("movies/{id}/comments/{sort}?extended=images")
-    Observable<List<Comment>> getComments(@Path("id")String id,@Path("sort")String sort,@Query("limit")int limit,@Query("page")int page);
+    Observable<List<Comment>> getComments(@Path("id")String id, @Path("sort")String sort, @Query("limit")int limit, @Query("page")int page);
 }

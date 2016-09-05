@@ -96,7 +96,6 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
             commentsData.clear();
         }
         commentsData.addAll(comments);
-        Logger.d("评论数量："+commentsData.size()+"...单次请求评论数量："+comments.size());
         adapter.notifyDataSetChanged();
         shouldClean = true;
     }
