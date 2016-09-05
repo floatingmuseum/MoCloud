@@ -8,10 +8,10 @@ import java.io.Serializable;
  * Created by yan on 2016/8/15.
  */
 public class User{
-    private String username;
+    private String username;//用户名
     @SerializedName("private")
     private boolean privateX;
-    private String name;
+    private String name;//昵称（昵称有时可能为null或者""）
     private boolean vip;
     private boolean vip_ep;
     private Ids ids;
