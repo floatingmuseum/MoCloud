@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
@@ -27,7 +28,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class MovieCollectedFragment extends BaseFragment implements MovieCollectedContract.View, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.OnRecyclerViewItemClickListener {
+public class MovieCollectedFragment extends BaseFragment implements MovieCollectedContract.View, SwipeRefreshLayout.OnRefreshListener{
 
     @Bind(R.id.rv)
     RecyclerView rv;
@@ -87,7 +88,13 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
                 loadMore(manager,adapter,presenter,srl);
             }
         });
-        adapter.setOnRecyclerViewItemClickListener(this);
+
+        rv.addOnItemTouchListener(new OnItemClickListener() {
+            @Override
+            public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
+                openMovieDetailActivity(collectedList.get(i).getMovie().getIds().getSlug());
+            }
+        });
     }
 
     @Override
@@ -111,10 +118,5 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
     @Override
     public void stopRefresh() {
         stopRefresh(srl);
-    }
-
-    @Override
-    public void onItemClick(View view, int i) {
-        openMovieDetailActivity(collectedList.get(i).getMovie().getIds().getSlug());
     }
 }

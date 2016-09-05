@@ -11,4 +11,6 @@
     <color name="comment_content_grey">#FAFAFA</color>
     <color name="comment_review_title_grey">#E5E5E5</color>
     <color name="comment_review_content_grey">#F1F1F1</color>
+    <color name="spoiler_red">#ED1C24</color>
+    <color name="spoiler_transparent">#99000000</color>
 </resources>

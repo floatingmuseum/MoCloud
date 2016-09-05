@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
@@ -27,7 +28,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOfficeContract.View, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.OnRecyclerViewItemClickListener {
+public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOfficeContract.View, SwipeRefreshLayout.OnRefreshListener {
 
     @Bind(R.id.rv)
     RecyclerView rv;
@@ -80,7 +81,13 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
             }
         });
         onRefresh();
-        adapter.setOnRecyclerViewItemClickListener(this);
+
+        rv.addOnItemTouchListener(new OnItemClickListener() {
+            @Override
+            public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
+                openMovieDetailActivity(boxOfficeList.get(i).getMovie().getIds().getSlug());
+            }
+        });
     }
 
     @Override
@@ -98,10 +105,5 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
     @Override
     public void stopRefresh() {
         stopRefresh(srl);
-    }
-
-    @Override
-    public void onItemClick(View view, int i) {
-        openMovieDetailActivity(boxOfficeList.get(i).getMovie().getIds().getSlug());
     }
 }

@@ -14,20 +14,10 @@ import java.util.List;
  * Created by Floatingmuseum on 2016/5/5.
  */
 public class MovieWatchedAdapter extends BaseQuickAdapter<BaseMovie>{
-//    private List<BaseMovie> list;
-//    private Context context;
 
     public MovieWatchedAdapter(List<BaseMovie> data){
         super(R.layout.item_movie_trending,data);
-//        this.list = list;
-//        this.context = context;
     }
-
-//    @Override
-//    public WatchedViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        View v = LayoutInflater.from(context).inflate(R.layout.item_movie_trending,parent,false);
-//        return new WatchedViewHolder(v);
-//    }
 
     @Override
     protected void convert(BaseViewHolder holder, BaseMovie baseMovie) {
@@ -35,31 +25,4 @@ public class MovieWatchedAdapter extends BaseQuickAdapter<BaseMovie>{
         holder.setText(R.id.tv_title,movie.getTitle());
         ImageLoader.load(mContext,movie.getImages().getPoster().getMedium(),(RatioImageView)holder.getView(R.id.iv_poster));
     }
-
-//    @Override
-//    public void onBindViewHolder(WatchedViewHolder holder, int position) {
-//        Movie movie = list.get(position).getMovie();
-//        holder.tv_title.setText(movie.getTitle());
-//
-//        Glide.with(context)
-//                .load(movie.getImages().getPoster().getMedium())
-//                .into(holder.iv_poster);
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        return list.size();
-//    }
-//
-//    public class WatchedViewHolder extends RecyclerView.ViewHolder{
-//        @Bind(R.id.iv_poster)
-//        RatioImageView iv_poster;
-//        @Bind(R.id.tv_title)
-//        TextView tv_title;
-//
-//        public WatchedViewHolder(View itemView) {
-//            super(itemView);
-//            ButterKnife.bind(this,itemView);
-//        }
-//    }
 }
