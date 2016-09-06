@@ -29,6 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     protected boolean firstSeeLastItem = true;
     protected boolean notFirstLoadData = false;
     protected boolean shouldClean = true;
+    protected ActionBar actionBar;
 
     abstract protected  int currentLayoutId();
     abstract protected void initView();
@@ -41,7 +42,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         if(canGoBack()){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }

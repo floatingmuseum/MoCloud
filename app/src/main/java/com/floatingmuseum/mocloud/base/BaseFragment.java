@@ -9,7 +9,9 @@ import android.support.v7.widget.GridLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
+import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
+import com.orhanobut.logger.Logger;
 
 
 /**
@@ -34,7 +36,9 @@ abstract public class BaseFragment extends Fragment {
 
     protected void loadMore(GridLayoutManager manager, BaseQuickAdapter adapter, BasePresenter presenter, SwipeRefreshLayout srl) {
         int lastItemPosition = manager.findLastVisibleItemPosition();
-        if(lastItemPosition==(adapter.getItemCount()-4) && !alreadyGetAllData && firstSeeLastItem){
+//        Logger.d("lastItemPosition:"+lastItemPosition+"...可加载位置:"+(adapter.getItemCount()-4));
+//        +"...alreadyGetAllData:"+alreadyGetAllData+"...firstSeeLastItem:"+firstSeeLastItem+"...notFirstLoadData:"+notFirstLoadData
+        if(lastItemPosition>(adapter.getItemCount()-4) && !alreadyGetAllData && firstSeeLastItem){
             firstSeeLastItem = false;
             presenter.start(false);
             if(notFirstLoadData){
@@ -52,9 +56,10 @@ abstract public class BaseFragment extends Fragment {
         }
     }
 
-    protected void openMovieDetailActivity(String movieId){
+    protected void openMovieDetailActivity(Movie movie){
         Intent intent = new Intent(context, MovieDetailActivity.class);
-        intent.putExtra(MovieDetailActivity.MOVIE_ID,movieId);
+        intent.putExtra(MovieDetailActivity.MOVIE_ID,movie.getIds().getSlug());
+        intent.putExtra(MovieDetailActivity.MOVIE_TITLE,movie.getTitle());
         context.startActivity(intent);
     }
 }

@@ -92,7 +92,7 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-                openMovieDetailActivity(playedList.get(i).getMovie().getIds().getSlug());
+                openMovieDetailActivity(playedList.get(i).getMovie());
             }
         });
     }

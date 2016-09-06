@@ -87,7 +87,7 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-                openMovieDetailActivity(popularList.get(i).getIds().getSlug());
+                openMovieDetailActivity(popularList.get(i));
             }
         });
     }

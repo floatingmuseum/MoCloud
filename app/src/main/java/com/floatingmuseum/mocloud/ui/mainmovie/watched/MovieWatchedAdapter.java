@@ -22,7 +22,7 @@ public class MovieWatchedAdapter extends BaseQuickAdapter<BaseMovie>{
     @Override
     protected void convert(BaseViewHolder holder, BaseMovie baseMovie) {
         Movie movie = baseMovie.getMovie();
-        holder.setText(R.id.tv_title,movie.getTitle());
+//        holder.setText(R.id.tv_title,movie.getTitle());
         ImageLoader.load(mContext,movie.getImages().getPoster().getMedium(),(RatioImageView)holder.getView(R.id.iv_poster));
     }
 }

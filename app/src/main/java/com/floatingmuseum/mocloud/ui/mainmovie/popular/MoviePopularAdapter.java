@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.ui.mainmovie.popular;
 
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
@@ -21,7 +22,7 @@ public class MoviePopularAdapter extends BaseQuickAdapter<Movie>{
 
     @Override
     protected void convert(BaseViewHolder holder, Movie movie) {
-        holder.setText(R.id.tv_title,movie.getTitle());
+//        holder.setText(R.id.tv_title,movie.getTitle());
         ImageLoader.load(mContext,movie.getImages().getPoster().getMedium(),(RatioImageView)holder.getView(R.id.iv_poster));
     }
 }

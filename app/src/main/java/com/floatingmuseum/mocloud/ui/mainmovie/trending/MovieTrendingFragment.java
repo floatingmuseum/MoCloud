@@ -16,6 +16,8 @@ import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.widgets.DividerDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +94,7 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-                openMovieDetailActivity(trendingList.get(i).getMovie().getIds().getSlug());
+                openMovieDetailActivity(trendingList.get(i).getMovie());
             }
         });
     }

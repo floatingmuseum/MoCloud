@@ -11,7 +11,7 @@ import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import java.util.List;
 
 /**
- * Created by Floatingmuseumon 2016/4/22.
+ * Created by Floatingmuseum on 2016/4/22.
  */
 public class MovieTrendingAdapter extends BaseQuickAdapter<BaseMovie> {
 
@@ -22,7 +22,8 @@ public class MovieTrendingAdapter extends BaseQuickAdapter<BaseMovie> {
     @Override
     protected void convert(BaseViewHolder baseViewHolder, BaseMovie baseMovie) {
         Movie movie = baseMovie.getMovie();
-        baseViewHolder.setText(R.id.tv_title,movie.getTitle());
+
+//        baseViewHolder.setText(R.id.tv_title,movie.getTitle());
         ImageLoader.load(mContext,movie.getImages().getPoster().getMedium(),(RatioImageView)baseViewHolder.getView(R.id.iv_poster));
     }
 }

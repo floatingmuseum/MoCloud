@@ -11,7 +11,11 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode rootProject.ext.android.versionCode
         versionName rootProject.ext.android.versionName
+
+        renderscriptTargetApi 19
+        renderscriptSupportModeEnabled true
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -65,4 +69,5 @@ dependencies {
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v2.0.7'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.android.support:support-v4:19.1.0'
+    compile 'jp.wasabeef:blurry:2.0.3'
 }

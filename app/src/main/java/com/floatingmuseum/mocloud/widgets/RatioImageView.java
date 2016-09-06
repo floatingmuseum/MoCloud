@@ -34,6 +34,7 @@ public class RatioImageView extends ImageView{
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         //获取测量后的宽度
         int width = MeasureSpec.getSize(widthMeasureSpec);
+//        Logger.d("屏幕宽度："+(getResources().getDisplayMetrics().widthPixels/3)+"..."+width);
         if (attrValue != 0) {
             //通过宽高比计算出高度的数值
             float height = width * attrValue;

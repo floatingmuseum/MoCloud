@@ -13,4 +13,6 @@
     <color name="comment_review_content_grey">#F1F1F1</color>
     <color name="spoiler_red">#ED1C24</color>
     <color name="spoiler_transparent">#99000000</color>
+    <color name="blur_bg">#50ffffff</color>
+    <color name="white_text">#FFFFFF</color>
 </resources>

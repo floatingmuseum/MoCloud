@@ -44,7 +44,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Floatingmuseum on 2016/6/20.
  */
 public class MovieDetailActivity extends BaseActivity implements BaseDetailActivity {
-    public static final String MOVIE_ID = "MOVIE_ID";
+    public static final String MOVIE_ID = "movie_id";
+    public static final String MOVIE_TITLE = "movie_title";
     @Inject
     MovieDetailPresenter presenter;
 
@@ -71,6 +72,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     @Bind(R.id.tv_comments_more)
     TextView tv_comments_more;
     private String movieID;
+    private String movieTitle;
 
     @Override
     protected int currentLayoutId() {
@@ -80,9 +82,10 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView();
         ButterKnife.bind(this);
         movieID = getIntent().getStringExtra(MOVIE_ID);
+        movieTitle = getIntent().getStringExtra(MOVIE_TITLE);
+        actionBar.setTitle(movieTitle);
 
         DaggerMovieDetailPresenterComponent.builder()
                 .movieDetailPresenterModule(new MovieDetailPresenterModule(this))
@@ -154,6 +157,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
                 public void onClick(View v) {
                     Intent intent = new Intent(MovieDetailActivity.this,CommentsActivity.class);
                     intent.putExtra(CommentsActivity.MOVIE_ID,movieID);
+                    intent.putExtra(CommentsActivity.MOVIE_TITLE,movieTitle);
                     startActivity(intent);
                 }
             });
@@ -170,8 +174,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
 
             Image image = comment.getUser().getImages();
             if(image!=null && image.getAvatar()!=null){
-                String userHeadUrl = StringUtil.removeBlank(image.getAvatar().getFull());
-                ImageLoader.load(this,userHeadUrl,iv_userhead,R.drawable.default_userhead);
+                ImageLoader.load(this,image.getAvatar().getFull(),iv_userhead,R.drawable.default_userhead);
             }
 
             tv_username.setText(comment.getUser().getUsername());

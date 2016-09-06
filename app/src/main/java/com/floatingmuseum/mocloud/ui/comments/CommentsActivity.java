@@ -30,6 +30,7 @@ import butterknife.ButterKnife;
  */
 public class CommentsActivity extends BaseActivity implements CommentsContract.View, SwipeRefreshLayout.OnRefreshListener {
 
+    public static final String MOVIE_TITLE = "movie_title";
     @Inject
     CommentsPresenter presenter;
 
@@ -55,7 +56,8 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
         ButterKnife.bind(this);
 
         movieId = getIntent().getStringExtra(MOVIE_ID);
-
+        String movieTitle = getIntent().getStringExtra(MOVIE_TITLE);
+        actionBar.setTitle(movieTitle);
         DaggerCommentsPresenterComponent.builder()
                 .repoComponent(getRepoComponent())
                 .commentsPresenterModule(new CommentsPresenterModule(this))
@@ -100,13 +102,6 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 super.onItemChildClick(adapter, view, position);
                 switch (view.getId()){
-                    case R.id.tv_spoiler:
-//                        view.setVisibility(View.GONE);
-                        break;
-                    case R.id.fl_comment:
-                        view.findViewById(R.id.tv_spoiler).setVisibility(View.GONE);
-                        view.findViewById(R.id.tv_comment).setVisibility(View.VISIBLE);
-                        break;
                 }
             }
         });

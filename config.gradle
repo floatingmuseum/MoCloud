@@ -1,7 +1,7 @@
 ext{
     android = [
             compileSdkVersion : 23,
-            buildToolsVersion : '23.0.2',
+            buildToolsVersion : '23.0.3',
             applicationId : 'com.floatingmuseum.mocloud',
             minSdkVersion : 15,
             targetSdkVersion : 23,
