@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,8 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
     @Inject
     MovieBoxOfficePresenter presenter;
     private GridLayoutManager manager;
+//    private LinearLayoutManager manager;
+
 
     public static MovieBoxOfficeFragment newInstance() {
         MovieBoxOfficeFragment fragment = new MovieBoxOfficeFragment();
@@ -66,7 +69,8 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
         boxOfficeList = new ArrayList<>();
         adapter =  new MovieBoxOfficeAdapter(boxOfficeList);
         rv.setHasFixedSize(true);
-        manager = new GridLayoutManager(context,3);
+        manager = new GridLayoutManager(context,2);
+//        manager = new LinearLayoutManager(context);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
         srl.setOnRefreshListener(this);

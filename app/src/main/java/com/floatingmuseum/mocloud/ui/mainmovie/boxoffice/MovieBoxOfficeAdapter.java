@@ -16,13 +16,13 @@ import java.util.List;
 public class MovieBoxOfficeAdapter extends BaseQuickAdapter<BaseMovie>{
 
     public MovieBoxOfficeAdapter(List<BaseMovie> data){
-        super(R.layout.item_movie_trending,data);
+        super(R.layout.item_movie_box_office,data);
     }
 
     @Override
     protected void convert(BaseViewHolder holder, BaseMovie baseMovie) {
         Movie movie = baseMovie.getMovie();
 //        holder.setText(R.id.tv_title,movie.getTitle());
-        ImageLoader.load(mContext,movie.getImages().getPoster().getMedium(),(RatioImageView)holder.getView(R.id.iv_poster));
+        ImageLoader.load(mContext,movie.getImages().getPoster().getFull(),(RatioImageView)holder.getView(R.id.iv_banner));
     }
 }

@@ -24,11 +24,11 @@ public class CommentsAdapter extends BaseQuickAdapter<Comment> {
 
     @Override
     protected void convert(BaseViewHolder baseViewHolder, Comment comment) {
-        Image image = comment.getUser().getImages();
-        if (image != null && image.getAvatar() != null) {
-            ImageView iv_userhead = baseViewHolder.getView(R.id.iv_userhead);
-            ImageLoader.load(mContext, image.getAvatar().getFull(), iv_userhead, R.drawable.default_userhead);
-        }
+//        Image image = comment.getUser().getImages();
+//        if (image != null && image.getAvatar() != null) {
+//            ImageView iv_userhead = baseViewHolder.getView(R.id.iv_userhead);
+//            ImageLoader.load(mContext, comment.getUser().getImages().getAvatar().getFull(), iv_userhead, R.drawable.default_userhead);
+//        }
 
         if (comment.isReview()) {
             baseViewHolder.setBackgroundColor(R.id.comment_title, ResUtil.getColor(R.color.comment_review_title_grey, null));
@@ -53,5 +53,8 @@ public class CommentsAdapter extends BaseQuickAdapter<Comment> {
                 .setText(R.id.tv_comments_likes, "" + comment.getLikes())
                 .setText(R.id.tv_comment, comment.getComment())
                 .setVisible(R.id.tv_spoiler_tip,comment.isSpoiler()?true:false);
+
+        ImageView iv_userhead = baseViewHolder.getView(R.id.iv_userhead);
+        ImageLoader.load(mContext, comment.getUser().getImages().getAvatar().getFull(), iv_userhead, R.drawable.default_userhead);
     }
 }
