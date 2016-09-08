@@ -105,24 +105,6 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
                 }
             }
         });
-
-//        adapter.setOnRecyclerViewItemChildClickListener(new BaseQuickAdapter.OnRecyclerViewItemChildClickListener() {
-//            @Override
-//            public void onItemChildClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-//                Logger.d("onItemChildClick");
-//                switch (view.getId()){
-//                    case R.id.fl_comment:
-//                        Logger.d("on评论被点击");
-//                        View tv_spoiler = view.findViewById(R.id.tv_spoiler);
-//                        View tv_comment = view.findViewById(R.id.tv_comment);
-//                        tv_spoiler.setVisibility(View.GONE);
-//                        AlphaAnimation alphaAnim = new AlphaAnimation(0.0f,1.0f);
-//                        alphaAnim.setDuration(3000);
-//                        tv_comment.setAnimation(alphaAnim);
-//                        break;
-//                }
-//            }
-//        });
     }
 
     public void onBaseDataSuccess(List<Comment> comments) {

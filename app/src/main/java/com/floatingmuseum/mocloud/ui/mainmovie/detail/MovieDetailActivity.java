@@ -174,7 +174,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
 
             Image image = comment.getUser().getImages();
             if(image!=null && image.getAvatar()!=null){
-                ImageLoader.load(this,image.getAvatar().getFull(),iv_userhead,R.drawable.default_userhead);
+                ImageLoader.loadDontAnimate(this,image.getAvatar().getFull(),iv_userhead,R.drawable.default_userhead);
             }
 
             tv_username.setText(comment.getUser().getUsername());

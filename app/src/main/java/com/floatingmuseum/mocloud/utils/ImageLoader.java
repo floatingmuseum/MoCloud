@@ -33,29 +33,18 @@ public class ImageLoader {
                 .into(view);
     }
 
-    public static void loadOnResourceReady(Context context, String url, final ImageView view, int placeHolder){
+    public static void loadDontAnimate(Context context, String url, final ImageView view, int placeHolder){
         Drawable default_image;
         if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP){
             default_image = context.getResources().getDrawable(placeHolder,null);
         }else{
             default_image = context.getResources().getDrawable(placeHolder);
         }
+
         Glide.with(context)
                 .load(url)
                 .dontAnimate()
                 .placeholder(default_image)
-                .into(new SimpleTarget<GlideDrawable>() {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                            view.setImageDrawable(resource);
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        Logger.d("onLoadFailed");
-                        e.printStackTrace();
-                    }
-                });
+                .into(view);
     }
 }
