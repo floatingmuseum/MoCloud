@@ -24,6 +24,8 @@ public class MovieTrendingAdapter extends BaseQuickAdapter<BaseMovie> {
         Movie movie = baseMovie.getMovie();
 
 //        baseViewHolder.setText(R.id.tv_title,movie.getTitle());
-        ImageLoader.load(mContext,movie.getImages().getPoster().getMedium(),(RatioImageView)baseViewHolder.getView(R.id.iv_poster));
+        ImageLoader.load(mContext,movie.getImages().getPoster().getThumb(),
+                (RatioImageView)baseViewHolder.getView(R.id.iv_poster),
+                R.drawable.default_movie_poster);
     }
 }

@@ -41,8 +41,8 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
     private MovieBoxOfficeAdapter adapter;
     @Inject
     MovieBoxOfficePresenter presenter;
-    private GridLayoutManager manager;
-//    private LinearLayoutManager manager;
+//    private GridLayoutManager manager;
+    private LinearLayoutManager manager;
 
 
     public static MovieBoxOfficeFragment newInstance() {
@@ -69,8 +69,8 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
         boxOfficeList = new ArrayList<>();
         adapter =  new MovieBoxOfficeAdapter(boxOfficeList);
         rv.setHasFixedSize(true);
-        manager = new GridLayoutManager(context,2);
-//        manager = new LinearLayoutManager(context);
+//        manager = new GridLayoutManager(context,2);
+        manager = new LinearLayoutManager(context);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
         srl.setOnRefreshListener(this);

@@ -101,7 +101,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     }
 
     public void onBaseDataSuccess(Movie movie) {
-        ImageLoader.load(this, movie.getImages().getPoster().getMedium(), iv_poster);
+        ImageLoader.load(this, movie.getImages().getPoster().getThumb(), iv_poster,R.drawable.default_movie_poster);
         tv_movie_title.setText(movie.getTitle());
         tv_released.setText(movie.getReleased());
         tv_runtime.setText(movie.getRuntime() + " mins");
@@ -119,7 +119,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             TextView tv_crew_job = (TextView) staff.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) staff.findViewById(R.id.tv_crew_realname);
             staff.findViewById(R.id.tv_crew_character).setVisibility(View.GONE);
-            ImageLoader.load(this, director.getPerson().getImages().getHeadshot().getMedium(), iv_staff_headshot);
+            ImageLoader.load(this, director.getPerson().getImages().getHeadshot().getThumb(), iv_staff_headshot,R.drawable.default_movie_poster);
             tv_crew_job.setText(director.getJob());
             tv_crew_realname.setText(director.getPerson().getName());
             ll_crew.addView(staff);
@@ -134,7 +134,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             TextView tv_crew_job = (TextView) staff_item.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) staff_item.findViewById(R.id.tv_crew_realname);
             TextView tv_crew_character = (TextView) staff_item.findViewById(R.id.tv_crew_character);
-            ImageLoader.load(this, actor.getPerson().getImages().getHeadshot().getMedium(), iv_staff_headshot);
+            ImageLoader.load(this, actor.getPerson().getImages().getHeadshot().getThumb(), iv_staff_headshot,R.drawable.default_movie_poster);
             tv_crew_job.setText("Actor");
             tv_crew_realname.setText(actor.getPerson().getName());
             tv_crew_character.setText(actor.getCharacter());

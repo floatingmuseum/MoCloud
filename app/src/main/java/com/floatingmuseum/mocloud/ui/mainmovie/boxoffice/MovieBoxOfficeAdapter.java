@@ -23,6 +23,9 @@ public class MovieBoxOfficeAdapter extends BaseQuickAdapter<BaseMovie>{
     protected void convert(BaseViewHolder holder, BaseMovie baseMovie) {
         Movie movie = baseMovie.getMovie();
 //        holder.setText(R.id.tv_title,movie.getTitle());
-        ImageLoader.load(mContext,movie.getImages().getPoster().getFull(),(RatioImageView)holder.getView(R.id.iv_banner));
+        holder.setText(R.id.tv_box_movie_title,movie.getTitle());
+        ImageLoader.load(mContext,movie.getImages().getFanart().getThumb(),
+                (RatioImageView)holder.getView(R.id.iv_fanart),
+                R.drawable.default_fanart);
     }
 }

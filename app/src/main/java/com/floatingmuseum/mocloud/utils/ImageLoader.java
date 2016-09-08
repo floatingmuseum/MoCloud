@@ -20,12 +20,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Floatingmuseum on 2016/6/20.
  */
 public class ImageLoader {
-    public static void load(Context context,String url,ImageView view){
+    public static void load(Context context,String url,ImageView view,int placeHolder){
         Drawable default_image;
         if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP){
-            default_image = context.getResources().getDrawable(R.drawable.default_movie_poster,null);
+            default_image = context.getResources().getDrawable(placeHolder,null);
         }else{
-            default_image = context.getResources().getDrawable(R.drawable.default_movie_poster);
+            default_image = context.getResources().getDrawable(placeHolder);
         }
         Glide.with(context)
                 .load(url)
@@ -33,7 +33,7 @@ public class ImageLoader {
                 .into(view);
     }
 
-    public static void load(Context context, String url, final ImageView view, int placeHolder){
+    public static void loadOnResourceReady(Context context, String url, final ImageView view, int placeHolder){
         Drawable default_image;
         if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP){
             default_image = context.getResources().getDrawable(placeHolder,null);
