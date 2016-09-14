@@ -21,15 +21,15 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".LoginActivity"/>
         <activity android:name=".ui.mainmovie.detail.MovieDetailActivity"/>
         <activity android:name=".ui.comments.CommentsActivity"/>
         <activity android:name=".ui.user.UserActivity"/>
-        <activity android:name=".ui.calender.CalenderActivity"/>
+        <activity android:name=".ui.calendar.CalendarActivity"/>
         <activity android:name=".ui.about.AboutActivity"/>
         <activity android:name=".ui.settings.SettingsActivity"/>
 

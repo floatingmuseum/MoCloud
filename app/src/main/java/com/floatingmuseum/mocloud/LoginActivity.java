@@ -1,11 +1,14 @@
 package com.floatingmuseum.mocloud;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.webkit.CookieManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
@@ -20,19 +23,34 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Floatingmuseum on 2016/5/8.
  */
-public class LoginActivity extends AppCompatActivity{
+public class LoginActivity extends BaseActivity{
     @Bind(R.id.webview)
     WebView wv;
+
+    public static final int REQUEST_CODE = 99;
 
     String TRAKT_ID = BuildConfig.TraktID;
     String TRAKT_SECRET = BuildConfig.TraktSecret;
     String REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
+    String QUERY_CODE = "code";
+
+
+    @Override
+    protected int currentLayoutId() {
+        return R.layout.activity_login;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
 
         ButterKnife.bind(this);
+        initView();
+    }
+
+    @Override
+    protected void initView() {
+        CookieManager cookieManager = CookieManager.getInstance();
         wv.clearCache(true);
         wv.setWebViewClient(new LoginWebViewClient());
         wv.loadUrl("https://trakt.tv/oauth/authorize?response_type=code&client_id="+TRAKT_ID+"&redirect_uri="+REDIRECT_URI);
@@ -45,6 +63,9 @@ public class LoginActivity extends AppCompatActivity{
             String startUrl = "https://trakt.tv/oauth/authorize/";
             if(url.startsWith("https://trakt.tv/oauth/authorize/")){
 
+//                Uri uri = Uri.parse(url);
+//                String code = uri.getQueryParameter(QUERY_CODE);
+//                Logger.d("Code:"+code);
                 String code = url.substring(startUrl.length(),url.length());
                 TokenRequest tokenRequest = new TokenRequest();
                 tokenRequest.setCode(code);

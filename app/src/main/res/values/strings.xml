@@ -16,6 +16,7 @@
     <string name="see_more">More...</string>
     <string name="crew">Crew</string>
     <string name="spoiler_alert">Spoiler Alert</string>
+    <string name="action_type_switch">Switch to TV</string>
 
     <string-array name="tab_names">
         <item>Trending</item>
