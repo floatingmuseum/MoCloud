@@ -28,6 +28,10 @@
         <activity android:name=".LoginActivity"/>
         <activity android:name=".ui.mainmovie.detail.MovieDetailActivity"/>
         <activity android:name=".ui.comments.CommentsActivity"/>
+        <activity android:name=".ui.user.UserActivity"/>
+        <activity android:name=".ui.calender.CalenderActivity"/>
+        <activity android:name=".ui.about.AboutActivity"/>
+        <activity android:name=".ui.settings.SettingsActivity"/>
 
     </application>
 

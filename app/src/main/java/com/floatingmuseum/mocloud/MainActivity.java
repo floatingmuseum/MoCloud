@@ -18,6 +18,10 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.floatingmuseum.mocloud.base.BaseActivity;
+import com.floatingmuseum.mocloud.ui.about.AboutActivity;
+import com.floatingmuseum.mocloud.ui.calender.CalenderActivity;
+import com.floatingmuseum.mocloud.ui.settings.SettingsActivity;
+import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 
@@ -34,7 +38,7 @@ public class MainActivity extends BaseActivity
     @Bind(R.id.mainViewPager)
     ViewPager mainViewPager;
     @Bind(R.id.mainTablayout)
-    TabLayout mainTablayout;
+    TabLayout mainTabLayout;
 
     @Bind(R.id.nav_view)
     NavigationView navView;
@@ -51,7 +55,6 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView();
 
         ButterKnife.bind(this);
 
@@ -71,7 +74,7 @@ public class MainActivity extends BaseActivity
 
         MainMovieAdapter adapter = new MainMovieAdapter(getSupportFragmentManager());
         mainViewPager.setAdapter(adapter);
-        mainTablayout.setupWithViewPager(mainViewPager);
+        mainTabLayout.setupWithViewPager(mainViewPager);
 
         iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,20 +122,20 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        switch (id){
+            case R.id.nav_my:
+                startActivity(new Intent(this,UserActivity.class));
+                break;
+            case R.id.nav_calender:
+                startActivity(new Intent(this,CalenderActivity.class));
+                break;
+            case R.id.nav_setting:
+                startActivity(new Intent(this,SettingsActivity.class));
+                break;
+            case R.id.nav_about:
+                startActivity(new Intent(this,AboutActivity.class));
+                break;
         }
-
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
