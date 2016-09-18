@@ -8,12 +8,14 @@ import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
+import com.floatingmuseum.mocloud.data.entity.UserSettings;
 
 import java.util.List;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -33,7 +35,10 @@ public interface MoCloudService {
 
 //*******************************************OAUTH*******************************************
     @POST("oauth/token")
-    Observable<TraktToken> getToken(@Body TokenRequest tokenRequest);
+    Observable<Response<TraktToken>> getToken(@Body TokenRequest tokenRequest);
+
+    @GET("users/settings")
+    Observable<Response<UserSettings>> getUserSettings(@Header("Authorization") String accessToken);
 
 //*******************************************电  影*******************************************
     /**

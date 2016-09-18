@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud;
+package com.floatingmuseum.mocloud.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,11 +13,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.floatingmuseum.mocloud.MainMovieAdapter;
+import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
+import com.floatingmuseum.mocloud.dagger.presenter.DaggerMainPresenterComponent;
+import com.floatingmuseum.mocloud.dagger.presenter.MainPresenterModule;
 import com.floatingmuseum.mocloud.ui.about.AboutActivity;
 import com.floatingmuseum.mocloud.ui.calendar.CalendarActivity;
+import com.floatingmuseum.mocloud.ui.login.LoginActivity;
 import com.floatingmuseum.mocloud.ui.settings.SettingsActivity;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,13 +35,16 @@ public class MainActivity extends BaseActivity
     ViewPager mainViewPager;
     @Bind(R.id.mainTablayout)
     TabLayout mainTabLayout;
-
     @Bind(R.id.nav_view)
     NavigationView navView;
     @Bind(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
+    @Inject
+    MainPresenter mainPresenter;
+
     ImageView iv_avatar;
+    private boolean tokenState = false;
 
     @Override
     protected int currentLayoutId() {
@@ -46,6 +56,12 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
 
         ButterKnife.bind(this);
+
+        DaggerMainPresenterComponent.builder()
+                .repoComponent(getRepoComponent())
+                .mainPresenterModule(new MainPresenterModule(this))
+                .build()
+                .inject(this);
 
         iv_avatar = (ImageView) navView.getHeaderView(0).findViewById(R.id.iv_avatar);
         setSupportActionBar(toolbar);
@@ -68,8 +84,12 @@ public class MainActivity extends BaseActivity
         iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-                MainActivity.this.startActivityForResult(intent,LoginActivity.REQUEST_CODE);
+                if(tokenState){
+                    // TODO: 2016/9/18 token存在，进入个人界面。token过期，刷新token
+                }else{
+                    Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                    MainActivity.this.startActivityForResult(intent, LoginActivity.REQUEST_CODE);
+                }
             }
         });
     }
@@ -137,7 +157,9 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == LoginActivity.REQUEST_CODE){
-            //登录成功，更新头像
+            if(resultCode==LoginActivity.LOGIN_SUCCESS_CODE){
+                //登录成功，更新头像
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

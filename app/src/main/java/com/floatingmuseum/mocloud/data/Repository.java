@@ -1,5 +1,7 @@
 package com.floatingmuseum.mocloud.data;
 
+import com.floatingmuseum.mocloud.BuildConfig;
+import com.floatingmuseum.mocloud.Constants;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.callback.MovieCommentsCallback;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
@@ -7,8 +9,13 @@ import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.People;
+import com.floatingmuseum.mocloud.data.entity.TokenRequest;
+import com.floatingmuseum.mocloud.data.entity.TraktToken;
+import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
 import com.floatingmuseum.mocloud.data.net.MoCloudService;
+import com.floatingmuseum.mocloud.ui.login.LoginActivity;
+import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -16,8 +23,10 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import retrofit2.Response;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -262,4 +271,82 @@ public class Repository{
                     }
                 });
     }
+
+    public void getAccessToken(String code, DataCallback dataCallback){
+        TokenRequest tokenRequest = new TokenRequest();
+        tokenRequest.setCode(code);
+        tokenRequest.setClient_id(BuildConfig.TraktID);
+        tokenRequest.setClient_secret(BuildConfig.TraktSecret);
+        tokenRequest.setRedirect_uri(Constants.REDIRECT_URI);
+        tokenRequest.setGrant_type(Constants.GRANT_TYPE_AUTHORIZATION_CODE);
+        
+        getToken(tokenRequest,dataCallback);
+    }
+
+    public void refreshToken(DataCallback dataCallback){
+        TokenRequest tokenRequest = new TokenRequest();
+        tokenRequest.setRefresh_token(SPUtil.getRefreshToken());
+        tokenRequest.setClient_id(BuildConfig.TraktID);
+        tokenRequest.setClient_secret(BuildConfig.TraktSecret);
+        tokenRequest.setRedirect_uri(Constants.REDIRECT_URI);
+        tokenRequest.setGrant_type(Constants.GRANT_TYPE_REFRESH_TOKEN);
+
+        getToken(tokenRequest,dataCallback);
+    }
+
+    private void getToken(TokenRequest tokenRequest, final DataCallback dataCallback){
+        service.getToken(tokenRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Response<TraktToken>>() {
+                    @Override
+                    public void onCompleted() {
+                        
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dataCallback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(Response<TraktToken> traktTokenResponse) {
+                        // TODO: 2016/9/18 401表示请求的方法是刷新token，如果401需要重新请求token
+                        if (traktTokenResponse.code() == 401){
+                            Logger.d("error:"+ traktTokenResponse.body().getError()+"...description:"+traktTokenResponse.body().getError_description());
+                        }else{
+                            // TODO: 2016/9/18 请求成功 请求成功的逻辑应该相同，未测试
+                            dataCallback.onBaseDataSuccess(traktTokenResponse.body());
+                        }
+                    }
+                });
+    }
+
+    public void getUserSettings(String accessToken, final DataCallback dataCallback){
+        service.getUserSettings(accessToken)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Response<UserSettings>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dataCallback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(Response<UserSettings> userSettingsResponse) {
+                        if(userSettingsResponse.code() == 401){
+                            // TODO: 2016/9/18 状态码401表示令牌过期，刷新后再请求
+                        }else{
+                            dataCallback.onBaseDataSuccess(userSettingsResponse.body());
+                        }
+                    }
+                });
+    }
+
+        
 }

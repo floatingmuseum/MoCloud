@@ -69,4 +69,6 @@ dependencies {
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v2.0.7'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.daimajia.numberprogressbar:library:1.2'
+    compile 'com.wang.avi:library:2.1.3'
 }
