@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
@@ -65,8 +66,18 @@ public class SPUtil {
 
 	public static void saveToken(TraktToken traktToken){
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MoCloud.context);
-		preferences.edit().putString("access_token",traktToken.getAccess_token()).apply();
-		preferences.edit().putString("refresh_token",traktToken.getRefresh_token()).apply();
+		if(!TextUtils.isEmpty(traktToken.getAccess_token()) && !TextUtils.isEmpty(traktToken.getRefresh_token())){
+			preferences.edit()
+					.putString("access_token",traktToken.getAccess_token())
+					.putString("refresh_token",traktToken.getRefresh_token())
+					.putBoolean("isLogin",true)
+					.apply();
+		}
+	}
+
+	public static boolean isLogin(){
+		return PreferenceManager.getDefaultSharedPreferences(MoCloud.context)
+				.getBoolean("isLogin",false);
 	}
 
 	public static String getAccessToken(){

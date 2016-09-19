@@ -40,6 +40,10 @@ public interface MoCloudService {
     @GET("users/settings")
     Observable<Response<UserSettings>> getUserSettings(@Header("Authorization") String accessToken);
 
+    //Content-Type:application/x-www-form-urlencoded 与默认interceptor中的Content-Type有些不同
+    @POST("oauth/revoke")
+    Observable<Response> revokeToken(@Body String accessToken);
+
 //*******************************************电  影*******************************************
     /**
      * 电影趋势

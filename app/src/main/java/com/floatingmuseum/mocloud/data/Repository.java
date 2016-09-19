@@ -34,21 +34,22 @@ import rx.schedulers.Schedulers;
  * Created by Floatingmuseum on 2016/7/11.
  */
 @Singleton
-public class Repository{
+public class Repository {
 
     protected MoCloudService service;
     public static final String COMMENTS_SORT_LIKES = "likes";
     public static final String COMMENTS_SORT_NEWEST = "newest";
     public static final String COMMENTS_SORT_OLDEST = "oldest";
     public static final String COMMENTS_SORT_REPLIES = "replies";
+
     @Inject
-    public Repository(){
+    public Repository() {
         service = MoCloudFactory.getInstance();
     }
 
-    public void getMovieTrendingData(int pageNum,int limit,final DataCallback<List<BaseMovie>> callback){
+    public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
         Logger.d("getMovieTrendingData");
-        service.getMovieTrending(pageNum,limit)
+        service.getMovieTrending(pageNum, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<BaseMovie>>() {
@@ -58,9 +59,9 @@ public class Repository{
 
                     @Override
                     public void onError(Throwable e) {
-                        if(e instanceof HttpException){
-                            HttpException exception = (HttpException)e;
-                            Logger.d("trending Data on Error:"+exception.response().errorBody().toString());
+                        if (e instanceof HttpException) {
+                            HttpException exception = (HttpException) e;
+                            Logger.d("trending Data on Error:" + exception.response().errorBody().toString());
                         }
                         callback.onError(e);
                     }
@@ -72,8 +73,8 @@ public class Repository{
                 });
     }
 
-    public void getMoviePopularData(int pageNum,int limit,final DataCallback callback){
-        service.getMoviePopular(pageNum,limit)
+    public void getMoviePopularData(int pageNum, int limit, final DataCallback callback) {
+        service.getMoviePopular(pageNum, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<Movie>>() {
@@ -93,8 +94,8 @@ public class Repository{
                 });
     }
 
-    public void getMoviePlayedData(String period,int pageNum,int limit,final DataCallback callback){
-        service.getMoviePlayed(period,pageNum,limit)
+    public void getMoviePlayedData(String period, int pageNum, int limit, final DataCallback callback) {
+        service.getMoviePlayed(period, pageNum, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<BaseMovie>>() {
@@ -114,8 +115,8 @@ public class Repository{
                 });
     }
 
-    public void getMovieWatchedData(String period,int pageNum,int limit,final DataCallback callback){
-        service.getMovieWatched(period,pageNum,limit)
+    public void getMovieWatchedData(String period, int pageNum, int limit, final DataCallback callback) {
+        service.getMovieWatched(period, pageNum, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<BaseMovie>>() {
@@ -135,8 +136,8 @@ public class Repository{
                 });
     }
 
-    public void getMovieCollectedData(String period, int pageNum,int limit, final DataCallback callback){
-        service.getMovieCollected(period,pageNum,limit)
+    public void getMovieCollectedData(String period, int pageNum, int limit, final DataCallback callback) {
+        service.getMovieCollected(period, pageNum, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<BaseMovie>>() {
@@ -156,8 +157,8 @@ public class Repository{
                 });
     }
 
-    public void getMovieAnticipatedData(int pageNum,int limit,final DataCallback callback){
-        service.getMovieAnticipated(pageNum,limit)
+    public void getMovieAnticipatedData(int pageNum, int limit, final DataCallback callback) {
+        service.getMovieAnticipated(pageNum, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<BaseMovie>>() {
@@ -177,7 +178,7 @@ public class Repository{
                 });
     }
 
-    public void getMovieBoxOfficeData(final DataCallback callback){
+    public void getMovieBoxOfficeData(final DataCallback callback) {
         service.getMovieBoxOffice()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -198,7 +199,7 @@ public class Repository{
                 });
     }
 
-    public void getMovieDetail(String movieId, final MovieDetailCallback callback){
+    public void getMovieDetail(String movieId, final MovieDetailCallback callback) {
         service.getMovieDetail(movieId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -220,7 +221,7 @@ public class Repository{
                 });
     }
 
-    public void getMoviePeople(String movieId,final MovieDetailCallback callback){
+    public void getMoviePeople(String movieId, final MovieDetailCallback callback) {
         service.getMoviePeople(movieId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -242,8 +243,8 @@ public class Repository{
                 });
     }
 
-    public void getMovieComments(String movieId, String commentsSort, int limit, int page, final MovieDetailCallback movieDetailCallback, final MovieCommentsCallback commentsCallback){
-        service.getComments(movieId,commentsSort,limit,page)
+    public void getMovieComments(String movieId, String commentsSort, int limit, int page, final MovieDetailCallback movieDetailCallback, final MovieCommentsCallback commentsCallback) {
+        service.getComments(movieId, commentsSort, limit, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<Comment>>() {
@@ -254,36 +255,36 @@ public class Repository{
 
                     @Override
                     public void onError(Throwable e) {
-                        if(movieDetailCallback!=null){
+                        if (movieDetailCallback != null) {
                             movieDetailCallback.onError(e);
-                        }else{
+                        } else {
                             commentsCallback.onError(e);
                         }
                     }
 
                     @Override
                     public void onNext(List<Comment> comments) {
-                        if(movieDetailCallback!=null){
+                        if (movieDetailCallback != null) {
                             movieDetailCallback.onCommentsSuccess(comments);
-                        }else{
+                        } else {
                             commentsCallback.onBaseDataSuccess(comments);
                         }
                     }
                 });
     }
 
-    public void getAccessToken(String code, DataCallback dataCallback){
+    public void getAccessToken(String code, DataCallback dataCallback) {
         TokenRequest tokenRequest = new TokenRequest();
         tokenRequest.setCode(code);
         tokenRequest.setClient_id(BuildConfig.TraktID);
         tokenRequest.setClient_secret(BuildConfig.TraktSecret);
         tokenRequest.setRedirect_uri(Constants.REDIRECT_URI);
         tokenRequest.setGrant_type(Constants.GRANT_TYPE_AUTHORIZATION_CODE);
-        
-        getToken(tokenRequest,dataCallback);
+
+        getToken(tokenRequest, dataCallback);
     }
 
-    public void refreshToken(DataCallback dataCallback){
+    public void refreshToken(DataCallback dataCallback) {
         TokenRequest tokenRequest = new TokenRequest();
         tokenRequest.setRefresh_token(SPUtil.getRefreshToken());
         tokenRequest.setClient_id(BuildConfig.TraktID);
@@ -291,17 +292,17 @@ public class Repository{
         tokenRequest.setRedirect_uri(Constants.REDIRECT_URI);
         tokenRequest.setGrant_type(Constants.GRANT_TYPE_REFRESH_TOKEN);
 
-        getToken(tokenRequest,dataCallback);
+        getToken(tokenRequest, dataCallback);
     }
 
-    private void getToken(TokenRequest tokenRequest, final DataCallback dataCallback){
+    private void getToken(TokenRequest tokenRequest, final DataCallback dataCallback) {
         service.getToken(tokenRequest)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response<TraktToken>>() {
                     @Override
                     public void onCompleted() {
-                        
+
                     }
 
                     @Override
@@ -312,9 +313,9 @@ public class Repository{
                     @Override
                     public void onNext(Response<TraktToken> traktTokenResponse) {
                         // TODO: 2016/9/18 401表示请求的方法是刷新token，如果401需要重新请求token
-                        if (traktTokenResponse.code() == 401){
-                            Logger.d("error:"+ traktTokenResponse.body().getError()+"...description:"+traktTokenResponse.body().getError_description());
-                        }else{
+                        if (traktTokenResponse.code() == 401) {
+                            Logger.d("error:" + traktTokenResponse.body().getError() + "...description:" + traktTokenResponse.body().getError_description());
+                        } else {
                             // TODO: 2016/9/18 请求成功 请求成功的逻辑应该相同，未测试
                             dataCallback.onBaseDataSuccess(traktTokenResponse.body());
                         }
@@ -322,7 +323,7 @@ public class Repository{
                 });
     }
 
-    public void getUserSettings(String accessToken, final DataCallback dataCallback){
+    public void getUserSettings(String accessToken, final DataCallback dataCallback) {
         service.getUserSettings(accessToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -339,14 +340,12 @@ public class Repository{
 
                     @Override
                     public void onNext(Response<UserSettings> userSettingsResponse) {
-                        if(userSettingsResponse.code() == 401){
+                        if (userSettingsResponse.code() == 401) {
                             // TODO: 2016/9/18 状态码401表示令牌过期，刷新后再请求
-                        }else{
+                        } else {
                             dataCallback.onBaseDataSuccess(userSettingsResponse.body());
                         }
                     }
                 });
     }
-
-        
 }

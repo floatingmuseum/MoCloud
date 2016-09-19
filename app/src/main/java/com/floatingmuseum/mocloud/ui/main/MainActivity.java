@@ -23,6 +23,7 @@ import com.floatingmuseum.mocloud.ui.calendar.CalendarActivity;
 import com.floatingmuseum.mocloud.ui.login.LoginActivity;
 import com.floatingmuseum.mocloud.ui.settings.SettingsActivity;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
+import com.floatingmuseum.mocloud.utils.SPUtil;
 
 import javax.inject.Inject;
 
@@ -44,7 +45,7 @@ public class MainActivity extends BaseActivity
     MainPresenter mainPresenter;
 
     ImageView iv_avatar;
-    private boolean tokenState = false;
+    private boolean isLogin;
 
     @Override
     protected int currentLayoutId() {
@@ -65,7 +66,11 @@ public class MainActivity extends BaseActivity
 
         iv_avatar = (ImageView) navView.getHeaderView(0).findViewById(R.id.iv_avatar);
         setSupportActionBar(toolbar);
-
+        isLogin = SPUtil.isLogin();
+        //request user settings every time when app start,if login is true.
+        if(isLogin){
+            mainPresenter.getUserSettings();
+        }
         initView();
     }
 
@@ -84,7 +89,7 @@ public class MainActivity extends BaseActivity
         iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(tokenState){
+                if(isLogin){
                     // TODO: 2016/9/18 token存在，进入个人界面。token过期，刷新token
                 }else{
                     Intent intent = new Intent(MainActivity.this,LoginActivity.class);
@@ -158,6 +163,7 @@ public class MainActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == LoginActivity.REQUEST_CODE){
             if(resultCode==LoginActivity.LOGIN_SUCCESS_CODE){
+                mainPresenter.getUserSettings();
                 //登录成功，更新头像
             }
         }

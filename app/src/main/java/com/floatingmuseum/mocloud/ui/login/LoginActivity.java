@@ -84,7 +84,7 @@ public class LoginActivity extends BaseActivity{
             cookieManager.removeAllCookies(new ValueCallback<Boolean>() {
                 @Override
                 public void onReceiveValue(Boolean value) {
-
+                    Logger.d("removeAllCookies..onReceiveValue:"+value);
                 }
             });
         }else{
