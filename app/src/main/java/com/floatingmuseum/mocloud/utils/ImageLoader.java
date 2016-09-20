@@ -47,4 +47,10 @@ public class ImageLoader {
                 .placeholder(default_image)
                 .into(view);
     }
+
+    public static void loadFromDrawable(Context context,int drawable,ImageView view){
+        Glide.with(context)
+                .load(drawable)
+                .into(view);
+    }
 }

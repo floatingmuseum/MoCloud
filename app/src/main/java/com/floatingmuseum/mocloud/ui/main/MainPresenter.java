@@ -6,6 +6,7 @@ import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.utils.SPUtil;
+import com.google.gson.JsonIOException;
 
 import javax.inject.Inject;
 
@@ -30,11 +31,21 @@ public class MainPresenter implements DataCallback<UserSettings> {
     @Override
     public void onBaseDataSuccess(UserSettings userSettings) {
         //界面上暂时只需更新用户头像和用户名，然后存储UserSettings
-
+        SPUtil.saveUserSettings(userSettings);
+        if(!SPUtil.getString(SPUtil.SP_USER_SETTINGS,"avatar","-1").equals(userSettings.getImages().getAvatar().getFull())){
+            repository.saveImage(userSettings.getImages().getAvatar().getFull());
+        }
+        mainActivity.refreshUserView(userSettings);
     }
 
     @Override
     public void onError(Throwable e) {
 
+    }
+
+    public void logout() {
+        SPUtil.removeUserSettings();
+        SPUtil.editBoolean("isLogin",false);
+        mainActivity.refreshUserView(null);
     }
 }

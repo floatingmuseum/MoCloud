@@ -116,7 +116,7 @@ public class LoginActivity extends BaseActivity{
                 Logger.d("Code:"+code);
                 ll_web_request.setVisibility(View.GONE);
                 loading_token_request.setVisibility(View.VISIBLE);
-                loginPresenter.start(code);
+                loginPresenter.exchangeAccessToken(code);
 //                exchangeAccessToken(code);
 //                String code = url.substring(startUrl.length(),url.length());
             }

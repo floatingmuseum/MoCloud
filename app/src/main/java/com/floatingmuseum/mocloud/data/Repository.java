@@ -348,4 +348,10 @@ public class Repository {
                     }
                 });
     }
+
+    public void saveImage(String imageUrl){
+        service.downloadImage(imageUrl)
+                .subscribeOn(Schedulers.io())
+
+    }
 }
