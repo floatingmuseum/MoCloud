@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Environment;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -13,6 +14,11 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.R;
 import com.orhanobut.logger.Logger;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -52,5 +58,44 @@ public class ImageLoader {
         Glide.with(context)
                 .load(drawable)
                 .into(view);
+    }
+
+    public static void saveImage(Context context, String imageUrl, final String fileName){
+        Glide.with(context)
+                .load(imageUrl)
+                .asBitmap()
+                //图片格式和质量
+                .toBytes(Bitmap.CompressFormat.JPEG, 100)
+                .into(new SimpleTarget<byte[]>() {
+                    @Override
+                    public void onResourceReady(byte[] resource, GlideAnimation glideAnimation) {
+                        //保存文件夹路径
+                        File dir = new File(Environment.getExternalStorageDirectory(), "Mocloud");
+                        if (!dir.exists()) {
+                            dir.mkdirs();
+                        }
+
+                        File file = new File(dir, fileName + ".jpg");
+                        SPUtil.editString("avatar_path",file.getAbsolutePath());
+
+                        BufferedOutputStream bos = null;
+                        try {
+                            bos = new BufferedOutputStream(new FileOutputStream(file));
+                            bos.write(resource);
+                            bos.flush();
+                            ToastUtil.showToast("图片保存到" + file.getAbsolutePath());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } finally {
+                            if (bos != null) {
+                                try {
+                                    bos.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                });
     }
 }

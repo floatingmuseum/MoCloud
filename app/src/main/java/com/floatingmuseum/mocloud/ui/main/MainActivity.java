@@ -74,10 +74,7 @@ public class MainActivity extends BaseActivity
 
         setSupportActionBar(toolbar);
         isLogin = SPUtil.isLogin();
-        //request user settings every time when app start,if login is true.
-        if(isLogin){
-            mainPresenter.getUserSettings();
-        }
+
         initView();
     }
 
@@ -95,6 +92,15 @@ public class MainActivity extends BaseActivity
         MainMovieAdapter adapter = new MainMovieAdapter(getSupportFragmentManager());
         mainViewPager.setAdapter(adapter);
         mainTabLayout.setupWithViewPager(mainViewPager);
+
+        if (isLogin){
+            //已登录，获取头像和用户名
+            ImageLoader.load(this,SPUtil.getString("avatar_path","-1"),iv_avatar,R.drawable.default_userhead);
+            tv_username.setText(SPUtil.getString("username","-1"));
+            //请求用户最新信息
+            //request user settings every time when app start,if login is true.
+            mainPresenter.getUserSettings();
+        }
 
         iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override

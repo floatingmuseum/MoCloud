@@ -1,5 +1,8 @@
 package com.floatingmuseum.mocloud.data;
 
+import android.text.TextUtils;
+import android.text.format.DateFormat;
+
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.Constants;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
@@ -16,6 +19,7 @@ import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
 import com.floatingmuseum.mocloud.data.net.MoCloudService;
 import com.floatingmuseum.mocloud.ui.login.LoginActivity;
 import com.floatingmuseum.mocloud.utils.SPUtil;
+import com.google.gson.GsonBuilder;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -25,10 +29,16 @@ import javax.inject.Singleton;
 
 import retrofit2.Response;
 import retrofit2.adapter.rxjava.HttpException;
+import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static android.R.attr.type;
 
 /**
  * Created by Floatingmuseum on 2016/7/11.
@@ -273,7 +283,7 @@ public class Repository {
                 });
     }
 
-    public void getAccessToken(String code, DataCallback dataCallback) {
+    public void getAccessToken(String code, final DataCallback dataCallback) {
         TokenRequest tokenRequest = new TokenRequest();
         tokenRequest.setCode(code);
         tokenRequest.setClient_id(BuildConfig.TraktID);
@@ -281,21 +291,6 @@ public class Repository {
         tokenRequest.setRedirect_uri(Constants.REDIRECT_URI);
         tokenRequest.setGrant_type(Constants.GRANT_TYPE_AUTHORIZATION_CODE);
 
-        getToken(tokenRequest, dataCallback);
-    }
-
-    public void refreshToken(DataCallback dataCallback) {
-        TokenRequest tokenRequest = new TokenRequest();
-        tokenRequest.setRefresh_token(SPUtil.getRefreshToken());
-        tokenRequest.setClient_id(BuildConfig.TraktID);
-        tokenRequest.setClient_secret(BuildConfig.TraktSecret);
-        tokenRequest.setRedirect_uri(Constants.REDIRECT_URI);
-        tokenRequest.setGrant_type(Constants.GRANT_TYPE_REFRESH_TOKEN);
-
-        getToken(tokenRequest, dataCallback);
-    }
-
-    private void getToken(TokenRequest tokenRequest, final DataCallback dataCallback) {
         service.getToken(tokenRequest)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -312,16 +307,85 @@ public class Repository {
 
                     @Override
                     public void onNext(Response<TraktToken> traktTokenResponse) {
-                        // TODO: 2016/9/18 401表示请求的方法是刷新token，如果401需要重新请求token
+                        // TODO: 2016/9/18 请求成功 请求成功的逻辑应该相同，未测试
+                        dataCallback.onBaseDataSuccess(traktTokenResponse.body());
+                    }
+                });
+//        getToken(tokenRequest, dataCallback,REQUEST_ACCESS_TOKEN);
+    }
+
+    public Observable refreshToken() {
+        TokenRequest tokenRequest = new TokenRequest();
+        tokenRequest.setRefresh_token(SPUtil.getRefreshToken());
+        tokenRequest.setClient_id(BuildConfig.TraktID);
+        tokenRequest.setClient_secret(BuildConfig.TraktSecret);
+        tokenRequest.setRedirect_uri(Constants.REDIRECT_URI);
+        tokenRequest.setGrant_type(Constants.GRANT_TYPE_REFRESH_TOKEN);
+
+        service.getToken(tokenRequest)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<Response<TraktToken>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response<TraktToken> traktTokenResponse) {
+                        TraktToken traktToken = traktTokenResponse.body();
+                        //if refresh token has expired
+
                         if (traktTokenResponse.code() == 401) {
+                            traktToken.setRefresh_token_expired(true);
                             Logger.d("error:" + traktTokenResponse.body().getError() + "...description:" + traktTokenResponse.body().getError_description());
                         } else {
-                            // TODO: 2016/9/18 请求成功 请求成功的逻辑应该相同，未测试
-                            dataCallback.onBaseDataSuccess(traktTokenResponse.body());
+                            SPUtil.saveToken(traktToken);
                         }
                     }
                 });
     }
+
+    private static final int REQUEST_ACCESS_TOKEN = 1;
+    private static final int REQUEST_REFRESH_TOKEN = 2;
+
+//    private void getToken(TokenRequest tokenRequest, final DataCallback dataCallback, final int type) {
+//        service.getToken(tokenRequest)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<Response<TraktToken>>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        dataCallback.onError(e);
+//                    }
+//
+//                    @Override
+//                    public void onNext(Response<TraktToken> traktTokenResponse) {
+//                        // TODO: 2016/9/18 401表示请求的方法是刷新token，如果401需要重新请求token
+//                        TraktToken traktToken = traktTokenResponse.body();
+//                        if (traktTokenResponse.code() == 401) {
+//                            //if refresh token has expired
+//                            if (type == REQUEST_REFRESH_TOKEN) {
+//                                traktToken.setRefresh_token_expired(true);
+//                                dataCallback.onBaseDataSuccess(traktToken);
+//                            }
+//                            Logger.d("error:" + traktTokenResponse.body().getError() + "...description:" + traktTokenResponse.body().getError_description());
+//                        } else {
+//                            // TODO: 2016/9/18 请求成功 请求成功的逻辑应该相同，未测试
+//                            dataCallback.onBaseDataSuccess(traktToken);
+//                        }
+//                    }
+//                });
+//    }
 
     public void getUserSettings(String accessToken, final DataCallback dataCallback) {
         service.getUserSettings(accessToken)
@@ -342,6 +406,8 @@ public class Repository {
                     public void onNext(Response<UserSettings> userSettingsResponse) {
                         if (userSettingsResponse.code() == 401) {
                             // TODO: 2016/9/18 状态码401表示令牌过期，刷新后再请求
+
+
                         } else {
                             dataCallback.onBaseDataSuccess(userSettingsResponse.body());
                         }
@@ -349,9 +415,18 @@ public class Repository {
                 });
     }
 
-    public void saveImage(String imageUrl){
-        service.downloadImage(imageUrl)
-                .subscribeOn(Schedulers.io())
+    public void getUserSettings(String accessToken) {
+        service.getUserSettings(accessToken)
+                .retryWhen(new Func1<Observable<? extends Throwable>, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Observable<? extends Throwable> observable) {
+                        return null;
+                    }
+                });
+    }
 
+    public void saveImage(String imageUrl) {
+//        service.downloadImage(imageUrl)
+//                .subscribeOn(Schedulers.io())
     }
 }
