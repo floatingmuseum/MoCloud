@@ -26,7 +26,7 @@ public class MainPresenter implements DataCallback<UserSettings> {
     }
 
     public void getUserSettings() {
-        repository.getUserSettings(SPUtil.getAccessToken(),this);
+        repository.getUserSettings(this);
     }
 
     @Override

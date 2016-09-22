@@ -17,6 +17,7 @@ import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
 import com.floatingmuseum.mocloud.data.net.MoCloudService;
+import com.floatingmuseum.mocloud.exception.StatusErrorException;
 import com.floatingmuseum.mocloud.ui.login.LoginActivity;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.google.gson.GsonBuilder;
@@ -387,8 +388,9 @@ public class Repository {
 //                });
 //    }
 
-    public void getUserSettings(String accessToken, final DataCallback dataCallback) {
-        service.getUserSettings(accessToken)
+    public void getUserSettings(final DataCallback dataCallback) {
+
+        service.getUserSettings(SPUtil.getAccessToken())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Response<UserSettings>>() {
@@ -399,6 +401,9 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
+                        if(e instanceof HttpException){
+                            Logger.d("UserSettings onError:"+((HttpException)e).code());
+                        }
                         dataCallback.onError(e);
                     }
 
@@ -415,14 +420,37 @@ public class Repository {
                 });
     }
 
-    public void getUserSettings(String accessToken) {
-        service.getUserSettings(accessToken)
-                .retryWhen(new Func1<Observable<? extends Throwable>, Observable<?>>() {
-                    @Override
-                    public Observable<?> call(Observable<? extends Throwable> observable) {
-                        return null;
-                    }
-                });
+    private <T> Func1<Throwable,? extends Observable<? extends T>> refreshTokenAndRetry(final Observable<T> toBeResumed) {
+        return new Func1<Throwable, Observable<? extends T>>() {
+            @Override
+            public Observable<? extends T> call(Throwable throwable) {
+                if(is401Error(throwable)){
+                    return refreshToken().flatMap(new Func1<TraktToken, Observable<? extends T>>() {
+                        @Override
+                        public Observable<? extends T> call(TraktToken traktToken) {
+                            if(traktToken.getAccess_token() == null){
+                                //刷新token后还是401错误，表示refreshToken也过期了，提示用户重新登录
+                                return Observable.error();
+                            }
+                            SPUtil.saveToken(traktToken);
+                            return toBeResumed;
+                        }
+                    });
+                }
+                //非401错误
+                return Observable.error();
+            }
+        }
+    }
+
+    private boolean is401Error(Throwable throwable) {
+        if(throwable instanceof HttpException){
+            HttpException httpException = (HttpException) throwable;
+            if(httpException.code() == Constants.STATUS_CODE_UNAUTHORISED){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void saveImage(String imageUrl) {
