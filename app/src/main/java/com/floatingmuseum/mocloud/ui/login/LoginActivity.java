@@ -95,14 +95,16 @@ public class LoginActivity extends BaseActivity{
     }
 
     public void requestTokenSuccess() {
-        loading_token_request.setVisibility(View.GONE);
+//        loading_token_request.setVisibility(View.GONE);
+        loading_token_request.smoothToHide();
         ToastUtil.showToast("Login success");
         setResult(LoginActivity.LOGIN_SUCCESS_CODE);
         finish();
     }
 
     public void requestTokenFailed(){
-        loading_token_request.setVisibility(View.GONE);
+//        loading_token_request.setVisibility(View.GONE);
+        loading_token_request.smoothToHide();
         // TODO: 2016/9/18 失败原因？retry按钮？关闭Activity？ 
     }
 
@@ -115,8 +117,9 @@ public class LoginActivity extends BaseActivity{
                 String code = uri.getQueryParameter(QUERY_CODE);
                 Logger.d("Code:"+code);
                 ll_web_request.setVisibility(View.GONE);
-                loading_token_request.setVisibility(View.VISIBLE);
-                loginPresenter.start(code);
+//                loading_token_request.setVisibility(View.VISIBLE);
+                loading_token_request.smoothToShow();
+                loginPresenter.exchangeAccessToken(code);
 //                exchangeAccessToken(code);
 //                String code = url.substring(startUrl.length(),url.length());
             }

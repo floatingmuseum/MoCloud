@@ -29,7 +29,6 @@
                 android:visibility="gone"/>
         </LinearLayout>
         <com.wang.avi.AVLoadingIndicatorView
-            android:visibility="gone"
             android:id="@+id/loading_token_request"
             android:layout_centerInParent="true"
             app:indicatorColor="@color/loading"

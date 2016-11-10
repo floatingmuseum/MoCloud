@@ -13,6 +13,8 @@ public class TraktToken {
     private String error;
     private String error_description;
 
+    private boolean refresh_token_expired = false;
+
     public String getAccess_token() {
         return access_token;
     }
@@ -67,5 +69,13 @@ public class TraktToken {
 
     public void setError_description(String error_description) {
         this.error_description = error_description;
+    }
+
+    public boolean isRefresh_token_expired() {
+        return refresh_token_expired;
+    }
+
+    public void setRefresh_token_expired(boolean refresh_token_expired) {
+        this.refresh_token_expired = refresh_token_expired;
     }
 }

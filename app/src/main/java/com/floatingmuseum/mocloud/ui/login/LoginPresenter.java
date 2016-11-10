@@ -28,7 +28,7 @@ public class LoginPresenter implements DataCallback<TraktToken> {
         this.repository = repository;
     }
 
-    public void start(String code){
+    public void exchangeAccessToken(String code){
         repository.getAccessToken(code,this);
     }
 

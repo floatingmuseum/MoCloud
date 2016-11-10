@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
+import com.floatingmuseum.mocloud.utils.SPUtil;
+import com.orhanobut.logger.Logger;
 
 /**
  * Created by Floatingmuseum on 2016/9/14.
@@ -19,6 +21,7 @@ public class UserActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Logger.d("username:"+SPUtil.getString(SPUtil.SP_USERSETTINGS,"username","-1"));
     }
 
     @Override

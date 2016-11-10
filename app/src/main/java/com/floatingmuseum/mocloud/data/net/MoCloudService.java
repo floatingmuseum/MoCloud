@@ -19,6 +19,7 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -116,4 +117,9 @@ public interface MoCloudService {
      */
     @GET("movies/{id}/comments/{sort}?extended=images")
     Observable<List<Comment>> getComments(@Path("id")String id, @Path("sort")String sort, @Query("limit")int limit, @Query("page")int page);
+
+//*******************************************下  载*******************************************
+
+    @GET
+    Observable<Response> downloadImage(@Url String url);
 }

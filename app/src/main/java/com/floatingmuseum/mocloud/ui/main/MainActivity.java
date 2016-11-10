@@ -12,17 +12,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.MainMovieAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.dagger.presenter.DaggerMainPresenterComponent;
 import com.floatingmuseum.mocloud.dagger.presenter.MainPresenterModule;
+import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.ui.about.AboutActivity;
 import com.floatingmuseum.mocloud.ui.calendar.CalendarActivity;
 import com.floatingmuseum.mocloud.ui.login.LoginActivity;
 import com.floatingmuseum.mocloud.ui.settings.SettingsActivity;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
+import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 
 import javax.inject.Inject;
@@ -40,12 +43,17 @@ public class MainActivity extends BaseActivity
     NavigationView navView;
     @Bind(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @Bind(R.id.iv_avatar)
+    ImageView iv_avatar;
+    @Bind(R.id.tv_username)
+    TextView tv_username;
 
     @Inject
     MainPresenter mainPresenter;
 
-    ImageView iv_avatar;
+
     private boolean isLogin;
+//    private ImageView iv_avatar;
 
     @Override
     protected int currentLayoutId() {
@@ -64,13 +72,9 @@ public class MainActivity extends BaseActivity
                 .build()
                 .inject(this);
 
-        iv_avatar = (ImageView) navView.getHeaderView(0).findViewById(R.id.iv_avatar);
         setSupportActionBar(toolbar);
         isLogin = SPUtil.isLogin();
-        //request user settings every time when app start,if login is true.
-        if(isLogin){
-            mainPresenter.getUserSettings();
-        }
+
         initView();
     }
 
@@ -82,21 +86,43 @@ public class MainActivity extends BaseActivity
 
         navView.setNavigationItemSelectedListener(this);
 
+//        View navHeaderView = navView.getHeaderView(0);
+//        iv_avatar = (ImageView) navHeaderView.findViewById(R.id.iv_avatar);
+//        TextView tv_username = (TextView) navHeaderView.findViewById(R.id.tv_username);
         MainMovieAdapter adapter = new MainMovieAdapter(getSupportFragmentManager());
         mainViewPager.setAdapter(adapter);
         mainTabLayout.setupWithViewPager(mainViewPager);
+
+        if (isLogin){
+            //已登录，获取头像和用户名
+            ImageLoader.load(this,SPUtil.getString("avatar_path","-1"),iv_avatar,R.drawable.default_userhead);
+            tv_username.setText(SPUtil.getString("username","-1"));
+            //请求用户最新信息
+            //request user settings every time when app start,if login is true.
+            mainPresenter.getUserSettings();
+        }
 
         iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(isLogin){
-                    // TODO: 2016/9/18 token存在，进入个人界面。token过期，刷新token
+                    startActivity(new Intent(MainActivity.this,UserActivity.class));
                 }else{
                     Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                     MainActivity.this.startActivityForResult(intent, LoginActivity.REQUEST_CODE);
                 }
             }
         });
+    }
+
+    public void refreshUserView(UserSettings userSettings) {
+        if(userSettings==null){
+            ImageLoader.loadFromDrawable(this,R.drawable.default_userhead,iv_avatar);
+            tv_username.setText(R.string.click_to_login);
+        }else{
+            ImageLoader.load(this,userSettings.getImages().getAvatar().getFull(),iv_avatar,R.drawable.default_userhead);
+            tv_username.setText(userSettings.getUsername());
+        }
     }
 
     @Override
@@ -148,6 +174,9 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.nav_about:
                 startActivity(new Intent(this,AboutActivity.class));
+                break;
+            case R.id.nav_logout:
+                mainPresenter.logout();
                 break;
         }
         drawerLayout.closeDrawer(GravityCompat.START);

@@ -17,6 +17,7 @@
     <string name="crew">Crew</string>
     <string name="spoiler_alert">Spoiler Alert</string>
     <string name="action_type_switch">Switch to TV</string>
+    <string name="click_to_login">Click to login</string>
 
     <string-array name="tab_names">
         <item>Trending</item>
