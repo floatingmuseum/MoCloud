@@ -16,33 +16,28 @@ import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
-import com.floatingmuseum.mocloud.dagger.presenter.DaggerLoginPresenterComponent;
-import com.floatingmuseum.mocloud.dagger.presenter.LoginPresenterModule;
-import com.floatingmuseum.mocloud.data.entity.TraktToken;
+import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import javax.inject.Inject;
-
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Created by Floatingmuseum on 2016/5/8.
  */
 public class LoginActivity extends BaseActivity{
-    @Bind(R.id.webview)
+    @BindView(R.id.webview)
     WebView webView;
-    @Bind(R.id.numberprogressbar)
+    @BindView(R.id.numberprogressbar)
     NumberProgressBar numberProgressBar;
-    @Bind(R.id.loading_token_request)
+    @BindView(R.id.loading_token_request)
     AVLoadingIndicatorView loading_token_request;
-    @Bind(R.id.ll_web_request)
+    @BindView(R.id.ll_web_request)
     LinearLayout ll_web_request;
 
-    @Inject
-    LoginPresenter loginPresenter;
+    private LoginPresenter loginPresenter;
 
     public static final int REQUEST_CODE = 99;
     public static final int LOGIN_SUCCESS_CODE = 98;
@@ -61,11 +56,7 @@ public class LoginActivity extends BaseActivity{
 
         ButterKnife.bind(this);
 
-        DaggerLoginPresenterComponent.builder()
-                .repoComponent(getRepoComponent())
-                .loginPresenterModule(new LoginPresenterModule(this))
-                .build()
-                .inject(this);
+        loginPresenter = new LoginPresenter(this, Repository.getInstance());
 
         initView();
     }

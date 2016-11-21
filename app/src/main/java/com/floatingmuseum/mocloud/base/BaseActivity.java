@@ -14,9 +14,7 @@ import android.view.View;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
-import com.floatingmuseum.mocloud.dagger.repo.RepoComponent;
 import com.floatingmuseum.mocloud.ui.comments.CommentsContract;
-import com.orhanobut.logger.Logger;
 
 /**
  * Created by Floatingmuseum on 2016/8/31.
@@ -57,10 +55,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View v) {
 
-    }
-
-    protected RepoComponent getRepoComponent(){
-        return ((MoCloud)getApplication()).getRepoComponent();
     }
 
     /**

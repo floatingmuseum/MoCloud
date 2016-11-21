@@ -8,8 +8,6 @@ import com.floatingmuseum.mocloud.data.entity.Movie;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
  * Created by Floatingmuseum on 2016/5/1.
  */
@@ -21,7 +19,7 @@ public class MoviePopularPresenter implements MoviePopularContract.Presenter,Dat
     protected Boolean shouldClean;
     private Repository repository;
 
-    @Inject
+
     public MoviePopularPresenter(@NonNull MoviePopularContract.View popularView, @NonNull Repository repository){
         this.popularView = popularView;
         this.repository = repository;

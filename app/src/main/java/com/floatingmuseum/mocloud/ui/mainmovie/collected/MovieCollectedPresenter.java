@@ -8,8 +8,6 @@ import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
  * Created by Floatingmuseum on 2016/5/6.
  */
@@ -21,7 +19,6 @@ public class MovieCollectedPresenter implements MovieCollectedContract.Presenter
     private String period = "weekly";
     protected Boolean shouldClean;
 
-    @Inject
     public MovieCollectedPresenter(@NonNull MovieCollectedContract.View collectedView,@NonNull Repository repository){
         this.collectedView = collectedView;
         this.repository = repository;

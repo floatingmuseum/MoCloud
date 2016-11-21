@@ -21,7 +21,7 @@ ext{
             'adapter-rxjava' : 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4',
             'glide' :  'com.github.bumptech.glide:glide:3.7.0',
             'converter-gson' :  'com.squareup.retrofit2:converter-gson:2.0.0-beta4',
-            'butterknife' :  'com.jakewharton:butterknife:7.0.1',
+            'butterknife' :  'com.jakewharton:butterknife:8.4.0',
             'gson' :  'com.google.code.gson:gson:2.5',
             'logger' :  'com.orhanobut:logger:1.4',
             'photoview' :  'com.github.chrisbanes.photoview:library:1.2.4',

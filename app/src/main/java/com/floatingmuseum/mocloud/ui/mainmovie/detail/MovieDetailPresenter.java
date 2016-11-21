@@ -10,7 +10,6 @@ import com.floatingmuseum.mocloud.data.entity.People;
 
 import java.util.List;
 
-import javax.inject.Inject;
 
 /**
  * Created by Floatingmuseum on 2016/7/14.
@@ -22,7 +21,7 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
     private int limit = 4;
     private int page = 1;
 
-    @Inject
+
     MovieDetailPresenter(@NonNull MovieDetailActivity activity,@NonNull Repository repository){
         this.activity = activity;
         this.repository = repository;

@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -17,8 +18,7 @@ import android.widget.TextView;
 import com.floatingmuseum.mocloud.MainMovieAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
-import com.floatingmuseum.mocloud.dagger.presenter.DaggerMainPresenterComponent;
-import com.floatingmuseum.mocloud.dagger.presenter.MainPresenterModule;
+import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.ui.about.AboutActivity;
 import com.floatingmuseum.mocloud.ui.calendar.CalendarActivity;
@@ -27,30 +27,29 @@ import com.floatingmuseum.mocloud.ui.settings.SettingsActivity;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.SPUtil;
+import com.orhanobut.logger.Logger;
 
-import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindDimen;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Optional;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    @Bind(R.id.mainViewPager)
+    @BindView(R.id.mainViewPager)
     ViewPager mainViewPager;
-    @Bind(R.id.mainTablayout)
+    @BindView(R.id.mainTablayout)
     TabLayout mainTabLayout;
-    @Bind(R.id.nav_view)
+    @BindView(R.id.nav_view)
     NavigationView navView;
-    @Bind(R.id.drawer_layout)
+    @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
-    @Bind(R.id.iv_avatar)
+
     ImageView iv_avatar;
-    @Bind(R.id.tv_username)
     TextView tv_username;
 
-    @Inject
     MainPresenter mainPresenter;
-
 
     private boolean isLogin;
 //    private ImageView iv_avatar;
@@ -65,12 +64,7 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
 
         ButterKnife.bind(this);
-
-        DaggerMainPresenterComponent.builder()
-                .repoComponent(getRepoComponent())
-                .mainPresenterModule(new MainPresenterModule(this))
-                .build()
-                .inject(this);
+        mainPresenter = new MainPresenter(this, Repository.getInstance());
 
         setSupportActionBar(toolbar);
         isLogin = SPUtil.isLogin();
@@ -84,6 +78,10 @@ public class MainActivity extends BaseActivity
         drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
+        View nav_header_main = navView.getHeaderView(0);
+        iv_avatar = ButterKnife.findById(nav_header_main,R.id.iv_avatar);
+        tv_username = ButterKnife.findById(nav_header_main,R.id.tv_username);
+
         navView.setNavigationItemSelectedListener(this);
 
 //        View navHeaderView = navView.getHeaderView(0);
@@ -93,10 +91,10 @@ public class MainActivity extends BaseActivity
         mainViewPager.setAdapter(adapter);
         mainTabLayout.setupWithViewPager(mainViewPager);
 
-        if (isLogin){
+        if (isLogin) {
             //已登录，获取头像和用户名
-            ImageLoader.load(this,SPUtil.getString("avatar_path","-1"),iv_avatar,R.drawable.default_userhead);
-            tv_username.setText(SPUtil.getString("username","-1"));
+            ImageLoader.load(this, SPUtil.getString("avatar_path", "-1"), iv_avatar, R.drawable.default_userhead);
+            tv_username.setText(SPUtil.getString("username", "-1"));
             //请求用户最新信息
             //request user settings every time when app start,if login is true.
             mainPresenter.getUserSettings();
@@ -105,10 +103,10 @@ public class MainActivity extends BaseActivity
         iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isLogin){
-                    startActivity(new Intent(MainActivity.this,UserActivity.class));
-                }else{
-                    Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                if (isLogin) {
+                    startActivity(new Intent(MainActivity.this, UserActivity.class));
+                } else {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     MainActivity.this.startActivityForResult(intent, LoginActivity.REQUEST_CODE);
                 }
             }
@@ -116,11 +114,11 @@ public class MainActivity extends BaseActivity
     }
 
     public void refreshUserView(UserSettings userSettings) {
-        if(userSettings==null){
-            ImageLoader.loadFromDrawable(this,R.drawable.default_userhead,iv_avatar);
+        if (userSettings == null) {
+            ImageLoader.loadFromDrawable(this, R.drawable.default_userhead, iv_avatar);
             tv_username.setText(R.string.click_to_login);
-        }else{
-            ImageLoader.load(this,userSettings.getImages().getAvatar().getFull(),iv_avatar,R.drawable.default_userhead);
+        } else {
+            ImageLoader.load(this, userSettings.getImages().getAvatar().getFull(), iv_avatar, R.drawable.default_userhead);
             tv_username.setText(userSettings.getUsername());
         }
     }
@@ -162,18 +160,18 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case R.id.nav_my:
-                startActivity(new Intent(this,UserActivity.class));
+                startActivity(new Intent(this, UserActivity.class));
                 break;
             case R.id.nav_calendar:
-                startActivity(new Intent(this,CalendarActivity.class));
+                startActivity(new Intent(this, CalendarActivity.class));
                 break;
             case R.id.nav_setting:
-                startActivity(new Intent(this,SettingsActivity.class));
+                startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case R.id.nav_about:
-                startActivity(new Intent(this,AboutActivity.class));
+                startActivity(new Intent(this, AboutActivity.class));
                 break;
             case R.id.nav_logout:
                 mainPresenter.logout();
@@ -190,8 +188,8 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == LoginActivity.REQUEST_CODE){
-            if(resultCode==LoginActivity.LOGIN_SUCCESS_CODE){
+        if (requestCode == LoginActivity.REQUEST_CODE) {
+            if (resultCode == LoginActivity.LOGIN_SUCCESS_CODE) {
                 mainPresenter.getUserSettings();
                 //登录成功，更新头像
             }
@@ -202,6 +200,5 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
     }
 }

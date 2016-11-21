@@ -21,7 +21,7 @@ public class UserActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Logger.d("username:"+SPUtil.getString(SPUtil.SP_USERSETTINGS,"username","-1"));
+        Logger.d("username:"+SPUtil.getString(SPUtil.SP_USER_SETTINGS,"username","-1"));
     }
 
     @Override

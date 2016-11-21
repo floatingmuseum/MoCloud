@@ -1,7 +1,5 @@
 package com.floatingmuseum.mocloud.data;
 
-import android.text.TextUtils;
-import android.text.format.DateFormat;
 
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.Constants;
@@ -17,45 +15,46 @@ import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
 import com.floatingmuseum.mocloud.data.net.MoCloudService;
-import com.floatingmuseum.mocloud.exception.StatusErrorException;
-import com.floatingmuseum.mocloud.ui.login.LoginActivity;
 import com.floatingmuseum.mocloud.utils.SPUtil;
-import com.google.gson.GsonBuilder;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import retrofit2.Response;
 import retrofit2.adapter.rxjava.HttpException;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static android.R.attr.type;
 
 /**
  * Created by Floatingmuseum on 2016/7/11.
  */
-@Singleton
+
 public class Repository {
 
+    private static Repository repository;
     protected MoCloudService service;
+
     public static final String COMMENTS_SORT_LIKES = "likes";
     public static final String COMMENTS_SORT_NEWEST = "newest";
     public static final String COMMENTS_SORT_OLDEST = "oldest";
     public static final String COMMENTS_SORT_REPLIES = "replies";
 
-    @Inject
     public Repository() {
         service = MoCloudFactory.getInstance();
+    }
+
+    public static void init() {
+        repository = new Repository();
+    }
+
+    public static Repository getInstance(){
+        return repository;
     }
 
     public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
@@ -315,41 +314,41 @@ public class Repository {
 //        getToken(tokenRequest, dataCallback,REQUEST_ACCESS_TOKEN);
     }
 
-    public Observable refreshToken() {
-        TokenRequest tokenRequest = new TokenRequest();
-        tokenRequest.setRefresh_token(SPUtil.getRefreshToken());
-        tokenRequest.setClient_id(BuildConfig.TraktID);
-        tokenRequest.setClient_secret(BuildConfig.TraktSecret);
-        tokenRequest.setRedirect_uri(Constants.REDIRECT_URI);
-        tokenRequest.setGrant_type(Constants.GRANT_TYPE_REFRESH_TOKEN);
-
-        service.getToken(tokenRequest)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<Response<TraktToken>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Response<TraktToken> traktTokenResponse) {
-                        TraktToken traktToken = traktTokenResponse.body();
-                        //if refresh token has expired
-
-                        if (traktTokenResponse.code() == 401) {
-                            traktToken.setRefresh_token_expired(true);
-                            Logger.d("error:" + traktTokenResponse.body().getError() + "...description:" + traktTokenResponse.body().getError_description());
-                        } else {
-                            SPUtil.saveToken(traktToken);
-                        }
-                    }
-                });
-    }
+//    public Observable refreshToken() {
+//        TokenRequest tokenRequest = new TokenRequest();
+//        tokenRequest.setRefresh_token(SPUtil.getRefreshToken());
+//        tokenRequest.setClient_id(BuildConfig.TraktID);
+//        tokenRequest.setClient_secret(BuildConfig.TraktSecret);
+//        tokenRequest.setRedirect_uri(Constants.REDIRECT_URI);
+//        tokenRequest.setGrant_type(Constants.GRANT_TYPE_REFRESH_TOKEN);
+//
+//        service.getToken(tokenRequest)
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(new Observer<Response<TraktToken>>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(Response<TraktToken> traktTokenResponse) {
+//                        TraktToken traktToken = traktTokenResponse.body();
+//                        //if refresh token has expired
+//
+//                        if (traktTokenResponse.code() == 401) {
+//                            traktToken.setRefresh_token_expired(true);
+//                            Logger.d("error:" + traktTokenResponse.body().getError() + "...description:" + traktTokenResponse.body().getError_description());
+//                        } else {
+//                            SPUtil.saveToken(traktToken);
+//                        }
+//                    }
+//                });
+//    }
 
     private static final int REQUEST_ACCESS_TOKEN = 1;
     private static final int REQUEST_REFRESH_TOKEN = 2;
@@ -420,28 +419,28 @@ public class Repository {
                 });
     }
 
-    private <T> Func1<Throwable,? extends Observable<? extends T>> refreshTokenAndRetry(final Observable<T> toBeResumed) {
-        return new Func1<Throwable, Observable<? extends T>>() {
-            @Override
-            public Observable<? extends T> call(Throwable throwable) {
-                if(is401Error(throwable)){
-                    return refreshToken().flatMap(new Func1<TraktToken, Observable<? extends T>>() {
-                        @Override
-                        public Observable<? extends T> call(TraktToken traktToken) {
-                            if(traktToken.getAccess_token() == null){
-                                //刷新token后还是401错误，表示refreshToken也过期了，提示用户重新登录
-                                return Observable.error();
-                            }
-                            SPUtil.saveToken(traktToken);
-                            return toBeResumed;
-                        }
-                    });
-                }
-                //非401错误
-                return Observable.error();
-            }
-        }
-    }
+//    private <T> Func1<Throwable,? extends Observable<? extends T>> refreshTokenAndRetry(final Observable<T> toBeResumed) {
+//        return new Func1<Throwable, Observable<? extends T>>() {
+//            @Override
+//            public Observable<? extends T> call(Throwable throwable) {
+//                if(is401Error(throwable)){
+//                    return refreshToken().flatMap(new Func1<TraktToken, Observable<? extends T>>() {
+//                        @Override
+//                        public Observable<? extends T> call(TraktToken traktToken) {
+//                            if(traktToken.getAccess_token() == null){
+//                                //刷新token后还是401错误，表示refreshToken也过期了，提示用户重新登录
+//                                return Observable.error();
+//                            }
+//                            SPUtil.saveToken(traktToken);
+//                            return toBeResumed;
+//                        }
+//                    });
+//                }
+//                //非401错误
+//                return Observable.error();
+//            }
+//        }
+//    }
 
     private boolean is401Error(Throwable throwable) {
         if(throwable instanceof HttpException){

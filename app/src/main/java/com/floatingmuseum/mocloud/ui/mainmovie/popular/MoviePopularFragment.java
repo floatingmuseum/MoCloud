@@ -13,32 +13,29 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
-import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
-import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
+import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
 public class MoviePopularFragment extends BaseFragment implements MoviePopularContract.View,SwipeRefreshLayout.OnRefreshListener {
-    @Bind(R.id.rv)
+    @BindView(R.id.rv)
     RecyclerView rv;
-    @Bind(R.id.srl)
+    @BindView(R.id.srl)
     SwipeRefreshLayout srl;
 
     public final static String MOVIE_POPILAR_FRAGMENT = "MoviePopularFragment";
     private List<Movie> popularList;
     private MoviePopularAdapter adapter;
-    @Inject
-    MoviePopularPresenter presenter;
+
+    private MoviePopularPresenter presenter;
     private GridLayoutManager manager;
     public static MoviePopularFragment newInstance() {
         MoviePopularFragment fragment = new MoviePopularFragment();
@@ -51,10 +48,7 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
 
-        DaggerMoviePresenterComponent.builder()
-                .moviePresenterModule(new MoviePresenterModule(this))
-                .repoComponent(moCloud.getRepoComponent())
-                .build().inject(this);
+        presenter = new MoviePopularPresenter(this, Repository.getInstance());
 
         initView();
         return rootView;
@@ -118,7 +112,6 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     @Override

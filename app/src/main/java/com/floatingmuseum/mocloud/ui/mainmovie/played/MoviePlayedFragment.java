@@ -13,16 +13,13 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
-import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
-import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
+import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -30,16 +27,16 @@ import butterknife.ButterKnife;
  */
 public class MoviePlayedFragment extends BaseFragment implements MoviePlayedContract.View, SwipeRefreshLayout.OnRefreshListener{
 
-    @Bind(R.id.rv)
+    @BindView(R.id.rv)
     RecyclerView rv;
-    @Bind(R.id.srl)
+    @BindView(R.id.srl)
     SwipeRefreshLayout srl;
 
     public final static String MOVIE_PLAYED_FRAGMENT = "MoviePlayedFragment";
     private List<BaseMovie> playedList;
     private MoviePlayedAdapter adapter;
-    @Inject
-    MoviePlayedPresenter presenter;
+
+    private MoviePlayedPresenter presenter;
     private GridLayoutManager manager;
 
     public static MoviePlayedFragment newInstance() {
@@ -53,10 +50,7 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
 
-        DaggerMoviePresenterComponent.builder()
-                .moviePresenterModule(new MoviePresenterModule(this))
-                .repoComponent(moCloud.getRepoComponent())
-                .build().inject(this);
+        presenter = new MoviePlayedPresenter(this, Repository.getInstance());
 
         initView();
         return rootView;
@@ -124,7 +118,6 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     @Override

@@ -10,8 +10,6 @@ import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
  * Created by Floatingmuseum on 2016/4/19.
  */
@@ -23,7 +21,6 @@ public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, 
     protected Boolean shouldClean;
     private Repository repository;
 
-    @Inject
     MovieTrendingPresenter(@NonNull MovieTrendingContract.View trendingView,@NonNull Repository repository){
         this.repository = repository;
         this.trendingView = trendingView;

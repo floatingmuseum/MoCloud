@@ -6,17 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
-import com.floatingmuseum.mocloud.dagger.presenter.DaggerMovieDetailPresenterComponent;
-import com.floatingmuseum.mocloud.dagger.presenter.MovieDetailPresenterModule;
+import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.Actor;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Image;
@@ -26,16 +19,11 @@ import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.NumberFormatUtil;
-import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
-
-import java.io.Serializable;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -46,30 +34,30 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MovieDetailActivity extends BaseActivity implements BaseDetailActivity {
     public static final String MOVIE_ID = "movie_id";
     public static final String MOVIE_TITLE = "movie_title";
-    @Inject
-    MovieDetailPresenter presenter;
 
-    @Bind(R.id.poster)
+    private MovieDetailPresenter presenter;
+
+    @BindView(R.id.poster)
     RatioImageView iv_poster;
-    @Bind(R.id.tv_movie_title)
+    @BindView(R.id.tv_movie_title)
     TextView tv_movie_title;
-    @Bind(R.id.tv_released)
+    @BindView(R.id.tv_released)
     TextView tv_released;
-    @Bind(R.id.tv_runtime)
+    @BindView(R.id.tv_runtime)
     TextView tv_runtime;
-    @Bind(R.id.tv_language)
+    @BindView(R.id.tv_language)
     TextView tv_language;
-    @Bind(R.id.tv_rating)
+    @BindView(R.id.tv_rating)
     TextView tv_rating;
-    @Bind(R.id.tv_overview)
+    @BindView(R.id.tv_overview)
     TextView tv_overview;
-    @Bind(R.id.ll_crew)
+    @BindView(R.id.ll_crew)
     LinearLayout ll_crew;
-    @Bind(R.id.ll_comments)
+    @BindView(R.id.ll_comments)
     LinearLayout ll_comments;
-    @Bind(R.id.tv_no_comments)
+    @BindView(R.id.tv_no_comments)
     TextView tv_no_comments;
-    @Bind(R.id.tv_comments_more)
+    @BindView(R.id.tv_comments_more)
     TextView tv_comments_more;
     private String movieID;
     private String movieTitle;
@@ -87,10 +75,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         movieTitle = getIntent().getStringExtra(MOVIE_TITLE);
         actionBar.setTitle(movieTitle);
 
-        DaggerMovieDetailPresenterComponent.builder()
-                .movieDetailPresenterModule(new MovieDetailPresenterModule(this))
-                .repoComponent(getRepoComponent())
-                .build().inject(this);
+        presenter = new MovieDetailPresenter(this, Repository.getInstance());
 
         presenter.getData(movieID);
     }

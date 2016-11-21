@@ -8,7 +8,6 @@ import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 
 import java.util.List;
 
-import javax.inject.Inject;
 
 /**
  * Created by Floatingmuseum on 2016/5/6.
@@ -19,7 +18,6 @@ public class MovieBoxOfficePresenter implements MovieBoxOfficeContract.Presenter
     private Repository repository;
     protected Boolean shouldClean;
 
-    @Inject
     public MovieBoxOfficePresenter(@NonNull MovieBoxOfficeContract.View boxOfficeView,@NonNull Repository repository){
         this.boxOfficeView = boxOfficeView;
         this.repository = repository;

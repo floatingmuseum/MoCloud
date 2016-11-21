@@ -6,23 +6,18 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
-import com.floatingmuseum.mocloud.dagger.presenter.CommentsPresenterModule;
-import com.floatingmuseum.mocloud.dagger.presenter.DaggerCommentsPresenterComponent;
+import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.Comment;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -31,12 +26,12 @@ import butterknife.ButterKnife;
 public class CommentsActivity extends BaseActivity implements CommentsContract.View, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String MOVIE_TITLE = "movie_title";
-    @Inject
-    CommentsPresenter presenter;
 
-    @Bind(R.id.rv_comments)
+    private CommentsPresenter presenter;
+
+    @BindView(R.id.rv_comments)
     RecyclerView rv_comments;
-    @Bind(R.id.srl_comments)
+    @BindView(R.id.srl_comments)
     SwipeRefreshLayout srl_comments;
 
     public static final String MOVIE_ID = "movieID";
@@ -58,11 +53,7 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
         movieId = getIntent().getStringExtra(MOVIE_ID);
         String movieTitle = getIntent().getStringExtra(MOVIE_TITLE);
         actionBar.setTitle(movieTitle);
-        DaggerCommentsPresenterComponent.builder()
-                .repoComponent(getRepoComponent())
-                .commentsPresenterModule(new CommentsPresenterModule(this))
-                .build()
-                .inject(this);
+        presenter = new CommentsPresenter(this, Repository.getInstance());
 
         initView();
     }
@@ -133,6 +124,5 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
     }
 }

@@ -8,8 +8,6 @@ import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
  * Created by Floatingmuseum on 2016/5/6.
  */
@@ -21,7 +19,7 @@ public class MovieAnticipatedPresenter implements MovieAnticipatedContract.Prese
     private int limit = 12;
     protected Boolean shouldClean;
 
-    @Inject
+
     public MovieAnticipatedPresenter(@NonNull MovieAnticipatedContract.View anticipatedView, @NonNull Repository repository){
         this.anticipatedView = anticipatedView;
         this.repository = repository;

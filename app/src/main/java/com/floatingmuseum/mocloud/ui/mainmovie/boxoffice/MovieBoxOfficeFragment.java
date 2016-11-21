@@ -14,16 +14,13 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
-import com.floatingmuseum.mocloud.dagger.presenter.DaggerMoviePresenterComponent;
-import com.floatingmuseum.mocloud.dagger.presenter.MoviePresenterModule;
+import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -31,16 +28,16 @@ import butterknife.ButterKnife;
  */
 public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOfficeContract.View, SwipeRefreshLayout.OnRefreshListener {
 
-    @Bind(R.id.rv)
+    @BindView(R.id.rv)
     RecyclerView rv;
-    @Bind(R.id.srl)
+    @BindView(R.id.srl)
     SwipeRefreshLayout srl;
 
     public final static String MOVIE_BOXOFFICE_FRAGMENT = "MovieBoxOfficeFragment";
     private List<BaseMovie> boxOfficeList;
     private MovieBoxOfficeAdapter adapter;
-    @Inject
-    MovieBoxOfficePresenter presenter;
+
+    private MovieBoxOfficePresenter presenter;
 //    private GridLayoutManager manager;
     private LinearLayoutManager manager;
 
@@ -56,10 +53,7 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
 
-        DaggerMoviePresenterComponent.builder()
-                .moviePresenterModule(new MoviePresenterModule(this))
-                .repoComponent(moCloud.getRepoComponent())
-                .build().inject(this);
+        presenter = new MovieBoxOfficePresenter(this, Repository.getInstance());
 
         initView();
         return rootView;

@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
+//apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
@@ -51,6 +51,7 @@ dependencies {
     compile rootProject.ext.dependencies["design:23.1.1"]
     compile rootProject.ext.dependencies["cardview-v7"]
     compile rootProject.ext.dependencies["butterknife"]
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     compile rootProject.ext.dependencies["okhttp"]
     compile rootProject.ext.dependencies["glide"]
     compile rootProject.ext.dependencies["retrofit"]
@@ -62,13 +63,11 @@ dependencies {
     compile rootProject.ext.dependencies["rxandroid"]
     compile rootProject.ext.dependencies["adapter-rxjava"]
     compile rootProject.ext.dependencies["blockcanary"]
-    compile 'com.google.dagger:dagger:2.4'
-    apt 'com.google.dagger:dagger-compiler:2.4'
-    //java注解
-    compile 'org.glassfish:javax.annotation:10.0-b28'
+
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v2.0.7'
     compile 'de.hdodenhof:circleimageview:2.1.0'
-    compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.android.support:support-v4:25.0.0'
     compile 'com.daimajia.numberprogressbar:library:1.2'
+    //加载动画
     compile 'com.wang.avi:library:2.1.3'
 }

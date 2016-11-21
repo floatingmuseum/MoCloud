@@ -6,8 +6,6 @@ import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
  * Created by Floatingmuseum on 2016/5/5.
  */
@@ -19,7 +17,6 @@ public class MovieWatchedPresenter implements MovieWatchedContract.Presenter,Dat
     private Repository repository;
     protected Boolean shouldClean;
 
-    @Inject
     public MovieWatchedPresenter(MovieWatchedContract.View watchedView, Repository repository){
         this.repository = repository;
         this.watchedView = watchedView;

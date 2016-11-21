@@ -9,8 +9,6 @@ import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
  * Created by Floatingmuseum on 2016/9/2.
  */
@@ -21,7 +19,6 @@ public class CommentsPresenter implements CommentsContract.Presenter,MovieCommen
     private int limit = 20;
     private int page = 1;
 
-    @Inject
     public CommentsPresenter(@NonNull CommentsActivity activity,@NonNull Repository repository){
         this.activity = activity;
         this.repository = repository;
