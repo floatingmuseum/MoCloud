@@ -1,6 +1,5 @@
 package com.floatingmuseum.mocloud.data.entity;
 
-import java.io.Serializable;
 
 /**
  * Created by Floatingmuseum on 2016/4/18.

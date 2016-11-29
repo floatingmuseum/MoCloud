@@ -14,6 +14,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 
 import java.util.ArrayList;

@@ -7,6 +7,7 @@ import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -16,16 +17,22 @@ import java.util.List;
 public class MovieTrendingAdapter extends BaseQuickAdapter<BaseMovie> {
 
     public MovieTrendingAdapter(List<BaseMovie> data) {
-        super(R.layout.item_movie_trending,data);
+        super(R.layout.item_movie_trending, data);
     }
 
     @Override
-    protected void convert(BaseViewHolder baseViewHolder, BaseMovie baseMovie) {
+    protected void convert(BaseViewHolder holder, BaseMovie baseMovie) {
         Movie movie = baseMovie.getMovie();
 
-//        baseViewHolder.setText(R.id.tv_title,movie.getTitle());
-        ImageLoader.load(mContext,movie.getImages().getPoster().getThumb(),
-                (RatioImageView)baseViewHolder.getView(R.id.iv_poster),
+        Logger.d("MovieName:" + movie.getTitle());
+        if (movie.getImage() == null) {
+            ImageLoader.load(mContext, null, (RatioImageView) holder.getView(R.id.iv_poster),
+                    R.drawable.default_movie_poster);
+            return;
+        }
+        String tmdbPosterUrl = "https://image.tmdb.org/t/p/w185"+movie.getImage().getPosters().get(0).getFile_path();
+        Logger.d("tmdbPosterUrl:"+tmdbPosterUrl);
+        ImageLoader.load(mContext,tmdbPosterUrl,(RatioImageView)holder.getView(R.id.iv_poster),
                 R.drawable.default_movie_poster);
     }
 }

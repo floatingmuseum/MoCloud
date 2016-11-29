@@ -7,6 +7,7 @@ import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -22,10 +23,17 @@ public class MovieBoxOfficeAdapter extends BaseQuickAdapter<BaseMovie>{
     @Override
     protected void convert(BaseViewHolder holder, BaseMovie baseMovie) {
         Movie movie = baseMovie.getMovie();
-//        holder.setText(R.id.tv_title,movie.getTitle());
+
         holder.setText(R.id.tv_box_movie_title,movie.getTitle());
-        ImageLoader.load(mContext,movie.getImages().getFanart().getThumb(),
-                (RatioImageView)holder.getView(R.id.iv_fanart),
-                R.drawable.default_fanart);
+        Logger.d("MovieName:" + movie.getTitle());
+        if (movie.getImage() == null) {
+            ImageLoader.load(mContext, null, (RatioImageView) holder.getView(R.id.iv_fanart),
+                    R.drawable.default_movie_poster);
+            return;
+        }
+        String tmdbPosterUrl = "https://image.tmdb.org/t/p/w185"+movie.getImage().getPosters().get(0).getFile_path();
+        Logger.d("tmdbPosterUrl:"+tmdbPosterUrl);
+        ImageLoader.load(mContext,tmdbPosterUrl,(RatioImageView)holder.getView(R.id.iv_fanart),
+                R.drawable.default_movie_poster);
     }
 }

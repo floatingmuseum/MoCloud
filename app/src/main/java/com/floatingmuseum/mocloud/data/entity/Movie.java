@@ -9,7 +9,8 @@ public class Movie {
     private String title;
     private int year;
     private Ids ids;
-    private Image images;
+    private MovieImage images;
+    private TmdbMovieImage image;
     private String tagline;
     private String overview;
     private String released;
@@ -48,11 +49,11 @@ public class Movie {
         this.ids = ids;
     }
 
-    public Image getImages() {
+    public MovieImage getImages() {
         return images;
     }
 
-    public void setImages(Image images) {
+    public void setImages(MovieImage images) {
         this.images = images;
     }
 
@@ -158,5 +159,13 @@ public class Movie {
 
     public void setGenres(List<String> genres) {
         this.genres = genres;
+    }
+
+    public TmdbMovieImage getImage() {
+        return image;
+    }
+
+    public void setImage(TmdbMovieImage image) {
+        this.image = image;
     }
 }

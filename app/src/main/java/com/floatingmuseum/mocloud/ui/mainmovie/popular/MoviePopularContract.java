@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.ui.mainmovie.popular;
 
 import com.floatingmuseum.mocloud.base.BasePresenter;
 import com.floatingmuseum.mocloud.base.BaseView;
+import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 
 import java.util.List;

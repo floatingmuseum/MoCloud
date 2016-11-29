@@ -29,6 +29,14 @@ android {
         applicationVariants.all{variant->
             variant.buildConfigField "String","TraktSecret","\""+getSecret()+"\""
         }
+
+        applicationVariants.all{variant->
+            variant.buildConfigField "String","FanrtApiKey","\""+getFanartApiKey()+"\""
+        }
+
+        applicationVariants.all{variant->
+            variant.buildConfigField "String","TmdbApiKey","\""+getTmdbApiKey()+"\""
+        }
     }
 }
 
@@ -42,6 +50,18 @@ def getSecret(){
     def Properties properties = new Properties();
     properties.load(new FileInputStream(new File('secrets.properties')))
     return properties['TraktSecret'];
+}
+
+def getFanartApiKey(){
+    def Properties properties = new Properties();
+    properties.load(new  FileInputStream(new File('secrets.properties')))
+    return properties['FanartApiKey']
+}
+
+def getTmdbApiKey(){
+    def Properties properties = new Properties();
+    properties.load(new  FileInputStream(new File('secrets.properties')))
+    return properties['TmdbApiKey']
 }
 
 dependencies {

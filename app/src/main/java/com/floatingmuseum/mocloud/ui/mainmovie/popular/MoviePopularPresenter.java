@@ -4,7 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
+import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 

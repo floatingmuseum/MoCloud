@@ -86,7 +86,8 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     }
 
     public void onBaseDataSuccess(Movie movie) {
-        ImageLoader.load(this, movie.getImages().getPoster().getThumb(), iv_poster,R.drawable.default_movie_poster);
+//        ImageLoader.load(this, movie.getImages().getPoster().getThumb(), iv_poster,R.drawable.default_movie_poster);
+        ImageLoader.load(this, null, iv_poster,R.drawable.default_movie_poster);
         tv_movie_title.setText(movie.getTitle());
         tv_released.setText(movie.getReleased());
         tv_runtime.setText(movie.getRuntime() + " mins");
