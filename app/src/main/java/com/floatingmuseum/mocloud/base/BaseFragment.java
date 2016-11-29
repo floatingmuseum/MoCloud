@@ -35,16 +35,21 @@ abstract public class BaseFragment extends Fragment {
     }
 
     protected void loadMore(GridLayoutManager manager, BaseQuickAdapter adapter, BasePresenter presenter, SwipeRefreshLayout srl) {
-        int lastItemPosition = manager.findLastVisibleItemPosition();
-        Logger.d("lastItemPosition:"+lastItemPosition+"...可加载位置:"+(adapter.getItemCount()-4)+"...alreadyGetAllData:"+alreadyGetAllData+"...firstSeeLastItem:"+firstSeeLastItem+"...notFirstLoadData:"+notFirstLoadData);
-        if(lastItemPosition>(adapter.getItemCount()-4) && !alreadyGetAllData && firstSeeLastItem){
-            firstSeeLastItem = false;
+        int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
+//        Logger.d("lastItemPosition:"+lastItemPosition+"...可加载位置:"+(adapter.getItemCount()-4)+"...alreadyGetAllData:"+alreadyGetAllData+"...firstSeeLastItem:"+firstSeeLastItem+"...notFirstLoadData:"+notFirstLoadData);
+//        if(lastItemPosition>(adapter.getItemCount()-4) && !alreadyGetAllData && firstSeeLastItem){
+//            firstSeeLastItem = false;
+//            presenter.start(false);
+//            if(notFirstLoadData){
+//                srl.setRefreshing(true);
+//            }else{
+//                notFirstLoadData = true;
+//            }
+//        }
+        Logger.d("最后可见item:"+lastItemPosition+"...总条目数:"+adapter.getItemCount());
+        if ((lastItemPosition+1)==adapter.getItemCount() && !srl.isRefreshing()){
+            srl.setRefreshing(true);
             presenter.start(false);
-            if(notFirstLoadData){
-                srl.setRefreshing(true);
-            }else{
-                notFirstLoadData = true;
-            }
         }
     }
 
@@ -61,4 +66,18 @@ abstract public class BaseFragment extends Fragment {
         intent.putExtra(MovieDetailActivity.MOVIE_TITLE,movie.getTitle());
         context.startActivity(intent);
     }
+
+    protected boolean isFirstVisibleToUser = false;
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if(isVisibleToUser && !isFirstVisibleToUser){
+            isFirstVisibleToUser = true;
+            requestBaseData();
+        }
+    }
+
+    abstract protected void requestBaseData();
 }

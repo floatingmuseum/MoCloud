@@ -16,6 +16,7 @@ import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +86,11 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
                 openMovieDetailActivity(popularList.get(i));
             }
         });
+    }
+
+    @Override
+    protected void requestBaseData() {
+        Logger.d("MoviePopularFragment...First to see");
     }
 
     @Override

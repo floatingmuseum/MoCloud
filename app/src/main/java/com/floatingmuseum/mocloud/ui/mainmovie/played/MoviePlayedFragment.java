@@ -15,6 +15,7 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +90,11 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
                 openMovieDetailActivity(playedList.get(i).getMovie());
             }
         });
+    }
+
+    @Override
+    protected void requestBaseData() {
+        Logger.d("MoviePlayedFragment...First to see");
     }
 
     @Override
