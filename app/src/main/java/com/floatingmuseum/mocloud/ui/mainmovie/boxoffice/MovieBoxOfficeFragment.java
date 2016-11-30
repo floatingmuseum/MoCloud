@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOfficeContract.View, SwipeRefreshLayout.OnRefreshListener {
+public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOfficeContract.View {
 
     @BindView(R.id.rv)
     RecyclerView rv;
@@ -68,18 +68,12 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
         manager = new LinearLayoutManager(context);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
-        srl.setOnRefreshListener(this);
-        /**
-         * 虽然这里通过View.post方法在SwipeRefreshLayout初始化完毕后显示刷新，
-         * 但是刷新监听中的onRefresh方法并不会被执行，所以下面手动调用一下
-         */
-        srl.post(new Runnable() {
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void run() {
-                srl.setRefreshing(true);
+            public void onRefresh() {
+                presenter.start();
             }
         });
-        onRefresh();
 
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
@@ -87,15 +81,12 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
                 openMovieDetailActivity(boxOfficeList.get(i).getMovie());
             }
         });
+        isViewPrepared = true;
     }
 
     @Override
     protected void requestBaseData() {
-        Logger.d("MovieBoxOfficeFragment...First to see");
-    }
-
-    @Override
-    public void onRefresh() {
+        srl.setRefreshing(true);
         presenter.start();
     }
 

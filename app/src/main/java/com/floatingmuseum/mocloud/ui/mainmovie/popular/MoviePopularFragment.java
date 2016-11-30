@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class MoviePopularFragment extends BaseFragment implements MoviePopularContract.View,SwipeRefreshLayout.OnRefreshListener {
+public class MoviePopularFragment extends BaseFragment implements MoviePopularContract.View {
     @BindView(R.id.rv)
     RecyclerView rv;
     @BindView(R.id.srl)
@@ -63,15 +63,13 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
         manager = new GridLayoutManager(context,3);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
-        srl.setOnRefreshListener(this);
-
-        srl.post(new Runnable() {
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void run() {
-                srl.setRefreshing(true);
+            public void onRefresh() {
+                presenter.start(true);
             }
         });
-        onRefresh();
+
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -86,11 +84,13 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
                 openMovieDetailActivity(popularList.get(i));
             }
         });
+        isViewPrepared=true;
     }
 
     @Override
     protected void requestBaseData() {
-        Logger.d("MoviePopularFragment...First to see");
+        srl.setRefreshing(true);
+        presenter.start(true);
     }
 
     @Override
@@ -124,10 +124,5 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void onRefresh() {
-        presenter.start(true);
     }
 }

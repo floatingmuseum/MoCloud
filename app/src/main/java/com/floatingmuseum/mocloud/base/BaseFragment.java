@@ -3,6 +3,8 @@ package com.floatingmuseum.mocloud.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,6 +25,8 @@ abstract public class BaseFragment extends Fragment {
     protected boolean alreadyGetAllData = false;
     protected boolean firstSeeLastItem = true;
     protected boolean notFirstLoadData = false;
+    protected boolean isFirstVisibleToUser = false;
+    protected boolean isViewPrepared = false;
 
     abstract protected void initView();
 
@@ -49,12 +53,13 @@ abstract public class BaseFragment extends Fragment {
         Logger.d("最后可见item:"+lastItemPosition+"...总条目数:"+adapter.getItemCount());
         if ((lastItemPosition+1)==adapter.getItemCount() && !srl.isRefreshing()){
             srl.setRefreshing(true);
+            Logger.d("刷新...BaseFragment..."+srl);
             presenter.start(false);
         }
     }
 
     protected void stopRefresh(SwipeRefreshLayout srl){
-        firstSeeLastItem = true;
+//        firstSeeLastItem = true;
         if(srl!=null){
             srl.setRefreshing(false);
         }
@@ -67,13 +72,10 @@ abstract public class BaseFragment extends Fragment {
         context.startActivity(intent);
     }
 
-    protected boolean isFirstVisibleToUser = false;
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-
-        if(isVisibleToUser && !isFirstVisibleToUser){
+        if(isVisibleToUser && !isFirstVisibleToUser && isViewPrepared){
             isFirstVisibleToUser = true;
             requestBaseData();
         }

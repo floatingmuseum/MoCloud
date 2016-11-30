@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class MovieTrendingFragment extends BaseFragment implements MovieTrendingContract.View, SwipeRefreshLayout.OnRefreshListener {
+public class MovieTrendingFragment extends BaseFragment implements MovieTrendingContract.View {
     @BindView(R.id.rv)
     RecyclerView rv;
     @BindView(R.id.srl)
@@ -63,18 +63,13 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
         manager = new GridLayoutManager(context,3);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
-        srl.setOnRefreshListener(this);
-        /**
-         * 虽然这里通过View.post方法在SwipeRefreshLayout初始化完毕后显示刷新，
-         * 但是刷新监听中的onRefresh方法并不会被执行，所以下面手动调用一下
-         */
-        srl.post(new Runnable() {
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void run() {
-                onRefresh();
-                srl.setRefreshing(true);
+            public void onRefresh() {
+                presenter.start(true);
             }
         });
+
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -89,6 +84,21 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
                 openMovieDetailActivity(trendingList.get(i).getMovie());
             }
         });
+
+
+        /**
+         * 虽然这里通过View.post方法在SwipeRefreshLayout初始化完毕后显示刷新，
+         * 但是刷新监听中的onRefresh方法并不会被执行，所以下面手动调用一下
+         */
+        srl.post(new Runnable() {
+            @Override
+            public void run() {
+                Logger.d("测试...TrendingFragment...postRefresh");
+                srl.setRefreshing(true);
+                isViewPrepared = true;
+                requestBaseData();
+            }
+        });
     }
 
     @Override
@@ -97,14 +107,9 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-    }
-
-    @Override
     protected void requestBaseData() {
-        Logger.d("MovieTrendingFragment...First to see");
+        Logger.d("测试...MovieTrendingFragment...First to see...isViewPrepared:"+isViewPrepared);
+        presenter.start(true);
     }
 
     @Override
@@ -133,10 +138,5 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void onRefresh() {
-        presenter.start(true);
     }
 }

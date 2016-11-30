@@ -28,6 +28,7 @@ public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, 
 
     @Override
     public void start(final boolean shouldClean) {
+        Logger.d("刷新...start:"+shouldClean);
         pageNum = shouldClean?1:++pageNum;
         this.shouldClean =shouldClean;
         repository.getMovieTrendingData(pageNum,limit,this);

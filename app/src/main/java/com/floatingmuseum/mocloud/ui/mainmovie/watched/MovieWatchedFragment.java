@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class MovieWatchedFragment extends BaseFragment implements MovieWatchedContract.View, SwipeRefreshLayout.OnRefreshListener{
+public class MovieWatchedFragment extends BaseFragment implements MovieWatchedContract.View{
 
     @BindView(R.id.rv)
     RecyclerView rv;
@@ -64,18 +64,12 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
         manager = new GridLayoutManager(context,3);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
-        srl.setOnRefreshListener(this);
-        /**
-         * 虽然这里通过View.post方法在SwipeRefreshLayout初始化完毕后显示刷新，
-         * 但是刷新监听中的onRefresh方法并不会被执行，所以下面手动调用一下
-         */
-        srl.post(new Runnable() {
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void run() {
-                srl.setRefreshing(true);
+            public void onRefresh() {
+                presenter.start(true);
             }
         });
-        onRefresh();
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -90,11 +84,14 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
                         openMovieDetailActivity(watchedList.get(i).getMovie());
             }
         });
+        isViewPrepared = true;
     }
 
     @Override
     protected void requestBaseData() {
         Logger.d("MovieWatchedFragment...First to see");
+        srl.setRefreshing(true);
+        presenter.start(true);
     }
 
     @Override
@@ -124,14 +121,4 @@ public class MovieWatchedFragment extends BaseFragment implements MovieWatchedCo
     public void onDestroy() {
         super.onDestroy();
     }
-
-    @Override
-    public void onRefresh() {
-        presenter.start(true);
-    }
-
-//    @Override
-//    public void onItemClick(View view, int i) {
-//        openMovieDetailActivity(watchedList.get(i).getMovie().getIds().getSlug());
-//    }
 }

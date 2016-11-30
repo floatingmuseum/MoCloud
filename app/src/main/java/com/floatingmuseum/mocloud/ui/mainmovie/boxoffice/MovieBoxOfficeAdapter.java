@@ -27,13 +27,13 @@ public class MovieBoxOfficeAdapter extends BaseQuickAdapter<BaseMovie>{
         holder.setText(R.id.tv_box_movie_title,movie.getTitle());
         Logger.d("MovieName:" + movie.getTitle());
         if (movie.getImage() == null) {
-            ImageLoader.load(mContext, null, (RatioImageView) holder.getView(R.id.iv_fanart),
+            ImageLoader.load(mContext, null, (RatioImageView) holder.getView(R.id.iv_boxoffice_poster),
                     R.drawable.default_movie_poster);
             return;
         }
         String tmdbPosterUrl = "https://image.tmdb.org/t/p/w185"+movie.getImage().getPosters().get(0).getFile_path();
         Logger.d("tmdbPosterUrl:"+tmdbPosterUrl);
-        ImageLoader.load(mContext,tmdbPosterUrl,(RatioImageView)holder.getView(R.id.iv_fanart),
+        ImageLoader.load(mContext,tmdbPosterUrl,(RatioImageView)holder.getView(R.id.iv_boxoffice_poster),
                 R.drawable.default_movie_poster);
     }
 }
