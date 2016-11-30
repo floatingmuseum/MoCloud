@@ -9,6 +9,7 @@ import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.TmdbImagesConfiguration;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
+import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
@@ -54,7 +55,7 @@ public interface MoCloudService {
      * Returns all movies being watched right now. Movies with the most users are returned first.
      * limit每页数据的数量
      */
-    @GET("movies/trending")
+    @GET("movies/trending?extended=full")
     Observable<List<BaseMovie>> getMovieTrending(@Query("page") int page,@Query("limit")int limit);
 
     /**
@@ -114,6 +115,9 @@ public interface MoCloudService {
      */
     @GET("movies/{id}/people?extended=images")
     Observable<People> getMoviePeople(@Path("id") String movieId);
+
+    @GET("https://api.themoviedb.org/3/movie/{tmdbID}/credits")
+    Observable<TmdbPeople> getMoviePeople(@Path("tmdbID") int tmdbId,@Query("api_key")String tmdbApiKey);
 
     /**
      * 评论

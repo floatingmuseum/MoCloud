@@ -1,11 +1,15 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Floatingmuseum on 2016/4/18.
  */
-public class Movie {
+public class Movie implements Serializable{
     private String title;
     private int year;
     private Ids ids;

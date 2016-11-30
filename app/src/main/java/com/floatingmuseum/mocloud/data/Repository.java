@@ -12,6 +12,7 @@ import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
+import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
@@ -248,11 +249,11 @@ public class Repository {
                 });
     }
 
-    public void getMoviePeople(String movieId, final MovieDetailCallback callback) {
-        service.getMoviePeople(movieId)
+    public void getMoviePeople(int movieId, final MovieDetailCallback callback) {
+        service.getMoviePeople(movieId,BuildConfig.TmdbApiKey)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<People>() {
+                .subscribe(new Observer<TmdbPeople>() {
                     @Override
                     public void onCompleted() {
 
@@ -264,7 +265,7 @@ public class Repository {
                     }
 
                     @Override
-                    public void onNext(People people) {
+                    public void onNext(TmdbPeople people) {
                         callback.onPeopleSuccess(people);
                     }
                 });

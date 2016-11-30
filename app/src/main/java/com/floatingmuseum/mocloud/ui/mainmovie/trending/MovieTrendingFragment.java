@@ -93,7 +93,6 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
         srl.post(new Runnable() {
             @Override
             public void run() {
-                Logger.d("测试...TrendingFragment...postRefresh");
                 srl.setRefreshing(true);
                 isViewPrepared = true;
                 requestBaseData();
@@ -108,7 +107,6 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
 
     @Override
     protected void requestBaseData() {
-        Logger.d("测试...MovieTrendingFragment...First to see...isViewPrepared:"+isViewPrepared);
         presenter.start(true);
     }
 

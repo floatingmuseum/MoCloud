@@ -7,6 +7,7 @@ import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.People;
+import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 
 import java.util.List;
 
@@ -27,10 +28,10 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
         this.repository = repository;
     }
 
-    public void getData(String movieId){
-        repository.getMovieDetail(movieId,this);
-        repository.getMoviePeople(movieId,this);
-        repository.getMovieComments(movieId,Repository.COMMENTS_SORT_LIKES,limit,page,this,null);
+    public void getData(Movie movie){
+//        repository.getMovieDetail(movieId,this);
+        repository.getMoviePeople(movie.getIds().getTmdb(),this);
+        repository.getMovieComments(movie.getIds().getSlug(),Repository.COMMENTS_SORT_LIKES,limit,page,this,null);
     }
 
     @Override
@@ -39,7 +40,7 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
     }
 
     @Override
-    public void onPeopleSuccess(People people) {
+    public void onPeopleSuccess(TmdbPeople people) {
         activity.onPeopleSuccess(people);
     }
 

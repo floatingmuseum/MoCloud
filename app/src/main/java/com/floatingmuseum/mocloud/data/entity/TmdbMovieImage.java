@@ -1,12 +1,17 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Floatingmuseum on 2016/11/27.
  */
 
-public class TmdbMovieImage {
+public class TmdbMovieImage implements Serializable {
 
     private int id;
     private List<Backdrops> backdrops;
@@ -35,7 +40,7 @@ public class TmdbMovieImage {
         this.posters = posters;
     }
 
-    public static class Backdrops {
+    public static class Backdrops implements Serializable{
         private double aspect_ratio;
         private String file_path;
         private int height;
@@ -101,7 +106,7 @@ public class TmdbMovieImage {
         }
     }
 
-    public static class Posters {
+    public static class Posters implements Serializable{
         private double aspect_ratio;
         private String file_path;
         private int height;

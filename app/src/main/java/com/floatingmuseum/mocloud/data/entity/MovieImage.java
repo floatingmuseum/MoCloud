@@ -1,12 +1,17 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Floatingmuseum on 2016/11/22.
  */
 
-public class MovieImage {
+public class MovieImage implements Serializable{
 
     private String name;
     private String tmdb_id;
@@ -99,19 +104,19 @@ public class MovieImage {
         this.moviethumb = moviethumb;
     }
 
-    public static class Hdmovieclearart extends BaseFanart {
+    public static class Hdmovieclearart extends BaseFanart implements Serializable {
     }
 
-    public static class Hdmovielogo extends BaseFanart {
+    public static class Hdmovielogo extends BaseFanart implements Serializable{
     }
 
-    public static class Movieposter extends BaseFanart {
+    public static class Movieposter extends BaseFanart implements Serializable{
     }
 
-    public static class Moviebackground extends BaseFanart {
+    public static class Moviebackground extends BaseFanart implements Serializable{
     }
 
-    public static class Moviedisc extends BaseFanart {
+    public static class Moviedisc extends BaseFanart implements Serializable{
         private String disc;
         private String disc_type;
 
@@ -132,9 +137,9 @@ public class MovieImage {
         }
     }
 
-    public static class Moviebanner extends BaseFanart {
+    public static class Moviebanner extends BaseFanart implements Serializable{
     }
 
-    public static class Moviethumb extends BaseFanart {
+    public static class Moviethumb extends BaseFanart implements Serializable{
     }
 }

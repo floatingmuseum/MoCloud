@@ -1,11 +1,14 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
  * Created by Floatingmuseum on 2016/4/18.
  */
-public class Ids{
+public class Ids implements Serializable{
     private int trakt;
     private String slug;
     private String imdb;

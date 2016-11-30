@@ -67,8 +67,9 @@ abstract public class BaseFragment extends Fragment {
 
     protected void openMovieDetailActivity(Movie movie){
         Intent intent = new Intent(context, MovieDetailActivity.class);
-        intent.putExtra(MovieDetailActivity.MOVIE_ID,movie.getIds().getSlug());
-        intent.putExtra(MovieDetailActivity.MOVIE_TITLE,movie.getTitle());
+//        intent.putExtra(MovieDetailActivity.MOVIE_ID,movie.getIds().getSlug());
+        intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,movie);
+//        intent.putExtra(MovieDetailActivity.MOVIE_TITLE,movie.getTitle());
         context.startActivity(intent);
     }
 
