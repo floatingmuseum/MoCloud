@@ -37,8 +37,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Floatingmuseum on 2016/6/20.
  */
 public class MovieDetailActivity extends BaseActivity implements BaseDetailActivity {
-    public static final String MOVIE_ID = "movie_id";
-    public static final String MOVIE_TITLE = "movie_title";
     public static final String MOVIE_OBJECT = "movie_object";
 
     private MovieDetailPresenter presenter;
@@ -78,9 +76,6 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         ButterKnife.bind(this);
 
         movie = (Movie) getIntent().getSerializableExtra(MOVIE_OBJECT);
-//        movieID = getIntent().getStringExtra(MOVIE_ID);
-//        movieTitle = getIntent().getStringExtra(MOVIE_TITLE);
-        Logger.d("电影:" + movie.getTitle());
         actionBar.setTitle(movie.getTitle());
 
         presenter = new MovieDetailPresenter(this, Repository.getInstance());
@@ -127,23 +122,19 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
                 break;
             }
         }
-//        Staff director = people.getCrew();
         if (director != null) {
             LinearLayout staff = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
             RatioImageView iv_staff_headshot = (RatioImageView) staff.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) staff.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) staff.findViewById(R.id.tv_crew_realname);
             staff.findViewById(R.id.tv_crew_character).setVisibility(View.GONE);
-//            ImageLoader.load(this, director.getPerson().getImages().getHeadshot().getThumb(), iv_staff_headshot, R.drawable.default_movie_poster);
             ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(director.getProfile_path()), iv_staff_headshot, R.drawable.default_movie_poster);
             tv_crew_job.setText(director.getJob());
-//            tv_crew_realname.setText(director.getPerson().getName());
             tv_crew_realname.setText(director.getName());
             ll_crew.addView(staff);
         }
 
         List<TmdbPeople.Cast> actors = people.getCast();
-//        List<Actor> actors = people.getCast();
         int showSize = actors.size() > 5 ? 5 : actors.size();
 
         for (int i = 0; i < showSize; i++) {
