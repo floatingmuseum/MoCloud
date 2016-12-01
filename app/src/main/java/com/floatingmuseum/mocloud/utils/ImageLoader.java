@@ -39,6 +39,19 @@ public class ImageLoader {
                 .into(view);
     }
 
+    public static void load(Context context,File file,ImageView view,int placeHolder){
+        Drawable default_image;
+        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP){
+            default_image = context.getResources().getDrawable(placeHolder,null);
+        }else{
+            default_image = context.getResources().getDrawable(placeHolder);
+        }
+        Glide.with(context)
+                .load(file)
+                .placeholder(default_image)
+                .into(view);
+    }
+
     public static void loadDontAnimate(Context context, String url, final ImageView view, int placeHolder){
         Drawable default_image;
         if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP){

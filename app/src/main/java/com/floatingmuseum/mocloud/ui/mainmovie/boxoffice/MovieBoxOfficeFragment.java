@@ -71,7 +71,7 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                presenter.start();
+                presenter.start(true);
             }
         });
 
@@ -81,13 +81,16 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
                 openMovieDetailActivity(boxOfficeList.get(i).getMovie());
             }
         });
-        isViewPrepared = true;
+
+        requestBaseDataIfUserNotScrollToFragments(srl,presenter);
+
+//        isViewPrepared = true;
     }
 
     @Override
     protected void requestBaseData() {
         srl.setRefreshing(true);
-        presenter.start();
+        presenter.start(true);
     }
 
     @Override

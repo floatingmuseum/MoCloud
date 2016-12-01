@@ -17,7 +17,7 @@ public class MovieAnticipatedPresenter implements MovieAnticipatedContract.Prese
     private Repository repository;
     private int pageNum = 1;
     private int limit = 12;
-    protected Boolean shouldClean;
+    protected boolean shouldClean;
 
 
     public MovieAnticipatedPresenter(@NonNull MovieAnticipatedContract.View anticipatedView, @NonNull Repository repository){

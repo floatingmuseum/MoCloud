@@ -12,7 +12,10 @@ import android.support.v7.widget.GridLayoutManager;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.ui.comments.CommentsContract;
 import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
+import com.floatingmuseum.mocloud.ui.mainmovie.trending.MovieTrendingContract;
+import com.floatingmuseum.mocloud.ui.mainmovie.trending.MovieTrendingPresenter;
 import com.orhanobut.logger.Logger;
 
 
@@ -76,9 +79,27 @@ abstract public class BaseFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        Logger.d("isViewPrepared:"+isViewPrepared);
         if(isVisibleToUser && !isFirstVisibleToUser && isViewPrepared){
+            Logger.d("请求数据...setUserVisibleHint");
             isFirstVisibleToUser = true;
             requestBaseData();
+        }
+    }
+
+    /**
+     * 如果用户进入当前Fragment不是通过滑动页面，且当前Fragment不是之前Fragment的左右邻，
+     * 则isViewPrepared会为false，导致第一次可见时不加载数据
+     * @param srl
+     * @param presenter
+     */
+    protected void requestBaseDataIfUserNotScrollToFragments(SwipeRefreshLayout srl,BasePresenter presenter){
+        if (!isViewPrepared && !isFirstVisibleToUser){
+            isViewPrepared = true;
+            Logger.d("请求数据...requestBaseDataIfUserNotScrollToFragments");
+            srl.setRefreshing(true);
+//        requestBaseData();
+            presenter.start(true);
         }
     }
 

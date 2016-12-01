@@ -84,7 +84,7 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
                 openMovieDetailActivity(popularList.get(i));
             }
         });
-        isViewPrepared=true;
+        requestBaseDataIfUserNotScrollToFragments(srl,presenter);
     }
 
     @Override

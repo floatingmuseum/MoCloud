@@ -90,14 +90,16 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
          * 虽然这里通过View.post方法在SwipeRefreshLayout初始化完毕后显示刷新，
          * 但是刷新监听中的onRefresh方法并不会被执行，所以下面手动调用一下
          */
-        srl.post(new Runnable() {
-            @Override
-            public void run() {
-                srl.setRefreshing(true);
-                isViewPrepared = true;
-                requestBaseData();
-            }
-        });
+//        srl.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                srl.setRefreshing(true);
+//                isViewPrepared = true;
+//                requestBaseData();
+//            }
+//        });
+
+        requestBaseDataIfUserNotScrollToFragments(srl,presenter);
     }
 
     @Override

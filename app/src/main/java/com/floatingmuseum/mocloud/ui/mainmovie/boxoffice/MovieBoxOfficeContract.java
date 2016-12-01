@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.ui.mainmovie.boxoffice;
 
+import com.floatingmuseum.mocloud.base.BasePresenter;
 import com.floatingmuseum.mocloud.base.BaseView;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 
@@ -13,8 +14,7 @@ public class MovieBoxOfficeContract {
         void refreshData(List<BaseMovie> newData);
     }
 
-    interface Presenter{
-        void start();
+    interface Presenter extends BasePresenter{
         void onDestroy();
     }
 }

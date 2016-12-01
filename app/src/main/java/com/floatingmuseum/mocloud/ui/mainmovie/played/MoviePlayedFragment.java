@@ -84,7 +84,7 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
                 openMovieDetailActivity(playedList.get(i).getMovie());
             }
         });
-        isViewPrepared = true;
+        requestBaseDataIfUserNotScrollToFragments(srl,presenter);
     }
 
     @Override

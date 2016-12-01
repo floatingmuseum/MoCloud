@@ -18,6 +18,7 @@ import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
+import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.NumberFormatUtil;
@@ -26,6 +27,7 @@ import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -85,8 +87,16 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     }
 
     private void initBaseData(Movie movie) {
-        String tmdbPosterUrl = "https://image.tmdb.org/t/p/w185" + movie.getImage().getPosters().get(0).getFile_path();
-        ImageLoader.load(this, tmdbPosterUrl, iv_poster, R.drawable.default_movie_poster);
+        File posterFile = ImageCacheManager.hasCacheImage(movie.getImage().getId());
+        if (posterFile!=null){
+            ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
+        }else{
+            if (movie.getImage().getPosters()!=null){
+                ImageLoader.load(this, StringUtil.buildPosterUrl(movie.getImage().getPosters().get(0).getFile_path()), iv_poster, R.drawable.default_movie_poster);
+            }else{
+                ImageLoader.load(this,"null",iv_poster,R.drawable.default_movie_poster);
+            }
+        }
         tv_movie_title.setText(movie.getTitle());
         tv_released.setText(movie.getReleased());
         tv_runtime.setText(movie.getRuntime() + " mins");
