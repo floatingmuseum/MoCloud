@@ -28,8 +28,9 @@ abstract public class BaseFragment extends Fragment {
     protected boolean alreadyGetAllData = false;
     protected boolean firstSeeLastItem = true;
     protected boolean notFirstLoadData = false;
-    protected boolean isFirstVisibleToUser = false;
+    protected boolean isFirstVisibleToUser = true;
     protected boolean isViewPrepared = false;
+    protected boolean isVisibleToUser = false;
 
     abstract protected void initView();
 
@@ -80,9 +81,10 @@ abstract public class BaseFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         Logger.d("isViewPrepared:"+isViewPrepared);
-        if(isVisibleToUser && !isFirstVisibleToUser && isViewPrepared){
+        this.isVisibleToUser = isVisibleToUser;
+        if(isVisibleToUser && isFirstVisibleToUser && isViewPrepared){
             Logger.d("请求数据...setUserVisibleHint");
-            isFirstVisibleToUser = true;
+            isFirstVisibleToUser = false;
             requestBaseData();
         }
     }
@@ -94,8 +96,9 @@ abstract public class BaseFragment extends Fragment {
      * @param presenter
      */
     protected void requestBaseDataIfUserNotScrollToFragments(SwipeRefreshLayout srl,BasePresenter presenter){
-        if (!isViewPrepared && !isFirstVisibleToUser){
-            isViewPrepared = true;
+        isViewPrepared = true;
+        if (isViewPrepared && isFirstVisibleToUser && isVisibleToUser){
+            isFirstVisibleToUser = false;
             Logger.d("请求数据...requestBaseDataIfUserNotScrollToFragments");
             srl.setRefreshing(true);
 //        requestBaseData();

@@ -98,7 +98,7 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
 //                requestBaseData();
 //            }
 //        });
-
+        isViewPrepared = true;
         requestBaseDataIfUserNotScrollToFragments(srl,presenter);
     }
 
