@@ -16,14 +16,17 @@ import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
+import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
 import com.floatingmuseum.mocloud.data.net.MoCloudService;
 import com.floatingmuseum.mocloud.utils.SPUtil;
+import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
 
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
@@ -84,7 +87,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
 //                        callback.onBaseDataSuccess(movies);
 //                        getFanrtImagesByBaseMovies(movies,callback);
-                        getTmdbImagesByBaseMovie(movies,callback);
+                        getTmdbImagesByBaseMovie(movies, callback);
                     }
                 });
     }
@@ -107,7 +110,7 @@ public class Repository {
                     public void onNext(List<Movie> movies) {
 //                        callback.onBaseDataSuccess(movies);
 //                        getFanrtImagesByMovies(movies,callback);
-                        getTmdbImagesByMovie(movies,callback);
+                        getTmdbImagesByMovie(movies, callback);
                     }
                 });
     }
@@ -130,7 +133,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
 //                        callback.onBaseDataSuccess(movies);
 //                        getFanrtImagesByBaseMovies(movies,callback);
-                        getTmdbImagesByBaseMovie(movies,callback);
+                        getTmdbImagesByBaseMovie(movies, callback);
                     }
                 });
     }
@@ -153,7 +156,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
 //                        callback.onBaseDataSuccess(movies);
 //                        getFanrtImagesByBaseMovies(movies,callback);
-                        getTmdbImagesByBaseMovie(movies,callback);
+                        getTmdbImagesByBaseMovie(movies, callback);
                     }
                 });
     }
@@ -176,7 +179,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
 //                        callback.onBaseDataSuccess(movies);
 //                        getFanrtImagesByBaseMovies(movies,callback);
-                        getTmdbImagesByBaseMovie(movies,callback);
+                        getTmdbImagesByBaseMovie(movies, callback);
                     }
                 });
     }
@@ -199,7 +202,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
 //                        callback.onBaseDataSuccess(movies);
 //                        getFanrtImagesByBaseMovies(movies,callback);
-                        getTmdbImagesByBaseMovie(movies,callback);
+                        getTmdbImagesByBaseMovie(movies, callback);
                     }
                 });
     }
@@ -222,7 +225,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
 //                        callback.onBaseDataSuccess(movies);
 //                        getFanrtImagesByBaseMovies(movies,callback);
-                        getTmdbImagesByBaseMovie(movies,callback);
+                        getTmdbImagesByBaseMovie(movies, callback);
                     }
                 });
     }
@@ -250,7 +253,7 @@ public class Repository {
     }
 
     public void getMoviePeople(int movieId, final MovieDetailCallback callback) {
-        service.getMoviePeople(movieId,BuildConfig.TmdbApiKey)
+        service.getMoviePeople(movieId, BuildConfig.TmdbApiKey)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<TmdbPeople>() {
@@ -476,7 +479,11 @@ public class Repository {
         Observable.from(movies).flatMap(new Func1<BaseMovie, Observable<TmdbMovieImage>>() {
             @Override
             public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
-                Logger.d("Tmdb:" + baseMovie.getMovie().getIds().getTmdb() + "..." + BuildConfig.TmdbApiKey);
+                int tmdbID = baseMovie.getMovie().getIds().getTmdb();
+                Logger.d("Tmdb:" + tmdbID);
+                if (ImageCacheManager.hasCacheImage(tmdbID) != null) {
+                    return ImageCacheManager.localImage(tmdbID);
+                }
                 return service.getTmdbImages(baseMovie.getMovie().getIds().getTmdb(), BuildConfig.TmdbApiKey);
             }
         }).subscribeOn(Schedulers.io())
@@ -495,8 +502,12 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
-                        Logger.d("Movie:" + movieImage.getId() + "...PosterUrl:" + movieImage.getPosters().get(0).getFile_path());
+//                        Logger.d("Movie:" + movieImage.getId() + "...PosterUrl:" + movieImage.getPosters().get(0).getFile_path());
                         mergeMovieAndImage1(movieImage, movies);
+                        if (!movieImage.isHasCache()) {
+                            String fileName = "TMDB..." + movieImage.getId() + StringUtil.getFileSuffix(movieImage.getPosters().get(0).getFile_path());
+                            downLoadImage(movieImage.getPosters().get(0).getFile_path(), fileName);
+                        }
                     }
                 });
     }
@@ -505,6 +516,11 @@ public class Repository {
         Observable.from(movies).flatMap(new Func1<Movie, Observable<TmdbMovieImage>>() {
             @Override
             public Observable<TmdbMovieImage> call(Movie movie) {
+                int tmdbID = movie.getIds().getTmdb();
+                Logger.d("Tmdb:" + tmdbID);
+                if (ImageCacheManager.hasCacheImage(tmdbID) != null) {
+                    return ImageCacheManager.localImage(tmdbID);
+                }
                 Logger.d("Tmdb:" + movie.getIds().getTmdb() + "..." + BuildConfig.TmdbApiKey);
                 return service.getTmdbImages(movie.getIds().getTmdb(), BuildConfig.TmdbApiKey);
             }
@@ -524,8 +540,11 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
-                        Logger.d("Movie:" + movieImage.getId() + "...PosterUrl:" + movieImage.getPosters().get(0).getFile_path());
                         mergeMovieAndImage2(movieImage, movies);
+                        if (!movieImage.isHasCache()) {
+                            String fileName = "TMDB..." + movieImage.getId() + StringUtil.getFileSuffix(movieImage.getPosters().get(0).getFile_path());
+                            downLoadImage(movieImage.getPosters().get(0).getFile_path(), fileName);
+                        }
                     }
                 });
     }
@@ -577,7 +596,7 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
-                        Logger.d("getFanrtImages...onError"+e.getMessage());
+                        Logger.d("getFanrtImages...onError" + e.getMessage());
                         e.printStackTrace();
                     }
 
@@ -619,6 +638,30 @@ public class Repository {
                 movie.setImage(image);
             }
         }
+    }
+
+    private void downLoadImage(String url, final String fileName) {
+        String posterUrl = StringUtil.buildPosterUrl(url);
+        service.downloadImage(posterUrl)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(new Subscriber<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("图片下载出错:" + fileName);
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        ImageCacheManager.writeToDisk(responseBody, fileName);
+                    }
+                });
     }
 
     public void saveImage(String imageUrl) {

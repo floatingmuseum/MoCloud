@@ -82,7 +82,10 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
                 openMovieDetailActivity(anticipatedList.get(i).getMovie());
             }
         });
-        isViewPrepared = true;
+
+        requestBaseDataIfUserNotScrollToFragments(srl,presenter);
+
+//        isViewPrepared = true;
     }
 
     @Override

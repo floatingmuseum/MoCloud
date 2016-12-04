@@ -16,4 +16,8 @@ public class StringUtil {
     public static String buildPeopleHeadshotUrl(String url){
         return "https://image.tmdb.org/t/p/w185"+url;
     }
+
+    public static String getFileSuffix(String content){
+        return content.substring(content.lastIndexOf("."));
+    }
 }

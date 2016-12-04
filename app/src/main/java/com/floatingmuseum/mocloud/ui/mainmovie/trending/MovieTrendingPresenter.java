@@ -40,9 +40,10 @@ public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, 
     }
 
     @Override
-    public void onBaseDataSuccess(List<BaseMovie> t) {
-        trendingView.refreshData(t,shouldClean);
+    public void onBaseDataSuccess(List<BaseMovie> data) {
+        trendingView.refreshData(data,shouldClean);
         trendingView.stopRefresh();
+
     }
 
     public int getLimit(){

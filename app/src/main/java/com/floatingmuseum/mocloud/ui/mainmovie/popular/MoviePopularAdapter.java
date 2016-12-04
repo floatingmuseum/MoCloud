@@ -4,6 +4,7 @@ package com.floatingmuseum.mocloud.ui.mainmovie.popular;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.base.BaseMovieItemAdapter;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/5/1.
  */
-public class MoviePopularAdapter extends BaseQuickAdapter<Movie>{
+public class MoviePopularAdapter extends BaseMovieItemAdapter<Movie> {
 
     public MoviePopularAdapter(List<Movie> data){
         super(R.layout.item_movie_trending,data);
@@ -26,16 +27,6 @@ public class MoviePopularAdapter extends BaseQuickAdapter<Movie>{
 
     @Override
     protected void convert(BaseViewHolder holder, Movie movie) {
-
-        Logger.d("MovieName:" + movie.getTitle());
-        if (movie.getImage() == null) {
-            ImageLoader.load(mContext, null, (RatioImageView) holder.getView(R.id.iv_poster),
-                    R.drawable.default_movie_poster);
-            return;
-        }
-        String tmdbPosterUrl = StringUtil.buildPosterUrl(movie.getImage().getPosters().get(0).getFile_path());
-        Logger.d("tmdbPosterUrl:"+tmdbPosterUrl);
-        ImageLoader.load(mContext,tmdbPosterUrl,(RatioImageView)holder.getView(R.id.iv_poster),
-                R.drawable.default_movie_poster);
+        loadPoster((RatioImageView) holder.getView(R.id.iv_poster),movie);
     }
 }

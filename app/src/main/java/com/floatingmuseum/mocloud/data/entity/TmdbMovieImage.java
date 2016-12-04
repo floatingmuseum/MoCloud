@@ -14,6 +14,7 @@ import java.util.List;
 public class TmdbMovieImage implements Serializable {
 
     private int id;
+    private boolean hasCache;
     private List<Backdrops> backdrops;
     private List<Posters> posters;
     public int getId() {
@@ -22,6 +23,14 @@ public class TmdbMovieImage implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isHasCache() {
+        return hasCache;
+    }
+
+    public void setHasCache(boolean hasCache) {
+        this.hasCache = hasCache;
     }
 
     public List<Backdrops> getBackdrops() {

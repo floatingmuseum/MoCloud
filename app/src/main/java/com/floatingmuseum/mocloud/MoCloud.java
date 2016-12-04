@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 
 /**
  * Created by Floatingmuseum on 2016/4/13.
@@ -17,5 +18,6 @@ public class MoCloud extends Application {
         super.onCreate();
         context = this;
         Repository.init();
+        ImageCacheManager.init();
     }
 }

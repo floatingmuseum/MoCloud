@@ -16,7 +16,7 @@ public class MovieBoxOfficePresenter implements MovieBoxOfficeContract.Presenter
 
     private MovieBoxOfficeContract.View boxOfficeView;
     private Repository repository;
-    protected Boolean shouldClean;
+    protected boolean shouldClean;
 
     public MovieBoxOfficePresenter(@NonNull MovieBoxOfficeContract.View boxOfficeView,@NonNull Repository repository){
         this.boxOfficeView = boxOfficeView;
@@ -24,7 +24,7 @@ public class MovieBoxOfficePresenter implements MovieBoxOfficeContract.Presenter
     }
 
     @Override
-    public void start() {
+    public void start(boolean shouldClean) {
         repository.getMovieBoxOfficeData(this);
     }
 

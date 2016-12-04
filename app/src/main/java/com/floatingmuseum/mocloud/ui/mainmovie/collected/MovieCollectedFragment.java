@@ -84,7 +84,7 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
                 openMovieDetailActivity(collectedList.get(i).getMovie());
             }
         });
-        isViewPrepared = true;
+        requestBaseDataIfUserNotScrollToFragments(srl,presenter);
     }
 
     @Override
