@@ -26,6 +26,6 @@ ext{
             'logger' :  'com.orhanobut:logger:1.4',
             'photoview' :  'com.github.chrisbanes.photoview:library:1.2.4',
             'numberprogressbar' :  'com.daimajia.numberprogressbar:library:1.2',
-            'blockcanary':'com.github.moduth:blockcanary-android:1.2.1'
+            'blockcanary':'com.github.markzhai:blockcanary-android:1.4.0'
     ]
 }

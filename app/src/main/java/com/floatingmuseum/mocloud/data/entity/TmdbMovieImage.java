@@ -1,9 +1,11 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +17,11 @@ public class TmdbMovieImage implements Serializable {
 
     private int id;
     private boolean hasCache;
+    private Uri fileUri;
     private List<Backdrops> backdrops;
     private List<Posters> posters;
+
+
     public int getId() {
         return id;
     }
@@ -31,6 +36,14 @@ public class TmdbMovieImage implements Serializable {
 
     public void setHasCache(boolean hasCache) {
         this.hasCache = hasCache;
+    }
+
+    public Uri getFileUri() {
+        return fileUri;
+    }
+
+    public void setFileUri(Uri fileUri) {
+        this.fileUri = fileUri;
     }
 
     public List<Backdrops> getBackdrops() {

@@ -1,6 +1,8 @@
 package com.floatingmuseum.mocloud.data;
 
 
+import android.net.Uri;
+
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.Constants;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
@@ -23,6 +25,7 @@ import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.orhanobut.logger.Logger;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -481,8 +484,10 @@ public class Repository {
             public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
                 int tmdbID = baseMovie.getMovie().getIds().getTmdb();
                 Logger.d("Tmdb:" + tmdbID);
-                if (ImageCacheManager.hasCacheImage(tmdbID) != null) {
-                    return ImageCacheManager.localImage(tmdbID);
+                File file = ImageCacheManager.hasCacheImage(tmdbID);
+                if (file != null) {
+                    Uri uri = Uri.parse(file.toURI().toString());
+                    return ImageCacheManager.localImage(tmdbID,uri);
                 }
                 return service.getTmdbImages(baseMovie.getMovie().getIds().getTmdb(), BuildConfig.TmdbApiKey);
             }
@@ -518,8 +523,10 @@ public class Repository {
             public Observable<TmdbMovieImage> call(Movie movie) {
                 int tmdbID = movie.getIds().getTmdb();
                 Logger.d("Tmdb:" + tmdbID);
-                if (ImageCacheManager.hasCacheImage(tmdbID) != null) {
-                    return ImageCacheManager.localImage(tmdbID);
+                File file = ImageCacheManager.hasCacheImage(tmdbID);
+                if (file != null) {
+                    Uri uri = Uri.parse(file.toURI().toString());
+                    return ImageCacheManager.localImage(tmdbID,uri);
                 }
                 Logger.d("Tmdb:" + movie.getIds().getTmdb() + "..." + BuildConfig.TmdbApiKey);
                 return service.getTmdbImages(movie.getIds().getTmdb(), BuildConfig.TmdbApiKey);

@@ -1,5 +1,7 @@
 package com.floatingmuseum.mocloud.base;
 
+import android.net.Uri;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
@@ -11,6 +13,7 @@ import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -25,10 +28,10 @@ public abstract class BaseMovieItemAdapter<T extends Object> extends BaseQuickAd
     protected void loadPoster(RatioImageView posterView, Movie movie) {
         Logger.d("MovieName:" + movie.getTitle());
         if (movie.getImage().isHasCache()) {
-            File file = ImageCacheManager.hasCacheImage(movie.getIds().getTmdb());
-            ImageLoader.load(mContext, file, posterView,
+            Uri fileUri = movie.getImage().getFileUri();
+            ImageLoader.load(mContext, fileUri, posterView,
                     R.drawable.default_movie_poster);
-            Logger.d("图片从本地加载:" + file.getName());
+            Logger.d("图片从本地加载:" + movie.getTitle());
             return;
         }
         Logger.d("图片从网络加载:" + movie.getTitle() + "..." + movie.getImage().getId());

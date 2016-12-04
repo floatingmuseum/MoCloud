@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.data.net;
 
+import android.net.Uri;
 import android.os.Environment;
 
 import com.floatingmuseum.mocloud.data.Repository;
@@ -10,6 +11,7 @@ import com.orhanobut.logger.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -46,7 +48,7 @@ public class ImageCacheManager {
         for (File file : files) {
             Logger.d("文件名:" + file.getName() + "...imdbID:" + tmdbID + "...lastModifiedTime:" + file.lastModified());
             if (file.getName().contains(String.valueOf(tmdbID))) {
-                Logger.d("文件已存在:" + tmdbID);
+                Logger.d("文件已存在:" + tmdbID+"...Uri:"+file.toURI().toString());
                 return file;
             }
         }
@@ -54,10 +56,11 @@ public class ImageCacheManager {
         return null;
     }
 
-    public static Observable<TmdbMovieImage> localImage(int tmdbID){
+    public static Observable<TmdbMovieImage> localImage(int tmdbID,Uri fileUri){
         TmdbMovieImage tmdbMovieImage = new TmdbMovieImage();
         tmdbMovieImage.setHasCache(true);
         tmdbMovieImage.setId(tmdbID);
+        tmdbMovieImage.setFileUri(fileUri);
         return Observable.just(tmdbMovieImage);
     }
 
