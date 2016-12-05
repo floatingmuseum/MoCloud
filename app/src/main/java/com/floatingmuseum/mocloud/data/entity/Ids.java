@@ -3,12 +3,11 @@ package com.floatingmuseum.mocloud.data.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
 
 /**
  * Created by Floatingmuseum on 2016/4/18.
  */
-public class Ids implements Serializable{
+public class Ids implements Parcelable{
     private int trakt;
     private String slug;
     private String imdb;
@@ -54,4 +53,41 @@ public class Ids implements Serializable{
     public void setTvrage(int tvrage) {
         this.tvrage = tvrage;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.trakt);
+        dest.writeString(this.slug);
+        dest.writeString(this.imdb);
+        dest.writeInt(this.tmdb);
+        dest.writeInt(this.tvrage);
+    }
+
+    public Ids() {
+    }
+
+    protected Ids(Parcel in) {
+        this.trakt = in.readInt();
+        this.slug = in.readString();
+        this.imdb = in.readString();
+        this.tmdb = in.readInt();
+        this.tvrage = in.readInt();
+    }
+
+    public static final Creator<Ids> CREATOR = new Creator<Ids>() {
+        @Override
+        public Ids createFromParcel(Parcel source) {
+            return new Ids(source);
+        }
+
+        @Override
+        public Ids[] newArray(int size) {
+            return new Ids[size];
+        }
+    };
 }

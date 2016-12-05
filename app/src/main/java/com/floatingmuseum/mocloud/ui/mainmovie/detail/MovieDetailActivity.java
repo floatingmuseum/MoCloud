@@ -77,7 +77,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
 
-        movie = (Movie) getIntent().getSerializableExtra(MOVIE_OBJECT);
+        movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
         actionBar.setTitle(movie.getTitle());
 
         presenter = new MovieDetailPresenter(this, Repository.getInstance());
@@ -87,6 +87,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     }
 
     private void initBaseData(Movie movie) {
+        // TODO: 2016/12/5 主线程查询图片缓存，可能在图片缓存过多时出现延滞的现象。 
         File posterFile = ImageCacheManager.hasCacheImage(movie.getImage().getId());
         if (posterFile!=null){
             ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);

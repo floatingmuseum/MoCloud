@@ -17,6 +17,9 @@ public class StringUtil {
         return "https://image.tmdb.org/t/p/w185"+url;
     }
 
+    /**
+     * 获取文件后缀名
+     */
     public static String getFileSuffix(String content){
         return content.substring(content.lastIndexOf("."));
     }

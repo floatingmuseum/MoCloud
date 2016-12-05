@@ -2,14 +2,12 @@ package com.floatingmuseum.mocloud.data.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Floatingmuseum on 2016/4/18.
  */
-public class Movie implements Serializable{
+public class Movie implements Parcelable{
     private String title;
     private int year;
     private Ids ids;
@@ -172,4 +170,66 @@ public class Movie implements Serializable{
     public void setImage(TmdbMovieImage image) {
         this.image = image;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.title);
+        dest.writeInt(this.year);
+        dest.writeParcelable(this.ids, flags);
+        dest.writeParcelable(this.images, flags);
+        dest.writeParcelable(this.image, flags);
+        dest.writeString(this.tagline);
+        dest.writeString(this.overview);
+        dest.writeString(this.released);
+        dest.writeInt(this.runtime);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.trailer);
+        dest.writeString(this.homepage);
+        dest.writeDouble(this.rating);
+        dest.writeInt(this.votes);
+        dest.writeString(this.language);
+        dest.writeString(this.certification);
+        dest.writeStringList(this.available_translations);
+        dest.writeStringList(this.genres);
+    }
+
+    public Movie(){}
+
+    protected Movie(Parcel in) {
+        this.title = in.readString();
+        this.year = in.readInt();
+        this.ids = in.readParcelable(Ids.class.getClassLoader());
+        this.images = in.readParcelable(MovieImage.class.getClassLoader());
+        this.image = in.readParcelable(TmdbMovieImage.class.getClassLoader());
+        this.tagline = in.readString();
+        this.overview = in.readString();
+        this.released = in.readString();
+        this.runtime = in.readInt();
+        this.updated_at = in.readString();
+        this.trailer = in.readString();
+        this.homepage = in.readString();
+        this.rating = in.readDouble();
+        this.votes = in.readInt();
+        this.language = in.readString();
+        this.certification = in.readString();
+        this.available_translations = in.createStringArrayList();
+        this.genres = in.createStringArrayList();
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel source) {
+            return new Movie(source);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }
