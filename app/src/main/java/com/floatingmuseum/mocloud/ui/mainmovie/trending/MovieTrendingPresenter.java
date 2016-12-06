@@ -43,7 +43,6 @@ public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, 
     public void onBaseDataSuccess(List<BaseMovie> data) {
         trendingView.refreshData(data,shouldClean);
         trendingView.stopRefresh();
-
     }
 
     public int getLimit(){

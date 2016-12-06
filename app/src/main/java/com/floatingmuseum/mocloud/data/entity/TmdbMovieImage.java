@@ -17,6 +17,7 @@ public class TmdbMovieImage implements Parcelable {
 
     private int id;
     private boolean hasCache;
+    private boolean hasPoster;
     private Uri fileUri;
     private List<Backdrops> backdrops;
     private List<Posters> posters;
@@ -60,6 +61,14 @@ public class TmdbMovieImage implements Parcelable {
 
     public void setPosters(List<Posters> posters) {
         this.posters = posters;
+    }
+
+    public boolean isHasPoster() {
+        return hasPoster;
+    }
+
+    public void setHasPoster(boolean hasPoster) {
+        this.hasPoster = hasPoster;
     }
 
     public static class Backdrops implements Parcelable{
@@ -285,21 +294,22 @@ public class TmdbMovieImage implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.id);
         dest.writeByte(this.hasCache ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.hasPoster ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.fileUri, flags);
-        dest.writeList(this.backdrops);
-        dest.writeList(this.posters);
+        dest.writeTypedList(this.backdrops);
+        dest.writeTypedList(this.posters);
     }
 
-    public TmdbMovieImage(){}
+    public TmdbMovieImage() {
+    }
 
     protected TmdbMovieImage(Parcel in) {
         this.id = in.readInt();
         this.hasCache = in.readByte() != 0;
+        this.hasPoster = in.readByte() != 0;
         this.fileUri = in.readParcelable(Uri.class.getClassLoader());
-        this.backdrops = new ArrayList<Backdrops>();
-        in.readList(this.backdrops, Backdrops.class.getClassLoader());
-        this.posters = new ArrayList<Posters>();
-        in.readList(this.posters, Posters.class.getClassLoader());
+        this.backdrops = in.createTypedArrayList(Backdrops.CREATOR);
+        this.posters = in.createTypedArrayList(Posters.CREATOR);
     }
 
     public static final Creator<TmdbMovieImage> CREATOR = new Creator<TmdbMovieImage>() {

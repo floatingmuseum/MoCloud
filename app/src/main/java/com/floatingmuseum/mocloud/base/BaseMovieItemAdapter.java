@@ -27,17 +27,21 @@ public abstract class BaseMovieItemAdapter<T extends Object> extends BaseQuickAd
 
     protected void loadPoster(RatioImageView posterView, Movie movie) {
         Logger.d("MovieName:" + movie.getTitle());
+
         if (movie.getImage().isHasCache()) {
             Uri fileUri = movie.getImage().getFileUri();
             ImageLoader.load(mContext, fileUri, posterView,
                     R.drawable.default_movie_poster);
             Logger.d("图片从本地加载:" + movie.getTitle());
             return;
+        }else if (movie.getImage().isHasPoster()){
+            Logger.d("图片从网络加载:" + movie.getTitle() + "..." + movie.getImage().getId());
+            String tmdbPosterUrl = StringUtil.buildPosterUrl(movie.getImage().getPosters().get(0).getFile_path());
+            Logger.d("tmdbPosterUrl:" + tmdbPosterUrl);
+        }else{
+            Logger.d("没有图片:" + movie.getTitle() + "..." + movie.getImage().getId());
+            ImageLoader.load(mContext, "", posterView,
+                    R.drawable.default_movie_poster);
         }
-        Logger.d("图片从网络加载:" + movie.getTitle() + "..." + movie.getImage().getId());
-        String tmdbPosterUrl = StringUtil.buildPosterUrl(movie.getImage().getPosters().get(0).getFile_path());
-        Logger.d("tmdbPosterUrl:" + tmdbPosterUrl);
-        ImageLoader.load(mContext, tmdbPosterUrl, posterView,
-                R.drawable.default_movie_poster);
     }
 }

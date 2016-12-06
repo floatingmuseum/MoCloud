@@ -308,8 +308,8 @@ public class Repository {
                 });
     }
 
-    public void getStaffDetail(int tmdbID, final DataCallback callback){
-        service.getStaff(tmdbID,BuildConfig.TmdbApiKey,"credits")
+    public void getStaffDetail(int tmdbID, final DataCallback callback) {
+        service.getStaff(tmdbID, BuildConfig.TmdbApiKey, "credits")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<TmdbStaff>() {
@@ -510,9 +510,15 @@ public class Repository {
                 File file = ImageCacheManager.hasCacheImage(tmdbID);
                 if (file != null) {
                     Uri uri = Uri.parse(file.toURI().toString());
-                    return ImageCacheManager.localImage(tmdbID,uri);
+                    return ImageCacheManager.localImage(tmdbID, uri);
                 }
                 return service.getTmdbImages(baseMovie.getMovie().getIds().getTmdb(), BuildConfig.TmdbApiKey);
+            }
+        }).onErrorReturn(new Func1<Throwable, TmdbMovieImage>() {
+            @Override
+            public TmdbMovieImage call(Throwable throwable) {
+                Logger.d("Error测试...onErrorReturn");
+                return null;
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -524,17 +530,16 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
-                        Logger.d("getTmdbImages...onError");
+                        Logger.d("Error测试...getTmdbImages...onError");
                         e.printStackTrace();
                     }
 
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
-//                        Logger.d("Movie:" + movieImage.getId() + "...PosterUrl:" + movieImage.getPosters().get(0).getFile_path());
-                        mergeMovieAndImage1(movieImage, movies);
-                        if (!movieImage.isHasCache()) {
-                            String fileName = "TMDB..." + movieImage.getId() + StringUtil.getFileSuffix(movieImage.getPosters().get(0).getFile_path());
-                            downLoadImage(movieImage.getPosters().get(0).getFile_path(), fileName);
+                        Logger.d("Error测试...onNext:"+movieImage);
+                        if (movieImage!=null){
+                            mergeMovieAndImage1(movieImage, movies);
+                            downLoadImage(movieImage);
                         }
                     }
                 });
@@ -549,7 +554,7 @@ public class Repository {
                 File file = ImageCacheManager.hasCacheImage(tmdbID);
                 if (file != null) {
                     Uri uri = Uri.parse(file.toURI().toString());
-                    return ImageCacheManager.localImage(tmdbID,uri);
+                    return ImageCacheManager.localImage(tmdbID, uri);
                 }
                 Logger.d("Tmdb:" + movie.getIds().getTmdb() + "..." + BuildConfig.TmdbApiKey);
                 return service.getTmdbImages(movie.getIds().getTmdb(), BuildConfig.TmdbApiKey);
@@ -571,10 +576,7 @@ public class Repository {
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
                         mergeMovieAndImage2(movieImage, movies);
-                        if (!movieImage.isHasCache()) {
-                            String fileName = "TMDB..." + movieImage.getId() + StringUtil.getFileSuffix(movieImage.getPosters().get(0).getFile_path());
-                            downLoadImage(movieImage.getPosters().get(0).getFile_path(), fileName);
-                        }
+                        downLoadImage(movieImage);
                     }
                 });
     }
@@ -670,8 +672,17 @@ public class Repository {
         }
     }
 
-    private void downLoadImage(String url, final String fileName) {
-        String posterUrl = StringUtil.buildPosterUrl(url);
+    private void downLoadImage(TmdbMovieImage movieImage) {
+        List<TmdbMovieImage.Posters> posters = movieImage.getPosters();
+        if (movieImage.isHasCache() || posters == null || posters.size() < 1) {
+            Logger.d("电影:"+movieImage.getId()+"...没有海报");
+            return;
+        }
+        movieImage.setHasPoster(true);
+        final TmdbMovieImage.Posters poster= posters.get(0);
+        final String fileName = "TMDB..." + movieImage.getId() + StringUtil.getFileSuffix(poster.getFile_path());
+
+        String posterUrl = StringUtil.buildPosterUrl(poster.getFile_path());
         service.downloadImage(posterUrl)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())

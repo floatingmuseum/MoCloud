@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -34,6 +35,9 @@ public class MovieAnticipatedPresenter implements MovieAnticipatedContract.Prese
 
     @Override
     public void onBaseDataSuccess(List<BaseMovie> baseMovies) {
+        for (BaseMovie baseMovie : baseMovies) {
+            Logger.d("Error测试...baseMovie"+baseMovie.getMovie().getImage());
+        }
         anticipatedView.refreshData(baseMovies,shouldClean);
         anticipatedView.stopRefresh();
     }
