@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mocloud="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.floatingmuseum.mocloud.widgets.RatioImageView
+            android:id="@+id/avatar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            mocloud:image_ratio="1.42"
+            tools:src="@drawable/default_movie_poster"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/detail_title"
+                android:text="@string/birth_place" />
+
+            <TextView
+                android:id="@+id/tv_place_of_birth"
+                style="@style/detail_content"
+                tools:text="New York City, New York, USA" />
+
+            <TextView
+                style="@style/detail_title"
+                android:text="@string/staff_birthday" />
+
+            <TextView
+                android:id="@+id/tv_birthday"
+                style="@style/detail_content"
+                tools:text="1984-11-22" />
+
+            <TextView
+                android:id="@+id/tv_deathday_title"
+                style="@style/detail_title"
+                android:text="@string/staff_deathday"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_deathday"
+                style="@style/detail_content"
+                android:visibility="gone"
+                tools:text="2984-11-22" />
+
+            <TextView
+                style="@style/detail_title"
+                android:text="@string/staff_website" />
+
+            <TextView
+                android:id="@+id/tv_website"
+                style="@style/detail_content"
+                android:autoLink="web"
+                tools:text="https://www.themoviedb.org/person/1245-scarlett-johansson" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <TextView
+        style="@style/detail_title"
+        android:text="@string/staff_biography" />
+
+    <TextView
+        android:id="@+id/tv_biography"
+        style="@style/detail_content"
+        android:gravity="left"
+        tools:text="Bryan Lee Cranston (born March 7, 1956) is an American actor, voice actor, writer and director.He is perhaps best known for his roles as Hal, the father in the Fox situation comedy Malcolm in the Middle, and as Walter White in the AMC drama series Breaking Bad, for which he has won three consecutive Outstanding Lead Actor in a Drama Series Emmy Awards. Other notable roles include Dr. Tim Whatley on Seinfeld, Doug Heffernan's neighbor in The King of Queens, Astronaut Buzz Aldrin in From the Earth to the Moon, and Ted Mosby's boss on How I Met Your Mother. Description above from the Wikipedia article Bryan Cranston, licensed under CC-BY-SA, full list of contributors on Wikipedia." />
+
+    <TextView
+        style="@style/detail_title"
+        android:text="@string/as_actor" />
+</LinearLayout>

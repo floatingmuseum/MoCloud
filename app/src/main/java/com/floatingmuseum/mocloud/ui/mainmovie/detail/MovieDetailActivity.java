@@ -18,6 +18,7 @@ import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
+import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
@@ -40,6 +41,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class MovieDetailActivity extends BaseActivity implements BaseDetailActivity {
     public static final String MOVIE_OBJECT = "movie_object";
+    public static final String CAST_OBJECT = "cast_object";
 
     private MovieDetailPresenter presenter;
 
@@ -66,6 +68,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     @BindView(R.id.tv_comments_more)
     TextView tv_comments_more;
     private Movie movie;
+    private TmdbStaff.Credits.Cast cast;
 
     @Override
     protected int currentLayoutId() {
@@ -78,12 +81,17 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         ButterKnife.bind(this);
 
         movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
+        cast = getIntent().getParcelableExtra(CAST_OBJECT);
         actionBar.setTitle(movie.getTitle());
 
         presenter = new MovieDetailPresenter(this, Repository.getInstance());
 
-        initBaseData(movie);
-        presenter.getData(movie);
+        if (movie!=null){
+            initBaseData(movie);
+            presenter.getData(movie);
+        }else if(cast!=null){
+            initBaseData(cast);
+        }
     }
 
     private void initBaseData(Movie movie) {
@@ -105,6 +113,22 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         Double rating = movie.getRating();
         tv_rating.setText(NumberFormatUtil.doubleFormatToString(rating, false, 2));
         tv_overview.setText(movie.getOverview());
+    }
+
+    private void initBaseData(TmdbStaff.Credits.Cast cast) {
+        // TODO: 2016/12/5 主线程查询图片缓存，可能在图片缓存过多时出现延滞的现象。
+        File posterFile = ImageCacheManager.hasCacheImage(cast.getId());
+        if (posterFile!=null){
+            ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
+        }else{
+            if (cast.getPoster_path()!=null){
+                ImageLoader.load(this, StringUtil.buildPosterUrl(cast.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
+            }else{
+                ImageLoader.load(this,"null",iv_poster,R.drawable.default_movie_poster);
+            }
+        }
+        tv_movie_title.setText(cast.getTitle());
+        tv_released.setText(cast.getRelease_date());
     }
 
     @Override
@@ -135,6 +159,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         }
         if (director != null) {
             LinearLayout staff = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
+            setStaffClickListener(staff,director.getId(),director.getName(),director.getProfile_path());
             RatioImageView iv_staff_headshot = (RatioImageView) staff.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) staff.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) staff.findViewById(R.id.tv_crew_realname);
@@ -151,6 +176,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         for (int i = 0; i < showSize; i++) {
             TmdbPeople.Cast actor = actors.get(i);
             LinearLayout staff_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
+            setStaffClickListener(staff_item,actor.getId(),actor.getName(),actor.getProfile_path());
             RatioImageView iv_staff_headshot = (RatioImageView) staff_item.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) staff_item.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) staff_item.findViewById(R.id.tv_crew_realname);

@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -12,8 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.ui.staff.StaffDetailActivity;
 import com.floatingmuseum.mocloud.ui.comments.CommentsContract;
 
 /**
@@ -73,6 +74,19 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
                 notFirstLoadData = true;
             }
         }
+    }
+
+    protected void setStaffClickListener(View view, final int id, final String name, final String avatarUrl){
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(BaseActivity.this, StaffDetailActivity.class);
+                intent.putExtra(StaffDetailActivity.STAFF_IMAGE_URL,avatarUrl);
+                intent.putExtra(StaffDetailActivity.STAFF_NAME,name);
+                intent.putExtra(StaffDetailActivity.STAFF_ID,id);
+                startActivity(intent);
+            }
+        });
     }
 
     protected void stopRefresh(SwipeRefreshLayout srl){

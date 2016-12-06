@@ -18,6 +18,12 @@
     <string name="spoiler_alert">Spoiler Alert</string>
     <string name="action_type_switch">Switch to TV</string>
     <string name="click_to_login">Click to login</string>
+    <string name="birth_place">Birthplace</string>
+    <string name="staff_birthday">Birthday</string>
+    <string name="staff_deathday">Deathday</string>
+    <string name="staff_website">Homepage</string>
+    <string name="staff_biography">Biography:</string>
+    <string name="as_actor">As actor</string>
 
     <string-array name="tab_names">
         <item>Trending</item>

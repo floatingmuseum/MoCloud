@@ -17,4 +17,10 @@ public class FileUtil {
         BigDecimal kb = new BigDecimal(1024);
         return bytes.divide(kb).floatValue();
     }
+
+    public static float bytesToMb(long fileLength){
+        BigDecimal bytes = new BigDecimal(fileLength);
+        BigDecimal mb = new BigDecimal(1024*1024);
+        return bytes.divide(mb).floatValue();
+    }
 }

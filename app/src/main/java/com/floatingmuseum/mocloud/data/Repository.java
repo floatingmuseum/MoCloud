@@ -15,6 +15,7 @@ import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
+import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
@@ -303,6 +304,28 @@ public class Repository {
                         } else {
                             commentsCallback.onBaseDataSuccess(comments);
                         }
+                    }
+                });
+    }
+
+    public void getStaffDetail(int tmdbID, final DataCallback callback){
+        service.getStaff(tmdbID,BuildConfig.TmdbApiKey,"credits")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<TmdbStaff>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(TmdbStaff tmdbStaff) {
+                        callback.onBaseDataSuccess(tmdbStaff);
                     }
                 });
     }

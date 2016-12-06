@@ -10,6 +10,7 @@ import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.TmdbImagesConfiguration;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
+import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
@@ -113,13 +114,22 @@ public interface MoCloudService {
     Observable<Movie> getMovieDetail(@Path("id") String movieId);
 
     /**
-     * 电影团队
+     * 电影团队 from Trakt
      */
     @GET("movies/{id}/people?extended=images")
     Observable<People> getMoviePeople(@Path("id") String movieId);
 
+    /**
+     * 电影团队 from TMDB
+     */
     @GET("https://api.themoviedb.org/3/movie/{tmdbID}/credits")
     Observable<TmdbPeople> getMoviePeople(@Path("tmdbID") int tmdbId,@Query("api_key")String tmdbApiKey);
+
+    /**
+     * 影人详情 from TMDB
+     */
+    @GET("https://api.themoviedb.org/3/person/{tmdbID}")
+    Observable<TmdbStaff> getStaff(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey,@Query("append_to_response")String append_to_response);
 
     /**
      * 评论

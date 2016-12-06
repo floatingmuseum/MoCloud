@@ -65,9 +65,8 @@ public class ImageCacheManager {
     }
 
     public static void writeToDisk(ResponseBody body, String fileName) {
-        Logger.d("responseBody:" + body);
         long nowDirSize = getDirSize();
-        Logger.d("图片缓存文件夹当前大小:" + nowDirSize+"...配置大小"+dirSize);
+        Logger.d("图片缓存文件夹当前大小:" + nowDirSize+"...配置大小:"+dirSize+"...KB大小:"+FileUtil.bytesToKb(nowDirSize)+"...MB大小:"+FileUtil.bytesToMb(nowDirSize));
         if (nowDirSize > dirSize) {
             //计算超出文件夹限制的size
             long reduceSize = nowDirSize + body.contentLength() - dirSize;
