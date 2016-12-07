@@ -83,14 +83,15 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
 
         movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
         cast = getIntent().getParcelableExtra(CAST_OBJECT);
-        actionBar.setTitle(movie.getTitle());
 
         presenter = new MovieDetailPresenter(this, Repository.getInstance());
 
         if (movie != null) {
+            actionBar.setTitle(movie.getTitle());
             initBaseData(movie);
             presenter.getData(movie);
         } else if (cast != null) {
+            actionBar.setTitle(cast.getTitle());
             initBaseData(cast);
         }
     }
