@@ -70,6 +70,7 @@ abstract public class BaseFragment extends Fragment {
     }
 
     protected void openMovieDetailActivity(Movie movie){
+        Logger.d("打开Activity...Movie:"+movie.getTitle()+"...TmdbID:"+movie.getIds().getTmdb());
         Intent intent = new Intent(context, MovieDetailActivity.class);
 //        intent.putExtra(MovieDetailActivity.MOVIE_ID,movie.getIds().getSlug());
         intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,movie);

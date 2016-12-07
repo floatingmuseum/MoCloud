@@ -1,5 +1,7 @@
 package com.floatingmuseum.mocloud.ui.mainmovie.trending;
 
+import android.widget.TextView;
+
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseMovieItemAdapter;
@@ -22,5 +24,6 @@ public class MovieTrendingAdapter extends BaseMovieItemAdapter<BaseMovie> {
     protected void convert(BaseViewHolder holder, BaseMovie baseMovie) {
         Movie movie = baseMovie.getMovie();
         loadPoster((RatioImageView) holder.getView(R.id.iv_poster),movie);
+        showTitle((TextView) holder.getView(R.id.tv_title),movie);
     }
 }

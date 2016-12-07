@@ -35,7 +35,7 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
     public final static String MOVIE_ANTICIPATED_FRAGMENT = "MovieAnticipatedFragment";
     private List<BaseMovie> anticipatedList;
     private MovieAnticipatedAdapter adapter;
-
+//    private TestAdapter testAdapter;
     private MovieAnticipatedPresenter presenter;
     private GridLayoutManager manager;
 
@@ -58,10 +58,12 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
     protected void initView() {
         anticipatedList = new ArrayList<>();
         adapter =  new MovieAnticipatedAdapter(anticipatedList);
+//        testAdapter = new TestAdapter(getActivity(),anticipatedList);
         rv.setHasFixedSize(true);
-        manager = new GridLayoutManager(context,3);
+        manager = new GridLayoutManager(context,2);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
+//        rv.setAdapter(testAdapter);
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -73,6 +75,14 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 loadMore(manager,adapter,presenter,srl);
+
+//                int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
+//
+//                if ((lastItemPosition+1)==testAdapter.getItemCount() && !srl.isRefreshing()){
+//                    srl.setRefreshing(true);
+//                    Logger.d("刷新...BaseFragment..."+srl);
+//                    presenter.start(false);
+//                }
             }
         });
 
@@ -105,6 +115,7 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
         }
         anticipatedList.addAll(newData);
         adapter.notifyDataSetChanged();
+//        testAdapter.notifyDataSetChanged();
     }
 
     @Override

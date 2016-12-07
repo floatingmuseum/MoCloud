@@ -17,6 +17,7 @@ import com.floatingmuseum.mocloud.data.entity.Image;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
@@ -86,26 +87,32 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
 
         presenter = new MovieDetailPresenter(this, Repository.getInstance());
 
-        if (movie!=null){
+        if (movie != null) {
             initBaseData(movie);
             presenter.getData(movie);
-        }else if(cast!=null){
+        } else if (cast != null) {
             initBaseData(cast);
         }
     }
 
     private void initBaseData(Movie movie) {
-        // TODO: 2016/12/5 主线程查询图片缓存，可能在图片缓存过多时出现延滞的现象。 
-        File posterFile = ImageCacheManager.hasCacheImage(movie.getImage().getId());
-        if (posterFile!=null){
-            ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
-        }else{
-            if (movie.getImage().getPosters()!=null){
-                ImageLoader.load(this, StringUtil.buildPosterUrl(movie.getImage().getPosters().get(0).getFile_path()), iv_poster, R.drawable.default_movie_poster);
-            }else{
-                ImageLoader.load(this,"null",iv_poster,R.drawable.default_movie_poster);
+        // TODO: 2016/12/5 主线程查询图片缓存，可能在图片缓存过多时出现延滞的现象。
+        TmdbMovieImage image = movie.getImage();
+        if (image != null) {
+            File posterFile = movie.getImage().getCacheFile();
+            if (posterFile != null && posterFile.exists()) {
+                ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
+            } else {
+                if (image.getPosters() != null && image.getPosters().size() > 0) {
+                    ImageLoader.load(this, StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path()), iv_poster, R.drawable.default_movie_poster);
+                } else {
+                    ImageLoader.loadDefault(this, iv_poster, R.drawable.default_movie_poster);
+                }
             }
+        } else {
+            ImageLoader.loadDefault(this, iv_poster, R.drawable.default_movie_poster);
         }
+
         tv_movie_title.setText(movie.getTitle());
         tv_released.setText(movie.getReleased());
         tv_runtime.setText(movie.getRuntime() + " mins");
@@ -118,13 +125,13 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     private void initBaseData(TmdbStaff.Credits.Cast cast) {
         // TODO: 2016/12/5 主线程查询图片缓存，可能在图片缓存过多时出现延滞的现象。
         File posterFile = ImageCacheManager.hasCacheImage(cast.getId());
-        if (posterFile!=null){
+        if (posterFile != null) {
             ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
-        }else{
-            if (cast.getPoster_path()!=null){
+        } else {
+            if (cast.getPoster_path() != null) {
                 ImageLoader.load(this, StringUtil.buildPosterUrl(cast.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
-            }else{
-                ImageLoader.load(this,"null",iv_poster,R.drawable.default_movie_poster);
+            } else {
+                ImageLoader.loadDefault(this, iv_poster, R.drawable.default_movie_poster);
             }
         }
         tv_movie_title.setText(cast.getTitle());
@@ -159,7 +166,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         }
         if (director != null) {
             LinearLayout staff = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
-            setStaffClickListener(staff,director.getId(),director.getName(),director.getProfile_path());
+            setStaffClickListener(staff, director.getId(), director.getName(), director.getProfile_path());
             RatioImageView iv_staff_headshot = (RatioImageView) staff.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) staff.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) staff.findViewById(R.id.tv_crew_realname);
@@ -176,7 +183,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         for (int i = 0; i < showSize; i++) {
             TmdbPeople.Cast actor = actors.get(i);
             LinearLayout staff_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
-            setStaffClickListener(staff_item,actor.getId(),actor.getName(),actor.getProfile_path());
+            setStaffClickListener(staff_item, actor.getId(), actor.getName(), actor.getProfile_path());
             RatioImageView iv_staff_headshot = (RatioImageView) staff_item.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) staff_item.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) staff_item.findViewById(R.id.tv_crew_realname);

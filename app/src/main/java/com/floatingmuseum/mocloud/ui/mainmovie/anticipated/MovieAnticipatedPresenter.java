@@ -36,7 +36,7 @@ public class MovieAnticipatedPresenter implements MovieAnticipatedContract.Prese
     @Override
     public void onBaseDataSuccess(List<BaseMovie> baseMovies) {
         for (BaseMovie baseMovie : baseMovies) {
-            Logger.d("Error测试...baseMovie"+baseMovie.getMovie().getImage());
+            Logger.d("Error测试...Movie:"+baseMovie.getMovie().getTitle()+"...Image:"+baseMovie.getMovie().getImage());
         }
         anticipatedView.refreshData(baseMovies,shouldClean);
         anticipatedView.stopRefresh();

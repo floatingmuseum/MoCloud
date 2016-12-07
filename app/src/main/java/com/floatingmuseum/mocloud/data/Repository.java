@@ -509,15 +509,13 @@ public class Repository {
                 Logger.d("Tmdb:" + tmdbID);
                 File file = ImageCacheManager.hasCacheImage(tmdbID);
                 if (file != null) {
-                    Uri uri = Uri.parse(file.toURI().toString());
-                    return ImageCacheManager.localImage(tmdbID, uri);
+                    return ImageCacheManager.localImage(tmdbID, file);
                 }
                 return service.getTmdbImages(baseMovie.getMovie().getIds().getTmdb(), BuildConfig.TmdbApiKey);
             }
         }).onErrorReturn(new Func1<Throwable, TmdbMovieImage>() {
             @Override
             public TmdbMovieImage call(Throwable throwable) {
-                Logger.d("Error测试...onErrorReturn");
                 return null;
             }
         }).subscribeOn(Schedulers.io())
@@ -536,8 +534,8 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
-                        Logger.d("Error测试...onNext:"+movieImage);
-                        if (movieImage!=null){
+                        Logger.d("Error测试...onNext:" + movieImage);
+                        if (movieImage != null) {
                             mergeMovieAndImage1(movieImage, movies);
                             downLoadImage(movieImage);
                         }
@@ -675,13 +673,12 @@ public class Repository {
     private void downLoadImage(TmdbMovieImage movieImage) {
         List<TmdbMovieImage.Posters> posters = movieImage.getPosters();
         if (movieImage.isHasCache() || posters == null || posters.size() < 1) {
-            Logger.d("电影:"+movieImage.getId()+"...没有海报");
+            Logger.d("电影:" + movieImage.getId() + "...没有海报");
             return;
         }
         movieImage.setHasPoster(true);
-        final TmdbMovieImage.Posters poster= posters.get(0);
+        final TmdbMovieImage.Posters poster = posters.get(0);
         final String fileName = "TMDB..." + movieImage.getId() + StringUtil.getFileSuffix(poster.getFile_path());
-
         String posterUrl = StringUtil.buildPosterUrl(poster.getFile_path());
         service.downloadImage(posterUrl)
                 .subscribeOn(Schedulers.io())

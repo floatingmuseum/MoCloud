@@ -12,8 +12,10 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.R;
 import com.orhanobut.logger.Logger;
@@ -31,11 +33,25 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Floatingmuseum on 2016/6/20.
  */
 public class ImageLoader {
-    public static void load(Context context,String url,ImageView view,int placeHolder){
+
+    public static void loadDefault(Context context, ImageView view, int placeHolder) {
+//        Drawable default_image;
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            default_image = context.getResources().getDrawable(placeHolder, null);
+//        } else {
+//            default_image = context.getResources().getDrawable(placeHolder);
+//        }
+        Glide.with(context).load(R.drawable.default_movie_poster).into(view);
+//        Glide.with(context)
+//                .load(default_image)
+//                .into(view);
+    }
+
+    public static void load(Context context, String url, ImageView view, int placeHolder) {
         Drawable default_image;
-        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP){
-            default_image = context.getResources().getDrawable(placeHolder,null);
-        }else{
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            default_image = context.getResources().getDrawable(placeHolder, null);
+        } else {
             default_image = context.getResources().getDrawable(placeHolder);
         }
         Glide.with(context)
@@ -44,24 +60,37 @@ public class ImageLoader {
                 .into(view);
     }
 
-    public static void load(Context context,File file,ImageView view,int placeHolder){
+    public static void load(Context context, File file, ImageView view, int placeHolder) {
         Drawable default_image;
-        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP){
-            default_image = context.getResources().getDrawable(placeHolder,null);
-        }else{
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            default_image = context.getResources().getDrawable(placeHolder, null);
+        } else {
             default_image = context.getResources().getDrawable(placeHolder);
         }
         Glide.with(context)
                 .load(file)
+                .listener(new RequestListener<File, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, File model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        Logger.d("Glide...Load...onException:");
+                        e.printStackTrace();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, File model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        return false;
+                    }
+                })
                 .placeholder(default_image)
                 .into(view);
     }
 
-    public static void load(Context context, Uri fileUri, ImageView view, int placeHolder){
+    public static void load(Context context, Uri fileUri, ImageView view, int placeHolder) {
         Drawable default_image;
-        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP){
-            default_image = context.getResources().getDrawable(placeHolder,null);
-        }else{
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            default_image = context.getResources().getDrawable(placeHolder, null);
+        } else {
             default_image = context.getResources().getDrawable(placeHolder);
         }
 
@@ -71,11 +100,11 @@ public class ImageLoader {
                 .into(view);
     }
 
-    public static void loadDontAnimate(Context context, String url, final ImageView view, int placeHolder){
+    public static void loadDontAnimate(Context context, String url, final ImageView view, int placeHolder) {
         Drawable default_image;
-        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP){
-            default_image = context.getResources().getDrawable(placeHolder,null);
-        }else{
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            default_image = context.getResources().getDrawable(placeHolder, null);
+        } else {
             default_image = context.getResources().getDrawable(placeHolder);
         }
 
@@ -86,13 +115,13 @@ public class ImageLoader {
                 .into(view);
     }
 
-    public static void loadFromDrawable(Context context,int drawable,ImageView view){
+    public static void loadFromDrawable(Context context, int drawable, ImageView view) {
         Glide.with(context)
                 .load(drawable)
                 .into(view);
     }
 
-    public static void saveImage(Context context, String imageUrl, final String fileName){
+    public static void saveImage(Context context, String imageUrl, final String fileName) {
         Glide.with(context)
                 .load(imageUrl)
                 .asBitmap()
@@ -108,7 +137,7 @@ public class ImageLoader {
                         }
 
                         File file = new File(dir, fileName + ".jpg");
-                        SPUtil.editString("avatar_path",file.getAbsolutePath());
+                        SPUtil.editString("avatar_path", file.getAbsolutePath());
 
                         BufferedOutputStream bos = null;
                         try {

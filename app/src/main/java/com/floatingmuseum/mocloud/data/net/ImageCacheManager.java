@@ -64,6 +64,14 @@ public class ImageCacheManager {
         return Observable.just(tmdbMovieImage);
     }
 
+    public static Observable<TmdbMovieImage> localImage(int tmdbID,File file){
+        TmdbMovieImage tmdbMovieImage = new TmdbMovieImage();
+        tmdbMovieImage.setHasCache(true);
+        tmdbMovieImage.setId(tmdbID);
+        tmdbMovieImage.setCacheFile(file);
+        return Observable.just(tmdbMovieImage);
+    }
+
     public static void writeToDisk(ResponseBody body, String fileName) {
         long nowDirSize = getDirSize();
         Logger.d("图片缓存文件夹当前大小:" + nowDirSize+"...配置大小:"+dirSize+"...KB大小:"+FileUtil.bytesToKb(nowDirSize)+"...MB大小:"+FileUtil.bytesToMb(nowDirSize));
@@ -93,6 +101,9 @@ public class ImageCacheManager {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                }
+                if (body!=null){
+                    body.close();
                 }
             }
         }
