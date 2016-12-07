@@ -43,7 +43,7 @@ abstract public class BaseFragment extends Fragment {
     }
 
     protected void loadMore(GridLayoutManager manager, BaseQuickAdapter adapter, BasePresenter presenter, SwipeRefreshLayout srl) {
-        int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
+        int lastItemPosition = manager.findLastVisibleItemPosition();
 //        Logger.d("lastItemPosition:"+lastItemPosition+"...可加载位置:"+(adapter.getItemCount()-4)+"...alreadyGetAllData:"+alreadyGetAllData+"...firstSeeLastItem:"+firstSeeLastItem+"...notFirstLoadData:"+notFirstLoadData);
 //        if(lastItemPosition>(adapter.getItemCount()-4) && !alreadyGetAllData && firstSeeLastItem){
 //            firstSeeLastItem = false;
@@ -55,7 +55,7 @@ abstract public class BaseFragment extends Fragment {
 //            }
 //        }
         Logger.d("最后可见item:"+lastItemPosition+"...总条目数:"+adapter.getItemCount());
-        if ((lastItemPosition+1)==adapter.getItemCount() && !srl.isRefreshing()){
+        if ((lastItemPosition+3)==adapter.getItemCount() && !srl.isRefreshing()){
             srl.setRefreshing(true);
             Logger.d("刷新...BaseFragment..."+srl);
             presenter.start(false);

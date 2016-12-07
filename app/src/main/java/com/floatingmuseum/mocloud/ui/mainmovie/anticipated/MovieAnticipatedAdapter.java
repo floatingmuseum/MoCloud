@@ -42,7 +42,7 @@ public class MovieAnticipatedAdapter extends BaseMovieItemAdapter<BaseMovie> {
 //        if (iv_poster.getTag()!=null && tv_title.getTag()!=null && iv_poster.getTag().equals(movie.getIds().getTmdb()) && tv_title.getTag().equals(movie.getIds().getTmdb())){
             Logger.d("没有图片convert:" + movie.getTitle());
             loadPoster((RatioImageView) holder.getView(R.id.iv_poster),movie);
-//            showTitle((TextView) holder.getView(R.id.tv_title),movie);
+            showTitle((TextView) holder.getView(R.id.tv_title),movie);
 //        }
     }
 }

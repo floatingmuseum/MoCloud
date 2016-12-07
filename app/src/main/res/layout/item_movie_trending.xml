@@ -10,14 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
-        mocloud:image_ratio="1.42"
-        />
+        mocloud:image_ratio="1.42" />
 
     <TextView
         android:id="@+id/tv_title"
-        android:layout_centerInParent="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
         android:textColor="@color/main_movie_item_title"
-        android:visibility="gone"/>
+        android:textSize="@dimen/item_title_size"
+        android:visibility="gone" />
 </RelativeLayout>

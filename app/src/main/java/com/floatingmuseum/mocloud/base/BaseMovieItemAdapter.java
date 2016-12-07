@@ -1,22 +1,18 @@
 package com.floatingmuseum.mocloud.base;
 
-import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
-import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -49,6 +45,7 @@ public abstract class BaseMovieItemAdapter<T extends Object> extends BaseQuickAd
     }
 
     protected void showTitle(TextView titleView, Movie movie) {
+        Logger.d("没有图片showTitle:" + movie.getTitle()+"...TitleView:"+titleView.getVisibility()+"..."+titleView.getText());
         titleView.setVisibility(View.GONE);
         TmdbMovieImage image = movie.getImage();
         if (image == null || (!image.isHasPoster() & !image.isHasCache())) {

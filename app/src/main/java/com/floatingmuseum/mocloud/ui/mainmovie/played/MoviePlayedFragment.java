@@ -61,7 +61,7 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
         playedList = new ArrayList<>();
         adapter =  new MoviePlayedAdapter(playedList);
         rv.setHasFixedSize(true);
-        manager = new GridLayoutManager(context,3);
+        manager = new GridLayoutManager(context,2);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

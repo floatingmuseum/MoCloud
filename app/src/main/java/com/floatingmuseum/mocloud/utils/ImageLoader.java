@@ -72,8 +72,10 @@ public class ImageLoader {
                 .listener(new RequestListener<File, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, File model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        Logger.d("Glide...Load...onException:");
-                        e.printStackTrace();
+                        Logger.d("Glide...Load...onException:" + e);
+                        if (e != null) {
+                            e.printStackTrace();
+                        }
                         return false;
                     }
 

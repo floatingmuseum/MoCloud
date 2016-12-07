@@ -551,11 +551,15 @@ public class Repository {
                 Logger.d("Tmdb:" + tmdbID);
                 File file = ImageCacheManager.hasCacheImage(tmdbID);
                 if (file != null) {
-                    Uri uri = Uri.parse(file.toURI().toString());
-                    return ImageCacheManager.localImage(tmdbID, uri);
+                    return ImageCacheManager.localImage(tmdbID, file);
                 }
                 Logger.d("Tmdb:" + movie.getIds().getTmdb() + "..." + BuildConfig.TmdbApiKey);
                 return service.getTmdbImages(movie.getIds().getTmdb(), BuildConfig.TmdbApiKey);
+            }
+        }).onErrorReturn(new Func1<Throwable, TmdbMovieImage>() {
+            @Override
+            public TmdbMovieImage call(Throwable throwable) {
+                return null;
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -573,8 +577,11 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
-                        mergeMovieAndImage2(movieImage, movies);
-                        downLoadImage(movieImage);
+                        Logger.d("Error测试...onNext:" + movieImage);
+                        if (movieImage != null) {
+                            mergeMovieAndImage2(movieImage, movies);
+                            downLoadImage(movieImage);
+                        }
                     }
                 });
     }

@@ -60,7 +60,7 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
         trendingList = new ArrayList<>();
         adapter =  new MovieTrendingAdapter(trendingList);
         rv.setHasFixedSize(true);
-        manager = new GridLayoutManager(context,3);
+        manager = new GridLayoutManager(context,2);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

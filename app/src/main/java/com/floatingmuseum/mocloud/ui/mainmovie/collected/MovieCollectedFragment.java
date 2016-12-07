@@ -61,7 +61,7 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
         collectedList = new ArrayList<>();
         adapter =  new MovieCollectedAdapter(collectedList);
         rv.setHasFixedSize(true);
-        manager = new GridLayoutManager(context,3);
+        manager = new GridLayoutManager(context,2);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
