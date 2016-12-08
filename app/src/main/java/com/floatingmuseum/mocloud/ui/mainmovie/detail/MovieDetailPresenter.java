@@ -37,8 +37,8 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
 
     public void getData(Movie movie){
         movieDetailSubscription = repository.getMovieDetail(movie.getIds().getSlug(),this);
-//        repository.getMovieTeam(movie.getIds().getTmdb(),this);
-        movieTeamSubscription = repository.getMovieTeam(movie.getIds().getSlug(),this);
+        movieTeamSubscription = repository.getMovieTeam(movie.getIds().getTmdb(),this);
+//        movieTeamSubscription = repository.getMovieTeam(movie.getIds().getSlug(),this);
         movieCommentsSubscription = repository.getMovieComments(movie.getIds().getSlug(), Repository.COMMENTS_SORT_LIKES,limit,page,this,null);
     }
 
@@ -47,12 +47,12 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
         activity.onBaseDataSuccess(movie);
     }
 
-
+    @Override
     public void onPeopleSuccess(TmdbPeople people) {
         activity.onPeopleSuccess(people);
     }
 
-    @Override
+
     public void onPeopleSuccess(List<Staff> staffs){
         activity.onPeopleSuccess(staffs);
     }

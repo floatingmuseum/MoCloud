@@ -262,8 +262,8 @@ public class Repository {
                 });
     }
 
-    public void getMovieTeam(int movieId, final MovieDetailCallback callback) {
-        service.getMovieTeam(movieId, BuildConfig.TmdbApiKey)
+    public Subscription getMovieTeam(int movieId, final MovieDetailCallback callback) {
+        return service.getMovieTeam(movieId, BuildConfig.TmdbApiKey)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<TmdbPeople>() {
@@ -279,23 +279,23 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbPeople people) {
-//                        callback.onPeopleSuccess(people);
+                        callback.onPeopleSuccess(people);
                     }
                 });
     }
 
-    public Subscription getMovieTeam(String movieId, final MovieDetailCallback callback) {
+//    public Subscription getMovieTeam(String movieId, final MovieDetailCallback callback) {
 
-        return service.getMovieTeam(movieId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<People, List<Staff>>() {
-                    @Override
-                    public List<Staff> call(People people) {
-                        List<Staff> staffs = getPeople(people);
-                        return staffs;
-                    }
-                });
+//        return service.getMovieTeam(movieId)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .map(new Func1<People, List<Staff>>() {
+//                    @Override
+//                    public List<Staff> call(People people) {
+//                        List<Staff> staffs = getPeople(people);
+//                        return staffs;
+//                    }
+//                });
 
 //                        subscribe(new Observer<People>() {
 //                    @Override
@@ -314,9 +314,9 @@ public class Repository {
 //                        getPeopleImage(people, callback);
 //                    }
 //                });
-    }
+//    }
 
-    private List<Staff> getPeople(People people){
+    private List<Staff> getPeople(People people) {
         List<Staff> staffs = new ArrayList<>();
         List<Staff> directors = people.getCrew().getDirecting();
         if (directors != null && directors.size() != 0) {
@@ -359,7 +359,7 @@ public class Repository {
                     .subscribe(new Observer<TmdbPeopleImage>() {
                         @Override
                         public void onCompleted() {
-                            callback.onPeopleSuccess(staffs);
+//                            callback.onPeopleSuccess(staffs);
                         }
 
                         @Override

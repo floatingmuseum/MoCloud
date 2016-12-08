@@ -142,6 +142,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     }
 
     public void onPeopleSuccess(TmdbPeople people) {
+        // TODO: 2016/12/9 可以请求人物使用Tmdb数据加credits可以拿到人物数据加电影数据，还包括海报，然后拿imdb_id去请求Trakt的数据，之后合并之前的海报到trakt的数据里 
         TmdbPeople.Crew director = null;
         for (TmdbPeople.Crew crew : people.getCrew()) {
             if (crew.getJob().equals("Director")) {
