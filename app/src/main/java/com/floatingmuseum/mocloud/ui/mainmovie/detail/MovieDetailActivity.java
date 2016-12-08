@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
+import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
@@ -42,7 +44,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class MovieDetailActivity extends BaseActivity implements BaseDetailActivity {
     public static final String MOVIE_OBJECT = "movie_object";
-    public static final String CAST_OBJECT = "cast_object";
 
     private MovieDetailPresenter presenter;
 
@@ -69,7 +70,6 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     @BindView(R.id.tv_comments_more)
     TextView tv_comments_more;
     private Movie movie;
-    private TmdbStaff.Credits.Cast cast;
 
     @Override
     protected int currentLayoutId() {
@@ -82,21 +82,15 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         ButterKnife.bind(this);
 
         movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
-        cast = getIntent().getParcelableExtra(CAST_OBJECT);
 
         presenter = new MovieDetailPresenter(this, Repository.getInstance());
 
-        if (movie != null) {
-            actionBar.setTitle(movie.getTitle());
-            initBaseData(movie);
-            presenter.getData(movie);
-        } else if (cast != null) {
-            actionBar.setTitle(cast.getTitle());
-            initBaseData(cast);
-        }
+        actionBar.setTitle(movie.getTitle());
+        initPosterAndTitle(movie);
+        presenter.getData(movie);
     }
 
-    private void initBaseData(Movie movie) {
+    private void initPosterAndTitle(Movie movie) {
         // TODO: 2016/12/5 主线程查询图片缓存，可能在图片缓存过多时出现延滞的现象。
         TmdbMovieImage image = movie.getImage();
         if (image != null) {
@@ -107,20 +101,14 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
                 if (image.getPosters() != null && image.getPosters().size() > 0) {
                     ImageLoader.load(this, StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path()), iv_poster, R.drawable.default_movie_poster);
                 } else {
-                    ImageLoader.loadDefault(this, iv_poster, R.drawable.default_movie_poster);
+                    ImageLoader.loadDefault(this, iv_poster);
                 }
             }
         } else {
-            ImageLoader.loadDefault(this, iv_poster, R.drawable.default_movie_poster);
+            ImageLoader.loadDefault(this, iv_poster);
         }
 
         tv_movie_title.setText(movie.getTitle());
-        tv_released.setText(movie.getReleased());
-        tv_runtime.setText(movie.getRuntime() + " mins");
-        tv_language.setText(movie.getLanguage());
-        Double rating = movie.getRating();
-        tv_rating.setText(NumberFormatUtil.doubleFormatToString(rating, false, 2));
-        tv_overview.setText(movie.getOverview());
     }
 
     private void initBaseData(TmdbStaff.Credits.Cast cast) {
@@ -132,7 +120,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             if (cast.getPoster_path() != null) {
                 ImageLoader.load(this, StringUtil.buildPosterUrl(cast.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
             } else {
-                ImageLoader.loadDefault(this, iv_poster, R.drawable.default_movie_poster);
+                ImageLoader.loadDefault(this, iv_poster);
             }
         }
         tv_movie_title.setText(cast.getTitle());
@@ -145,16 +133,12 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     }
 
     public void onBaseDataSuccess(Movie movie) {
-//        ImageLoader.load(this, movie.getImages().getPoster().getThumb(), iv_poster,R.drawable.default_movie_poster);
-
-//        ImageLoader.load(this, null, iv_poster, R.drawable.default_movie_poster);
-//        tv_movie_title.setText(movie.getTitle());
-//        tv_released.setText(movie.getReleased());
-//        tv_runtime.setText(movie.getRuntime() + " mins");
-//        tv_language.setText(movie.getLanguage());
-//        Double rating = movie.getRating();
-//        tv_rating.setText(NumberFormatUtil.doubleFormatToString(rating, false, 2));
-//        tv_overview.setText(movie.getOverview());
+        tv_released.setText(movie.getReleased());
+        tv_runtime.setText(movie.getRuntime() + " mins");
+        tv_language.setText(movie.getLanguage());
+        Double rating = movie.getRating();
+        tv_rating.setText(NumberFormatUtil.doubleFormatToString(rating, false, 2));
+        tv_overview.setText(movie.getOverview());
     }
 
     public void onPeopleSuccess(TmdbPeople people) {
@@ -167,7 +151,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         }
         if (director != null) {
             LinearLayout staff = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
-            setStaffClickListener(staff, director.getId(), director.getName(), director.getProfile_path());
+//            setStaffClickListener(staff, director.getId(), director.getName(), director.getProfile_path());
             RatioImageView iv_staff_headshot = (RatioImageView) staff.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) staff.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) staff.findViewById(R.id.tv_crew_realname);
@@ -179,12 +163,12 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         }
 
         List<TmdbPeople.Cast> actors = people.getCast();
-        int showSize = actors.size() > 5 ? 5 : actors.size();
+        int showSize = actors.size() > 3 ? 3 : actors.size();
 
         for (int i = 0; i < showSize; i++) {
             TmdbPeople.Cast actor = actors.get(i);
             LinearLayout staff_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
-            setStaffClickListener(staff_item, actor.getId(), actor.getName(), actor.getProfile_path());
+//            setStaffClickListener(staff_item, actor.getId(), actor.getName(), actor.getProfile_path());
             RatioImageView iv_staff_headshot = (RatioImageView) staff_item.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) staff_item.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) staff_item.findViewById(R.id.tv_crew_realname);
@@ -194,6 +178,47 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             tv_crew_realname.setText(actor.getName());
             tv_crew_character.setText(actor.getCharacter());
             ll_crew.addView(staff_item);
+        }
+    }
+
+    public void onPeopleSuccess(List<Staff> staffs) {
+        boolean hasDirector = staffs.get(0).getJob() != null;
+        for (int i = 0; i < staffs.size(); i++) {
+            if (i == 0 && hasDirector) {
+                Staff director = staffs.get(0);
+                LinearLayout director_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
+                setStaffClickListener(director_item, director);
+                RatioImageView iv_staff_headshot = (RatioImageView) director_item.findViewById(R.id.iv_staff_headshot);
+                TextView tv_crew_job = (TextView) director_item.findViewById(R.id.tv_crew_job);
+                TextView tv_crew_realname = (TextView) director_item.findViewById(R.id.tv_crew_realname);
+                director_item.findViewById(R.id.tv_crew_character).setVisibility(View.GONE);
+                loadPeopleImage(director, iv_staff_headshot);
+                tv_crew_job.setText(director.getJob());
+                tv_crew_realname.setText(director.getPerson().getName());
+                ll_crew.addView(director_item);
+            } else {
+                Staff actor = staffs.get(i);
+                LinearLayout actor_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
+                setStaffClickListener(actor_item, actor);
+                RatioImageView iv_staff_headshot = (RatioImageView) actor_item.findViewById(R.id.iv_staff_headshot);
+                TextView tv_crew_job = (TextView) actor_item.findViewById(R.id.tv_crew_job);
+                TextView tv_crew_realname = (TextView) actor_item.findViewById(R.id.tv_crew_realname);
+                TextView tv_crew_character = (TextView) actor_item.findViewById(R.id.tv_crew_character);
+                loadPeopleImage(actor, iv_staff_headshot);
+                tv_crew_job.setText("Actor");
+                tv_crew_realname.setText(actor.getPerson().getName());
+                tv_crew_character.setText(actor.getCharacter());
+                ll_crew.addView(actor_item);
+            }
+        }
+    }
+
+    private void loadPeopleImage(Staff staff, ImageView headView) {
+        TmdbPeopleImage image = staff.getTmdbPeopleImage();
+        if (hasImage(image)) {
+            ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(image.getProfiles().get(0).getFile_path()), headView, R.drawable.default_movie_poster);
+        } else {
+            ImageLoader.loadDefault(this, headView);
         }
     }
 
@@ -239,5 +264,11 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             tv_comment.setText(comment.getComment());
             ll_comments.addView(comment_item);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.unSubscription();
     }
 }

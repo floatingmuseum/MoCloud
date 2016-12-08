@@ -10,6 +10,7 @@ import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.TmdbImagesConfiguration;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
+import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
@@ -58,7 +59,7 @@ public interface MoCloudService {
      * Returns all movies being watched right now. Movies with the most users are returned first.
      * limit每页数据的数量
      */
-    @GET("movies/trending?extended=full")
+    @GET("movies/trending")
     Observable<List<BaseMovie>> getMovieTrending(@Query("page") int page,@Query("limit")int limit);
 
     /**
@@ -116,20 +117,26 @@ public interface MoCloudService {
     /**
      * 电影团队 from Trakt
      */
-    @GET("movies/{id}/people?extended=images")
-    Observable<People> getMoviePeople(@Path("id") String movieId);
+    @GET("movies/{id}/people")
+    Observable<People> getMovieTeam(@Path("id") String movieId);
 
     /**
      * 电影团队 from TMDB
      */
     @GET("https://api.themoviedb.org/3/movie/{tmdbID}/credits")
-    Observable<TmdbPeople> getMoviePeople(@Path("tmdbID") int tmdbId,@Query("api_key")String tmdbApiKey);
+    Observable<TmdbPeople> getMovieTeam(@Path("tmdbID") int tmdbId,@Query("api_key")String tmdbApiKey);
+
+    @GET("https://api.themoviedb.org/3/person/{tmdbID}/images")
+    Observable<TmdbPeopleImage> getPeopleImage(@Path("tmdbID") int tmdbId,@Query("api_key")String tmdbApiKey);
 
     /**
      * 影人详情 from TMDB
      */
     @GET("https://api.themoviedb.org/3/person/{tmdbID}")
     Observable<TmdbStaff> getStaff(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey,@Query("append_to_response")String append_to_response);
+
+    @GET("people/{id}?extended=full")
+    Observable<Person> getStaff(@Path("id") String id);
 
     /**
      * 评论

@@ -75,14 +75,6 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 loadMore(manager,adapter,presenter,srl);
-
-//                int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
-//
-//                if ((lastItemPosition+1)==testAdapter.getItemCount() && !srl.isRefreshing()){
-//                    srl.setRefreshing(true);
-//                    Logger.d("刷新...BaseFragment..."+srl);
-//                    presenter.start(false);
-//                }
             }
         });
 
@@ -94,8 +86,6 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
         });
 
         requestBaseDataIfUserNotScrollToFragments(srl,presenter);
-
-//        isViewPrepared = true;
     }
 
     @Override

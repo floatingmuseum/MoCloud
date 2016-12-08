@@ -6,7 +6,7 @@ import java.util.List;
  * Created by yan on 2016/8/9.
  */
 public class People {
-    private List<Actor> cast;
+    private List<Staff> cast;
     private Crew crew;
 
     public Crew getCrew() {
@@ -17,11 +17,11 @@ public class People {
         this.crew = crew;
     }
 
-    public List<Actor> getCast() {
+    public List<Staff> getCast() {
         return cast;
     }
 
-    public void setCast(List<Actor> cast) {
+    public void setCast(List<Staff> cast) {
         this.cast = cast;
     }
 }

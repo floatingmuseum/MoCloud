@@ -2,13 +2,14 @@ package com.floatingmuseum.mocloud.ui.staff;
 
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
+import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 
 /**
  * Created by Floatingmuseum on 2016/12/6.
  */
 
-public class StaffDetailPresenter implements DataCallback<TmdbStaff> {
+public class StaffDetailPresenter implements DataCallback<Person> {
     private StaffDetailActivity activity;
     private Repository repository;
 
@@ -17,13 +18,13 @@ public class StaffDetailPresenter implements DataCallback<TmdbStaff> {
         this.repository = repository;
     }
 
-    public void getData(int tmdbID) {
-        repository.getStaffDetail(tmdbID,this);
+    public void getData(String id) {
+        repository.getStaffDetail(id,this);
     }
 
     @Override
-    public void onBaseDataSuccess(TmdbStaff staff) {
-        activity.onBaseDataSuccess(staff);
+    public void onBaseDataSuccess(Person person) {
+        activity.onBaseDataSuccess(person);
     }
 
     @Override

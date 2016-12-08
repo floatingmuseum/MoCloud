@@ -67,7 +67,7 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.TestHolder> {
             }
         } else {
             Logger.d("没有图片showImage:" + movie.getTitle());
-            ImageLoader.loadDefault(context, holder.iv_poster, R.drawable.default_movie_poster);
+            ImageLoader.loadDefault(context, holder.iv_poster);
             holder.tv_title.setVisibility(View.VISIBLE);
             holder.tv_title.setText(movie.getTitle());
         }

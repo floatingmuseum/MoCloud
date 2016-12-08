@@ -41,7 +41,7 @@ public abstract class BaseMovieItemAdapter<T extends Object> extends BaseQuickAd
             }
         }
         Logger.d("没有图片showImage:" + movie.getTitle());
-        ImageLoader.loadDefault(mContext, posterView, R.drawable.default_movie_poster);
+        ImageLoader.loadDefault(mContext, posterView);
     }
 
     protected void showTitle(TextView titleView, Movie movie) {

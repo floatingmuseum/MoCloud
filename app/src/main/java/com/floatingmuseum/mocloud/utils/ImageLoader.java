@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -7,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Parcel;
+import android.support.annotation.RequiresApi;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -34,7 +36,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class ImageLoader {
 
-    public static void loadDefault(Context context, ImageView view, int placeHolder) {
+    public static void loadDefault(Context context, ImageView view) {
 //        Drawable default_image;
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            default_image = context.getResources().getDrawable(placeHolder, null);
@@ -42,10 +44,20 @@ public class ImageLoader {
 //            default_image = context.getResources().getDrawable(placeHolder);
 //        }
         Glide.with(context).load(R.drawable.default_movie_poster).into(view);
-//        Glide.with(context)
-//                .load(default_image)
-//                .into(view);
     }
+
+//    public static void loadDefault(Activity activity, ImageView view) {
+////        Drawable default_image;
+////        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+////            default_image = context.getResources().getDrawable(placeHolder, null);
+////        } else {
+////            default_image = context.getResources().getDrawable(placeHolder);
+////        }
+//        Logger.d("isActivity Destroyed loadDefault:"+activity.isDestroyed());
+//        if (!activity.isDestroyed()){
+//            Glide.with(activity).load(R.drawable.default_movie_poster).into(view);
+//        }
+//    }
 
     public static void load(Context context, String url, ImageView view, int placeHolder) {
         Drawable default_image;
@@ -54,11 +66,28 @@ public class ImageLoader {
         } else {
             default_image = context.getResources().getDrawable(placeHolder);
         }
-        Glide.with(context)
-                .load(url)
-                .placeholder(default_image)
-                .into(view);
+            Glide.with(context)
+                    .load(url)
+                    .placeholder(default_image)
+                    .into(view);
     }
+
+//    public static void load(Activity activity, String url, ImageView view, int placeHolder) {
+//        Drawable default_image;
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            default_image = activity.getResources().getDrawable(placeHolder, null);
+//        } else {
+//            default_image = activity.getResources().getDrawable(placeHolder);
+//        }
+//        Logger.d("isActivity Destroyed load:"+activity.isDestroyed());
+//
+//        if (!activity.isDestroyed()) {
+//            Glide.with(activity)
+//                    .load(url)
+//                    .placeholder(default_image)
+//                    .into(view);
+//        }
+//    }
 
     public static void load(Context context, File file, ImageView view, int placeHolder) {
         Drawable default_image;

@@ -7,9 +7,13 @@ import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.People;
+import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
+
+import rx.Subscription;
 
 
 /**
@@ -21,6 +25,9 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
     Repository repository;
     private int limit = 4;
     private int page = 1;
+    private Subscription movieDetailSubscription;
+    private Subscription movieTeamSubscription;
+    private Subscription movieCommentsSubscription;
 
 
     MovieDetailPresenter(@NonNull MovieDetailActivity activity,@NonNull Repository repository){
@@ -29,9 +36,10 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
     }
 
     public void getData(Movie movie){
-//        repository.getMovieDetail(movieId,this);
-        repository.getMoviePeople(movie.getIds().getTmdb(),this);
-        repository.getMovieComments(movie.getIds().getSlug(),Repository.COMMENTS_SORT_LIKES,limit,page,this,null);
+        movieDetailSubscription = repository.getMovieDetail(movie.getIds().getSlug(),this);
+//        repository.getMovieTeam(movie.getIds().getTmdb(),this);
+        movieTeamSubscription = repository.getMovieTeam(movie.getIds().getSlug(),this);
+        movieCommentsSubscription = repository.getMovieComments(movie.getIds().getSlug(), Repository.COMMENTS_SORT_LIKES,limit,page,this,null);
     }
 
     @Override
@@ -39,9 +47,14 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
         activity.onBaseDataSuccess(movie);
     }
 
-    @Override
+
     public void onPeopleSuccess(TmdbPeople people) {
         activity.onPeopleSuccess(people);
+    }
+
+    @Override
+    public void onPeopleSuccess(List<Staff> staffs){
+        activity.onPeopleSuccess(staffs);
     }
 
     @Override
@@ -52,5 +65,17 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
     @Override
     public void onError(Throwable e) {
 
+    }
+
+    public void unSubscription(){
+        if (!movieDetailSubscription.isUnsubscribed()) {
+            movieDetailSubscription.unsubscribe();
+        }
+        if (!movieTeamSubscription.isUnsubscribed()) {
+            movieTeamSubscription.unsubscribe();
+        }
+        if (!movieCommentsSubscription.isUnsubscribed()) {
+            movieCommentsSubscription.unsubscribe();
+        }
     }
 }

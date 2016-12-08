@@ -17,6 +17,7 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.MovieDetail;
+import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
@@ -47,7 +48,7 @@ public class StaffDetailActivity extends BaseActivity {
     private List<TmdbStaff.Credits.Cast> playList;
     private String staffName;
     private String avatarUrl;
-    private int staffId;
+    private String staffId;
     private RatioImageView avatar;
     private TextView birthPlace;
     private TextView birthDay;
@@ -69,7 +70,7 @@ public class StaffDetailActivity extends BaseActivity {
 
         staffName = getIntent().getStringExtra(STAFF_NAME);
         avatarUrl = getIntent().getStringExtra(STAFF_IMAGE_URL);
-        staffId = getIntent().getIntExtra(STAFF_ID,-1);
+        staffId = getIntent().getStringExtra(STAFF_ID);
 
         StaffDetailPresenter presenter = new StaffDetailPresenter(this, Repository.getInstance());
         Logger.d("id:"+staffId+"...name:"+staffName+"...url:"+avatarUrl);
@@ -99,33 +100,33 @@ public class StaffDetailActivity extends BaseActivity {
         staff_rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-                TmdbStaff.Credits.Cast cast = playList.get(i);
-                Intent intent = new Intent(StaffDetailActivity.this, MovieDetailActivity.class);
-                intent.putExtra(MovieDetailActivity.CAST_OBJECT,cast);
-                startActivity(intent);
+//                TmdbStaff.Credits.Cast cast = playList.get(i);
+//                Intent intent = new Intent(StaffDetailActivity.this, MovieDetailActivity.class);
+//                intent.putExtra(MovieDetailActivity.CAST_OBJECT,cast);
+//                startActivity(intent);
             }
         });
         ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(avatarUrl),avatar,R.drawable.default_movie_poster);
     }
 
-    public void onBaseDataSuccess(TmdbStaff staff){
-        birthPlace.setText(staff.getPlace_of_birth());
-        birthDay.setText(staff.getBirthday());
+    public void onBaseDataSuccess(Person person){
+        birthPlace.setText(person.getBirthplace());
+        birthDay.setText(person.getBirthday());
         if (homepage!=null) {
-            homepage.setText(staff.getHomepage());
+            homepage.setText(person.getHomepage());
         }else{
             homepage.setVisibility(View.GONE);
         }
 
-        if (staff.getDeathday()!=null && staff.getDeathday().length()>0){
+        if (person.getDeath()!=null && person.getDeath().length()>0){
             deathDayTitle.setVisibility(View.VISIBLE);
             deathDay.setVisibility(View.VISIBLE);
-            deathDay.setText(staff.getDeathday());
+            deathDay.setText(person.getDeath());
         }
 
-        biography.setText(staff.getBiography());
+        biography.setText(person.getBiography());
 
-        playList.addAll(staff.getCredits().getCast());
-        adapter.notifyDataSetChanged();
+//        playList.addAll(staff.getCredits().getCast());
+//        adapter.notifyDataSetChanged();
     }
 }

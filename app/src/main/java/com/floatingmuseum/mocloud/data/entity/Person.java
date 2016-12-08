@@ -1,6 +1,5 @@
 package com.floatingmuseum.mocloud.data.entity;
 
-import android.provider.MediaStore;
 
 /**
  * Created by Administrator on 2016/4/13.
