@@ -80,15 +80,15 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    protected void setStaffClickListener(View view, final Staff staff) {
+    protected void setStaffClickListener(View view, final int id, final String name, final String imageUrl) {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(BaseActivity.this, StaffDetailActivity.class);
-                String avatarUrl = hasImage(staff.getTmdbPeopleImage())?staff.getTmdbPeopleImage().getProfiles().get(0).getFile_path():null;
-                intent.putExtra(StaffDetailActivity.STAFF_IMAGE_URL, avatarUrl);
-                intent.putExtra(StaffDetailActivity.STAFF_NAME, staff.getPerson().getName());
-                intent.putExtra(StaffDetailActivity.STAFF_ID, staff.getPerson().getIds().getSlug());
+//                String avatarUrl = hasImage(staff.getTmdbPeopleImage())?staff.getTmdbPeopleImage().getProfiles().get(0).getFile_path():null;
+                intent.putExtra(StaffDetailActivity.STAFF_IMAGE_URL, imageUrl);
+                intent.putExtra(StaffDetailActivity.STAFF_NAME, name);
+                intent.putExtra(StaffDetailActivity.STAFF_ID, id);
                 startActivity(intent);
             }
         });

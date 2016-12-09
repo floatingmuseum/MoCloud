@@ -4,6 +4,7 @@ package com.floatingmuseum.mocloud.data.net;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.People;
+import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
@@ -137,6 +138,12 @@ public interface MoCloudService {
 
     @GET("people/{id}?extended=full")
     Observable<Person> getStaff(@Path("id") String id);
+
+    @GET("people/{id}/movies")
+    Observable<PeopleCredit> getPeopleMovieCredits(@Path("id")String imdbId);
+
+    @GET("people/{id}/shows")
+    Observable getPeopleShowsCredits(@Path("id")String imdbId);
 
     /**
      * 评论

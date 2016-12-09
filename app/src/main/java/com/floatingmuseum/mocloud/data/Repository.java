@@ -10,6 +10,7 @@ import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.People;
+import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
@@ -27,7 +28,12 @@ import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -284,37 +290,171 @@ public class Repository {
                 });
     }
 
-//    public Subscription getMovieTeam(String movieId, final MovieDetailCallback callback) {
+    private Observable<String> createIpObservable(final String url) {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                if (url.equals("http://music.163.com/")){
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-//        return service.getMovieTeam(movieId)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .map(new Func1<People, List<Staff>>() {
-//                    @Override
-//                    public List<Staff> call(People people) {
-//                        List<Staff> staffs = getPeople(people);
-//                        return staffs;
-//                    }
-//                });
+                try {
+                    String ip = getIPByUrl(url);
+                    subscriber.onNext(url + "..." + ip);
+//                    Logger.d("RxJava测试...Emit Data -> ", url + " : " + ip);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                    //subscriber.onError(e);
+                    subscriber.onNext(null);
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                    //subscriber.onError(e);
+                    subscriber.onNext(null);
+                }
+                subscriber.onCompleted();
+            }
+        });
+//        .subscribeOn(Schedulers.io())
+    }
 
-//                        subscribe(new Observer<People>() {
+    private String getIPByUrl(String str) throws MalformedURLException, UnknownHostException {
+        URL urls = new URL(str);
+        String host = urls.getHost();
+        String address = InetAddress.getByName(host).toString();
+        int b = address.indexOf("/");
+        return address.substring(b + 1);
+
+    }
+
+//    public void test() {
+//        List<String> list;
+//        Observable.from(urllist).flatMap(new Func1<String, Observable<String>>() {
+//            @Override
+//            public Observable<String> call(String url) {
+//                Logger.d("Url:"+url);
+//                return requestContent(url);
+//            }
+//        }).subscribeOn(Schedulers.io())
+//                .subscribe(new Action1<String>() {
 //                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(People people) {
-//                        Logger.d("onNext...getTeam...i'm working,even you destroyed activity");
-//                        getPeopleImage(people, callback);
+//                    public void call(String content) {
+//                        Logger.d("Thread:"+Thread.currentThread().getName());
 //                    }
 //                });
 //    }
+
+    public Subscription getMovieTeam(String movieId, final MovieDetailCallback callback) {
+        List<String> list = Arrays.asList("http://www.baidu.com/",
+                "http://www.google.com/",
+                "https://www.bing.com/",
+                "http://www.github.com/",
+                "https://www.v2ex.com/",
+                "http://music.163.com/",
+                "https://trakt.tv/",
+                "http://www.jianshu.com/",
+                "https://www.zhihu.com/",
+                "https://www.themoviedb.org/");
+        Observable.from(list).map(new Func1<String, Observable<String>>() {
+            @Override
+            public Observable<String> call(String s) {
+                return createIpObservable(s);
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Observable<String>>() {
+                    @Override
+                    public void call(Observable<String> stringObservable) {
+//                        Logger.d("RxJava测试...Map:" + stringObservable);
+                    }
+                });
+
+        Observable.from(list).concatMap(new Func1<String, Observable<String>>() {
+            @Override
+            public Observable<String> call(String s) {
+                Logger.d("RxJava测试...concatMap:" + s);
+                return createIpObservable(s);
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<String>() {
+            @Override
+            public void call(String s) {
+                Logger.d("RxJava测试...concatMap:" + s);
+            }
+        });
+        final long startTime = System.currentTimeMillis();
+        Observable.from(list).flatMap(new Func1<String, Observable<String>>() {
+            @Override
+            public Observable<String> call(String s) {
+                Logger.d("RxJava测试...flatMap:" + s);
+                return createIpObservable(s);
+            }
+        }).subscribeOn(Schedulers.io())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+                        Logger.d("RxJava测试...flatMap耗时" + (System.currentTimeMillis() - startTime));
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        Logger.d("RxJava测试...flatMap:" + s + "...当前线程:" + Thread.currentThread().getName());
+                    }
+                });
+
+        final List<Staff> finallyStaffs = new ArrayList<>();
+        return service.getMovieTeam(movieId)
+                .subscribeOn(Schedulers.io())
+                .concatMap(new Func1<People, Observable<Staff>>() {
+                    @Override
+                    public Observable<Staff> call(People people) {
+                        List<Staff> staffs = getPeople(people);
+                        finallyStaffs.addAll(staffs);
+                        return Observable.from(staffs);
+                    }
+                }).flatMap(new Func1<Staff, Observable<TmdbPeopleImage>>() {
+                    @Override
+                    public Observable<TmdbPeopleImage> call(Staff staff) {
+                        Logger.d("串串Name:" + staff.getPerson().getName() + "...ID:" + staff.getPerson().getIds().getTmdb());
+                        return service.getPeopleImage(staff.getPerson().getIds().getTmdb(), BuildConfig.TmdbApiKey);
+                    }
+                }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<TmdbPeopleImage>() {
+                    @Override
+                    public void onCompleted() {
+                        Logger.d("串串耗时" + (System.currentTimeMillis() - startTime));
+                        if (finallyStaffs != null && finallyStaffs.size() != 0) {
+                            for (Staff staff : finallyStaffs) {
+                                Logger.d("串串Name:" + staff.getPerson().getName() + "...ImageUrl:" + staff.getTmdbPeopleImage().getProfiles().get(0).getFile_path());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("串串getMovieTeam...onError");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(TmdbPeopleImage tmdbPeopleImage) {
+                        Logger.d("串串...获取图片数据中:" + tmdbPeopleImage.getId());
+                        for (Staff staff : finallyStaffs) {
+                            if (staff.getPerson().getIds().getTmdb() == tmdbPeopleImage.getId()) {
+                                staff.setTmdbPeopleImage(tmdbPeopleImage);
+                            }
+                        }
+                    }
+                });
+    }
 
     private List<Staff> getPeople(People people) {
         List<Staff> staffs = new ArrayList<>();
@@ -410,26 +550,23 @@ public class Repository {
                 });
     }
 
-    public void getStaffDetail(String id, final DataCallback callback) {
-        service.getStaff(id)
+    public void getStaffDetail(int tmdbId, final DataCallback callback) {
+        service.getStaff(tmdbId, BuildConfig.TmdbApiKey, "credits")
+                .concatMap(new Func1<TmdbStaff, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(TmdbStaff tmdbStaff) {
+                        return Observable.from(tmdbStaff.getAlso_known_as());
+//                        return service.getPeopleMovieCredits(tmdbStaff.getImdb_id());
+                    }
+                }).flatMap(new Func1<String, Observable<?>>() {
+            @Override
+            public Observable<?> call(String peopleCredit) {
+                return null;
+            }
+        })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Person>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Person person) {
-                        callback.onBaseDataSuccess(person);
-                    }
-                });
+                .subscribe();
     }
 
     public void getAccessToken(String code, final DataCallback dataCallback) {

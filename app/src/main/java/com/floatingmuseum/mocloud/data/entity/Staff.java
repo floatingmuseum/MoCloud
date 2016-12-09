@@ -7,6 +7,7 @@ public class Staff {
     private String job;
     private String character;
     private Person person;
+    private Movie movie;
     private TmdbPeopleImage tmdbPeopleImage;
 
     public Person getPerson() {
@@ -39,5 +40,13 @@ public class Staff {
 
     public void setTmdbPeopleImage(TmdbPeopleImage tmdbPeopleImage) {
         this.tmdbPeopleImage = tmdbPeopleImage;
+    }
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 }
