@@ -152,7 +152,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         }
         if (director != null) {
             LinearLayout staff = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
-//            setStaffClickListener(staff, director.getId(), director.getName(), director.getProfile_path());
+            setStaffClickListener(staff, director.getId(), director.getName(), director.getProfile_path());
             RatioImageView iv_staff_headshot = (RatioImageView) staff.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) staff.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) staff.findViewById(R.id.tv_crew_realname);
@@ -169,7 +169,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         for (int i = 0; i < showSize; i++) {
             TmdbPeople.Cast actor = actors.get(i);
             LinearLayout staff_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
-//            setStaffClickListener(staff_item, actor.getId(), actor.getName(), actor.getProfile_path());
+            setStaffClickListener(staff_item, actor.getId(), actor.getName(), actor.getProfile_path());
             RatioImageView iv_staff_headshot = (RatioImageView) staff_item.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) staff_item.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) staff_item.findViewById(R.id.tv_crew_realname);
@@ -188,7 +188,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             if (i == 0 && hasDirector) {
                 Staff director = staffs.get(0);
                 LinearLayout director_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
-                setStaffClickListener(director_item, director);
+//                setStaffClickListener(director_item, director);
                 RatioImageView iv_staff_headshot = (RatioImageView) director_item.findViewById(R.id.iv_staff_headshot);
                 TextView tv_crew_job = (TextView) director_item.findViewById(R.id.tv_crew_job);
                 TextView tv_crew_realname = (TextView) director_item.findViewById(R.id.tv_crew_realname);
@@ -200,7 +200,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             } else {
                 Staff actor = staffs.get(i);
                 LinearLayout actor_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
-                setStaffClickListener(actor_item, actor);
+//                setStaffClickListener(actor_item, actor);
                 RatioImageView iv_staff_headshot = (RatioImageView) actor_item.findViewById(R.id.iv_staff_headshot);
                 TextView tv_crew_job = (TextView) actor_item.findViewById(R.id.tv_crew_job);
                 TextView tv_crew_realname = (TextView) actor_item.findViewById(R.id.tv_crew_realname);

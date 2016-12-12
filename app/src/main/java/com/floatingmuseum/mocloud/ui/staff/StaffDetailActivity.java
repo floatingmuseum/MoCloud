@@ -48,7 +48,7 @@ public class StaffDetailActivity extends BaseActivity {
     private List<TmdbStaff.Credits.Cast> playList;
     private String staffName;
     private String avatarUrl;
-    private String staffId;
+    private int staffId;
     private RatioImageView avatar;
     private TextView birthPlace;
     private TextView birthDay;
@@ -70,10 +70,10 @@ public class StaffDetailActivity extends BaseActivity {
 
         staffName = getIntent().getStringExtra(STAFF_NAME);
         avatarUrl = getIntent().getStringExtra(STAFF_IMAGE_URL);
-        staffId = getIntent().getStringExtra(STAFF_ID);
+        staffId = getIntent().getIntExtra(STAFF_ID, -1);
 
         StaffDetailPresenter presenter = new StaffDetailPresenter(this, Repository.getInstance());
-        Logger.d("id:"+staffId+"...name:"+staffName+"...url:"+avatarUrl);
+        Logger.d("id:" + staffId + "...name:" + staffName + "...url:" + avatarUrl);
         initView();
         presenter.getData(staffId);
     }
@@ -85,7 +85,7 @@ public class StaffDetailActivity extends BaseActivity {
         playList = new ArrayList();
         adapter = new StaffDetailAdapter(playList);
         staff_rv.setHasFixedSize(true);
-        LinearLayout staffHeaderView = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_detail_headview,null);
+        LinearLayout staffHeaderView = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_detail_headview, null);
         avatar = (RatioImageView) staffHeaderView.findViewById(R.id.avatar);
         birthPlace = (TextView) staffHeaderView.findViewById(R.id.tv_place_of_birth);
         birthDay = (TextView) staffHeaderView.findViewById(R.id.tv_birthday);
@@ -94,7 +94,7 @@ public class StaffDetailActivity extends BaseActivity {
         homepage = (TextView) staffHeaderView.findViewById(R.id.tv_website);
         biography = (TextView) staffHeaderView.findViewById(R.id.tv_biography);
         adapter.addHeaderView(staffHeaderView);
-        manager = new GridLayoutManager(this,3);
+        manager = new GridLayoutManager(this, 3);
         staff_rv.setLayoutManager(manager);
         staff_rv.setAdapter(adapter);
         staff_rv.addOnItemTouchListener(new OnItemClickListener() {
@@ -106,25 +106,24 @@ public class StaffDetailActivity extends BaseActivity {
 //                startActivity(intent);
             }
         });
-        ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(avatarUrl),avatar,R.drawable.default_movie_poster);
+        ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(avatarUrl), avatar, R.drawable.default_movie_poster);
     }
 
-    public void onBaseDataSuccess(Person person){
-        birthPlace.setText(person.getBirthplace());
-        birthDay.setText(person.getBirthday());
-        if (homepage!=null) {
-            homepage.setText(person.getHomepage());
-        }else{
+    public void onBaseDataSuccess(TmdbStaff tmdbStaff) {
+        birthPlace.setText(tmdbStaff.getPlace_of_birth());
+        birthDay.setText(tmdbStaff.getBirthday());
+        if (homepage != null) {
+            homepage.setText(tmdbStaff.getHomepage());
+        } else {
             homepage.setVisibility(View.GONE);
         }
 
-        if (person.getDeath()!=null && person.getDeath().length()>0){
+        if (tmdbStaff.getDeathday() != null && tmdbStaff.getDeathday().length() > 0) {
             deathDayTitle.setVisibility(View.VISIBLE);
             deathDay.setVisibility(View.VISIBLE);
-            deathDay.setText(person.getDeath());
+            deathDay.setText(tmdbStaff.getDeathday());
         }
-
-        biography.setText(person.getBiography());
+        biography.setText(tmdbStaff.getBiography());
 
 //        playList.addAll(staff.getCredits().getCast());
 //        adapter.notifyDataSetChanged();

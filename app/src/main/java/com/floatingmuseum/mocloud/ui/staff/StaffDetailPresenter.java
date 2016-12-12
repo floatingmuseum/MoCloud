@@ -9,7 +9,7 @@ import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
  * Created by Floatingmuseum on 2016/12/6.
  */
 
-public class StaffDetailPresenter implements DataCallback<Person> {
+public class StaffDetailPresenter implements DataCallback<TmdbStaff> {
     private StaffDetailActivity activity;
     private Repository repository;
 
@@ -18,13 +18,13 @@ public class StaffDetailPresenter implements DataCallback<Person> {
         this.repository = repository;
     }
 
-    public void getData(String id) {
-        repository.getStaffDetail(id,this);
+    public void getData(int tmdbId) {
+        repository.getStaffDetail(tmdbId,this);
     }
 
     @Override
-    public void onBaseDataSuccess(Person person) {
-        activity.onBaseDataSuccess(person);
+    public void onBaseDataSuccess(TmdbStaff tmdbStaff) {
+        activity.onBaseDataSuccess(tmdbStaff);
     }
 
     @Override

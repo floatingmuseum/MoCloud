@@ -14,6 +14,7 @@ import com.orhanobut.logger.Logger;
 import java.util.List;
 
 import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -28,6 +29,7 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
     private Subscription movieDetailSubscription;
     private Subscription movieTeamSubscription;
     private Subscription movieCommentsSubscription;
+    private Subscription chuanchuan;
 
 
     MovieDetailPresenter(@NonNull MovieDetailActivity activity,@NonNull Repository repository){
@@ -36,6 +38,8 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
     }
 
     public void getData(Movie movie){
+//        CompositeSubscription compositeSubscription = new CompositeSubscription();
+        chuanchuan = repository.getMovieTeam(movie.getIds().getSlug(),this);
         movieDetailSubscription = repository.getMovieDetail(movie.getIds().getSlug(),this);
         movieTeamSubscription = repository.getMovieTeam(movie.getIds().getTmdb(),this);
 //        movieTeamSubscription = repository.getMovieTeam(movie.getIds().getSlug(),this);
@@ -76,6 +80,9 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
         }
         if (!movieCommentsSubscription.isUnsubscribed()) {
             movieCommentsSubscription.unsubscribe();
+        }
+        if (!chuanchuan.isUnsubscribed()) {
+            chuanchuan.unsubscribe();
         }
     }
 }
