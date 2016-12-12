@@ -78,31 +78,101 @@ public class Repository {
         return repository;
     }
 
-    public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
-        Logger.d("getMovieTrendingData");
+    public void getMovieTrendingData1(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
+        Logger.d("getMovieTrendingData1");
+        final List<BaseMovie> movies = new ArrayList<>();
         service.getMovieTrending(pageNum, limit)
-                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<List<BaseMovie>, Observable<BaseMovie>>() {
+                    @Override
+                    public Observable<BaseMovie> call(List<BaseMovie> baseMovies) {
+                        movies.addAll(baseMovies);
+                        return Observable.from(movies);
+                    }
+                }).flatMap(new Func1<BaseMovie, Observable<MovieImage>>() {
+            @Override
+            public Observable<MovieImage> call(BaseMovie baseMovie) {
+                int tmdbID = baseMovie.getMovie().getIds().getTmdb();
+                String imdbID = baseMovie.getMovie().getIds().getImdb();
+                Logger.d("getMovieTrendingData1...ImdbID:"+imdbID+"...TmdbID:"+tmdbID+"...title:"+baseMovie.getMovie().getTitle());
+//                File file = ImageCacheManager.hasCacheImage(tmdbID);
+//                if (file != null) {
+//                    return ImageCacheManager.localImage(tmdbID, file);
+//                }
+                    return service.getMovieImages(imdbID,BuildConfig.FanrtApiKey).subscribeOn(Schedulers.io());
+            }
+        }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<BaseMovie>>() {
+                .subscribe(new Observer<MovieImage>() {
                     @Override
                     public void onCompleted() {
+//                        callback.onBaseDataSuccess(movies);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("getMovieTrendingData1...onError");
+                        if (e instanceof HttpException){
+                            HttpException httpException = (HttpException) e;
+                            Logger.d("getMovieTrendingData1...onError...Code:"+httpException.code());
+                        }
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(MovieImage movieImage) {
+                        Logger.d("getMovieTrendingData1...onNext:"+movieImage);
+//                        Logger.d("Error测试...onNext:" + movieImage);
+                        if (movieImage != null) {
+//                            mergeMovieAndImage1(movieImage, movies);
+//                            downLoadImage(movieImage);
+                        }
+                    }
+                });
+    }
+
+    public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
+        Logger.d("getMovieTrendingData");
+        final List<BaseMovie> movies = new ArrayList<>();
+        service.getMovieTrending(pageNum, limit)
+                .flatMap(new Func1<List<BaseMovie>, Observable<BaseMovie>>() {
+                    @Override
+                    public Observable<BaseMovie> call(List<BaseMovie> baseMovies) {
+                        movies.addAll(baseMovies);
+                        return Observable.from(movies);
+                    }
+                }).flatMap(new Func1<BaseMovie, Observable<TmdbMovieImage>>() {
+            @Override
+            public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
+                int tmdbID = baseMovie.getMovie().getIds().getTmdb();
+                Logger.d("getMovieTrendingData...TmdbID:"+tmdbID);
+                File file = ImageCacheManager.hasCacheImage(tmdbID);
+                if (file != null) {
+                    return ImageCacheManager.localImage(tmdbID, file);
+                }
+                return service.getTmdbImages(baseMovie.getMovie().getIds().getTmdb(), BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<TmdbMovieImage>() {
+                    @Override
+                    public void onCompleted() {
+                        callback.onBaseDataSuccess(movies);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Logger.d("getMovieTrendingData...onError");
-                        if (e instanceof HttpException) {
-                            HttpException exception = (HttpException) e;
-                            Logger.d("trending Data on Error:" + exception.response().errorBody().toString());
-                        }
-                        callback.onError(e);
+                        e.printStackTrace();
                     }
 
                     @Override
-                    public void onNext(List<BaseMovie> movies) {
-//                        callback.onBaseDataSuccess(movies);
-//                        getFanrtImagesByBaseMovies(movies,callback);
-                        getTmdbImagesByBaseMovie(movies, callback);
+                    public void onNext(TmdbMovieImage movieImage) {
+                        Logger.d("getMovieTrendingData...onNext:"+movieImage);
+//                        Logger.d("Error测试...onNext:" + movieImage);
+                        if (movieImage != null) {
+                            mergeMovieAndImage1(movieImage, movies);
+                            downLoadImage(movieImage);
+                        }
                     }
                 });
     }
@@ -755,6 +825,7 @@ public class Repository {
         }).onErrorReturn(new Func1<Throwable, TmdbMovieImage>() {
             @Override
             public TmdbMovieImage call(Throwable throwable) {
+
                 return null;
             }
         }).subscribeOn(Schedulers.io())
@@ -768,6 +839,7 @@ public class Repository {
                     @Override
                     public void onError(Throwable e) {
                         Logger.d("Error测试...getTmdbImages...onError");
+
                         e.printStackTrace();
                     }
 
