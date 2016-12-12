@@ -32,10 +32,10 @@ public class MovieFragmentFactory {
             case 4:
                 fragment = MovieCollectedFragment.newInstance();
                 break;
+//            case 5:
+//                fragment = MovieAnticipatedFragment.newInstance();
+//                break;
             case 5:
-                fragment = MovieAnticipatedFragment.newInstance();
-                break;
-            case 6:
                 fragment = MovieBoxOfficeFragment.newInstance();
                 break;
         }

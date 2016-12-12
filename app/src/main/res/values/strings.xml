@@ -31,7 +31,7 @@
         <item>Played</item>
         <item>Watched</item>
         <item>Collected</item>
-        <item>Anticipated</item>
+        <!--<item>Anticipated</item>-->
         <item>Box Office</item>
     </string-array>
 </resources>
