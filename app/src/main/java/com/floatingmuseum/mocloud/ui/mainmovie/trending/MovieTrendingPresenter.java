@@ -31,7 +31,7 @@ public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, 
         Logger.d("刷新...start:"+shouldClean);
         pageNum = shouldClean?1:++pageNum;
         this.shouldClean =shouldClean;
-        repository.getMovieTrendingData1(pageNum,limit,this);
+//        repository.getMovieTrendingData1(pageNum,limit,this);
         repository.getMovieTrendingData(pageNum,limit,this);
     }
 
