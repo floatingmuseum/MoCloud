@@ -93,12 +93,12 @@ public class Repository {
             public Observable<MovieImage> call(BaseMovie baseMovie) {
                 int tmdbID = baseMovie.getMovie().getIds().getTmdb();
                 String imdbID = baseMovie.getMovie().getIds().getImdb();
-                Logger.d("getMovieTrendingData1...ImdbID:"+imdbID+"...TmdbID:"+tmdbID+"...title:"+baseMovie.getMovie().getTitle());
+                Logger.d("getMovieTrendingData1...ImdbID:" + imdbID + "...TmdbID:" + tmdbID + "...title:" + baseMovie.getMovie().getTitle());
 //                File file = ImageCacheManager.hasCacheImage(tmdbID);
 //                if (file != null) {
 //                    return ImageCacheManager.localImage(tmdbID, file);
 //                }
-                    return service.getMovieImages(imdbID,BuildConfig.FanrtApiKey).subscribeOn(Schedulers.io());
+                return service.getMovieImages(imdbID, BuildConfig.FanrtApiKey).subscribeOn(Schedulers.io());
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -111,16 +111,16 @@ public class Repository {
                     @Override
                     public void onError(Throwable e) {
                         Logger.d("getMovieTrendingData1...onError");
-                        if (e instanceof HttpException){
+                        if (e instanceof HttpException) {
                             HttpException httpException = (HttpException) e;
-                            Logger.d("getMovieTrendingData1...onError...Code:"+httpException.code());
+                            Logger.d("getMovieTrendingData1...onError...Code:" + httpException.code());
                         }
                         e.printStackTrace();
                     }
 
                     @Override
                     public void onNext(MovieImage movieImage) {
-                        Logger.d("getMovieTrendingData1...onNext:"+movieImage);
+                        Logger.d("getMovieTrendingData1...onNext:" + movieImage);
 //                        Logger.d("Error测试...onNext:" + movieImage);
                         if (movieImage != null) {
 //                            mergeMovieAndImage1(movieImage, movies);
@@ -144,7 +144,7 @@ public class Repository {
             @Override
             public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
                 int tmdbID = baseMovie.getMovie().getIds().getTmdb();
-                Logger.d("getMovieTrendingData...TmdbID:"+tmdbID);
+                Logger.d("getMovieTrendingData...TmdbID:" + tmdbID);
                 File file = ImageCacheManager.hasCacheImage(tmdbID);
                 if (file != null) {
                     return ImageCacheManager.localImage(tmdbID, file);
@@ -167,7 +167,7 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
-                        Logger.d("getMovieTrendingData...onNext:"+movieImage);
+                        Logger.d("getMovieTrendingData...onNext:" + movieImage);
 //                        Logger.d("Error测试...onNext:" + movieImage);
                         if (movieImage != null) {
                             mergeMovieAndImage1(movieImage, movies);
@@ -355,135 +355,15 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbPeople people) {
-                        callback.onPeopleSuccess(people);
+//                        callback.onPeopleSuccess(people);
                     }
                 });
     }
-
-    private Observable<String> createIpObservable(final String url) {
-        return Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                if (url.equals("http://music.163.com/")){
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                try {
-                    String ip = getIPByUrl(url);
-                    subscriber.onNext(url + "..." + ip);
-//                    Logger.d("RxJava测试...Emit Data -> ", url + " : " + ip);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    //subscriber.onError(e);
-                    subscriber.onNext(null);
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                    //subscriber.onError(e);
-                    subscriber.onNext(null);
-                }
-                subscriber.onCompleted();
-            }
-        });
-//        .subscribeOn(Schedulers.io())
-    }
-
-    private String getIPByUrl(String str) throws MalformedURLException, UnknownHostException {
-        URL urls = new URL(str);
-        String host = urls.getHost();
-        String address = InetAddress.getByName(host).toString();
-        int b = address.indexOf("/");
-        return address.substring(b + 1);
-
-    }
-
-//    public void test() {
-//        List<String> list;
-//        Observable.from(urllist).flatMap(new Func1<String, Observable<String>>() {
-//            @Override
-//            public Observable<String> call(String url) {
-//                Logger.d("Url:"+url);
-//                return requestContent(url);
-//            }
-//        }).subscribeOn(Schedulers.io())
-//                .subscribe(new Action1<String>() {
-//                    @Override
-//                    public void call(String content) {
-//                        Logger.d("Thread:"+Thread.currentThread().getName());
-//                    }
-//                });
-//    }
 
     public Subscription getMovieTeam(String movieId, final MovieDetailCallback callback) {
-        List<String> list = Arrays.asList("http://www.baidu.com/",
-                "http://www.google.com/",
-                "https://www.bing.com/",
-                "http://www.github.com/",
-                "https://www.v2ex.com/",
-                "http://music.163.com/",
-                "https://trakt.tv/",
-                "http://www.jianshu.com/",
-                "https://www.zhihu.com/",
-                "https://www.themoviedb.org/");
-        Observable.from(list).map(new Func1<String, Observable<String>>() {
-            @Override
-            public Observable<String> call(String s) {
-                return createIpObservable(s);
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Observable<String>>() {
-                    @Override
-                    public void call(Observable<String> stringObservable) {
-//                        Logger.d("RxJava测试...Map:" + stringObservable);
-                    }
-                });
-
-        Observable.from(list).concatMap(new Func1<String, Observable<String>>() {
-            @Override
-            public Observable<String> call(String s) {
-                Logger.d("RxJava测试...concatMap:" + s);
-                return createIpObservable(s);
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<String>() {
-            @Override
-            public void call(String s) {
-                Logger.d("RxJava测试...concatMap:" + s);
-            }
-        });
-        final long startTime = System.currentTimeMillis();
-        Observable.from(list).flatMap(new Func1<String, Observable<String>>() {
-            @Override
-            public Observable<String> call(String s) {
-                Logger.d("RxJava测试...flatMap:" + s);
-                return createIpObservable(s);
-            }
-        }).subscribeOn(Schedulers.io())
-                .subscribe(new Observer<String>() {
-                    @Override
-                    public void onCompleted() {
-                        Logger.d("RxJava测试...flatMap耗时" + (System.currentTimeMillis() - startTime));
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-                        Logger.d("RxJava测试...flatMap:" + s + "...当前线程:" + Thread.currentThread().getName());
-                    }
-                });
-
         final List<Staff> finallyStaffs = new ArrayList<>();
         return service.getMovieTeam(movieId)
-                .subscribeOn(Schedulers.io())
-                .concatMap(new Func1<People, Observable<Staff>>() {
+                .flatMap(new Func1<People, Observable<Staff>>() {
                     @Override
                     public Observable<Staff> call(People people) {
                         List<Staff> staffs = getPeople(people);
@@ -493,30 +373,23 @@ public class Repository {
                 }).flatMap(new Func1<Staff, Observable<TmdbPeopleImage>>() {
                     @Override
                     public Observable<TmdbPeopleImage> call(Staff staff) {
-                        Logger.d("串串Name:" + staff.getPerson().getName() + "...ID:" + staff.getPerson().getIds().getTmdb());
-                        return service.getPeopleImage(staff.getPerson().getIds().getTmdb(), BuildConfig.TmdbApiKey);
+                        return service.getPeopleImage(staff.getPerson().getIds().getTmdb(), BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
                     }
-                }).observeOn(AndroidSchedulers.mainThread())
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<TmdbPeopleImage>() {
                     @Override
                     public void onCompleted() {
-                        Logger.d("串串耗时" + (System.currentTimeMillis() - startTime));
-                        if (finallyStaffs != null && finallyStaffs.size() != 0) {
-                            for (Staff staff : finallyStaffs) {
-                                Logger.d("串串Name:" + staff.getPerson().getName() + "...ImageUrl:" + staff.getTmdbPeopleImage().getProfiles().get(0).getFile_path());
-                            }
-                        }
+                        callback.onPeopleSuccess(finallyStaffs);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Logger.d("串串getMovieTeam...onError");
                         e.printStackTrace();
                     }
 
                     @Override
                     public void onNext(TmdbPeopleImage tmdbPeopleImage) {
-                        Logger.d("串串...获取图片数据中:" + tmdbPeopleImage.getId());
                         for (Staff staff : finallyStaffs) {
                             if (staff.getPerson().getIds().getTmdb() == tmdbPeopleImage.getId()) {
                                 staff.setTmdbPeopleImage(tmdbPeopleImage);
@@ -528,10 +401,18 @@ public class Repository {
 
     private List<Staff> getPeople(People people) {
         List<Staff> staffs = new ArrayList<>();
-        List<Staff> directors = people.getCrew().getDirecting();
-        if (directors != null && directors.size() != 0) {
-            staffs.add(directors.get(0));
+        if (people.getCrew()!=null && people.getCrew().getDirecting()!=null) {
+            List<Staff> directors = people.getCrew().getDirecting();
+            if (directors.size() != 0) {
+                for (Staff director : directors) {
+                    if (director.getJob().equals("Director")) {
+                        staffs.add(director);
+                        break;
+                    }
+                }
+            }
         }
+
         List<Staff> actors = people.getCast();
         if (actors != null && actors.size() != 0) {
             int actorRequestNumber = staffs.size() == 0 ? 4 : 3;
@@ -620,23 +501,26 @@ public class Repository {
                 });
     }
 
-    public void getStaffDetail(int tmdbId, final DataCallback callback) {
-        service.getStaff(tmdbId, BuildConfig.TmdbApiKey, "credits")
-                .concatMap(new Func1<TmdbStaff, Observable<String>>() {
-                    @Override
-                    public Observable<String> call(TmdbStaff tmdbStaff) {
-                        return Observable.from(tmdbStaff.getAlso_known_as());
-//                        return service.getPeopleMovieCredits(tmdbStaff.getImdb_id());
-                    }
-                }).flatMap(new Func1<String, Observable<?>>() {
-            @Override
-            public Observable<?> call(String peopleCredit) {
-                return null;
-            }
-        })
+    public void getStaffDetail(String traktID, final DataCallback callback) {
+        service.getStaff(traktID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe(new Observer<Person>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Person person) {
+                        callback.onBaseDataSuccess(person);
+                    }
+                });
     }
 
     public void getAccessToken(String code, final DataCallback dataCallback) {

@@ -94,6 +94,20 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         });
     }
 
+    protected void setStaffClickListener(View view, final Staff staff) {
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(BaseActivity.this, StaffDetailActivity.class);
+                String avatarUrl = hasImage(staff.getTmdbPeopleImage())?staff.getTmdbPeopleImage().getProfiles().get(0).getFile_path():null;
+                intent.putExtra(StaffDetailActivity.STAFF_IMAGE_URL, avatarUrl);
+                intent.putExtra(StaffDetailActivity.STAFF_NAME, staff.getPerson().getName());
+                intent.putExtra(StaffDetailActivity.STAFF_ID, staff.getPerson().getIds().getSlug());
+                startActivity(intent);
+            }
+        });
+    }
+
     protected boolean hasImage(TmdbPeopleImage image) {
         if (image == null || image.getProfiles() == null || image.getProfiles().size() == 0 || image.getProfiles().get(0).getFile_path() == null) {
             return false;

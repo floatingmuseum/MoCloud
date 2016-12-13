@@ -14,6 +14,6 @@ import java.util.Objects;
  * Created by yan on 2016/8/15.
  */
 public interface MovieDetailCallback<T> extends DataCallback<T>{
-    void onPeopleSuccess(TmdbPeople people);
+    void onPeopleSuccess(List<Staff> staffs);
     void onCommentsSuccess(List<Comment> comments);
 }

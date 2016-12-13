@@ -23,7 +23,7 @@ public class MainPresenter implements DataCallback<UserSettings> {
     }
 
     public void getUserSettings() {
-        repository.getUserSettings(this);
+//        repository.getUserSettings(this);
     }
 
     @Override

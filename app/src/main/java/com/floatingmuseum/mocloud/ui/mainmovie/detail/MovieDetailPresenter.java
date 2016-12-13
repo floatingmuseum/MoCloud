@@ -29,7 +29,7 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
     private Subscription movieDetailSubscription;
     private Subscription movieTeamSubscription;
     private Subscription movieCommentsSubscription;
-    private Subscription chuanchuan;
+    private CompositeSubscription compositeSubscription;
 
 
     MovieDetailPresenter(@NonNull MovieDetailActivity activity,@NonNull Repository repository){
@@ -38,12 +38,13 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
     }
 
     public void getData(Movie movie){
-//        CompositeSubscription compositeSubscription = new CompositeSubscription();
-        chuanchuan = repository.getMovieTeam(movie.getIds().getSlug(),this);
+        compositeSubscription = new CompositeSubscription();
+        movieTeamSubscription = repository.getMovieTeam(movie.getIds().getSlug(),this);
+        compositeSubscription.add(movieTeamSubscription);
         movieDetailSubscription = repository.getMovieDetail(movie.getIds().getSlug(),this);
-        movieTeamSubscription = repository.getMovieTeam(movie.getIds().getTmdb(),this);
-//        movieTeamSubscription = repository.getMovieTeam(movie.getIds().getSlug(),this);
+        compositeSubscription.add(movieDetailSubscription);
         movieCommentsSubscription = repository.getMovieComments(movie.getIds().getSlug(), Repository.COMMENTS_SORT_LIKES,limit,page,this,null);
+        compositeSubscription.add(movieCommentsSubscription);
     }
 
     @Override
@@ -51,12 +52,12 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
         activity.onBaseDataSuccess(movie);
     }
 
-    @Override
+
     public void onPeopleSuccess(TmdbPeople people) {
         activity.onPeopleSuccess(people);
     }
 
-
+    @Override
     public void onPeopleSuccess(List<Staff> staffs){
         activity.onPeopleSuccess(staffs);
     }
@@ -72,17 +73,15 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
     }
 
     public void unSubscription(){
-        if (!movieDetailSubscription.isUnsubscribed()) {
-            movieDetailSubscription.unsubscribe();
-        }
-        if (!movieTeamSubscription.isUnsubscribed()) {
-            movieTeamSubscription.unsubscribe();
-        }
-        if (!movieCommentsSubscription.isUnsubscribed()) {
-            movieCommentsSubscription.unsubscribe();
-        }
-        if (!chuanchuan.isUnsubscribed()) {
-            chuanchuan.unsubscribe();
-        }
+//        if (!movieDetailSubscription.isUnsubscribed()) {
+//            movieDetailSubscription.unsubscribe();
+//        }
+//        if (!movieTeamSubscription.isUnsubscribed()) {
+//            movieTeamSubscription.unsubscribe();
+//        }
+//        if (!movieCommentsSubscription.isUnsubscribed()) {
+//            movieCommentsSubscription.unsubscribe();
+//        }
+        compositeSubscription.unsubscribe();
     }
 }

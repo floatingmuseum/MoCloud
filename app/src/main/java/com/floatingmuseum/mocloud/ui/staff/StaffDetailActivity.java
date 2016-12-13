@@ -48,7 +48,7 @@ public class StaffDetailActivity extends BaseActivity {
     private List<TmdbStaff.Credits.Cast> playList;
     private String staffName;
     private String avatarUrl;
-    private int staffId;
+    private String staffId;
     private RatioImageView avatar;
     private TextView birthPlace;
     private TextView birthDay;
@@ -70,7 +70,7 @@ public class StaffDetailActivity extends BaseActivity {
 
         staffName = getIntent().getStringExtra(STAFF_NAME);
         avatarUrl = getIntent().getStringExtra(STAFF_IMAGE_URL);
-        staffId = getIntent().getIntExtra(STAFF_ID, -1);
+        staffId = getIntent().getStringExtra(STAFF_ID);
 
         StaffDetailPresenter presenter = new StaffDetailPresenter(this, Repository.getInstance());
         Logger.d("id:" + staffId + "...name:" + staffName + "...url:" + avatarUrl);
@@ -109,21 +109,21 @@ public class StaffDetailActivity extends BaseActivity {
         ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(avatarUrl), avatar, R.drawable.default_movie_poster);
     }
 
-    public void onBaseDataSuccess(TmdbStaff tmdbStaff) {
-        birthPlace.setText(tmdbStaff.getPlace_of_birth());
-        birthDay.setText(tmdbStaff.getBirthday());
+    public void onBaseDataSuccess(Person person) {
+        birthPlace.setText(person.getBirthplace());
+        birthDay.setText(person.getBirthday());
         if (homepage != null) {
-            homepage.setText(tmdbStaff.getHomepage());
+            homepage.setText(person.getHomepage());
         } else {
             homepage.setVisibility(View.GONE);
         }
 
-        if (tmdbStaff.getDeathday() != null && tmdbStaff.getDeathday().length() > 0) {
+        if (person.getDeath() != null && person.getDeath().length() > 0) {
             deathDayTitle.setVisibility(View.VISIBLE);
             deathDay.setVisibility(View.VISIBLE);
-            deathDay.setText(tmdbStaff.getDeathday());
+            deathDay.setText(person.getDeath());
         }
-        biography.setText(tmdbStaff.getBiography());
+        biography.setText(person.getBiography());
 
 //        playList.addAll(staff.getCredits().getCast());
 //        adapter.notifyDataSetChanged();
