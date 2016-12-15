@@ -24,6 +24,7 @@ import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
 import com.floatingmuseum.mocloud.data.net.MoCloudService;
 import com.floatingmuseum.mocloud.utils.ErrorUtil;
+import com.floatingmuseum.mocloud.utils.RxUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.google.gson.Gson;
@@ -82,57 +83,57 @@ public class Repository {
         return repository;
     }
 
-    public void getMovieTrendingData1(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
-        Logger.d("getMovieTrendingData1");
-        final List<BaseMovie> movies = new ArrayList<>();
-        service.getMovieTrending(pageNum, limit)
-                .flatMap(new Func1<List<BaseMovie>, Observable<BaseMovie>>() {
-                    @Override
-                    public Observable<BaseMovie> call(List<BaseMovie> baseMovies) {
-                        movies.addAll(baseMovies);
-                        return Observable.from(movies);
-                    }
-                }).flatMap(new Func1<BaseMovie, Observable<MovieImage>>() {
-            @Override
-            public Observable<MovieImage> call(BaseMovie baseMovie) {
-                int tmdbID = baseMovie.getMovie().getIds().getTmdb();
-                String imdbID = baseMovie.getMovie().getIds().getImdb();
-                Logger.d("getMovieTrendingData1...ImdbID:" + imdbID + "...TmdbID:" + tmdbID + "...title:" + baseMovie.getMovie().getTitle());
-//                File file = ImageCacheManager.hasCacheImage(tmdbID);
-//                if (file != null) {
-//                    return ImageCacheManager.localImage(tmdbID, file);
-//                }
-                return service.getMovieImages(imdbID, BuildConfig.FanrtApiKey).subscribeOn(Schedulers.io());
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MovieImage>() {
-                    @Override
-                    public void onCompleted() {
-//                        callback.onBaseDataSuccess(movies);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieTrendingData1...onError");
-                        if (e instanceof HttpException) {
-                            HttpException httpException = (HttpException) e;
-                            Logger.d("getMovieTrendingData1...onError...Code:" + httpException.code());
-                        }
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(MovieImage movieImage) {
-                        Logger.d("getMovieTrendingData1...onNext:" + movieImage);
-//                        Logger.d("Error测试...onNext:" + movieImage);
-                        if (movieImage != null) {
-//                            mergeMovieAndImage1(movieImage, movies);
-//                            downLoadImage(movieImage);
-                        }
-                    }
-                });
-    }
+//    public void getMovieTrendingData1(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
+//        Logger.d("getMovieTrendingData1");
+//        final List<BaseMovie> movies = new ArrayList<>();
+//        service.getMovieTrending(pageNum, limit)
+//                .flatMap(new Func1<List<BaseMovie>, Observable<BaseMovie>>() {
+//                    @Override
+//                    public Observable<BaseMovie> call(List<BaseMovie> baseMovies) {
+//                        movies.addAll(baseMovies);
+//                        return Observable.from(movies);
+//                    }
+//                }).flatMap(new Func1<BaseMovie, Observable<MovieImage>>() {
+//            @Override
+//            public Observable<MovieImage> call(BaseMovie baseMovie) {
+//                int tmdbID = baseMovie.getMovie().getIds().getTmdb();
+//                String imdbID = baseMovie.getMovie().getIds().getImdb();
+//                Logger.d("getMovieTrendingData1...ImdbID:" + imdbID + "...TmdbID:" + tmdbID + "...title:" + baseMovie.getMovie().getTitle());
+////                File file = ImageCacheManager.hasCacheImage(tmdbID);
+////                if (file != null) {
+////                    return ImageCacheManager.localImage(tmdbID, file);
+////                }
+//                return service.getMovieImages(imdbID, BuildConfig.FanrtApiKey).subscribeOn(Schedulers.io());
+//            }
+//        }).subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<MovieImage>() {
+//                    @Override
+//                    public void onCompleted() {
+////                        callback.onBaseDataSuccess(movies);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Logger.d("getMovieTrendingData1...onError");
+//                        if (e instanceof HttpException) {
+//                            HttpException httpException = (HttpException) e;
+//                            Logger.d("getMovieTrendingData1...onError...Code:" + httpException.code());
+//                        }
+//                        e.printStackTrace();
+//                    }
+//
+//                    @Override
+//                    public void onNext(MovieImage movieImage) {
+//                        Logger.d("getMovieTrendingData1...onNext:" + movieImage);
+////                        Logger.d("Error测试...onNext:" + movieImage);
+//                        if (movieImage != null) {
+////                            mergeMovieAndImage1(movieImage, movies);
+////                            downLoadImage(movieImage);
+//                        }
+//                    }
+//                });
+//    }
 
     public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
         Logger.d("getMovieTrendingData");
@@ -155,8 +156,7 @@ public class Repository {
                 }
                 return service.getTmdbImages(baseMovie.getMovie().getIds().getTmdb(), BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        }).compose(RxUtil.<TmdbMovieImage>threadSwitch())
                 .subscribe(new Observer<TmdbMovieImage>() {
                     @Override
                     public void onCompleted() {
@@ -183,8 +183,7 @@ public class Repository {
 
     public void getMoviePopularData(int pageNum, int limit, final DataCallback callback) {
         service.getMoviePopular(pageNum, limit)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxUtil.<List<Movie>>threadSwitch())
                 .subscribe(new Observer<List<Movie>>() {
                     @Override
                     public void onCompleted() {
@@ -206,8 +205,7 @@ public class Repository {
 
     public void getMoviePlayedData(String period, int pageNum, int limit, final DataCallback callback) {
         service.getMoviePlayed(period, pageNum, limit)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
                 .subscribe(new Observer<List<BaseMovie>>() {
                     @Override
                     public void onCompleted() {
@@ -229,8 +227,7 @@ public class Repository {
 
     public void getMovieWatchedData(String period, int pageNum, int limit, final DataCallback callback) {
         service.getMovieWatched(period, pageNum, limit)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
                 .subscribe(new Observer<List<BaseMovie>>() {
                     @Override
                     public void onCompleted() {
@@ -252,8 +249,7 @@ public class Repository {
 
     public void getMovieCollectedData(String period, int pageNum, int limit, final DataCallback callback) {
         service.getMovieCollected(period, pageNum, limit)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
                 .subscribe(new Observer<List<BaseMovie>>() {
                     @Override
                     public void onCompleted() {
@@ -275,8 +271,7 @@ public class Repository {
 
     public void getMovieAnticipatedData(int pageNum, int limit, final DataCallback callback) {
         service.getMovieAnticipated(pageNum, limit)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
                 .subscribe(new Observer<List<BaseMovie>>() {
                     @Override
                     public void onCompleted() {
@@ -298,8 +293,7 @@ public class Repository {
 
     public void getMovieBoxOfficeData(final DataCallback callback) {
         service.getMovieBoxOffice()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
                 .subscribe(new Observer<List<BaseMovie>>() {
                     @Override
                     public void onCompleted() {
@@ -320,10 +314,8 @@ public class Repository {
     }
 
     public Subscription getMovieDetail(String movieId, final MovieDetailCallback callback) {
-
         return service.getMovieDetail(movieId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxUtil.<Movie>threadSwitch())
                 .subscribe(new Observer<Movie>() {
                     @Override
                     public void onCompleted() {
@@ -338,28 +330,6 @@ public class Repository {
                     @Override
                     public void onNext(Movie movie) {
                         callback.onBaseDataSuccess(movie);
-                    }
-                });
-    }
-
-    public Subscription getMovieTeam(int movieId, final MovieDetailCallback callback) {
-        return service.getMovieTeam(movieId, BuildConfig.TmdbApiKey)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<TmdbPeople>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(TmdbPeople people) {
-//                        callback.onPeopleSuccess(people);
                     }
                 });
     }
@@ -379,8 +349,7 @@ public class Repository {
                     public Observable<TmdbPeopleImage> call(Staff staff) {
                         return service.getPeopleImage(staff.getPerson().getIds().getTmdb(), BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
                     }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                }).compose(RxUtil.<TmdbPeopleImage>threadSwitch())
                 .subscribe(new Observer<TmdbPeopleImage>() {
                     @Override
                     public void onCompleted() {
@@ -401,31 +370,6 @@ public class Repository {
                         }
                     }
                 });
-    }
-
-    private List<Staff> getPeople(People people) {
-        List<Staff> staffs = new ArrayList<>();
-        if (people.getCrew() != null && people.getCrew().getDirecting() != null) {
-            List<Staff> directors = people.getCrew().getDirecting();
-            if (directors.size() != 0) {
-                for (Staff director : directors) {
-                    if (director.getJob().equals("Director")) {
-                        staffs.add(director);
-                        break;
-                    }
-                }
-            }
-        }
-
-        List<Staff> actors = people.getCast();
-        if (actors != null && actors.size() != 0) {
-            int actorRequestNumber = staffs.size() == 0 ? 4 : 3;
-            actorRequestNumber = actors.size() < 3 ? actors.size() : actorRequestNumber;
-            for (int i = 0; i < actorRequestNumber; i++) {
-                staffs.add(actors.get(i));
-            }
-        }
-        return staffs;
     }
 
     public void getPeopleImage(People people, final MovieDetailCallback callback) {
@@ -477,8 +421,7 @@ public class Repository {
 
     public Subscription getMovieComments(String movieId, String commentsSort, int limit, int page, final MovieDetailCallback movieDetailCallback, final MovieCommentsCallback commentsCallback) {
         return service.getComments(movieId, commentsSort, limit, page)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxUtil.<List<Comment>>threadSwitch())
                 .subscribe(new Observer<List<Comment>>() {
                     @Override
                     public void onCompleted() {
@@ -507,8 +450,7 @@ public class Repository {
 
     public void getStaffDetail(String traktID, final DataCallback callback) {
         service.getStaff(traktID)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxUtil.<Person>threadSwitch())
                 .subscribe(new Observer<Person>() {
                     @Override
                     public void onCompleted() {
@@ -536,8 +478,7 @@ public class Repository {
         tokenRequest.setGrant_type(Constants.GRANT_TYPE_AUTHORIZATION_CODE);
 
         service.getToken(tokenRequest)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxUtil.<TraktToken>threadSwitch())
                 .subscribe(new Observer<TraktToken>() {
                     @Override
                     public void onCompleted() {
@@ -553,7 +494,6 @@ public class Repository {
                     @Override
                     public void onNext(TraktToken traktToken) {
                         Logger.d("请求成功");
-                        // TODO: 2016/9/18 请求成功 请求成功的逻辑应该相同，未测试
                         dataCallback.onBaseDataSuccess(traktToken);
                     }
                 });
@@ -580,8 +520,7 @@ public class Repository {
 //        }
         service.getUserSettings()
                 .onErrorResumeNext(refreshTokenAndRetry(service.getUserSettings()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxUtil.<UserSettings>threadSwitch())
                 .subscribe(new Observer<UserSettings>() {
                     @Override
                     public void onCompleted() {
@@ -634,6 +573,31 @@ public class Repository {
         };
     }
 
+    private List<Staff> getPeople(People people) {
+        List<Staff> staffs = new ArrayList<>();
+        if (people.getCrew() != null && people.getCrew().getDirecting() != null) {
+            List<Staff> directors = people.getCrew().getDirecting();
+            if (directors.size() != 0) {
+                for (Staff director : directors) {
+                    if (director.getJob().equals("Director")) {
+                        staffs.add(director);
+                        break;
+                    }
+                }
+            }
+        }
+
+        List<Staff> actors = people.getCast();
+        if (actors != null && actors.size() != 0) {
+            int actorRequestNumber = staffs.size() == 0 ? 4 : 3;
+            actorRequestNumber = actors.size() < 3 ? actors.size() : actorRequestNumber;
+            for (int i = 0; i < actorRequestNumber; i++) {
+                staffs.add(actors.get(i));
+            }
+        }
+        return staffs;
+    }
+
     /**************************************************************************************************************************************************/
 
     public void getTmdbImagesByBaseMovie(final List<BaseMovie> movies, final DataCallback callback) {
@@ -654,8 +618,7 @@ public class Repository {
 
                 return null;
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        }).compose(RxUtil.<TmdbMovieImage>threadSwitch())
                 .subscribe(new Observer<TmdbMovieImage>() {
                     @Override
                     public void onCompleted() {
@@ -698,8 +661,7 @@ public class Repository {
             public TmdbMovieImage call(Throwable throwable) {
                 return null;
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        }).compose(RxUtil.<TmdbMovieImage>threadSwitch())
                 .subscribe(new Observer<TmdbMovieImage>() {
                     @Override
                     public void onCompleted() {
