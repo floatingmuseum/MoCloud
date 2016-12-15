@@ -122,6 +122,7 @@ public class LoginActivity extends BaseActivity{
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
+            Logger.d("网页加载进度:"+newProgress);
             if(newProgress!=100){
                 numberProgressBar.setVisibility(View.VISIBLE);
                 numberProgressBar.setProgress(newProgress);
