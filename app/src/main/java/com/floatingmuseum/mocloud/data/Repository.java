@@ -559,29 +559,28 @@ public class Repository {
                 });
     }
 
-    public void getUserSettings(final DataCallback dataCallback) {
-        final String header = "Bearer " + SPUtil.getAccessToken();
-        Logger.d("UserSettings:Header:" + header);
-
+    public void getUserSettings(final DataCallback callback) {
+//        new Func1<Throwable, Observable<? extends UserSettings>>() {
+//            @Override
+//            public Observable<? extends UserSettings> call(Throwable throwable) {
+//                Logger.d("UserSettings:出现异常");
+//                if (ErrorUtil.is401Error(throwable)) {
+//                    Logger.d("UserSettings:401异常");
+//                    return getNewAccessToken().flatMap(new Func1<TraktToken, Observable<UserSettings>>() {
+//                        @Override
+//                        public Observable<UserSettings> call(TraktToken traktToken) {
+//                            Logger.d("UserSettings:获取新Token");
+//                            SPUtil.saveToken(traktToken);
+//                            return service.getUserSettings();
+//                        }
+//                    });
+//                }
+//                return Observable.error(throwable);
+//            }
+//        }
         service.getUserSettings()
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends UserSettings>>() {
-                    @Override
-                    public Observable<? extends UserSettings> call(Throwable throwable) {
-                        Logger.d("UserSettings:出现异常");
-                        if (ErrorUtil.is401Error(throwable)) {
-                            Logger.d("UserSettings:401异常");
-                            return getNewAccessToken().flatMap(new Func1<TraktToken, Observable<UserSettings>>() {
-                                @Override
-                                public Observable<UserSettings> call(TraktToken traktToken) {
-                                    Logger.d("UserSettings:获取新Token");
-                                    SPUtil.saveToken(traktToken);
-                                    return service.getUserSettings();
-                                }
-                            });
-                        }
-                        return Observable.error(throwable);
-                    }
-                }).subscribeOn(Schedulers.io())
+                .onErrorResumeNext(refreshTokenAndRetry(service.getUserSettings()))
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<UserSettings>() {
                     @Override
@@ -593,13 +592,13 @@ public class Repository {
                     public void onError(Throwable e) {
                         Logger.d("UserSettings:onError");
                         e.printStackTrace();
-                        dataCallback.onError(e);
+                        callback.onError(e);
                     }
 
                     @Override
                     public void onNext(UserSettings userSettings) {
                         Logger.d("UserSettings:onNext:"+userSettings);
-                        dataCallback.onBaseDataSuccess(userSettings);
+                        callback.onBaseDataSuccess(userSettings);
                     }
                 });
     }
@@ -612,6 +611,27 @@ public class Repository {
         tokenRequest.setRedirect_uri(Constants.REDIRECT_URI);
         tokenRequest.setGrant_type(Constants.GRANT_TYPE_REFRESH_TOKEN);
         return service.getNewAccessToken(tokenRequest);
+    }
+
+    private <T>Func1<Throwable,? extends Observable<? extends T>> refreshTokenAndRetry(final Observable<T> tobeResumed){
+        return new Func1<Throwable, Observable<? extends T>>() {
+            @Override
+            public Observable<? extends T> call(Throwable throwable) {
+                Logger.d("UserSettings:出现异常");
+                if (ErrorUtil.is401Error(throwable)) {
+                    Logger.d("UserSettings:401异常");
+                    return getNewAccessToken().flatMap(new Func1<TraktToken, Observable<T>>() {
+                        @Override
+                        public Observable<T> call(TraktToken traktToken) {
+                            Logger.d("UserSettings:获取新Token");
+                            SPUtil.saveToken(traktToken);
+                            return tobeResumed;
+                        }
+                    });
+                }
+                return Observable.error(throwable);
+            }
+        };
     }
 
     /**************************************************************************************************************************************************/
