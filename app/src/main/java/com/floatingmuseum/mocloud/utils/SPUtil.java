@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
+import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
 
 /**
@@ -150,19 +151,20 @@ public class SPUtil {
 
     public static void saveUserSettings(UserSettings userSettings) {
         SharedPreferences preferences = MoCloud.context.getSharedPreferences(SP_USER_SETTINGS, Context.MODE_PRIVATE);
+        User user = userSettings.getUser();
         preferences.edit()
-                .putString("username", userSettings.getUsername())
-                .putBoolean("private", userSettings.isPrivateX())
-                .putString("name", userSettings.getName())
-                .putBoolean("vip", userSettings.isVip())
-                .putBoolean("vip_ep", userSettings.isVip_ep())
-                .putString("slug", userSettings.getIds().getSlug())
-                .putString("joined_at", userSettings.getJoined_at())
-                .putString("location", userSettings.getLocation())
-                .putString("about", userSettings.getAbout())
-                .putString("gender", userSettings.getGender())
-                .putInt("age", userSettings.getAge())
-                .putString("avatar", userSettings.getImages().getAvatar().getFull())
+                .putString("username", user.getUsername())
+                .putBoolean("private", user.isPrivateX())
+                .putString("name", user.getName())
+                .putBoolean("vip", user.isVip())
+                .putBoolean("vip_ep", user.isVip_ep())
+                .putString("slug", user.getIds().getSlug())
+                .putString("joined_at", user.getJoined_at())
+                .putString("location", user.getLocation())
+                .putString("about", user.getAbout())
+                .putString("gender", user.getGender())
+                .putInt("age", user.getAge())
+                .putString("avatar", user.getImages().getAvatar().getFull())
                 .putString("timezone", userSettings.getAccount().getTimezone())
                 .putBoolean("time_24hr", userSettings.getAccount().isTime_24hr())
                 .putString("cover_image", userSettings.getAccount().getCover_image())

@@ -20,9 +20,11 @@ import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import java.util.List;
 
 import okhttp3.ResponseBody;
+import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.HEAD;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -45,12 +47,18 @@ public interface MoCloudService {
 
 //*******************************************OAUTH*******************************************
     @POST("oauth/token")
-    Observable<Response<TraktToken>> getToken(@Body TokenRequest tokenRequest);
+    Observable<TraktToken> getToken(@Body TokenRequest tokenRequest);
+
 
     @GET("users/settings")
-    Observable<Response<UserSettings>> getUserSettings(@Header("Authorization") String accessToken);
+    Observable<UserSettings> getUserSettings();
 
-    //Content-Type:application/x-www-form-urlencoded 与默认interceptor中的Content-Type有些不同
+    @GET("users/settings")
+    Call<UserSettings> getUserSetting();
+
+    @POST("oauth/token")
+    Observable<TraktToken> getNewAccessToken(@Body TokenRequest tokenRequest);
+
     @POST("oauth/revoke")
     Observable<Response> revokeToken(@Body String accessToken);
 

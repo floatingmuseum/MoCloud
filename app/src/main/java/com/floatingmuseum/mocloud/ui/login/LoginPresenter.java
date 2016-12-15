@@ -37,6 +37,7 @@ public class LoginPresenter implements DataCallback<TraktToken> {
 
     @Override
     public void onError(Throwable e) {
+        e.printStackTrace();
         loginActivity.requestTokenFailed();
     }
 }

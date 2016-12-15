@@ -93,8 +93,11 @@ public class MainActivity extends BaseActivity
 
         if (isLogin) {
             //已登录，获取头像和用户名
-            ImageLoader.load(this, SPUtil.getString("avatar_path", "-1"), iv_avatar, R.drawable.default_userhead);
-            tv_username.setText(SPUtil.getString("username", "-1"));
+            String avatarUrl = SPUtil.getString(SPUtil.SP_USER_SETTINGS,"avatar","");
+            Logger.d("UserSettings头像1:"+avatarUrl);
+            ImageLoader.load(this, avatarUrl, iv_avatar, R.drawable.default_userhead);
+            tv_username.setText(SPUtil.getString(SPUtil.SP_USER_SETTINGS,"username", ""));
+            Logger.d("UserSettings:获取UserSettings");
             //请求用户最新信息
             //request user settings every time when app start,if login is true.
             mainPresenter.getUserSettings();
@@ -114,13 +117,14 @@ public class MainActivity extends BaseActivity
     }
 
     public void refreshUserView(UserSettings userSettings) {
-        if (userSettings == null) {
-            ImageLoader.loadFromDrawable(this, R.drawable.default_userhead, iv_avatar);
-            tv_username.setText(R.string.click_to_login);
-        } else {
-            ImageLoader.load(this, userSettings.getImages().getAvatar().getFull(), iv_avatar, R.drawable.default_userhead);
-            tv_username.setText(userSettings.getUsername());
-        }
+
+//        if(!SPUtil.getString(SPUtil.SP_USER_SETTINGS,"avatar","-1").equals(userSettings.getImages().getAvatar().getFull())){
+//            ImageLoader.saveImage(this,userSettings.getImages().getAvatar().getFull(),userSettings.getUsername()+"_avatar");
+//        }
+        String avatarUrl = userSettings.getUser().getImages().getAvatar().getFull();
+        Logger.d("UserSettings头像2:"+avatarUrl);
+            ImageLoader.load(this, avatarUrl, iv_avatar, R.drawable.default_userhead);
+            tv_username.setText(userSettings.getUser().getUsername());
     }
 
     @Override

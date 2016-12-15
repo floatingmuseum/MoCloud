@@ -55,9 +55,7 @@ public class LoginActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
 
         ButterKnife.bind(this);
-
         loginPresenter = new LoginPresenter(this, Repository.getInstance());
-
         initView();
     }
 
@@ -94,9 +92,12 @@ public class LoginActivity extends BaseActivity{
     }
 
     public void requestTokenFailed(){
-//        loading_token_request.setVisibility(View.GONE);
         loading_token_request.smoothToHide();
         // TODO: 2016/9/18 失败原因？retry按钮？关闭Activity？ 
+    }
+
+    public String getCode(String url){
+        return url.substring(url.lastIndexOf("/")+1);
     }
 
     private class LoginWebViewClient extends WebViewClient{
@@ -104,15 +105,13 @@ public class LoginActivity extends BaseActivity{
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Logger.d("url:"+url);
             if(url!=null && url.startsWith("https://trakt.tv/oauth/authorize/")){
-                Uri uri = Uri.parse(url);
-                String code = uri.getQueryParameter(QUERY_CODE);
-                Logger.d("Code:"+code);
+//                Uri uri = Uri.parse(url);
+//                String code = uri.getQueryParameter(QUERY_CODE);
+                String code = getCode(url);
+//                Logger.d("Code:"+code+"..."+getCode(url));
                 ll_web_request.setVisibility(View.GONE);
-//                loading_token_request.setVisibility(View.VISIBLE);
                 loading_token_request.smoothToShow();
                 loginPresenter.exchangeAccessToken(code);
-//                exchangeAccessToken(code);
-//                String code = url.substring(startUrl.length(),url.length());
             }
             return super.shouldOverrideUrlLoading(view, url);
         }
@@ -122,7 +121,6 @@ public class LoginActivity extends BaseActivity{
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
-            Logger.d("网页加载进度:"+newProgress);
             if(newProgress!=100){
                 numberProgressBar.setVisibility(View.VISIBLE);
                 numberProgressBar.setProgress(newProgress);

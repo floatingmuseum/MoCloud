@@ -26,6 +26,7 @@ public class MoCloudRetrofit {
         OkHttpClient client = new OkHttpClient()
                 .newBuilder()
                 .addInterceptor(new HeaderIntercept())
+                .addInterceptor(new AuthInterceptor())
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()

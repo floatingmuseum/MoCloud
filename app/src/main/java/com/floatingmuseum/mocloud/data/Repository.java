@@ -23,8 +23,10 @@ import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
 import com.floatingmuseum.mocloud.data.net.MoCloudService;
+import com.floatingmuseum.mocloud.utils.ErrorUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
+import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -38,6 +40,8 @@ import java.util.List;
 
 
 import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
@@ -401,7 +405,7 @@ public class Repository {
 
     private List<Staff> getPeople(People people) {
         List<Staff> staffs = new ArrayList<>();
-        if (people.getCrew()!=null && people.getCrew().getDirecting()!=null) {
+        if (people.getCrew() != null && people.getCrew().getDirecting() != null) {
             List<Staff> directors = people.getCrew().getDirecting();
             if (directors.size() != 0) {
                 for (Staff director : directors) {
@@ -534,7 +538,7 @@ public class Repository {
         service.getToken(tokenRequest)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Response<TraktToken>>() {
+                .subscribe(new Observer<TraktToken>() {
                     @Override
                     public void onCompleted() {
 
@@ -542,97 +546,44 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
+                        Logger.d("请求失败");
                         dataCallback.onError(e);
                     }
 
                     @Override
-                    public void onNext(Response<TraktToken> traktTokenResponse) {
+                    public void onNext(TraktToken traktToken) {
+                        Logger.d("请求成功");
                         // TODO: 2016/9/18 请求成功 请求成功的逻辑应该相同，未测试
-                        dataCallback.onBaseDataSuccess(traktTokenResponse.body());
+                        dataCallback.onBaseDataSuccess(traktToken);
                     }
                 });
-//        getToken(tokenRequest, dataCallback,REQUEST_ACCESS_TOKEN);
     }
-
-//    public Observable refreshToken() {
-//        TokenRequest tokenRequest = new TokenRequest();
-//        tokenRequest.setRefresh_token(SPUtil.getRefreshToken());
-//        tokenRequest.setClient_id(BuildConfig.TraktID);
-//        tokenRequest.setClient_secret(BuildConfig.TraktSecret);
-//        tokenRequest.setRedirect_uri(Constants.REDIRECT_URI);
-//        tokenRequest.setGrant_type(Constants.GRANT_TYPE_REFRESH_TOKEN);
-//
-//        service.getToken(tokenRequest)
-//                .subscribeOn(Schedulers.io())
-//                .subscribe(new Observer<Response<TraktToken>>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(Response<TraktToken> traktTokenResponse) {
-//                        TraktToken traktToken = traktTokenResponse.body();
-//                        //if refresh token has expired
-//
-//                        if (traktTokenResponse.code() == 401) {
-//                            traktToken.setRefresh_token_expired(true);
-//                            Logger.d("error:" + traktTokenResponse.body().getError() + "...description:" + traktTokenResponse.body().getError_description());
-//                        } else {
-//                            SPUtil.saveToken(traktToken);
-//                        }
-//                    }
-//                });
-//    }
-
-    private static final int REQUEST_ACCESS_TOKEN = 1;
-    private static final int REQUEST_REFRESH_TOKEN = 2;
-
-//    private void getToken(TokenRequest tokenRequest, final DataCallback dataCallback, final int type) {
-//        service.getToken(tokenRequest)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<Response<TraktToken>>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        dataCallback.onError(e);
-//                    }
-//
-//                    @Override
-//                    public void onNext(Response<TraktToken> traktTokenResponse) {
-//                        // TODO: 2016/9/18 401表示请求的方法是刷新token，如果401需要重新请求token
-//                        TraktToken traktToken = traktTokenResponse.body();
-//                        if (traktTokenResponse.code() == 401) {
-//                            //if refresh token has expired
-//                            if (type == REQUEST_REFRESH_TOKEN) {
-//                                traktToken.setRefresh_token_expired(true);
-//                                dataCallback.onBaseDataSuccess(traktToken);
-//                            }
-//                            Logger.d("error:" + traktTokenResponse.body().getError() + "...description:" + traktTokenResponse.body().getError_description());
-//                        } else {
-//                            // TODO: 2016/9/18 请求成功 请求成功的逻辑应该相同，未测试
-//                            dataCallback.onBaseDataSuccess(traktToken);
-//                        }
-//                    }
-//                });
-//    }
 
     public void getUserSettings(final DataCallback dataCallback) {
+        final String header = "Bearer " + SPUtil.getAccessToken();
+        Logger.d("UserSettings:Header:" + header);
 
-        service.getUserSettings(SPUtil.getAccessToken())
-                .subscribeOn(Schedulers.io())
+        service.getUserSettings()
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends UserSettings>>() {
+                    @Override
+                    public Observable<? extends UserSettings> call(Throwable throwable) {
+                        Logger.d("UserSettings:出现异常");
+                        if (ErrorUtil.is401Error(throwable)) {
+                            Logger.d("UserSettings:401异常");
+                            return getNewAccessToken().flatMap(new Func1<TraktToken, Observable<UserSettings>>() {
+                                @Override
+                                public Observable<UserSettings> call(TraktToken traktToken) {
+                                    Logger.d("UserSettings:获取新Token");
+                                    SPUtil.saveToken(traktToken);
+                                    return service.getUserSettings();
+                                }
+                            });
+                        }
+                        return Observable.error(throwable);
+                    }
+                }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<UserSettings>>() {
+                .subscribe(new Observer<UserSettings>() {
                     @Override
                     public void onCompleted() {
 
@@ -640,56 +591,27 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof HttpException) {
-                            Logger.d("UserSettings onError:" + ((HttpException) e).code());
-                        }
+                        Logger.d("UserSettings:onError");
+                        e.printStackTrace();
                         dataCallback.onError(e);
                     }
 
                     @Override
-                    public void onNext(Response<UserSettings> userSettingsResponse) {
-                        if (userSettingsResponse.code() == 401) {
-                            // TODO: 2016/9/18 状态码401表示令牌过期，刷新后再请求
-
-
-                        } else {
-                            dataCallback.onBaseDataSuccess(userSettingsResponse.body());
-                        }
+                    public void onNext(UserSettings userSettings) {
+                        Logger.d("UserSettings:onNext:"+userSettings);
+                        dataCallback.onBaseDataSuccess(userSettings);
                     }
                 });
     }
 
-//    private <T> Func1<Throwable,? extends Observable<? extends T>> refreshTokenAndRetry(final Observable<T> toBeResumed) {
-//        return new Func1<Throwable, Observable<? extends T>>() {
-//            @Override
-//            public Observable<? extends T> call(Throwable throwable) {
-//                if(is401Error(throwable)){
-//                    return refreshToken().flatMap(new Func1<TraktToken, Observable<? extends T>>() {
-//                        @Override
-//                        public Observable<? extends T> call(TraktToken traktToken) {
-//                            if(traktToken.getAccess_token() == null){
-//                                //刷新token后还是401错误，表示refreshToken也过期了，提示用户重新登录
-//                                return Observable.error();
-//                            }
-//                            SPUtil.saveToken(traktToken);
-//                            return toBeResumed;
-//                        }
-//                    });
-//                }
-//                //非401错误
-//                return Observable.error();
-//            }
-//        }
-//    }
-
-    private boolean is401Error(Throwable throwable) {
-        if (throwable instanceof HttpException) {
-            HttpException httpException = (HttpException) throwable;
-            if (httpException.code() == Constants.STATUS_CODE_UNAUTHORISED) {
-                return true;
-            }
-        }
-        return false;
+    private Observable<? extends TraktToken> getNewAccessToken() {
+        TokenRequest tokenRequest = new TokenRequest();
+        tokenRequest.setRefresh_token(SPUtil.getRefreshToken());
+        tokenRequest.setClient_id(BuildConfig.TraktID);
+        tokenRequest.setClient_secret(BuildConfig.TraktSecret);
+        tokenRequest.setRedirect_uri(Constants.REDIRECT_URI);
+        tokenRequest.setGrant_type(Constants.GRANT_TYPE_REFRESH_TOKEN);
+        return service.getNewAccessToken(tokenRequest);
     }
 
     /**************************************************************************************************************************************************/
@@ -902,10 +824,5 @@ public class Repository {
                         ImageCacheManager.writeToDisk(responseBody, fileName);
                     }
                 });
-    }
-
-    public void saveImage(String imageUrl) {
-//        service.downloadImage(imageUrl)
-//                .subscribeOn(Schedulers.io())
     }
 }

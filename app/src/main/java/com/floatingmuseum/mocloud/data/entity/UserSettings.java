@@ -3,13 +3,23 @@ package com.floatingmuseum.mocloud.data.entity;
 /**
  * Created by Floatingmuseum on 2016/9/18.
  */
-public class UserSettings extends User {
+public class UserSettings {
+
+    private User user;
 
     private Account account;
 
     private Connections connections;
 
     private SharingText sharing_text;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Account getAccount() {
         return account;
@@ -39,6 +49,7 @@ public class UserSettings extends User {
         private String timezone;
         private boolean time_24hr;
         private String cover_image;
+        private String token;
 
         public String getTimezone() {
             return timezone;
@@ -62,6 +73,14 @@ public class UserSettings extends User {
 
         public void setCover_image(String cover_image) {
             this.cover_image = cover_image;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
         }
     }
 

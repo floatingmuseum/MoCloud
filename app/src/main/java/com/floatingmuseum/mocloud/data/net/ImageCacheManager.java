@@ -46,13 +46,13 @@ public class ImageCacheManager {
     public static File hasCacheImage(int tmdbID) {
         File[] files = imageDir.listFiles();
         for (File file : files) {
-            Logger.d("文件名:" + file.getName() + "...imdbID:" + tmdbID + "...lastModifiedTime:" + file.lastModified());
+//            Logger.d("文件名:" + file.getName() + "...imdbID:" + tmdbID + "...lastModifiedTime:" + file.lastModified());
             if (file.getName().contains(String.valueOf(tmdbID))) {
-                Logger.d("文件已存在:" + tmdbID+"...Uri:"+file.toURI().toString());
+//                Logger.d("文件已存在:" + tmdbID+"...Uri:"+file.toURI().toString());
                 return file;
             }
         }
-        Logger.d("文件不存在:" + tmdbID);
+//        Logger.d("文件不存在:" + tmdbID);
         return null;
     }
 
