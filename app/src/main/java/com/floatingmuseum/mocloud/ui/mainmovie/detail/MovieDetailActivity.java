@@ -8,6 +8,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
@@ -96,36 +99,40 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         if (image != null) {
             File posterFile = movie.getImage().getCacheFile();
             if (posterFile != null && posterFile.exists()) {
-                ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
+//                ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
+                load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
             } else {
                 if (image.getPosters() != null && image.getPosters().size() > 0) {
                     ImageLoader.load(this, StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path()), iv_poster, R.drawable.default_movie_poster);
+                    load(this, StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path()), iv_poster, R.drawable.default_movie_poster);
                 } else {
-                    ImageLoader.loadDefault(this, iv_poster);
+//                    ImageLoader.loadDefault(this, iv_poster);
+                    loadDefault(this, iv_poster);
                 }
             }
         } else {
-            ImageLoader.loadDefault(this, iv_poster);
+//            ImageLoader.loadDefault(this, iv_poster);
+            loadDefault(this, iv_poster);
         }
 
         tv_movie_title.setText(movie.getTitle());
     }
 
-    private void initBaseData(TmdbStaff.Credits.Cast cast) {
-        // TODO: 2016/12/5 主线程查询图片缓存，可能在图片缓存过多时出现延滞的现象。
-        File posterFile = ImageCacheManager.hasCacheImage(cast.getId(), ImageCacheManager.TYPE_POSTER);
-        if (posterFile != null) {
-            ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
-        } else {
-            if (cast.getPoster_path() != null) {
-                ImageLoader.load(this, StringUtil.buildPosterUrl(cast.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
-            } else {
-                ImageLoader.loadDefault(this, iv_poster);
-            }
-        }
-        tv_movie_title.setText(cast.getTitle());
-        tv_released.setText(cast.getRelease_date());
-    }
+//    private void initBaseData(TmdbStaff.Credits.Cast cast) {
+//        // TODO: 2016/12/5 主线程查询图片缓存，可能在图片缓存过多时出现延滞的现象。
+//        File posterFile = ImageCacheManager.hasCacheImage(cast.getId(), ImageCacheManager.TYPE_POSTER);
+//        if (posterFile != null) {
+//            ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
+//        } else {
+//            if (cast.getPoster_path() != null) {
+//                ImageLoader.load(this, StringUtil.buildPosterUrl(cast.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
+//            } else {
+//                ImageLoader.loadDefault(this, iv_poster);
+//            }
+//        }
+//        tv_movie_title.setText(cast.getTitle());
+//        tv_released.setText(cast.getRelease_date());
+//    }
 
     @Override
     protected void initView() {
@@ -139,47 +146,6 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         Double rating = movie.getRating();
         tv_rating.setText(NumberFormatUtil.doubleFormatToString(rating, false, 2));
         tv_overview.setText(movie.getOverview());
-    }
-
-    public void onPeopleSuccess(TmdbPeople people) {
-        // TODO: 2016/12/9 可以请求人物使用Tmdb数据加credits可以拿到人物数据加电影数据，还包括海报，然后拿imdb_id去请求Trakt的数据，之后合并之前的海报到trakt的数据里 
-        TmdbPeople.Crew director = null;
-        for (TmdbPeople.Crew crew : people.getCrew()) {
-            if (crew.getJob().equals("Director")) {
-                director = crew;
-                break;
-            }
-        }
-        if (director != null) {
-            LinearLayout staff = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
-            setStaffClickListener(staff, director.getId(), director.getName(), director.getProfile_path());
-            RatioImageView iv_staff_headshot = (RatioImageView) staff.findViewById(R.id.iv_staff_headshot);
-            TextView tv_crew_job = (TextView) staff.findViewById(R.id.tv_crew_job);
-            TextView tv_crew_realname = (TextView) staff.findViewById(R.id.tv_crew_realname);
-            staff.findViewById(R.id.tv_crew_character).setVisibility(View.GONE);
-            ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(director.getProfile_path()), iv_staff_headshot, R.drawable.default_movie_poster);
-            tv_crew_job.setText(director.getJob());
-            tv_crew_realname.setText(director.getName());
-            ll_crew.addView(staff);
-        }
-
-        List<TmdbPeople.Cast> actors = people.getCast();
-        int showSize = actors.size() > 3 ? 3 : actors.size();
-
-        for (int i = 0; i < showSize; i++) {
-            TmdbPeople.Cast actor = actors.get(i);
-            LinearLayout staff_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
-            setStaffClickListener(staff_item, actor.getId(), actor.getName(), actor.getProfile_path());
-            RatioImageView iv_staff_headshot = (RatioImageView) staff_item.findViewById(R.id.iv_staff_headshot);
-            TextView tv_crew_job = (TextView) staff_item.findViewById(R.id.tv_crew_job);
-            TextView tv_crew_realname = (TextView) staff_item.findViewById(R.id.tv_crew_realname);
-            TextView tv_crew_character = (TextView) staff_item.findViewById(R.id.tv_crew_character);
-            ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(actor.getProfile_path()), iv_staff_headshot, R.drawable.default_movie_poster);
-            tv_crew_job.setText("Actor");
-            tv_crew_realname.setText(actor.getName());
-            tv_crew_character.setText(actor.getCharacter());
-            ll_crew.addView(staff_item);
-        }
     }
 
     public void onPeopleSuccess(List<Staff> staffs) {
@@ -246,7 +212,8 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
 
             Image image = comment.getUser().getImages();
             if (image != null && image.getAvatar() != null) {
-                ImageLoader.loadDontAnimate(this, image.getAvatar().getFull(), iv_userhead, R.drawable.default_userhead);
+//                ImageLoader.loadDontAnimate(this, image.getAvatar().getFull(), iv_userhead, R.drawable.default_userhead);
+                Glide.with(this).load(image.getAvatar().getFull()).placeholder(R.drawable.default_userhead).into(iv_userhead);
             }
 
             tv_username.setText(comment.getUser().getUsername());

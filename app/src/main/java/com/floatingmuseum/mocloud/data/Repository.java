@@ -399,8 +399,8 @@ public class Repository {
                 });
     }
 
-    public void getStaffDetail(String traktID, final DataCallback callback) {
-        service.getStaff(traktID)
+    public Subscription getStaffDetail(String traktID, final DataCallback callback) {
+        return service.getStaff(traktID)
                 .compose(RxUtil.<Person>threadSwitch())
                 .subscribe(new Observer<Person>() {
                     @Override
@@ -450,8 +450,8 @@ public class Repository {
                 });
     }
 
-    public void getUserSettings(final DataCallback callback) {
-        service.getUserSettings()
+    public Subscription getUserSettings(final DataCallback callback) {
+        return service.getUserSettings()
                 .onErrorResumeNext(refreshTokenAndRetry(service.getUserSettings()))
                 .compose(RxUtil.<UserSettings>threadSwitch())
                 .subscribe(new Observer<UserSettings>() {

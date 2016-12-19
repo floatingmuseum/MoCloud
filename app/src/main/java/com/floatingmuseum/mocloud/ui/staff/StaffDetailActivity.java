@@ -59,6 +59,7 @@ public class StaffDetailActivity extends BaseActivity {
     private TextView biography;
     private StaffDetailAdapter adapter;
     private TmdbPeopleImage tmdbPeopleImage;
+    private StaffDetailPresenter presenter;
 
     @Override
     protected int currentLayoutId() {
@@ -75,7 +76,7 @@ public class StaffDetailActivity extends BaseActivity {
         tmdbPeopleImage = getIntent().getParcelableExtra(STAFF_IMAGE);
         staffId = getIntent().getStringExtra(STAFF_ID);
 
-        StaffDetailPresenter presenter = new StaffDetailPresenter(this, Repository.getInstance());
+        presenter = new StaffDetailPresenter(this, Repository.getInstance());
 //        Logger.d("id:" + staffId + "...name:" + staffName + "...url:" + avatarUrl);
         initView();
         presenter.getData(staffId);
@@ -131,5 +132,11 @@ public class StaffDetailActivity extends BaseActivity {
 
 //        playList.addAll(staff.getCredits().getCast());
 //        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.unSubscription();
     }
 }

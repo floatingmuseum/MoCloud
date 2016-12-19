@@ -37,27 +37,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ImageLoader {
 
     public static void loadDefault(Context context, ImageView view) {
-//        Drawable default_image;
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            default_image = context.getResources().getDrawable(placeHolder, null);
-//        } else {
-//            default_image = context.getResources().getDrawable(placeHolder);
-//        }
         Glide.with(context).load(R.drawable.default_movie_poster).into(view);
     }
-
-//    public static void loadDefault(Activity activity, ImageView view) {
-////        Drawable default_image;
-////        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-////            default_image = context.getResources().getDrawable(placeHolder, null);
-////        } else {
-////            default_image = context.getResources().getDrawable(placeHolder);
-////        }
-//        Logger.d("isActivity Destroyed loadDefault:"+activity.isDestroyed());
-//        if (!activity.isDestroyed()){
-//            Glide.with(activity).load(R.drawable.default_movie_poster).into(view);
-//        }
-//    }
 
     public static void load(Context context, String url, ImageView view, int placeHolder) {
         Drawable default_image;
@@ -68,38 +49,9 @@ public class ImageLoader {
         }
             Glide.with(context)
                     .load(url)
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            e.printStackTrace();
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            return false;
-                        }
-                    })
                     .placeholder(default_image)
                     .into(view);
     }
-
-//    public static void load(Activity activity, String url, ImageView view, int placeHolder) {
-//        Drawable default_image;
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            default_image = activity.getResources().getDrawable(placeHolder, null);
-//        } else {
-//            default_image = activity.getResources().getDrawable(placeHolder);
-//        }
-//        Logger.d("isActivity Destroyed load:"+activity.isDestroyed());
-//
-//        if (!activity.isDestroyed()) {
-//            Glide.with(activity)
-//                    .load(url)
-//                    .placeholder(default_image)
-//                    .into(view);
-//        }
-//    }
 
     public static void load(Context context, File file, ImageView view, int placeHolder) {
         Drawable default_image;
@@ -109,22 +61,7 @@ public class ImageLoader {
             default_image = context.getResources().getDrawable(placeHolder);
         }
         Glide.with(context)
-                .load(file)
-                .listener(new RequestListener<File, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, File model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        Logger.d("Glide...Load...onException:" + e);
-                        if (e != null) {
-                            e.printStackTrace();
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, File model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        return false;
-                    }
-                })
+                .load(file).crossFade()
                 .placeholder(default_image)
                 .into(view);
     }
@@ -162,44 +99,5 @@ public class ImageLoader {
         Glide.with(context)
                 .load(drawable)
                 .into(view);
-    }
-
-    public static void saveImage(Context context, String imageUrl, final String fileName) {
-        Glide.with(context)
-                .load(imageUrl)
-                .asBitmap()
-                //图片格式和质量
-                .toBytes(Bitmap.CompressFormat.JPEG, 100)
-                .into(new SimpleTarget<byte[]>() {
-                    @Override
-                    public void onResourceReady(byte[] resource, GlideAnimation glideAnimation) {
-                        //保存文件夹路径
-                        File dir = new File(Environment.getExternalStorageDirectory(), "Mocloud");
-                        if (!dir.exists()) {
-                            dir.mkdirs();
-                        }
-
-                        File file = new File(dir, fileName + ".jpg");
-                        SPUtil.editString("avatar_path", file.getAbsolutePath());
-
-                        BufferedOutputStream bos = null;
-                        try {
-                            bos = new BufferedOutputStream(new FileOutputStream(file));
-                            bos.write(resource);
-                            bos.flush();
-                            ToastUtil.showToast("图片保存到" + file.getAbsolutePath());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } finally {
-                            if (bos != null) {
-                                try {
-                                    bos.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-                });
     }
 }

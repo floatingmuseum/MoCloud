@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.ui.main;
 
 import android.support.annotation.NonNull;
 
+import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
@@ -10,10 +11,12 @@ import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.orhanobut.logger.Logger;
 
+import rx.Subscription;
+
 /**
  * Created by Floatingmuseum on 2016/9/18.
  */
-public class MainPresenter implements DataCallback<UserSettings> {
+public class MainPresenter extends Presenter implements DataCallback<UserSettings> {
 
     MainActivity mainActivity;
     Repository repository;
@@ -25,7 +28,8 @@ public class MainPresenter implements DataCallback<UserSettings> {
     }
 
     public void getUserSettings() {
-        repository.getUserSettings(this);
+        Subscription userSettingsSubscription = repository.getUserSettings(this);
+        compositeSubscription.add(userSettingsSubscription);
     }
 
     @Override

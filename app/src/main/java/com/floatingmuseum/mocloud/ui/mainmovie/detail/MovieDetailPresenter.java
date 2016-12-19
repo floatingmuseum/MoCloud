@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.support.annotation.NonNull;
 
+import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.Comment;
@@ -20,7 +21,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Floatingmuseum on 2016/7/14.
  */
-public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
+public class MovieDetailPresenter extends Presenter implements MovieDetailCallback<Movie> {
 
     MovieDetailActivity activity;
     Repository repository;
@@ -29,7 +30,7 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
     private Subscription movieDetailSubscription;
     private Subscription movieTeamSubscription;
     private Subscription movieCommentsSubscription;
-    private CompositeSubscription compositeSubscription;
+//    private CompositeSubscription compositeSubscription;
 
 
     MovieDetailPresenter(@NonNull MovieDetailActivity activity,@NonNull Repository repository){
@@ -38,7 +39,7 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
     }
 
     public void getData(Movie movie){
-        compositeSubscription = new CompositeSubscription();
+//        compositeSubscription = new CompositeSubscription();
         movieTeamSubscription = repository.getMovieTeam(movie.getIds().getSlug(),this);
         compositeSubscription.add(movieTeamSubscription);
         movieDetailSubscription = repository.getMovieDetail(movie.getIds().getSlug(),this);
@@ -67,16 +68,7 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
 
     }
 
-    public void unSubscription(){
-//        if (!movieDetailSubscription.isUnsubscribed()) {
-//            movieDetailSubscription.unsubscribe();
-//        }
-//        if (!movieTeamSubscription.isUnsubscribed()) {
-//            movieTeamSubscription.unsubscribe();
-//        }
-//        if (!movieCommentsSubscription.isUnsubscribed()) {
-//            movieCommentsSubscription.unsubscribe();
-//        }
-        compositeSubscription.unsubscribe();
-    }
+//    public void unSubscription(){
+//        compositeSubscription.unsubscribe();
+//    }
 }
