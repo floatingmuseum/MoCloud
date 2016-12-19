@@ -54,10 +54,10 @@ abstract public class BaseFragment extends Fragment {
 //                notFirstLoadData = true;
 //            }
 //        }
-        Logger.d("最后可见item:"+lastItemPosition+"...总条目数:"+adapter.getItemCount());
+//        Logger.d("最后可见item:"+lastItemPosition+"...总条目数:"+adapter.getItemCount());
         if ((lastItemPosition+3)==adapter.getItemCount() && !srl.isRefreshing()){
             srl.setRefreshing(true);
-            Logger.d("刷新...BaseFragment..."+srl);
+//            Logger.d("刷新...BaseFragment..."+srl);
             presenter.start(false);
         }
     }

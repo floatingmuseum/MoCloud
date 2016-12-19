@@ -1,5 +1,7 @@
 package com.floatingmuseum.mocloud.data;
 
+import android.Manifest;
+
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.Constants;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
@@ -22,6 +24,7 @@ import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
 import com.floatingmuseum.mocloud.data.net.MoCloudService;
 import com.floatingmuseum.mocloud.utils.ErrorUtil;
+import com.floatingmuseum.mocloud.utils.PermissionsUtil;
 import com.floatingmuseum.mocloud.utils.RxUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
@@ -711,38 +714,6 @@ public class Repository {
         }
     }
 
-    private void downLoadImage(TmdbMovieImage movieImage) {
-        List<TmdbMovieImage.Posters> posters = movieImage.getPosters();
-        if (movieImage.isHasCache() || posters == null || posters.size() < 1) {
-            Logger.d("电影:" + movieImage.getId() + "...没有海报");
-            return;
-        }
-        movieImage.setHasPoster(true);
-        final TmdbMovieImage.Posters poster = posters.get(0);
-        final String fileName = "TMDB..." + movieImage.getId() + StringUtil.getFileSuffix(poster.getFile_path());
-        String posterUrl = StringUtil.buildPosterUrl(poster.getFile_path());
-        service.downloadImage(posterUrl)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(new Subscriber<ResponseBody>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Logger.d("图片下载出错:" + fileName);
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(ResponseBody responseBody) {
-                        ImageCacheManager.writeToDisk(responseBody, fileName, ImageCacheManager.TYPE_POSTER);
-                    }
-                });
-    }
-
     private void downLoadImage(TmdbImage image, String imageUrl, final int imageType) {
         if (imageUrl == null) {
             return;
@@ -752,6 +723,12 @@ public class Repository {
         } else {
             image.setHasAvatar(true);
         }
+
+        if (!PermissionsUtil.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Logger.d("没有读写权限，不下载");
+            return;
+        }
+
         final String fileName = "TMDB..." + image.getId() + StringUtil.getFileSuffix(imageUrl);
         String url = StringUtil.buildPosterUrl(imageUrl);
         service.downloadImage(url)

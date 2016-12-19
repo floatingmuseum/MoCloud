@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.data.net;
 
+import android.Manifest;
 import android.net.Uri;
 import android.os.Environment;
 
@@ -8,6 +9,7 @@ import com.floatingmuseum.mocloud.data.entity.TmdbImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.utils.FileUtil;
+import com.floatingmuseum.mocloud.utils.PermissionsUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.orhanobut.logger.Logger;
 
@@ -48,6 +50,10 @@ public class ImageCacheManager {
         dirSize = cacheDirSize / 2;
         posterDir = new File(Environment.getExternalStorageDirectory(), posterDirName);
         avatarDir = new File(Environment.getExternalStorageDirectory(), avatarDirName);
+        initDir();
+    }
+
+    private static void initDir(){
         if (!posterDir.exists()) {
             posterDir.mkdirs();
         }
@@ -57,7 +63,13 @@ public class ImageCacheManager {
     }
 
     public static File hasCacheImage(int tmdbID, int imageType) {
+        if (!PermissionsUtil.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Logger.d("没有读写权限，不检查Cache");
+            return null;
+        }
+
         File[] files;
+        initDir();
         if (imageType == TYPE_POSTER) {
             files = posterDir.listFiles();
         } else {
@@ -76,19 +88,19 @@ public class ImageCacheManager {
     }
 
     public static Observable<TmdbMovieImage> localPosterImage(int tmdbID, File file) {
-            TmdbMovieImage tmdbMovieImage = new TmdbMovieImage();
-            tmdbMovieImage.setHasCache(true);
-            tmdbMovieImage.setId(tmdbID);
-            tmdbMovieImage.setCacheFile(file);
-            return Observable.just(tmdbMovieImage);
+        TmdbMovieImage tmdbMovieImage = new TmdbMovieImage();
+        tmdbMovieImage.setHasCache(true);
+        tmdbMovieImage.setId(tmdbID);
+        tmdbMovieImage.setCacheFile(file);
+        return Observable.just(tmdbMovieImage);
     }
 
     public static Observable<TmdbPeopleImage> localAvatarImage(int tmdbID, File file) {
-            TmdbPeopleImage tmdbPeopleImage = new TmdbPeopleImage();
-            tmdbPeopleImage.setHasCache(true);
-            tmdbPeopleImage.setId(tmdbID);
-            tmdbPeopleImage.setCacheFile(file);
-            return Observable.just(tmdbPeopleImage);
+        TmdbPeopleImage tmdbPeopleImage = new TmdbPeopleImage();
+        tmdbPeopleImage.setHasCache(true);
+        tmdbPeopleImage.setId(tmdbID);
+        tmdbPeopleImage.setCacheFile(file);
+        return Observable.just(tmdbPeopleImage);
     }
 
     public static void writeToDisk(ResponseBody body, String fileName, int imageType) {
@@ -98,7 +110,7 @@ public class ImageCacheManager {
         if (nowDirSize > dirSize) {
             //计算超出文件夹限制的size
             long reduceSize = nowDirSize + body.contentLength() - dirSize;
-            reduceDirSize(reduceSize,dir);
+            reduceDirSize(reduceSize, dir);
         }
         if (body != null) {
             Logger.d("responseBody:" + body.contentLength() + "..." + fileName);
