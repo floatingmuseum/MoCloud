@@ -52,11 +52,6 @@ public class MovieDetailPresenter implements MovieDetailCallback<Movie> {
         activity.onBaseDataSuccess(movie);
     }
 
-
-    public void onPeopleSuccess(TmdbPeople people) {
-        activity.onPeopleSuccess(people);
-    }
-
     @Override
     public void onPeopleSuccess(List<Staff> staffs){
         activity.onPeopleSuccess(staffs);

@@ -2,7 +2,7 @@ package com.floatingmuseum.mocloud.data.entity;
 
 
 /**
- * Created by Administrator on 2016/4/13.
+ * Created by Floatingmuseum on 2016/4/13.
  */
 public class Person {
 

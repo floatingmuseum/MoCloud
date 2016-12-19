@@ -113,7 +113,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
 
     private void initBaseData(TmdbStaff.Credits.Cast cast) {
         // TODO: 2016/12/5 主线程查询图片缓存，可能在图片缓存过多时出现延滞的现象。
-        File posterFile = ImageCacheManager.hasCacheImage(cast.getId());
+        File posterFile = ImageCacheManager.hasCacheImage(cast.getId(), ImageCacheManager.TYPE_POSTER);
         if (posterFile != null) {
             ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
         } else {
@@ -193,7 +193,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
                 TextView tv_crew_job = (TextView) director_item.findViewById(R.id.tv_crew_job);
                 TextView tv_crew_realname = (TextView) director_item.findViewById(R.id.tv_crew_realname);
                 director_item.findViewById(R.id.tv_crew_character).setVisibility(View.GONE);
-                loadPeopleImage(director, iv_staff_headshot);
+                loadPeopleImage(director.getTmdbPeopleImage(), iv_staff_headshot);
                 tv_crew_job.setText(director.getJob());
                 tv_crew_realname.setText(director.getPerson().getName());
                 ll_crew.addView(director_item);
@@ -205,21 +205,12 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
                 TextView tv_crew_job = (TextView) actor_item.findViewById(R.id.tv_crew_job);
                 TextView tv_crew_realname = (TextView) actor_item.findViewById(R.id.tv_crew_realname);
                 TextView tv_crew_character = (TextView) actor_item.findViewById(R.id.tv_crew_character);
-                loadPeopleImage(actor, iv_staff_headshot);
+                loadPeopleImage(actor.getTmdbPeopleImage(), iv_staff_headshot);
                 tv_crew_job.setText("Actor");
                 tv_crew_realname.setText(actor.getPerson().getName());
                 tv_crew_character.setText(actor.getCharacter());
                 ll_crew.addView(actor_item);
             }
-        }
-    }
-
-    private void loadPeopleImage(Staff staff, ImageView headView) {
-        TmdbPeopleImage image = staff.getTmdbPeopleImage();
-        if (hasImage(image)) {
-            ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(image.getProfiles().get(0).getFile_path()), headView, R.drawable.default_movie_poster);
-        } else {
-            ImageLoader.loadDefault(this, headView);
         }
     }
 

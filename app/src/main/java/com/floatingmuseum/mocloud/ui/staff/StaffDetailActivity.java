@@ -18,6 +18,7 @@ import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.MovieDetail;
 import com.floatingmuseum.mocloud.data.entity.Person;
+import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
@@ -38,7 +39,7 @@ import butterknife.ButterKnife;
 public class StaffDetailActivity extends BaseActivity {
 
 
-    public static final String STAFF_IMAGE_URL = "staff_image_url";
+    public static final String STAFF_IMAGE = "staff_image";
     public static final String STAFF_NAME = "staff_name";
     public static final String STAFF_ID = "staff_id";
 
@@ -47,7 +48,7 @@ public class StaffDetailActivity extends BaseActivity {
     private GridLayoutManager manager;
     private List<TmdbStaff.Credits.Cast> playList;
     private String staffName;
-    private String avatarUrl;
+//    private String avatarUrl;
     private String staffId;
     private RatioImageView avatar;
     private TextView birthPlace;
@@ -57,6 +58,7 @@ public class StaffDetailActivity extends BaseActivity {
     private TextView homepage;
     private TextView biography;
     private StaffDetailAdapter adapter;
+    private TmdbPeopleImage tmdbPeopleImage;
 
     @Override
     protected int currentLayoutId() {
@@ -69,11 +71,12 @@ public class StaffDetailActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         staffName = getIntent().getStringExtra(STAFF_NAME);
-        avatarUrl = getIntent().getStringExtra(STAFF_IMAGE_URL);
+//        avatarUrl = getIntent().getStringExtra(STAFF_IMAGE);
+        tmdbPeopleImage = getIntent().getParcelableExtra(STAFF_IMAGE);
         staffId = getIntent().getStringExtra(STAFF_ID);
 
         StaffDetailPresenter presenter = new StaffDetailPresenter(this, Repository.getInstance());
-        Logger.d("id:" + staffId + "...name:" + staffName + "...url:" + avatarUrl);
+//        Logger.d("id:" + staffId + "...name:" + staffName + "...url:" + avatarUrl);
         initView();
         presenter.getData(staffId);
     }
@@ -106,7 +109,8 @@ public class StaffDetailActivity extends BaseActivity {
 //                startActivity(intent);
             }
         });
-        ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(avatarUrl), avatar, R.drawable.default_movie_poster);
+        loadPeopleImage(tmdbPeopleImage,avatar);
+//        ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(avatarUrl), avatar, R.drawable.default_movie_poster);
     }
 
     public void onBaseDataSuccess(Person person) {

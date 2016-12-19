@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -19,6 +20,10 @@ import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.ui.staff.StaffDetailActivity;
 import com.floatingmuseum.mocloud.ui.comments.CommentsContract;
+import com.floatingmuseum.mocloud.utils.ImageLoader;
+import com.floatingmuseum.mocloud.utils.StringUtil;
+
+import java.io.File;
 
 /**
  * Created by Floatingmuseum on 2016/8/31.
@@ -86,7 +91,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             public void onClick(View v) {
                 Intent intent = new Intent(BaseActivity.this, StaffDetailActivity.class);
 //                String avatarUrl = hasImage(staff.getTmdbPeopleImage())?staff.getTmdbPeopleImage().getProfiles().get(0).getFile_path():null;
-                intent.putExtra(StaffDetailActivity.STAFF_IMAGE_URL, imageUrl);
+//                intent.putExtra(StaffDetailActivity.STAFF_IMAGE_URL, imageUrl);
                 intent.putExtra(StaffDetailActivity.STAFF_NAME, name);
                 intent.putExtra(StaffDetailActivity.STAFF_ID, id);
                 startActivity(intent);
@@ -100,7 +105,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             public void onClick(View v) {
                 Intent intent = new Intent(BaseActivity.this, StaffDetailActivity.class);
                 String avatarUrl = hasImage(staff.getTmdbPeopleImage())?staff.getTmdbPeopleImage().getProfiles().get(0).getFile_path():null;
-                intent.putExtra(StaffDetailActivity.STAFF_IMAGE_URL, avatarUrl);
+                intent.putExtra(StaffDetailActivity.STAFF_IMAGE,staff.getTmdbPeopleImage());
                 intent.putExtra(StaffDetailActivity.STAFF_NAME, staff.getPerson().getName());
                 intent.putExtra(StaffDetailActivity.STAFF_ID, staff.getPerson().getIds().getSlug());
                 startActivity(intent);
@@ -108,7 +113,26 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         });
     }
 
+    protected void loadPeopleImage(TmdbPeopleImage tmdbPeopleImage, ImageView headView) {
+        if (tmdbPeopleImage!=null){
+            if (tmdbPeopleImage.isHasCache()) {
+                File file = tmdbPeopleImage.getCacheFile();
+                ImageLoader.load(this, file, headView, R.drawable.default_movie_poster);
+                return;
+            }else if (tmdbPeopleImage.isHasAvatar()){
+                ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(tmdbPeopleImage.getProfiles().get(0).getFile_path()), headView, R.drawable.default_movie_poster);
+                return;
+            }
+        }
+        ImageLoader.loadDefault(this, headView);
+    }
+
     protected boolean hasImage(TmdbPeopleImage image) {
+//        if (image.isHasCache() || image.isHasAvatar()){
+//            return true;
+//        }else{
+//            return false;
+//        }
         if (image == null || image.getProfiles() == null || image.getProfiles().size() == 0 || image.getProfiles().get(0).getFile_path() == null) {
             return false;
         }

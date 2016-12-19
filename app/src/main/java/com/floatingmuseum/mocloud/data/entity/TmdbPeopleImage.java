@@ -1,22 +1,17 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * Created by Floatingmuseum on 2016/12/8.
  */
 
-public class TmdbPeopleImage {
+public class TmdbPeopleImage extends TmdbImage implements Parcelable{
 
-    private int id;
     private List<Profiles> profiles;
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public List<Profiles> getProfiles() {
         return profiles;
@@ -26,7 +21,7 @@ public class TmdbPeopleImage {
         this.profiles = profiles;
     }
 
-    public static class Profiles {
+    public static class Profiles implements Parcelable{
         private double aspect_ratio;
         private String file_path;
         private int height;
@@ -90,5 +85,77 @@ public class TmdbPeopleImage {
         public void setWidth(int width) {
             this.width = width;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeDouble(this.aspect_ratio);
+            dest.writeString(this.file_path);
+            dest.writeInt(this.height);
+            dest.writeString(this.iso_639_1);
+            dest.writeDouble(this.vote_average);
+            dest.writeInt(this.vote_count);
+            dest.writeInt(this.width);
+        }
+
+        public Profiles() {
+        }
+
+        protected Profiles(Parcel in) {
+            this.aspect_ratio = in.readDouble();
+            this.file_path = in.readString();
+            this.height = in.readInt();
+            this.iso_639_1 = in.readString();
+            this.vote_average = in.readDouble();
+            this.vote_count = in.readInt();
+            this.width = in.readInt();
+        }
+
+        public static final Creator<Profiles> CREATOR = new Creator<Profiles>() {
+            @Override
+            public Profiles createFromParcel(Parcel source) {
+                return new Profiles(source);
+            }
+
+            @Override
+            public Profiles[] newArray(int size) {
+                return new Profiles[size];
+            }
+        };
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeTypedList(this.profiles);
+    }
+
+    public TmdbPeopleImage() {
+    }
+
+    protected TmdbPeopleImage(Parcel in) {
+        super(in);
+        this.profiles = in.createTypedArrayList(Profiles.CREATOR);
+    }
+
+    public static final Creator<TmdbPeopleImage> CREATOR = new Creator<TmdbPeopleImage>() {
+        @Override
+        public TmdbPeopleImage createFromParcel(Parcel source) {
+            return new TmdbPeopleImage(source);
+        }
+
+        @Override
+        public TmdbPeopleImage[] newArray(int size) {
+            return new TmdbPeopleImage[size];
+        }
+    };
 }

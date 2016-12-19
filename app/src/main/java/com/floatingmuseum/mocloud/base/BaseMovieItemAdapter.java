@@ -45,7 +45,6 @@ public abstract class BaseMovieItemAdapter<T extends Object> extends BaseQuickAd
     }
 
     protected void showTitle(TextView titleView, Movie movie) {
-        Logger.d("没有图片showTitle:" + movie.getTitle()+"...TitleView:"+titleView.getVisibility()+"..."+titleView.getText());
         titleView.setVisibility(View.GONE);
         TmdbMovieImage image = movie.getImage();
         if (image == null || (!image.isHasPoster() & !image.isHasCache())) {

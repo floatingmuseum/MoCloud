@@ -14,32 +14,11 @@ import java.util.List;
  * Created by Floatingmuseum on 2016/11/27.
  */
 
-public class TmdbMovieImage implements Parcelable {
+public class TmdbMovieImage extends TmdbImage implements Parcelable {
 
-    private int id;
-    private boolean hasCache;
-    private boolean hasPoster;
-    private File cacheFile;
     private Uri fileUri;
     private List<Backdrops> backdrops;
     private List<Posters> posters;
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public boolean isHasCache() {
-        return hasCache;
-    }
-
-    public void setHasCache(boolean hasCache) {
-        this.hasCache = hasCache;
-    }
 
     public Uri getFileUri() {
         return fileUri;
@@ -47,14 +26,6 @@ public class TmdbMovieImage implements Parcelable {
 
     public void setFileUri(Uri fileUri) {
         this.fileUri = fileUri;
-    }
-
-    public File getCacheFile() {
-        return cacheFile;
-    }
-
-    public void setCacheFile(File cacheFile) {
-        this.cacheFile = cacheFile;
     }
 
     public List<Backdrops> getBackdrops() {
@@ -71,14 +42,6 @@ public class TmdbMovieImage implements Parcelable {
 
     public void setPosters(List<Posters> posters) {
         this.posters = posters;
-    }
-
-    public boolean isHasPoster() {
-        return hasPoster;
-    }
-
-    public void setHasPoster(boolean hasPoster) {
-        this.hasPoster = hasPoster;
     }
 
     public static class Backdrops implements Parcelable{
@@ -302,10 +265,7 @@ public class TmdbMovieImage implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
-        dest.writeByte(this.hasCache ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.hasPoster ? (byte) 1 : (byte) 0);
-        dest.writeSerializable(this.cacheFile);
+        super.writeToParcel(dest, flags);
         dest.writeParcelable(this.fileUri, flags);
         dest.writeTypedList(this.backdrops);
         dest.writeTypedList(this.posters);
@@ -315,10 +275,7 @@ public class TmdbMovieImage implements Parcelable {
     }
 
     protected TmdbMovieImage(Parcel in) {
-        this.id = in.readInt();
-        this.hasCache = in.readByte() != 0;
-        this.hasPoster = in.readByte() != 0;
-        this.cacheFile = (File) in.readSerializable();
+        super(in);
         this.fileUri = in.readParcelable(Uri.class.getClassLoader());
         this.backdrops = in.createTypedArrayList(Backdrops.CREATOR);
         this.posters = in.createTypedArrayList(Posters.CREATOR);

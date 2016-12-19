@@ -4,7 +4,9 @@ import android.net.Uri;
 import android.os.Environment;
 
 import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.entity.TmdbImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
+import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.utils.FileUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.orhanobut.logger.Logger;
@@ -27,24 +29,41 @@ import rx.Observable;
  */
 
 public class ImageCacheManager {
+    public static final int TYPE_POSTER = 0;
+    public static final int TYPE_AVATAR = 1;
 
-    private static final String IMAGE_DIR_NAME = "imageDirName";
+    private static final String POSTER_DIR_NAME = "imageDirName";
+    private static final String AVATAR_DIR_NAME = "avatarDirName";
     private static final String IMAGE_DIR_SIZE = "imageDirSize";
-    private static File imageDir;
+    private static File posterDir;
+    private static File avatarDir;
     private static long dirSize;
 
-    public static void init(){
-        String dirName = SPUtil.getString(IMAGE_DIR_NAME,"MoCloudImageCache/poster");
+    public static void init() {
+        String posterDirName = SPUtil.getString(POSTER_DIR_NAME, "MoCloudImageCache/poster");
+        String avatarDirName = SPUtil.getString(AVATAR_DIR_NAME, "MoCloudImageCache/avatar");
         //默认大小10mb
-        dirSize = SPUtil.getLong(IMAGE_DIR_SIZE,10*1024*1024);
-        imageDir = new File(Environment.getExternalStorageDirectory(), dirName);
-        if (!imageDir.exists()){
-            imageDir.mkdirs();
+        long cacheDirSize = SPUtil.getLong(IMAGE_DIR_SIZE, 10 * 1024 * 1024);
+        //海报和头像各占一半缓存
+        dirSize = cacheDirSize / 2;
+        posterDir = new File(Environment.getExternalStorageDirectory(), posterDirName);
+        avatarDir = new File(Environment.getExternalStorageDirectory(), avatarDirName);
+        if (!posterDir.exists()) {
+            posterDir.mkdirs();
+        }
+        if (!avatarDir.exists()) {
+            avatarDir.mkdirs();
         }
     }
 
-    public static File hasCacheImage(int tmdbID) {
-        File[] files = imageDir.listFiles();
+    public static File hasCacheImage(int tmdbID, int imageType) {
+        File[] files;
+        if (imageType == TYPE_POSTER) {
+            files = posterDir.listFiles();
+        } else {
+            files = avatarDir.listFiles();
+        }
+
         for (File file : files) {
 //            Logger.d("文件名:" + file.getName() + "...imdbID:" + tmdbID + "...lastModifiedTime:" + file.lastModified());
             if (file.getName().contains(String.valueOf(tmdbID))) {
@@ -56,42 +75,43 @@ public class ImageCacheManager {
         return null;
     }
 
-    public static Observable<TmdbMovieImage> localImage(int tmdbID,Uri fileUri){
-        TmdbMovieImage tmdbMovieImage = new TmdbMovieImage();
-        tmdbMovieImage.setHasCache(true);
-        tmdbMovieImage.setId(tmdbID);
-        tmdbMovieImage.setFileUri(fileUri);
-        return Observable.just(tmdbMovieImage);
+    public static Observable<TmdbMovieImage> localPosterImage(int tmdbID, File file) {
+            TmdbMovieImage tmdbMovieImage = new TmdbMovieImage();
+            tmdbMovieImage.setHasCache(true);
+            tmdbMovieImage.setId(tmdbID);
+            tmdbMovieImage.setCacheFile(file);
+            return Observable.just(tmdbMovieImage);
     }
 
-    public static Observable<TmdbMovieImage> localImage(int tmdbID,File file){
-        TmdbMovieImage tmdbMovieImage = new TmdbMovieImage();
-        tmdbMovieImage.setHasCache(true);
-        tmdbMovieImage.setId(tmdbID);
-        tmdbMovieImage.setCacheFile(file);
-        return Observable.just(tmdbMovieImage);
+    public static Observable<TmdbPeopleImage> localAvatarImage(int tmdbID, File file) {
+            TmdbPeopleImage tmdbPeopleImage = new TmdbPeopleImage();
+            tmdbPeopleImage.setHasCache(true);
+            tmdbPeopleImage.setId(tmdbID);
+            tmdbPeopleImage.setCacheFile(file);
+            return Observable.just(tmdbPeopleImage);
     }
 
-    public static void writeToDisk(ResponseBody body, String fileName) {
-        long nowDirSize = getDirSize();
-        Logger.d("图片缓存文件夹当前大小:" + nowDirSize+"...配置大小:"+dirSize+"...KB大小:"+FileUtil.bytesToKb(nowDirSize)+"...MB大小:"+FileUtil.bytesToMb(nowDirSize));
+    public static void writeToDisk(ResponseBody body, String fileName, int imageType) {
+        File dir = imageType == TYPE_POSTER ? posterDir : avatarDir;
+        long nowDirSize = getDirSize(dir);
+        Logger.d("图片缓存文件夹当前大小:" + nowDirSize + "...配置大小:" + dirSize + "...KB大小:" + FileUtil.bytesToKb(nowDirSize) + "...MB大小:" + FileUtil.bytesToMb(nowDirSize));
         if (nowDirSize > dirSize) {
             //计算超出文件夹限制的size
             long reduceSize = nowDirSize + body.contentLength() - dirSize;
-            reduceDirSize(reduceSize);
+            reduceDirSize(reduceSize,dir);
         }
         if (body != null) {
             Logger.d("responseBody:" + body.contentLength() + "..." + fileName);
-            if (!imageDir.exists()) {
-                imageDir.mkdirs();
+            if (!dir.exists()) {
+                dir.mkdirs();
             }
-            File file = new File(imageDir, fileName);
+            File file = new File(dir, fileName);
             BufferedSink sink = null;
             try {
                 sink = Okio.buffer(Okio.sink(file));
                 sink.write(body.source(), body.contentLength());
                 sink.flush();
-                Logger.d("图片"+file.getName() + "...保存到..." + file.getAbsolutePath());
+                Logger.d("图片" + file.getName() + "...保存到..." + file.getAbsolutePath());
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -102,18 +122,18 @@ public class ImageCacheManager {
                         e.printStackTrace();
                     }
                 }
-                if (body!=null){
+                if (body != null) {
                     body.close();
                 }
             }
         }
     }
 
-    private static long getDirSize() {
+    private static long getDirSize(File dir) {
         long size = 0;
-        File[] files = imageDir.listFiles();
+        File[] files = dir.listFiles();
         for (File file : files) {
-            Logger.d("图片:"+file.getName()+"...大小:"+ FileUtil.bytesToKb(file.length()));
+            Logger.d("图片:" + file.getName() + "...大小:" + FileUtil.bytesToKb(file.length()));
             size += file.length();
         }
         return size;
@@ -122,13 +142,13 @@ public class ImageCacheManager {
     /**
      * 降低图片文件夹大小
      */
-    private static void reduceDirSize(long reduceSize) {
-        File[] files = imageDir.listFiles();
+    private static void reduceDirSize(long reduceSize, File dir) {
+        File[] files = dir.listFiles();
         //按图片最后修改时间排序
         Arrays.sort(files, new Comparator<File>() {
             @Override
             public int compare(File file1, File file2) {
-                return (int) (file1.lastModified()-file2.lastModified());
+                return (int) (file1.lastModified() - file2.lastModified());
             }
         });
 
@@ -136,17 +156,17 @@ public class ImageCacheManager {
         List<File> toRemove = new ArrayList<>();
         long toRemoveSize = 0;
         for (File file : files) {
-            Logger.d("图片:"+file.getName()+"...最后修改时间:"+file.lastModified());
+            Logger.d("图片:" + file.getName() + "...最后修改时间:" + file.lastModified());
             toRemove.add(file);
-            toRemoveSize+=file.length();
-            if (toRemoveSize>reduceSize){
+            toRemoveSize += file.length();
+            if (toRemoveSize > reduceSize) {
                 break;
             }
         }
 
         //删除
         for (File file : toRemove) {
-            Logger.d("图片被删除:"+file.getName());
+            Logger.d("图片被删除:" + file.getName());
             file.delete();
         }
     }

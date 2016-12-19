@@ -10,13 +10,11 @@ import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.People;
-import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.entity.TmdbImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
-import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
-import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
@@ -27,34 +25,21 @@ import com.floatingmuseum.mocloud.utils.ErrorUtil;
 import com.floatingmuseum.mocloud.utils.RxUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
-import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -83,58 +68,6 @@ public class Repository {
         return repository;
     }
 
-//    public void getMovieTrendingData1(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
-//        Logger.d("getMovieTrendingData1");
-//        final List<BaseMovie> movies = new ArrayList<>();
-//        service.getMovieTrending(pageNum, limit)
-//                .flatMap(new Func1<List<BaseMovie>, Observable<BaseMovie>>() {
-//                    @Override
-//                    public Observable<BaseMovie> call(List<BaseMovie> baseMovies) {
-//                        movies.addAll(baseMovies);
-//                        return Observable.from(movies);
-//                    }
-//                }).flatMap(new Func1<BaseMovie, Observable<MovieImage>>() {
-//            @Override
-//            public Observable<MovieImage> call(BaseMovie baseMovie) {
-//                int tmdbID = baseMovie.getMovie().getIds().getTmdb();
-//                String imdbID = baseMovie.getMovie().getIds().getImdb();
-//                Logger.d("getMovieTrendingData1...ImdbID:" + imdbID + "...TmdbID:" + tmdbID + "...title:" + baseMovie.getMovie().getTitle());
-////                File file = ImageCacheManager.hasCacheImage(tmdbID);
-////                if (file != null) {
-////                    return ImageCacheManager.localImage(tmdbID, file);
-////                }
-//                return service.getMovieImages(imdbID, BuildConfig.FanrtApiKey).subscribeOn(Schedulers.io());
-//            }
-//        }).subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<MovieImage>() {
-//                    @Override
-//                    public void onCompleted() {
-////                        callback.onBaseDataSuccess(movies);
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Logger.d("getMovieTrendingData1...onError");
-//                        if (e instanceof HttpException) {
-//                            HttpException httpException = (HttpException) e;
-//                            Logger.d("getMovieTrendingData1...onError...Code:" + httpException.code());
-//                        }
-//                        e.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onNext(MovieImage movieImage) {
-//                        Logger.d("getMovieTrendingData1...onNext:" + movieImage);
-////                        Logger.d("Error测试...onNext:" + movieImage);
-//                        if (movieImage != null) {
-////                            mergeMovieAndImage1(movieImage, movies);
-////                            downLoadImage(movieImage);
-//                        }
-//                    }
-//                });
-//    }
-
     public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
         Logger.d("getMovieTrendingData");
         final List<BaseMovie> movies = new ArrayList<>();
@@ -150,11 +83,11 @@ public class Repository {
             public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
                 int tmdbID = baseMovie.getMovie().getIds().getTmdb();
                 Logger.d("getMovieTrendingData...TmdbID:" + tmdbID);
-                File file = ImageCacheManager.hasCacheImage(tmdbID);
+                File file = ImageCacheManager.hasCacheImage(tmdbID, ImageCacheManager.TYPE_POSTER);
                 if (file != null) {
-                    return ImageCacheManager.localImage(tmdbID, file);
+                    return ImageCacheManager.localPosterImage(tmdbID, file);
                 }
-                return service.getTmdbImages(baseMovie.getMovie().getIds().getTmdb(), BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
+                return service.getTmdbImages(tmdbID, BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
             }
         }).compose(RxUtil.<TmdbMovieImage>threadSwitch())
                 .subscribe(new Observer<TmdbMovieImage>() {
@@ -172,10 +105,10 @@ public class Repository {
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
                         Logger.d("getMovieTrendingData...onNext:" + movieImage);
-//                        Logger.d("Error测试...onNext:" + movieImage);
                         if (movieImage != null) {
                             mergeMovieAndImage1(movieImage, movies);
-                            downLoadImage(movieImage);
+                            String imageUrl = getImageUrl(movieImage);
+                            downLoadImage(movieImage, imageUrl, ImageCacheManager.TYPE_POSTER);
                         }
                     }
                 });
@@ -196,8 +129,6 @@ public class Repository {
 
                     @Override
                     public void onNext(List<Movie> movies) {
-//                        callback.onBaseDataSuccess(movies);
-//                        getFanrtImagesByMovies(movies,callback);
                         getTmdbImagesByMovie(movies, callback);
                     }
                 });
@@ -218,8 +149,6 @@ public class Repository {
 
                     @Override
                     public void onNext(List<BaseMovie> movies) {
-//                        callback.onBaseDataSuccess(movies);
-//                        getFanrtImagesByBaseMovies(movies,callback);
                         getTmdbImagesByBaseMovie(movies, callback);
                     }
                 });
@@ -240,8 +169,6 @@ public class Repository {
 
                     @Override
                     public void onNext(List<BaseMovie> movies) {
-//                        callback.onBaseDataSuccess(movies);
-//                        getFanrtImagesByBaseMovies(movies,callback);
                         getTmdbImagesByBaseMovie(movies, callback);
                     }
                 });
@@ -262,8 +189,6 @@ public class Repository {
 
                     @Override
                     public void onNext(List<BaseMovie> movies) {
-//                        callback.onBaseDataSuccess(movies);
-//                        getFanrtImagesByBaseMovies(movies,callback);
                         getTmdbImagesByBaseMovie(movies, callback);
                     }
                 });
@@ -284,8 +209,6 @@ public class Repository {
 
                     @Override
                     public void onNext(List<BaseMovie> movies) {
-//                        callback.onBaseDataSuccess(movies);
-//                        getFanrtImagesByBaseMovies(movies,callback);
                         getTmdbImagesByBaseMovie(movies, callback);
                     }
                 });
@@ -306,8 +229,6 @@ public class Repository {
 
                     @Override
                     public void onNext(List<BaseMovie> movies) {
-//                        callback.onBaseDataSuccess(movies);
-//                        getFanrtImagesByBaseMovies(movies,callback);
                         getTmdbImagesByBaseMovie(movies, callback);
                     }
                 });
@@ -347,7 +268,13 @@ public class Repository {
                 }).flatMap(new Func1<Staff, Observable<TmdbPeopleImage>>() {
                     @Override
                     public Observable<TmdbPeopleImage> call(Staff staff) {
-                        return service.getPeopleImage(staff.getPerson().getIds().getTmdb(), BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
+                        int tmdbID = staff.getPerson().getIds().getTmdb();
+                        Logger.d("getMovieTrendingData...TmdbID:" + tmdbID);
+                        File file = ImageCacheManager.hasCacheImage(tmdbID, ImageCacheManager.TYPE_AVATAR);
+                        if (file != null) {
+                            return ImageCacheManager.localAvatarImage(tmdbID, file);
+                        }
+                        return service.getPeopleImage(tmdbID, BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
                     }
                 }).compose(RxUtil.<TmdbPeopleImage>threadSwitch())
                 .subscribe(new Observer<TmdbPeopleImage>() {
@@ -368,8 +295,29 @@ public class Repository {
                                 staff.setTmdbPeopleImage(tmdbPeopleImage);
                             }
                         }
+                        String imageUrl = getImageUrl(tmdbPeopleImage);
+                        downLoadImage(tmdbPeopleImage, imageUrl, ImageCacheManager.TYPE_AVATAR);
                     }
                 });
+    }
+
+    private String getImageUrl(TmdbPeopleImage tmdbPeopleImage) {
+        List<TmdbPeopleImage.Profiles> profiles = tmdbPeopleImage.getProfiles();
+        if (profiles != null && profiles.size() > 0) {
+            TmdbPeopleImage.Profiles profile = profiles.get(0);
+            if (profile != null && profile.getFile_path() != null && profile.getFile_path().length() > 0) {
+                return profile.getFile_path();
+            }
+        }
+        return null;
+    }
+
+    private String getImageUrl(TmdbMovieImage tmdbMovieImage) {
+        List<TmdbMovieImage.Posters> posters = tmdbMovieImage.getPosters();
+        if (posters != null && posters.size() != 0) {
+            return posters.get(0).getFile_path();
+        }
+        return null;
     }
 
     public void getPeopleImage(People people, final MovieDetailCallback callback) {
@@ -500,24 +448,6 @@ public class Repository {
     }
 
     public void getUserSettings(final DataCallback callback) {
-//        new Func1<Throwable, Observable<? extends UserSettings>>() {
-//            @Override
-//            public Observable<? extends UserSettings> call(Throwable throwable) {
-//                Logger.d("UserSettings:出现异常");
-//                if (ErrorUtil.is401Error(throwable)) {
-//                    Logger.d("UserSettings:401异常");
-//                    return getNewAccessToken().flatMap(new Func1<TraktToken, Observable<UserSettings>>() {
-//                        @Override
-//                        public Observable<UserSettings> call(TraktToken traktToken) {
-//                            Logger.d("UserSettings:获取新Token");
-//                            SPUtil.saveToken(traktToken);
-//                            return service.getUserSettings();
-//                        }
-//                    });
-//                }
-//                return Observable.error(throwable);
-//            }
-//        }
         service.getUserSettings()
                 .onErrorResumeNext(refreshTokenAndRetry(service.getUserSettings()))
                 .compose(RxUtil.<UserSettings>threadSwitch())
@@ -536,7 +466,7 @@ public class Repository {
 
                     @Override
                     public void onNext(UserSettings userSettings) {
-                        Logger.d("UserSettings:onNext:"+userSettings);
+                        Logger.d("UserSettings:onNext:" + userSettings);
                         callback.onBaseDataSuccess(userSettings);
                     }
                 });
@@ -552,7 +482,7 @@ public class Repository {
         return service.getNewAccessToken(tokenRequest);
     }
 
-    private <T>Func1<Throwable,? extends Observable<? extends T>> refreshTokenAndRetry(final Observable<T> tobeResumed){
+    private <T> Func1<Throwable, ? extends Observable<? extends T>> refreshTokenAndRetry(final Observable<T> tobeResumed) {
         return new Func1<Throwable, Observable<? extends T>>() {
             @Override
             public Observable<? extends T> call(Throwable throwable) {
@@ -573,6 +503,9 @@ public class Repository {
         };
     }
 
+    /**
+     * 电影详情页只显示4个人物。
+     */
     private List<Staff> getPeople(People people) {
         List<Staff> staffs = new ArrayList<>();
         if (people.getCrew() != null && people.getCrew().getDirecting() != null) {
@@ -598,7 +531,9 @@ public class Repository {
         return staffs;
     }
 
-    /**************************************************************************************************************************************************/
+    /*******************************************************************
+     * 图片处理
+     *******************************************************************************/
 
     public void getTmdbImagesByBaseMovie(final List<BaseMovie> movies, final DataCallback callback) {
         Observable.from(movies).flatMap(new Func1<BaseMovie, Observable<TmdbMovieImage>>() {
@@ -606,16 +541,15 @@ public class Repository {
             public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
                 int tmdbID = baseMovie.getMovie().getIds().getTmdb();
                 Logger.d("Tmdb:" + tmdbID);
-                File file = ImageCacheManager.hasCacheImage(tmdbID);
+                File file = ImageCacheManager.hasCacheImage(tmdbID, ImageCacheManager.TYPE_POSTER);
                 if (file != null) {
-                    return ImageCacheManager.localImage(tmdbID, file);
+                    return ImageCacheManager.localPosterImage(tmdbID, file);
                 }
                 return service.getTmdbImages(baseMovie.getMovie().getIds().getTmdb(), BuildConfig.TmdbApiKey);
             }
         }).onErrorReturn(new Func1<Throwable, TmdbMovieImage>() {
             @Override
             public TmdbMovieImage call(Throwable throwable) {
-
                 return null;
             }
         }).compose(RxUtil.<TmdbMovieImage>threadSwitch())
@@ -637,7 +571,8 @@ public class Repository {
                         Logger.d("Error测试...onNext:" + movieImage);
                         if (movieImage != null) {
                             mergeMovieAndImage1(movieImage, movies);
-                            downLoadImage(movieImage);
+                            String imageUrl = getImageUrl(movieImage);
+                            downLoadImage(movieImage,imageUrl,ImageCacheManager.TYPE_POSTER);
                         }
                     }
                 });
@@ -649,9 +584,9 @@ public class Repository {
             public Observable<TmdbMovieImage> call(Movie movie) {
                 int tmdbID = movie.getIds().getTmdb();
                 Logger.d("Tmdb:" + tmdbID);
-                File file = ImageCacheManager.hasCacheImage(tmdbID);
+                File file = ImageCacheManager.hasCacheImage(tmdbID, ImageCacheManager.TYPE_POSTER);
                 if (file != null) {
-                    return ImageCacheManager.localImage(tmdbID, file);
+                    return ImageCacheManager.localPosterImage(tmdbID, file);
                 }
                 Logger.d("Tmdb:" + movie.getIds().getTmdb() + "..." + BuildConfig.TmdbApiKey);
                 return service.getTmdbImages(movie.getIds().getTmdb(), BuildConfig.TmdbApiKey);
@@ -679,7 +614,8 @@ public class Repository {
                         Logger.d("Error测试...onNext:" + movieImage);
                         if (movieImage != null) {
                             mergeMovieAndImage2(movieImage, movies);
-                            downLoadImage(movieImage);
+                            String imageUrl = getImageUrl(movieImage);
+                            downLoadImage(movieImage,imageUrl,ImageCacheManager.TYPE_POSTER);
                         }
                     }
                 });
@@ -722,7 +658,6 @@ public class Repository {
                 return service.getMovieImages(movie.getMovie().getIds().getTmdb(), BuildConfig.FanrtApiKey);
             }
         }).subscribeOn(Schedulers.io())
-//                .onExceptionResumeNext(Observable.<MovieImage>empty())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<MovieImage>() {
                     @Override
@@ -803,7 +738,40 @@ public class Repository {
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-                        ImageCacheManager.writeToDisk(responseBody, fileName);
+                        ImageCacheManager.writeToDisk(responseBody, fileName, ImageCacheManager.TYPE_POSTER);
+                    }
+                });
+    }
+
+    private void downLoadImage(TmdbImage image, String imageUrl, final int imageType) {
+        if (imageUrl == null) {
+            return;
+        }
+        if (imageType == ImageCacheManager.TYPE_POSTER) {
+            image.setHasPoster(true);
+        } else {
+            image.setHasAvatar(true);
+        }
+        final String fileName = "TMDB..." + image.getId() + StringUtil.getFileSuffix(imageUrl);
+        String url = StringUtil.buildPosterUrl(imageUrl);
+        service.downloadImage(url)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(new Subscriber<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("图片下载出错:" + fileName);
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        ImageCacheManager.writeToDisk(responseBody, fileName, imageType);
                     }
                 });
     }
