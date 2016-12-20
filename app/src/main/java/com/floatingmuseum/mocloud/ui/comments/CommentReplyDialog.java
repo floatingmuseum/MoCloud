@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -46,6 +47,7 @@ public class CommentReplyDialog extends AlertDialog {
         setContentView(R.layout.comment_replay);
         ButterKnife.bind(this);
         initView();
+
     }
 
     private void initView() {
@@ -58,5 +60,16 @@ public class CommentReplyDialog extends AlertDialog {
                 // TODO: 2016/12/20 提交回复
             }
         });
+
+
+        getWindow().clearFlags( WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+//        replyComment.setFocusable(true);
+//        replyComment.setFocusableInTouchMode(true);
+//        replyComment.requestFocus();
+//        InputMethodManager imm = (InputMethodManager) activity
+//                .getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.showSoftInput(replyComment, 0);
+//        Logger.d("显示软键盘");
     }
 }
