@@ -729,7 +729,7 @@ public class Repository {
             return;
         }
 
-        final String fileName = "TMDB..." + image.getId() + StringUtil.getFileSuffix(imageUrl);
+        final String fileName = "TMDB-" + image.getId() + StringUtil.getFileSuffix(imageUrl);
         String url = StringUtil.buildPosterUrl(imageUrl);
         service.downloadImage(url)
                 .subscribeOn(Schedulers.io())
