@@ -119,17 +119,17 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         if (tmdbPeopleImage!=null){
             if (tmdbPeopleImage.isHasCache()) {
                 File file = tmdbPeopleImage.getCacheFile();
-//                ImageLoader.load(this, file, headView, R.drawable.default_movie_poster);
-                load(this, file, headView, R.drawable.default_movie_poster);
+                ImageLoader.load(this, file, headView, R.drawable.default_movie_poster);
+//                load(this, file, headView, R.drawable.default_movie_poster);
                 return;
             }else if (tmdbPeopleImage.isHasAvatar()){
-//                ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(tmdbPeopleImage.getProfiles().get(0).getFile_path()), headView, R.drawable.default_movie_poster);
-                load(this, StringUtil.buildPeopleHeadshotUrl(tmdbPeopleImage.getProfiles().get(0).getFile_path()), headView, R.drawable.default_movie_poster);
+                ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(tmdbPeopleImage.getProfiles().get(0).getFile_path()), headView, R.drawable.default_movie_poster);
+//                load(this, StringUtil.buildPeopleHeadshotUrl(tmdbPeopleImage.getProfiles().get(0).getFile_path()), headView, R.drawable.default_movie_poster);
                 return;
             }
         }
-//        ImageLoader.loadDefault(this, headView);
-        loadDefault(this, headView);
+        ImageLoader.loadDefault(this, headView);
+//        loadDefault(this, headView);
     }
 
     protected void stopRefresh(SwipeRefreshLayout srl) {

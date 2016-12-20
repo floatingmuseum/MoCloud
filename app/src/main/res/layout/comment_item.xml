@@ -55,10 +55,10 @@
                 android:background="@color/spoiler_red"
                 android:gravity="center_vertical"
                 android:padding="2dp"
+                android:text="@string/spoiler_alert"
                 android:textColor="@color/white_text"
                 android:textStyle="bold"
                 android:visibility="gone"
-                android:text="@string/spoiler_alert"
                 tools:text="@string/spoiler_alert" />
         </LinearLayout>
 

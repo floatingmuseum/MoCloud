@@ -9,9 +9,9 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by yan on 2016/8/11.
+ * Created by Floatingmuseum on 2016/8/11.
  */
-public class Comment{
+public class Comment implements Parcelable{
         private long id;
         private String comment;
         private boolean spoiler;
@@ -111,4 +111,53 @@ public class Comment{
         public void setUser_rating(int user_rating) {
             this.user_rating = user_rating;
         }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.comment);
+        dest.writeByte(this.spoiler ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.review ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.parent_id);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeInt(this.replies);
+        dest.writeInt(this.likes);
+        dest.writeInt(this.user_rating);
+        dest.writeParcelable(this.user, flags);
+    }
+
+    public Comment() {
+    }
+
+    protected Comment(Parcel in) {
+        this.id = in.readLong();
+        this.comment = in.readString();
+        this.spoiler = in.readByte() != 0;
+        this.review = in.readByte() != 0;
+        this.parent_id = in.readLong();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.replies = in.readInt();
+        this.likes = in.readInt();
+        this.user_rating = in.readInt();
+        this.user = in.readParcelable(User.class.getClassLoader());
+    }
+
+    public static final Creator<Comment> CREATOR = new Creator<Comment>() {
+        @Override
+        public Comment createFromParcel(Parcel source) {
+            return new Comment(source);
+        }
+
+        @Override
+        public Comment[] newArray(int size) {
+            return new Comment[size];
+        }
+    };
 }

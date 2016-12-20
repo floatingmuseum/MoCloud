@@ -3,7 +3,7 @@ package com.floatingmuseum.mocloud.data.entity;
 import java.util.List;
 
 /**
- * Created by yan on 2016/8/9.
+ * Created by Floatingmuseum on 2016/8/9.
  */
 public class People {
     private List<Staff> cast;

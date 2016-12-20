@@ -77,9 +77,9 @@ public class ImageCacheManager {
         }
 
         for (File file : files) {
-            String[] strs = file.getName().split("-");
-            String id = strs[1];
-//            Logger.d("文件名:" + file.getName() + "...imdbID:" + tmdbID + "...lastModifiedTime:" + file.lastModified());
+            String fileName = file.getName();
+            String id = fileName.substring(fileName.indexOf("-")+1,fileName.indexOf("."));
+            Logger.d("文件名:" + file.getName() + "...TmdbID:" + tmdbID +"切割后:"+id+ "...lastModifiedTime:" + file.lastModified());
             if (id.equals(String.valueOf(tmdbID))) {
                 Logger.d("文件已存在:" + tmdbID+"...Uri:"+file.toURI().toString());
                 return file;

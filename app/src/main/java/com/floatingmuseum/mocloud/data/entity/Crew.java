@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Created by yan on 2016/8/10.
+ * Created by Floatingmuseum on 2016/8/10.
  */
 public class Crew {
     private List<Staff> production;

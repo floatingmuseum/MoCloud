@@ -37,6 +37,7 @@
         <activity android:name=".ui.calendar.CalendarActivity"/>
         <activity android:name=".ui.about.AboutActivity"/>
         <activity android:name=".ui.settings.SettingsActivity"/>
+        <activity android:name=".ui.comments.SingleCommentActivity"/>
 
     </application>
 

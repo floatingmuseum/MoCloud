@@ -153,11 +153,16 @@ public interface MoCloudService {
     @GET("people/{id}/shows")
     Observable getPeopleShowsCredits(@Path("id")String imdbId);
 
+//******************************************评 论*******************************************
+
     /**
      * 评论
      */
     @GET("movies/{id}/comments/{sort}?extended=images")
     Observable<List<Comment>> getComments(@Path("id")String id, @Path("sort")String sort, @Query("limit")int limit, @Query("page")int page);
+
+    @GET("comments/{id}/replies?extended=full")
+    Observable<List<Comment>> getCommentReplies(@Path("id")long id);
 
 //******************************************图 片*******************************************
 

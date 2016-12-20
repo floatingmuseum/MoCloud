@@ -1,13 +1,16 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
 /**
- * Created by yan on 2016/8/15.
+ * Created by Floatingmuseum on 2016/8/15.
  */
-public class User{
+public class User implements Parcelable{
     private String username;//用户名
     @SerializedName("private")
     private boolean privateX;
@@ -109,6 +112,7 @@ public class User{
     public void setAge(int age) {
         this.age = age;
     }
+
     public Image getImages() {
         return images;
     }
@@ -116,4 +120,55 @@ public class User{
     public void setImages(Image images) {
         this.images = images;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.username);
+        dest.writeByte(this.privateX ? (byte) 1 : (byte) 0);
+        dest.writeString(this.name);
+        dest.writeByte(this.vip ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.vip_ep ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.ids, flags);
+        dest.writeString(this.joined_at);
+        dest.writeString(this.location);
+        dest.writeString(this.about);
+        dest.writeString(this.gender);
+        dest.writeInt(this.age);
+        dest.writeParcelable(this.images, flags);
+    }
+
+    public User() {
+    }
+
+    protected User(Parcel in) {
+        this.username = in.readString();
+        this.privateX = in.readByte() != 0;
+        this.name = in.readString();
+        this.vip = in.readByte() != 0;
+        this.vip_ep = in.readByte() != 0;
+        this.ids = in.readParcelable(Ids.class.getClassLoader());
+        this.joined_at = in.readString();
+        this.location = in.readString();
+        this.about = in.readString();
+        this.gender = in.readString();
+        this.age = in.readInt();
+        this.images = in.readParcelable(Image.class.getClassLoader());
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

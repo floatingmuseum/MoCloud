@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Created by yan on 2016/8/15.
+ * Created by Floatingmuseum on 2016/8/15.
  */
 public interface MovieDetailCallback<T> extends DataCallback<T>{
     void onPeopleSuccess(List<Staff> staffs);

@@ -27,6 +27,7 @@ import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
+import com.floatingmuseum.mocloud.ui.comments.SingleCommentActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.NumberFormatUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
@@ -67,7 +68,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     @BindView(R.id.ll_crew)
     LinearLayout ll_crew;
     @BindView(R.id.ll_comments)
-    LinearLayout ll_comments;
+    LinearLayout commentContainer;
     @BindView(R.id.tv_no_comments)
     TextView tv_no_comments;
     @BindView(R.id.tv_comments_more)
@@ -94,32 +95,30 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     }
 
     private void initPosterAndTitle(Movie movie) {
-        // TODO: 2016/12/5 主线程查询图片缓存，可能在图片缓存过多时出现延滞的现象。
         TmdbMovieImage image = movie.getImage();
         if (image != null) {
             File posterFile = movie.getImage().getCacheFile();
             if (posterFile != null && posterFile.exists()) {
-//                ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
-                load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
+                ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
+//                load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
             } else {
                 if (image.getPosters() != null && image.getPosters().size() > 0) {
                     ImageLoader.load(this, StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path()), iv_poster, R.drawable.default_movie_poster);
                     load(this, StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path()), iv_poster, R.drawable.default_movie_poster);
                 } else {
-//                    ImageLoader.loadDefault(this, iv_poster);
-                    loadDefault(this, iv_poster);
+                    ImageLoader.loadDefault(this, iv_poster);
+//                    loadDefault(this, iv_poster);
                 }
             }
         } else {
-//            ImageLoader.loadDefault(this, iv_poster);
-            loadDefault(this, iv_poster);
+            ImageLoader.loadDefault(this, iv_poster);
+//            loadDefault(this, iv_poster);
         }
 
         tv_movie_title.setText(movie.getTitle());
     }
 
 //    private void initBaseData(TmdbStaff.Credits.Cast cast) {
-//        // TODO: 2016/12/5 主线程查询图片缓存，可能在图片缓存过多时出现延滞的现象。
 //        File posterFile = ImageCacheManager.hasCacheImage(cast.getId(), ImageCacheManager.TYPE_POSTER);
 //        if (posterFile != null) {
 //            ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
@@ -183,7 +182,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     public void onCommentsSuccess(final List<Comment> comments) {
         if (comments.size() == 0) {
             tv_no_comments.setVisibility(View.VISIBLE);
-            ll_comments.setVisibility(View.GONE);
+            commentContainer.setVisibility(View.GONE);
             return;
         }
 
@@ -201,8 +200,8 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             });
         }
         for (int i = 0; i < showSize; i++) {
-            Comment comment = comments.get(i);
-            LinearLayout comment_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.comment_item, ll_comments, false);
+            final Comment comment = comments.get(i);
+            LinearLayout comment_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.comment_item, commentContainer, false);
             CircleImageView iv_userhead = (CircleImageView) comment_item.findViewById(R.id.iv_userhead);
             TextView tv_username = (TextView) comment_item.findViewById(R.id.tv_username);
             TextView tv_updatetime = (TextView) comment_item.findViewById(R.id.tv_updatetime);
@@ -212,8 +211,8 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
 
             Image image = comment.getUser().getImages();
             if (image != null && image.getAvatar() != null) {
-//                ImageLoader.loadDontAnimate(this, image.getAvatar().getFull(), iv_userhead, R.drawable.default_userhead);
-                Glide.with(this).load(image.getAvatar().getFull()).placeholder(R.drawable.default_userhead).into(iv_userhead);
+                ImageLoader.loadDontAnimate(this, image.getAvatar().getFull(), iv_userhead, R.drawable.default_userhead);
+//                Glide.with(this).load(image.getAvatar().getFull()).placeholder(R.drawable.default_userhead).into(iv_userhead);
             }
 
             tv_username.setText(comment.getUser().getUsername());
@@ -221,7 +220,22 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             tv_comments_likes.setText("" + comment.getLikes());
             tv_comments_replies.setText("" + comment.getReplies());
             tv_comment.setText(comment.getComment());
-            ll_comments.addView(comment_item);
+            tv_comments_likes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Logger.d("评论ID："+comment.getId()+"...");
+                }
+            });
+
+            comment_item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MovieDetailActivity.this, SingleCommentActivity.class);
+                    intent.putExtra(SingleCommentActivity.MAIN_COMMENT,comment);
+                    startActivity(intent);
+                }
+            });
+            commentContainer.addView(comment_item,i);
         }
     }
 

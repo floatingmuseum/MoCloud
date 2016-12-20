@@ -71,6 +71,8 @@ public class Repository {
         return repository;
     }
 
+    /****************************************** 首页数据 ********************************************************/
+
     public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
         Logger.d("getMovieTrendingData");
         final List<BaseMovie> movies = new ArrayList<>();
@@ -237,6 +239,8 @@ public class Repository {
                 });
     }
 
+    /****************************************** 剧目详情 ********************************************************/
+
     public Subscription getMovieDetail(String movieId, final MovieDetailCallback callback) {
         return service.getMovieDetail(movieId)
                 .compose(RxUtil.<Movie>threadSwitch())
@@ -370,6 +374,36 @@ public class Repository {
         }
     }
 
+    /**
+     * 电影详情页只显示4个人物。
+     */
+    private List<Staff> getPeople(People people) {
+        List<Staff> staffs = new ArrayList<>();
+        if (people.getCrew() != null && people.getCrew().getDirecting() != null) {
+            List<Staff> directors = people.getCrew().getDirecting();
+            if (directors.size() != 0) {
+                for (Staff director : directors) {
+                    if (director.getJob().equals("Director")) {
+                        staffs.add(director);
+                        break;
+                    }
+                }
+            }
+        }
+
+        List<Staff> actors = people.getCast();
+        if (actors != null && actors.size() != 0) {
+            int actorRequestNumber = staffs.size() == 0 ? 4 : 3;
+            actorRequestNumber = actors.size() < 3 ? actors.size() : actorRequestNumber;
+            for (int i = 0; i < actorRequestNumber; i++) {
+                staffs.add(actors.get(i));
+            }
+        }
+        return staffs;
+    }
+
+    /****************************************** 评论数据 ********************************************************/
+
     public Subscription getMovieComments(String movieId, String commentsSort, int limit, int page, final MovieDetailCallback movieDetailCallback, final MovieCommentsCallback commentsCallback) {
         return service.getComments(movieId, commentsSort, limit, page)
                 .compose(RxUtil.<List<Comment>>threadSwitch())
@@ -399,6 +433,31 @@ public class Repository {
                 });
     }
 
+    public Subscription getCommentReplies(long commentId, final DataCallback callback){
+        return service.getCommentReplies(commentId)
+                .compose(RxUtil.<List<Comment>>threadSwitch())
+                .subscribe(new Observer<List<Comment>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("getCommentReplies...onError");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<Comment> comments) {
+                        Logger.d("getCommentReplies...onNext");
+                        callback.onBaseDataSuccess(comments);
+                    }
+                });
+    }
+
+    /****************************************** 影人数据 ********************************************************/
+
     public Subscription getStaffDetail(String traktID, final DataCallback callback) {
         return service.getStaff(traktID)
                 .compose(RxUtil.<Person>threadSwitch())
@@ -419,6 +478,8 @@ public class Repository {
                     }
                 });
     }
+
+    /****************************************** OAUTH ********************************************************/
 
     public void getAccessToken(String code, final DataCallback dataCallback) {
         TokenRequest tokenRequest = new TokenRequest();
@@ -446,31 +507,6 @@ public class Repository {
                     public void onNext(TraktToken traktToken) {
                         Logger.d("请求成功");
                         dataCallback.onBaseDataSuccess(traktToken);
-                    }
-                });
-    }
-
-    public Subscription getUserSettings(final DataCallback callback) {
-        return service.getUserSettings()
-                .onErrorResumeNext(refreshTokenAndRetry(service.getUserSettings()))
-                .compose(RxUtil.<UserSettings>threadSwitch())
-                .subscribe(new Observer<UserSettings>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Logger.d("UserSettings:onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(UserSettings userSettings) {
-                        Logger.d("UserSettings:onNext:" + userSettings);
-                        callback.onBaseDataSuccess(userSettings);
                     }
                 });
     }
@@ -506,32 +542,31 @@ public class Repository {
         };
     }
 
-    /**
-     * 电影详情页只显示4个人物。
-     */
-    private List<Staff> getPeople(People people) {
-        List<Staff> staffs = new ArrayList<>();
-        if (people.getCrew() != null && people.getCrew().getDirecting() != null) {
-            List<Staff> directors = people.getCrew().getDirecting();
-            if (directors.size() != 0) {
-                for (Staff director : directors) {
-                    if (director.getJob().equals("Director")) {
-                        staffs.add(director);
-                        break;
-                    }
-                }
-            }
-        }
+    /****************************************** 用户数据 ********************************************************/
 
-        List<Staff> actors = people.getCast();
-        if (actors != null && actors.size() != 0) {
-            int actorRequestNumber = staffs.size() == 0 ? 4 : 3;
-            actorRequestNumber = actors.size() < 3 ? actors.size() : actorRequestNumber;
-            for (int i = 0; i < actorRequestNumber; i++) {
-                staffs.add(actors.get(i));
-            }
-        }
-        return staffs;
+    public Subscription getUserSettings(final DataCallback callback) {
+        return service.getUserSettings()
+                .onErrorResumeNext(refreshTokenAndRetry(service.getUserSettings()))
+                .compose(RxUtil.<UserSettings>threadSwitch())
+                .subscribe(new Observer<UserSettings>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("UserSettings:onError");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(UserSettings userSettings) {
+                        Logger.d("UserSettings:onNext:" + userSettings);
+                        callback.onBaseDataSuccess(userSettings);
+                    }
+                });
     }
 
     /*******************************************************************

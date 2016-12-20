@@ -1,7 +1,7 @@
 package com.floatingmuseum.mocloud.data.entity;
 
 /**
- * Created by yan on 2016/8/10.
+ * Created by Floatingmuseum on 2016/8/10.
  */
 public class Actor {
     private String character;
