@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:minLines="4"
         android:maxLines="6"
+        android:gravity="top"
         tools:text="对对对这就是我的回复" />
     <RelativeLayout
         android:layout_width="match_parent"
