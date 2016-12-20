@@ -1,14 +1,23 @@
 package com.floatingmuseum.mocloud.ui.main;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +35,9 @@ import com.floatingmuseum.mocloud.ui.login.LoginActivity;
 import com.floatingmuseum.mocloud.ui.settings.SettingsActivity;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
+import com.floatingmuseum.mocloud.utils.PermissionsUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
+import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 
 
@@ -46,6 +57,7 @@ public class MainActivity extends BaseActivity
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
+    private final int REQUEST_CODE_ASK_PERMISSIONS = 233;
     ImageView iv_avatar;
     TextView tv_username;
 
@@ -79,8 +91,8 @@ public class MainActivity extends BaseActivity
         toggle.syncState();
 
         View nav_header_main = navView.getHeaderView(0);
-        iv_avatar = ButterKnife.findById(nav_header_main,R.id.iv_avatar);
-        tv_username = ButterKnife.findById(nav_header_main,R.id.tv_username);
+        iv_avatar = ButterKnife.findById(nav_header_main, R.id.iv_avatar);
+        tv_username = ButterKnife.findById(nav_header_main, R.id.tv_username);
 
         navView.setNavigationItemSelectedListener(this);
 
@@ -93,9 +105,9 @@ public class MainActivity extends BaseActivity
 
         if (isLogin) {
             //已登录，获取头像和用户名
-            String avatarUrl = SPUtil.getString(SPUtil.SP_USER_SETTINGS,"avatar","");
+            String avatarUrl = SPUtil.getString(SPUtil.SP_USER_SETTINGS, "avatar", "");
             ImageLoader.load(this, avatarUrl, iv_avatar, R.drawable.default_userhead);
-            tv_username.setText(SPUtil.getString(SPUtil.SP_USER_SETTINGS,"username", ""));
+            tv_username.setText(SPUtil.getString(SPUtil.SP_USER_SETTINGS, "username", ""));
             //请求用户最新信息
             //request user settings every time when app start,if login is true.
             mainPresenter.getUserSettings();
@@ -112,12 +124,57 @@ public class MainActivity extends BaseActivity
                 }
             }
         });
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            initPermissionRequestDialog();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void initPermissionRequestDialog() {
+        boolean hasPermission = PermissionsUtil.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        boolean hasEverRequestWriteExternalStoragePermission = SPUtil.getBoolean("hasEverRequestWriteExternalStoragePermission", false);
+        //如果有读写权限或者以前请求过，都不再请求
+        if (hasPermission || hasEverRequestWriteExternalStoragePermission) {
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.write_external_permission)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SPUtil.editBoolean("hasEverRequestWriteExternalStoragePermission",true);
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_ASK_PERMISSIONS);
+                    }
+                }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                SPUtil.editBoolean("hasEverRequestWriteExternalStoragePermission",true);
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CODE_ASK_PERMISSIONS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Logger.d("权限申请成功");
+            } else {
+//                ToastUtil.showToast(R.string.permissionDenied);
+                Logger.d("权限申请拒绝");
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     public void refreshUserView(UserSettings userSettings) {
         String avatarUrl = userSettings.getUser().getImages().getAvatar().getFull();
-            ImageLoader.load(this, avatarUrl, iv_avatar, R.drawable.default_userhead);
-            tv_username.setText(userSettings.getUser().getUsername());
+        ImageLoader.load(this, avatarUrl, iv_avatar, R.drawable.default_userhead);
+        tv_username.setText(userSettings.getUser().getUsername());
     }
 
     @Override

@@ -24,6 +24,8 @@
     <string name="staff_website">Homepage</string>
     <string name="staff_biography">Biography:</string>
     <string name="as_actor">As actor</string>
+    <string name="write_external_permission" >We will request write external permission in the following dialog to cache movie poster and actor image,this will greatly improve data load speed.\nYou can also modify this in settings.\nshall we go?
+    </string>
 
     <string-array name="tab_names">
         <item>Trending</item>
