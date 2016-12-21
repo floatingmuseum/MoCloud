@@ -71,30 +71,28 @@ public class Repository {
         return repository;
     }
 
-    /****************************************** 首页数据 ********************************************************/
+    /******************************************
+     * 首页数据
+     ********************************************************/
 
+//    flatMap(new Func1<List<BaseMovie>, Observable<BaseMovie>>() {
+//        @Override
+//        public Observable<BaseMovie> call(List<BaseMovie> baseMovies) {
+//            movies.addAll(baseMovies);
+//            return Observable.from(movies);
+//        }
+//    }).flatMap(new Func1<BaseMovie, Observable<TmdbMovieImage>>() {
+//        @Override
+//        public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
+//            return getTmdbMovieImageObservable(baseMovie.getMovie());
+//        }
+//    })
     public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
         Logger.d("getMovieTrendingData");
         final List<BaseMovie> movies = new ArrayList<>();
         service.getMovieTrending(pageNum, limit)
-                .flatMap(new Func1<List<BaseMovie>, Observable<BaseMovie>>() {
-                    @Override
-                    public Observable<BaseMovie> call(List<BaseMovie> baseMovies) {
-                        movies.addAll(baseMovies);
-                        return Observable.from(movies);
-                    }
-                }).flatMap(new Func1<BaseMovie, Observable<TmdbMovieImage>>() {
-            @Override
-            public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
-                int tmdbID = baseMovie.getMovie().getIds().getTmdb();
-                Logger.d("getMovieTrendingData...TmdbID:" + tmdbID);
-                File file = ImageCacheManager.hasCacheImage(tmdbID, ImageCacheManager.TYPE_POSTER);
-                if (file != null) {
-                    return ImageCacheManager.localPosterImage(tmdbID, file);
-                }
-                return service.getTmdbImages(tmdbID, BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
-            }
-        }).compose(RxUtil.<TmdbMovieImage>threadSwitch())
+                .compose(getEachPoster(movies))
+                .compose(RxUtil.<TmdbMovieImage>threadSwitch())
                 .subscribe(new Observer<TmdbMovieImage>() {
                     @Override
                     public void onCompleted() {
@@ -110,95 +108,124 @@ public class Repository {
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
                         Logger.d("getMovieTrendingData...onNext:" + movieImage);
-                        if (movieImage != null) {
-                            mergeMovieAndImage1(movieImage, movies);
-                            String imageUrl = getImageUrl(movieImage);
-                            downLoadImage(movieImage, imageUrl, ImageCacheManager.TYPE_POSTER);
-                        }
+                        handleMoviePoster(movieImage,movies);
                     }
                 });
     }
 
     public void getMoviePopularData(int pageNum, int limit, final DataCallback callback) {
+        final List<Movie> movies = new ArrayList<>();
         service.getMoviePopular(pageNum, limit)
-                .compose(RxUtil.<List<Movie>>threadSwitch())
-                .subscribe(new Observer<List<Movie>>() {
+                .flatMap(new Func1<List<Movie>, Observable<Movie>>() {
                     @Override
-                    public void onCompleted() {
+                    public Observable<Movie> call(List<Movie> movieDatas) {
+                        movies.addAll(movieDatas);
+                        return Observable.from(movies);
                     }
+                }).flatMap(new Func1<Movie, Observable<TmdbMovieImage>>() {
+            @Override
+            public Observable<TmdbMovieImage> call(Movie movie) {
+                return getTmdbMovieImageObservable(movie);
+            }
+        }).compose(RxUtil.<TmdbMovieImage>threadSwitch())
+                .subscribe(new Observer<TmdbMovieImage>() {
+            @Override
+            public void onCompleted() {
+                callback.onBaseDataSuccess(movies);
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        callback.onError(e);
-                    }
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                callback.onError(e);
+            }
 
-                    @Override
-                    public void onNext(List<Movie> movies) {
-                        getTmdbImagesByMovie(movies, callback);
-                    }
-                });
+            @Override
+            public void onNext(TmdbMovieImage movieImage) {
+                if (movieImage != null) {
+                    mergeMovieAndImage2(movieImage, movies);
+                    String imageUrl = getImageUrl(movieImage);
+                    downLoadImage(movieImage, imageUrl, ImageCacheManager.TYPE_POSTER);
+                }
+            }
+        });
     }
 
     public void getMoviePlayedData(String period, int pageNum, int limit, final DataCallback callback) {
+        final List<BaseMovie> movies = new ArrayList<>();
         service.getMoviePlayed(period, pageNum, limit)
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new Observer<List<BaseMovie>>() {
+                .compose(getEachPoster(movies))
+                .compose(RxUtil.<TmdbMovieImage>threadSwitch())
+                .subscribe(new Observer<TmdbMovieImage>() {
                     @Override
                     public void onCompleted() {
+                        callback.onBaseDataSuccess(movies);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         callback.onError(e);
                     }
 
                     @Override
-                    public void onNext(List<BaseMovie> movies) {
-                        getTmdbImagesByBaseMovie(movies, callback);
+                    public void onNext(TmdbMovieImage movieImage) {
+                        handleMoviePoster(movieImage,movies);
                     }
                 });
     }
 
     public void getMovieWatchedData(String period, int pageNum, int limit, final DataCallback callback) {
+        final List<BaseMovie> movies = new ArrayList<>();
         service.getMovieWatched(period, pageNum, limit)
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new Observer<List<BaseMovie>>() {
+                .compose(getEachPoster(movies))
+                .compose(RxUtil.<TmdbMovieImage>threadSwitch())
+                .subscribe(new Observer<TmdbMovieImage>() {
                     @Override
                     public void onCompleted() {
+                        callback.onBaseDataSuccess(movies);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         callback.onError(e);
                     }
 
                     @Override
-                    public void onNext(List<BaseMovie> movies) {
-                        getTmdbImagesByBaseMovie(movies, callback);
+                    public void onNext(TmdbMovieImage movieImage) {
+                        handleMoviePoster(movieImage,movies);
                     }
                 });
     }
 
     public void getMovieCollectedData(String period, int pageNum, int limit, final DataCallback callback) {
+        final List<BaseMovie> movies = new ArrayList<>();
         service.getMovieCollected(period, pageNum, limit)
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new Observer<List<BaseMovie>>() {
+                .compose(getEachPoster(movies))
+                .compose(RxUtil.<TmdbMovieImage>threadSwitch())
+                .subscribe(new Observer<TmdbMovieImage>() {
                     @Override
                     public void onCompleted() {
+                        callback.onBaseDataSuccess(movies);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         callback.onError(e);
                     }
 
                     @Override
-                    public void onNext(List<BaseMovie> movies) {
-                        getTmdbImagesByBaseMovie(movies, callback);
+                    public void onNext(TmdbMovieImage movieImage) {
+                        handleMoviePoster(movieImage,movies);
                     }
                 });
     }
 
+    /**
+     * 暂时不用
+     */
     public void getMovieAnticipatedData(int pageNum, int limit, final DataCallback callback) {
         service.getMovieAnticipated(pageNum, limit)
                 .compose(RxUtil.<List<BaseMovie>>threadSwitch())
@@ -220,26 +247,70 @@ public class Repository {
     }
 
     public void getMovieBoxOfficeData(final DataCallback callback) {
+        final List<BaseMovie> movies = new ArrayList<>();
         service.getMovieBoxOffice()
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new Observer<List<BaseMovie>>() {
+                .compose(getEachPoster(movies))
+                .compose(RxUtil.<TmdbMovieImage>threadSwitch())
+                .subscribe(new Observer<TmdbMovieImage>() {
                     @Override
                     public void onCompleted() {
+                        callback.onBaseDataSuccess(movies);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         callback.onError(e);
                     }
 
                     @Override
-                    public void onNext(List<BaseMovie> movies) {
-                        getTmdbImagesByBaseMovie(movies, callback);
+                    public void onNext(TmdbMovieImage movieImage) {
+                        handleMoviePoster(movieImage,movies);
                     }
                 });
     }
 
-    /****************************************** 剧目详情 ********************************************************/
+    private Observable<TmdbMovieImage> getTmdbMovieImageObservable(Movie movie) {
+        int tmdbId = movie.getIds().getTmdb();
+        Logger.d("getMovieTrendingData...TmdbID:" + tmdbId);
+        File file = ImageCacheManager.hasCacheImage(tmdbId, ImageCacheManager.TYPE_POSTER);
+        if (file != null) {
+            return ImageCacheManager.localPosterImage(tmdbId, file);
+        }
+        return service.getTmdbImages(tmdbId, BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
+    }
+
+    private Observable.Transformer<List<BaseMovie>, TmdbMovieImage> getEachPoster(final List<BaseMovie> movies) {
+        return new Observable.Transformer<List<BaseMovie>, TmdbMovieImage>() {
+            @Override
+            public Observable<TmdbMovieImage> call(Observable<List<BaseMovie>> listObservable) {
+                return listObservable.flatMap(new Func1<List<BaseMovie>, Observable<BaseMovie>>() {
+                    @Override
+                    public Observable<BaseMovie> call(List<BaseMovie> baseMovies) {
+                        movies.addAll(baseMovies);
+                        return Observable.from(movies);
+                    }
+                }).flatMap(new Func1<BaseMovie, Observable<TmdbMovieImage>>() {
+                    @Override
+                    public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
+                        return getTmdbMovieImageObservable(baseMovie.getMovie());
+                    }
+                });
+            }
+        };
+    }
+
+    private void handleMoviePoster(TmdbMovieImage movieImage,List<BaseMovie> movies){
+        if (movieImage != null) {
+            mergeMovieAndImage1(movieImage, movies);
+            String imageUrl = getImageUrl(movieImage);
+            downLoadImage(movieImage, imageUrl, ImageCacheManager.TYPE_POSTER);
+        }
+    }
+
+    /******************************************
+     * 剧目详情
+     ********************************************************/
 
     public Subscription getMovieDetail(String movieId, final MovieDetailCallback callback) {
         return service.getMovieDetail(movieId)
@@ -402,7 +473,9 @@ public class Repository {
         return staffs;
     }
 
-    /****************************************** 评论数据 ********************************************************/
+    /******************************************
+     * 评论数据
+     ********************************************************/
 
     public Subscription getMovieComments(String movieId, String commentsSort, int limit, int page, final MovieDetailCallback movieDetailCallback, final MovieCommentsCallback commentsCallback) {
         return service.getComments(movieId, commentsSort, limit, page)
@@ -433,7 +506,7 @@ public class Repository {
                 });
     }
 
-    public Subscription getCommentReplies(long commentId, final DataCallback callback){
+    public Subscription getCommentReplies(long commentId, final DataCallback callback) {
         return service.getCommentReplies(commentId)
                 .compose(RxUtil.<List<Comment>>threadSwitch())
                 .subscribe(new Observer<List<Comment>>() {
@@ -456,7 +529,9 @@ public class Repository {
                 });
     }
 
-    /****************************************** 影人数据 ********************************************************/
+    /******************************************
+     * 影人数据
+     ********************************************************/
 
     public Subscription getStaffDetail(String traktID, final DataCallback callback) {
         return service.getStaff(traktID)
@@ -479,7 +554,9 @@ public class Repository {
                 });
     }
 
-    /****************************************** OAUTH ********************************************************/
+    /******************************************
+     * OAUTH
+     ********************************************************/
 
     public void getAccessToken(String code, final DataCallback dataCallback) {
         TokenRequest tokenRequest = new TokenRequest();
@@ -542,7 +619,9 @@ public class Repository {
         };
     }
 
-    /****************************************** 用户数据 ********************************************************/
+    /******************************************
+     * 用户数据
+     ********************************************************/
 
     public Subscription getUserSettings(final DataCallback callback) {
         return service.getUserSettings()
@@ -610,7 +689,7 @@ public class Repository {
                         if (movieImage != null) {
                             mergeMovieAndImage1(movieImage, movies);
                             String imageUrl = getImageUrl(movieImage);
-                            downLoadImage(movieImage,imageUrl,ImageCacheManager.TYPE_POSTER);
+                            downLoadImage(movieImage, imageUrl, ImageCacheManager.TYPE_POSTER);
                         }
                     }
                 });
@@ -653,7 +732,7 @@ public class Repository {
                         if (movieImage != null) {
                             mergeMovieAndImage2(movieImage, movies);
                             String imageUrl = getImageUrl(movieImage);
-                            downLoadImage(movieImage,imageUrl,ImageCacheManager.TYPE_POSTER);
+                            downLoadImage(movieImage, imageUrl, ImageCacheManager.TYPE_POSTER);
                         }
                     }
                 });

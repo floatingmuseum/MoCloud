@@ -115,20 +115,8 @@ public class SingleCommentActivity extends BaseActivity {
     }
 
     private void openDialog(Comment comment) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setView(R.layout.comment_replay);
         final CommentReplyDialog replyDialog = new CommentReplyDialog(this);
-        // TODO: 2016/12/20 对话框dialog不弹出软键盘 
-//        replyDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        replyDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                Logger.d("对话框弹出");
-            }
-        });
         replyDialog.show();
-//        replyDialog.getWindow().clearFlags( WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-//        replyDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
     public void onBaseDataSuccess(List<Comment> replies){
