@@ -23,4 +23,12 @@ public class StringUtil {
     public static String getFileSuffix(String content){
         return content.substring(content.lastIndexOf("."));
     }
+
+    public static boolean checkReplyContent(String content){
+        if (content.length()<5){
+            return false;
+        }else{
+            return true;
+        }
+    }
 }

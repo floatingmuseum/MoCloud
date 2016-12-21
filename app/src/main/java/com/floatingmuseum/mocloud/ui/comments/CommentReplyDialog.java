@@ -11,9 +11,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.data.entity.Comment;
+import com.floatingmuseum.mocloud.data.entity.Reply;
+import com.floatingmuseum.mocloud.utils.StringUtil;
+import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 
 import butterknife.BindView;
@@ -30,15 +35,19 @@ public class CommentReplyDialog extends AlertDialog {
     @BindView(R.id.tv_spoiler)
     TextView tvSpoiler;
     @BindView(R.id.send_reply)
-    ImageButton sendReply;
+    ImageView sendReply;
     @BindView(R.id.is_spoiler)
     CheckBox isSpoiler;
 
     private SingleCommentActivity activity;
+    private SingleCommentPresenter presenter;
+    private Comment comment;
 
-    protected CommentReplyDialog(Context context) {
+    protected CommentReplyDialog(Context context,SingleCommentPresenter presenter,Comment comment) {
         super(context);
         activity = (SingleCommentActivity) context;
+        this.presenter = presenter;
+        this.comment = comment;
     }
 
     @Override
@@ -47,7 +56,6 @@ public class CommentReplyDialog extends AlertDialog {
         setContentView(R.layout.comment_replay);
         ButterKnife.bind(this);
         initView();
-
     }
 
     private void initView() {
@@ -57,19 +65,20 @@ public class CommentReplyDialog extends AlertDialog {
             public void onClick(View v) {
                 String replyContent = replyComment.getText().toString();
                 Logger.d("回复内容:"+replyContent+"...isSpoiler"+isSpoiler.isChecked());
+                if (!StringUtil.checkReplyContent(replyContent)) {
+                    ToastUtil.showToast(R.string.comment_tip1);
+                    return;
+                }
+                Reply reply = new Reply();
+                reply.setSpoiler(isSpoiler.isChecked());
+                reply.setComment(replyContent);
+                presenter.sendReply(comment.getId(),reply);
                 // TODO: 2016/12/20 提交回复
             }
         });
 
-
+        //弹出软键盘
         getWindow().clearFlags( WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-//        replyComment.setFocusable(true);
-//        replyComment.setFocusableInTouchMode(true);
-//        replyComment.requestFocus();
-//        InputMethodManager imm = (InputMethodManager) activity
-//                .getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.showSoftInput(replyComment, 0);
-//        Logger.d("显示软键盘");
     }
 }

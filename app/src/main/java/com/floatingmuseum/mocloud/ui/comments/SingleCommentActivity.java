@@ -115,7 +115,7 @@ public class SingleCommentActivity extends BaseActivity {
     }
 
     private void openDialog(Comment comment) {
-        final CommentReplyDialog replyDialog = new CommentReplyDialog(this);
+        final CommentReplyDialog replyDialog = new CommentReplyDialog(this,presenter,comment);
         replyDialog.show();
     }
 

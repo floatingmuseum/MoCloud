@@ -4,6 +4,7 @@ import android.Manifest;
 
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.Constants;
+import com.floatingmuseum.mocloud.data.callback.CommentReplyCallback;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.callback.MovieCommentsCallback;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
@@ -13,6 +14,7 @@ import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.Person;
+import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
@@ -272,7 +274,6 @@ public class Repository {
 
     private Observable<TmdbMovieImage> getTmdbMovieImageObservable(Movie movie) {
         int tmdbId = movie.getIds().getTmdb();
-        Logger.d("getMovieTrendingData...TmdbID:" + tmdbId);
         File file = ImageCacheManager.hasCacheImage(tmdbId, ImageCacheManager.TYPE_POSTER);
         if (file != null) {
             return ImageCacheManager.localPosterImage(tmdbId, file);
@@ -300,6 +301,9 @@ public class Repository {
         };
     }
 
+    /**
+     * 合并图片到集合中，并下载图片
+     */
     private void handleMoviePoster(TmdbMovieImage movieImage,List<BaseMovie> movies){
         if (movieImage != null) {
             mergeMovieAndImage1(movieImage, movies);
@@ -525,6 +529,27 @@ public class Repository {
                     public void onNext(List<Comment> comments) {
                         Logger.d("getCommentReplies...onNext");
                         callback.onBaseDataSuccess(comments);
+                    }
+                });
+    }
+
+    public Subscription sendReply(long id, Reply reply, final CommentReplyCallback callback){
+        return service.sendReply(id,reply)
+                .compose(RxUtil.<Comment>threadSwitch())
+                .subscribe(new Observer<Comment>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Comment comment) {
+                        callback.onSendReplySuccess(comment);
                     }
                 });
     }

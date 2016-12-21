@@ -8,6 +8,7 @@ import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.TmdbImagesConfiguration;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
@@ -27,6 +28,7 @@ import retrofit2.http.GET;
 import retrofit2.http.HEAD;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Streaming;
@@ -156,13 +158,27 @@ public interface MoCloudService {
 //******************************************评 论*******************************************
 
     /**
-     * 评论
+     * 获取电影评论
      */
     @GET("movies/{id}/comments/{sort}?extended=images")
     Observable<List<Comment>> getComments(@Path("id")String id, @Path("sort")String sort, @Query("limit")int limit, @Query("page")int page);
 
+    //评论电影 OAuth Required
+    @PUT("comments/{id}")
+    Observable<Comment> sendComment(@Path("id")long id,@Body Reply reply);
+
+    //点赞评论 OAuth Required 204状态码成功
+    @POST("comments/{id}/like")
+    Observable sendLikeComment(@Path("id")long id);
+
+    //获取单个评论下的评论
     @GET("comments/{id}/replies?extended=full")
     Observable<List<Comment>> getCommentReplies(@Path("id")long id);
+
+    //回复某个评论 OAuth Required
+    @POST("comments/{id}/replies")
+    Observable<Comment> sendReply(@Path("id")long id, @Body Reply reply);
+
 
 //******************************************图 片*******************************************
 

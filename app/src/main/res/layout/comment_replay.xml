@@ -9,31 +9,37 @@
         android:id="@+id/reply_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minLines="4"
-        android:maxLines="6"
         android:gravity="top"
-        tools:text="对对对这就是我的回复" />
+        android:hint="@string/comment_tip"
+        android:maxLines="6"
+        android:minLines="4" />
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="26dp"
+        android:padding="2dp">
+
         <TextView
-            android:layout_centerVertical="true"
             android:id="@+id/tv_spoiler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Spoiler"/>
+            android:layout_centerVertical="true"
+            android:text="Spoiler" />
+
         <CheckBox
             android:id="@+id/is_spoiler"
-            android:layout_toRightOf="@+id/tv_spoiler"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <ImageButton
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tv_spoiler" />
+
+        <ImageView
             android:id="@+id/send_reply"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:src="@drawable/ic_send_black_48dp"/>
+            android:scaleType="fitXY"
+            android:src="@drawable/send" />
     </RelativeLayout>
 
 </LinearLayout>
