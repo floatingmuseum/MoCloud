@@ -11,106 +11,124 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/8/11.
  */
-public class Comment implements Parcelable{
-        private long id;
-        private String comment;
-        private boolean spoiler;
-        private boolean review;
-        private long parent_id;
-        private String created_at;
-        private String updated_at;
-        private int replies;
-        private int likes;
-        private int user_rating;
-        private User user;
+public class Comment implements Parcelable {
+    private long id;
+    private String comment;
+    private boolean spoiler;
+    private boolean review;
+    private long parent_id;
+    private String created_at;
+    private String updated_at;
+    private int replies;
+    private int likes;
+    private int user_rating;
+    private User user;
+    private Sharing sharing;
+    private Movie movie;
 
-        public User getUser() {
-            return user;
-        }
+    public User getUser() {
+        return user;
+    }
 
-        public void setUser(User user) {
-            this.user = user;
-        }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-        public long getId() {
-            return id;
-        }
+    public long getId() {
+        return id;
+    }
 
-        public void setId(long id) {
-            this.id = id;
-        }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-        public String getComment() {
-            return comment;
-        }
+    public String getComment() {
+        return comment;
+    }
 
-        public void setComment(String comment) {
-            this.comment = comment;
-        }
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
-        public boolean isSpoiler() {
-            return spoiler;
-        }
+    public boolean isSpoiler() {
+        return spoiler;
+    }
 
-        public void setSpoiler(boolean spoiler) {
-            this.spoiler = spoiler;
-        }
+    public void setSpoiler(boolean spoiler) {
+        this.spoiler = spoiler;
+    }
 
-        public boolean isReview() {
-            return review;
-        }
+    public boolean isReview() {
+        return review;
+    }
 
-        public void setReview(boolean review) {
-            this.review = review;
-        }
+    public void setReview(boolean review) {
+        this.review = review;
+    }
 
-        public long getParent_id() {
-            return parent_id;
-        }
+    public long getParent_id() {
+        return parent_id;
+    }
 
-        public void setParent_id(long parent_id) {
-            this.parent_id = parent_id;
-        }
+    public void setParent_id(long parent_id) {
+        this.parent_id = parent_id;
+    }
 
-        public String getCreated_at() {
-            return created_at;
-        }
+    public String getCreated_at() {
+        return created_at;
+    }
 
-        public void setCreated_at(String created_at) {
-            this.created_at = created_at;
-        }
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
 
-        public String getUpdated_at() {
-            return updated_at;
-        }
+    public String getUpdated_at() {
+        return updated_at;
+    }
 
-        public void setUpdated_at(String updated_at) {
-            this.updated_at = updated_at;
-        }
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
 
-        public int getReplies() {
-            return replies;
-        }
+    public int getReplies() {
+        return replies;
+    }
 
-        public void setReplies(int replies) {
-            this.replies = replies;
-        }
+    public void setReplies(int replies) {
+        this.replies = replies;
+    }
 
-        public int getLikes() {
-            return likes;
-        }
+    public int getLikes() {
+        return likes;
+    }
 
-        public void setLikes(int likes) {
-            this.likes = likes;
-        }
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
 
-        public int getUser_rating() {
-            return user_rating;
-        }
+    public int getUser_rating() {
+        return user_rating;
+    }
 
-        public void setUser_rating(int user_rating) {
-            this.user_rating = user_rating;
-        }
+    public void setUser_rating(int user_rating) {
+        this.user_rating = user_rating;
+    }
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+
+    public Sharing getSharing() {
+        return sharing;
+    }
+
+    public void setSharing(Sharing sharing) {
+        this.sharing = sharing;
+    }
 
     @Override
     public int describeContents() {
@@ -130,6 +148,8 @@ public class Comment implements Parcelable{
         dest.writeInt(this.likes);
         dest.writeInt(this.user_rating);
         dest.writeParcelable(this.user, flags);
+        dest.writeParcelable(this.sharing, flags);
+        dest.writeParcelable(this.movie, flags);
     }
 
     public Comment() {
@@ -147,6 +167,8 @@ public class Comment implements Parcelable{
         this.likes = in.readInt();
         this.user_rating = in.readInt();
         this.user = in.readParcelable(User.class.getClassLoader());
+        this.sharing = in.readParcelable(Sharing.class.getClassLoader());
+        this.movie = in.readParcelable(Movie.class.getClassLoader());
     }
 
     public static final Creator<Comment> CREATOR = new Creator<Comment>() {

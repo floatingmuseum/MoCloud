@@ -23,6 +23,7 @@ import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Image;
 import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
+import com.floatingmuseum.mocloud.utils.KeyboardUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
@@ -30,6 +31,8 @@ import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.KeyStoreBuilderParameters;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -98,6 +101,7 @@ public class SingleCommentActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        Logger.d("喜欢数:"+likes+"...回复数:"+replies);
         likes = mainCommentContent.getLikes();
         replies = mainCommentContent.getReplies();
         tvUsername.setText(mainCommentContent.getUser().getUsername());
@@ -121,7 +125,9 @@ public class SingleCommentActivity extends BaseActivity {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
                 String replySomeOne = "@"+repliesList.get(i).getUser().getUsername()+" ";
-                openKeyBoard(replySomeOne);
+                commentBox.setText(replySomeOne);
+                KeyboardUtil.showSoftInput(commentBox);
+//                openKeyBoard(replySomeOne);
             }
         });
 
@@ -153,7 +159,7 @@ public class SingleCommentActivity extends BaseActivity {
         Reply reply = new Reply();
         reply.setSpoiler(isSpoiler.isChecked());
         reply.setComment(replyContent);
-        presenter.sendReply(commentBox.getId(),reply);
+        presenter.sendReply(mainCommentContent.getId(),reply);
     }
 
     private void openDialog(Comment comment) {
@@ -178,5 +184,12 @@ public class SingleCommentActivity extends BaseActivity {
         replies++;
         tvCommentsReplies.setText(replies);
         ToastUtil.showToast(R.string.reply_success);
+        KeyboardUtil.hideSoftInput(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.unSubscription();
     }
 }

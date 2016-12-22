@@ -27,11 +27,13 @@ public class SingleCommentPresenter extends Presenter implements CommentReplyCal
     }
 
     public void getData(long commentId){
-        repository.getCommentReplies(commentId,this);
+        Subscription subscription = repository.getCommentReplies(commentId,this);
+        compositeSubscription.add(subscription);
     }
 
     public void sendReply(long id, Reply reply) {
         Subscription subscription = repository.sendReply(id,reply,this);
+        compositeSubscription.add(subscription);
     }
 
     @Override

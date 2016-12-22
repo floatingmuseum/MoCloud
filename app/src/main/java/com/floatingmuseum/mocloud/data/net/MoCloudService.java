@@ -164,19 +164,19 @@ public interface MoCloudService {
     Observable<List<Comment>> getComments(@Path("id")String id, @Path("sort")String sort, @Query("limit")int limit, @Query("page")int page);
 
     //评论电影 OAuth Required
-    @PUT("comments/{id}")
-    Observable<Comment> sendComment(@Path("id")long id,@Body Reply reply);
+    @POST("comments?extended=full,images")
+    Observable<Comment> sendComment(@Body Comment comment);
 
     //点赞评论 OAuth Required 204状态码成功
     @POST("comments/{id}/like")
     Observable sendLikeComment(@Path("id")long id);
 
     //获取单个评论下的评论
-    @GET("comments/{id}/replies?extended=full")
+    @GET("comments/{id}/replies?extended=full,images")
     Observable<List<Comment>> getCommentReplies(@Path("id")long id);
 
     //回复某个评论 OAuth Required
-    @POST("comments/{id}/replies")
+    @POST("comments/{id}/replies?extended=full,images")
     Observable<Comment> sendReply(@Path("id")long id, @Body Reply reply);
 
 

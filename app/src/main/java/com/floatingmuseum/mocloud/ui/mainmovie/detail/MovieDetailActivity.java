@@ -193,8 +193,9 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MovieDetailActivity.this, CommentsActivity.class);
-                    intent.putExtra(CommentsActivity.MOVIE_ID, movie.getIds().getSlug());
-                    intent.putExtra(CommentsActivity.MOVIE_TITLE, movie.getTitle());
+                    intent.putExtra(CommentsActivity.MOVIE_OBJECT,movie);
+//                    intent.putExtra(CommentsActivity.MOVIE_ID, movie.getIds().getSlug());
+//                    intent.putExtra(CommentsActivity.MOVIE_TITLE, movie.getTitle());
                     startActivity(intent);
                 }
             });

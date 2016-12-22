@@ -6,7 +6,7 @@ import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.Constants;
 import com.floatingmuseum.mocloud.data.callback.CommentReplyCallback;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
-import com.floatingmuseum.mocloud.data.callback.MovieCommentsCallback;
+import com.floatingmuseum.mocloud.data.callback.CommentsCallback;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
@@ -481,7 +481,7 @@ public class Repository {
      * 评论数据
      ********************************************************/
 
-    public Subscription getMovieComments(String movieId, String commentsSort, int limit, int page, final MovieDetailCallback movieDetailCallback, final MovieCommentsCallback commentsCallback) {
+    public Subscription getMovieComments(String movieId, String commentsSort, int limit, int page, final MovieDetailCallback movieDetailCallback, final CommentsCallback commentsCallback) {
         return service.getComments(movieId, commentsSort, limit, page)
                 .compose(RxUtil.<List<Comment>>threadSwitch())
                 .subscribe(new Observer<List<Comment>>() {
@@ -534,7 +534,7 @@ public class Repository {
     }
 
     public Subscription sendReply(long id, Reply reply, final CommentReplyCallback callback){
-        // TODO: 2016/12/22 not success return status code 404 
+        // TODO: 2016/12/22 not success return status code 404
         Logger.d("sendReply:"+id+"..."+reply.getComment());
         return service.sendReply(id,reply)
                 .onErrorResumeNext(refreshTokenAndRetry(service.sendReply(id,reply)))
@@ -554,6 +554,29 @@ public class Repository {
                     @Override
                     public void onNext(Comment comment) {
                         callback.onSendReplySuccess(comment);
+                    }
+                });
+    }
+
+    public Subscription sendComment(Comment comment, final CommentsCallback callback){
+        return service.sendComment(comment)
+                .onErrorResumeNext(refreshTokenAndRetry(service.sendComment(comment)))
+                .compose(RxUtil.<Comment>threadSwitch())
+                .subscribe(new Observer<Comment>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onError(e);
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Comment comment) {
+                        callback.onSendCommentSuccess(comment);
                     }
                 });
     }

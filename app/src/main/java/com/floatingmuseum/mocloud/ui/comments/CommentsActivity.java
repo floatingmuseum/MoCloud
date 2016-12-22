@@ -7,6 +7,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -14,7 +17,15 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.Comment;
-import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
+import com.floatingmuseum.mocloud.data.entity.Ids;
+import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.Reply;
+import com.floatingmuseum.mocloud.data.entity.Sharing;
+import com.floatingmuseum.mocloud.utils.KeyboardUtil;
+import com.floatingmuseum.mocloud.utils.StringUtil;
+import com.floatingmuseum.mocloud.utils.ToastUtil;
+import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +38,21 @@ import butterknife.ButterKnife;
  */
 public class CommentsActivity extends BaseActivity implements CommentsContract.View, SwipeRefreshLayout.OnRefreshListener {
 
-    public static final String MOVIE_TITLE = "movie_title";
-
-    private CommentsPresenter presenter;
-
     @BindView(R.id.rv_comments)
     RecyclerView rv_comments;
     @BindView(R.id.srl_comments)
     SwipeRefreshLayout srl_comments;
+    @BindView(R.id.isSpoiler)
+    CheckBox isSpoiler;
+    @BindView(R.id.comment_box)
+    EditText commentBox;
+    @BindView(R.id.iv_reply)
+    ImageView ivReply;
 
-    public static final String MOVIE_ID = "movieID";
-    private String movieId;
+    public static final String MOVIE_OBJECT = "movie_object";
+
+    private CommentsPresenter presenter;
+    private Movie movie;
     private List<Comment> commentsData;
     private CommentsAdapter adapter;
     private LinearLayoutManager manager;
@@ -46,15 +61,14 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
     protected int currentLayoutId() {
         return R.layout.activity_comments;
     }
-    
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
 
-        movieId = getIntent().getStringExtra(MOVIE_ID);
-        String movieTitle = getIntent().getStringExtra(MOVIE_TITLE);
-        actionBar.setTitle(movieTitle);
+        movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
+        actionBar.setTitle(movie.getTitle());
         presenter = new CommentsPresenter(this, Repository.getInstance());
 
         initView();
@@ -81,7 +95,7 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                loadMore(manager,adapter,movieId,presenter,srl_comments);
+                loadMore(manager, adapter, movie.getIds().getSlug(), presenter, srl_comments);
             }
         });
 
@@ -89,30 +103,59 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
                 Intent intent = new Intent(CommentsActivity.this, SingleCommentActivity.class);
-                intent.putExtra(SingleCommentActivity.MAIN_COMMENT,commentsData.get(i));
+                intent.putExtra(SingleCommentActivity.MAIN_COMMENT, commentsData.get(i));
                 startActivity(intent);
             }
 
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 super.onItemChildClick(adapter, view, position);
-                switch (view.getId()){
+                switch (view.getId()) {
                 }
+            }
+        });
+
+        ivReply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendComment();
             }
         });
     }
 
+    private void sendComment() {
+        String replyContent = commentBox.getText().toString();
+        Logger.d("回复内容:" + replyContent + "...isSpoiler" + isSpoiler.isChecked());
+        if (!StringUtil.checkReplyContent(replyContent)) {
+            ToastUtil.showToast(R.string.comment_tip1);
+            return;
+        }
+        Comment comment = new Comment();
+        comment.setSpoiler(isSpoiler.isChecked());
+        comment.setComment(replyContent);
+        comment.setMovie(movie);
+        presenter.sendComment(comment);
+    }
+
     public void onBaseDataSuccess(List<Comment> comments) {
-        if(comments.size()<presenter.getLimit()){
+        if (comments.size() < presenter.getLimit()) {
             alreadyGetAllData = true;
         }
 
-        if(shouldClean){
+        if (shouldClean) {
             commentsData.clear();
         }
         commentsData.addAll(comments);
         adapter.notifyDataSetChanged();
         shouldClean = true;
+    }
+
+    public void onSendCommentSuccess(Comment comment) {
+        Logger.d("sendComment...onSendCommentSuccess:"+comment.getComment());
+        ToastUtil.showToast(R.string.reply_success);
+        commentsData.add(0,comment);
+        adapter.notifyItemInserted(0);
+        KeyboardUtil.hideSoftInput(this);
     }
 
     @Override
@@ -122,7 +165,7 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
 
     @Override
     public void onRefresh() {
-        presenter.start(movieId,shouldClean);
+        presenter.start(movie.getIds().getSlug(), shouldClean);
     }
 
     @Override
