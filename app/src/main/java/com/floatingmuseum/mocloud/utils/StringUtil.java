@@ -25,10 +25,28 @@ public class StringUtil {
     }
 
     public static boolean checkReplyContent(String content){
-        if (content.length()<5){
+        String[] contentArray = content.split(" ");
+        if (contentArray.length<5){
             return false;
-        }else{
-            return true;
         }
+        int englishNum = 0;
+        for (String s : contentArray) {
+            if (isContainLetter(s)) {
+                englishNum++;
+            }
+            if (englishNum>5) {
+                return true;
+            }
+        }
+            return false;
+    }
+
+    public static boolean isContainLetter(String content){
+        for (char c : content.toCharArray()) {
+            if (Character.isLetter(c)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

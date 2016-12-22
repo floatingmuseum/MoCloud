@@ -41,7 +41,7 @@ public class SingleCommentPresenter extends Presenter implements CommentReplyCal
 
     @Override
     public void onSendReplySuccess(Comment comment) {
-
+        activity.onSendReplySuccess(comment);
     }
 
     @Override

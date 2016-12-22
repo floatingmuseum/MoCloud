@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.ui.comments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,6 +14,7 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.Comment;
+import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +88,9 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
         rv_comments.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-
+                Intent intent = new Intent(CommentsActivity.this, SingleCommentActivity.class);
+                intent.putExtra(SingleCommentActivity.MAIN_COMMENT,commentsData.get(i));
+                startActivity(intent);
             }
 
             @Override

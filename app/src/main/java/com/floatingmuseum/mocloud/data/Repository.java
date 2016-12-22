@@ -534,7 +534,10 @@ public class Repository {
     }
 
     public Subscription sendReply(long id, Reply reply, final CommentReplyCallback callback){
+        // TODO: 2016/12/22 not success return status code 404 
+        Logger.d("sendReply:"+id+"..."+reply.getComment());
         return service.sendReply(id,reply)
+                .onErrorResumeNext(refreshTokenAndRetry(service.sendReply(id,reply)))
                 .compose(RxUtil.<Comment>threadSwitch())
                 .subscribe(new Observer<Comment>() {
                     @Override
@@ -544,7 +547,8 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Logger.d("sendReply...onError");
+                        e.printStackTrace();
                     }
 
                     @Override
@@ -627,13 +631,13 @@ public class Repository {
         return new Func1<Throwable, Observable<? extends T>>() {
             @Override
             public Observable<? extends T> call(Throwable throwable) {
-                Logger.d("UserSettings:出现异常");
+                Logger.d("refreshTokenAndRetry:出现异常");
                 if (ErrorUtil.is401Error(throwable)) {
-                    Logger.d("UserSettings:401异常");
+                    Logger.d("refreshTokenAndRetry:401异常");
                     return getNewAccessToken().flatMap(new Func1<TraktToken, Observable<T>>() {
                         @Override
                         public Observable<T> call(TraktToken traktToken) {
-                            Logger.d("UserSettings:获取新Token");
+                            Logger.d("refreshTokenAndRetry:获取新Token");
                             SPUtil.saveToken(traktToken);
                             return tobeResumed;
                         }

@@ -24,10 +24,11 @@
     <string name="staff_website">Homepage</string>
     <string name="staff_biography">Biography:</string>
     <string name="as_actor">As actor</string>
-    <string name="write_external_permission" >We will request write external permission in the following dialog to cache movie poster and actor image,this will greatly improve data load speed.\nYou can also modify this in settings.\nshall we go?
+    <string name="write_external_permission" >We will request write external permission in the following dialog to cache movie poster and actor image,this will greatly improve data load speed.\n\nYou can also modify this in settings.\n\nshall we go?
     </string>
     <string name="comment_tip">Please write in English.</string>
-    <string name="comment_tip1">at least five words.</string>
+    <string name="comment_tip1">1.at least five words.\n2.write in English.</string>
+    <string name="reply_success">Reply success.</string>
 
     <string-array name="tab_names">
         <item>Trending</item>

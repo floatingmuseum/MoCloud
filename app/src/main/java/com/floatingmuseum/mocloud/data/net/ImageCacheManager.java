@@ -79,13 +79,13 @@ public class ImageCacheManager {
         for (File file : files) {
             String fileName = file.getName();
             String id = fileName.substring(fileName.indexOf("-")+1,fileName.indexOf("."));
-            Logger.d("文件名:" + file.getName() + "...TmdbID:" + tmdbID +"切割后:"+id+ "...lastModifiedTime:" + file.lastModified());
+//            Logger.d("文件名:" + file.getName() + "...TmdbID:" + tmdbID +"切割后:"+id+ "...lastModifiedTime:" + file.lastModified());
             if (id.equals(String.valueOf(tmdbID))) {
-                Logger.d("文件已存在:" + tmdbID+"...Uri:"+file.toURI().toString());
+//                Logger.d("文件已存在:" + tmdbID+"...Uri:"+file.toURI().toString());
                 return file;
             }
         }
-        Logger.d("文件不存在:" + tmdbID);
+//        Logger.d("文件不存在:" + tmdbID);
         return null;
     }
 
@@ -108,14 +108,14 @@ public class ImageCacheManager {
     public static void writeToDisk(ResponseBody body, String fileName, int imageType) {
         File dir = imageType == TYPE_POSTER ? posterDir : avatarDir;
         long nowDirSize = getDirSize(dir);
-        Logger.d("图片缓存文件夹当前大小:" + nowDirSize + "...配置大小:" + dirSize + "...KB大小:" + FileUtil.bytesToKb(nowDirSize) + "...MB大小:" + FileUtil.bytesToMb(nowDirSize));
+//        Logger.d("图片缓存文件夹当前大小:" + nowDirSize + "...配置大小:" + dirSize + "...KB大小:" + FileUtil.bytesToKb(nowDirSize) + "...MB大小:" + FileUtil.bytesToMb(nowDirSize));
         if (nowDirSize > dirSize) {
             //计算超出文件夹限制的size
             long reduceSize = nowDirSize + body.contentLength() - dirSize;
             reduceDirSize(reduceSize, dir);
         }
         if (body != null) {
-            Logger.d("responseBody:" + body.contentLength() + "..." + fileName);
+//            Logger.d("responseBody:" + body.contentLength() + "..." + fileName);
             if (!dir.exists()) {
                 dir.mkdirs();
             }
@@ -125,7 +125,7 @@ public class ImageCacheManager {
                 sink = Okio.buffer(Okio.sink(file));
                 sink.write(body.source(), body.contentLength());
                 sink.flush();
-                Logger.d("图片" + file.getName() + "...保存到..." + file.getAbsolutePath());
+//                Logger.d("图片" + file.getName() + "...保存到..." + file.getAbsolutePath());
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -147,7 +147,7 @@ public class ImageCacheManager {
         long size = 0;
         File[] files = dir.listFiles();
         for (File file : files) {
-            Logger.d("图片:" + file.getName() + "...大小:" + FileUtil.bytesToKb(file.length()));
+//            Logger.d("图片:" + file.getName() + "...大小:" + FileUtil.bytesToKb(file.length()));
             size += file.length();
         }
         return size;
