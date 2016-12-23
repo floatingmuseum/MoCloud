@@ -1,6 +1,8 @@
 package com.floatingmuseum.mocloud.data;
 
 import android.Manifest;
+import android.content.Context;
+import android.view.GestureDetector;
 
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.Constants;
@@ -10,9 +12,11 @@ import com.floatingmuseum.mocloud.data.callback.CommentsCallback;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
+import com.floatingmuseum.mocloud.data.entity.Crew;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.People;
+import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.Staff;
@@ -110,7 +114,7 @@ public class Repository {
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
                         Logger.d("getMovieTrendingData...onNext:" + movieImage);
-                        handleMoviePoster(movieImage,movies);
+                        handleMoviePoster(movieImage, movies);
                     }
                 });
     }
@@ -131,26 +135,26 @@ public class Repository {
             }
         }).compose(RxUtil.<TmdbMovieImage>threadSwitch())
                 .subscribe(new Observer<TmdbMovieImage>() {
-            @Override
-            public void onCompleted() {
-                callback.onBaseDataSuccess(movies);
-            }
+                    @Override
+                    public void onCompleted() {
+                        callback.onBaseDataSuccess(movies);
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                callback.onError(e);
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
 
-            @Override
-            public void onNext(TmdbMovieImage movieImage) {
-                if (movieImage != null) {
-                    mergeMovieAndImage2(movieImage, movies);
-                    String imageUrl = getImageUrl(movieImage);
-                    downLoadImage(movieImage, imageUrl, ImageCacheManager.TYPE_POSTER);
-                }
-            }
-        });
+                    @Override
+                    public void onNext(TmdbMovieImage movieImage) {
+                        if (movieImage != null) {
+                            mergeMovieAndImage2(movieImage, movies);
+                            String imageUrl = getImageUrl(movieImage);
+                            downLoadImage(movieImage, imageUrl, ImageCacheManager.TYPE_POSTER);
+                        }
+                    }
+                });
     }
 
     public void getMoviePlayedData(String period, int pageNum, int limit, final DataCallback callback) {
@@ -172,7 +176,7 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
-                        handleMoviePoster(movieImage,movies);
+                        handleMoviePoster(movieImage, movies);
                     }
                 });
     }
@@ -196,7 +200,7 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
-                        handleMoviePoster(movieImage,movies);
+                        handleMoviePoster(movieImage, movies);
                     }
                 });
     }
@@ -220,7 +224,7 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
-                        handleMoviePoster(movieImage,movies);
+                        handleMoviePoster(movieImage, movies);
                     }
                 });
     }
@@ -267,7 +271,7 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
-                        handleMoviePoster(movieImage,movies);
+                        handleMoviePoster(movieImage, movies);
                     }
                 });
     }
@@ -304,7 +308,7 @@ public class Repository {
     /**
      * 合并图片到集合中，并下载图片
      */
-    private void handleMoviePoster(TmdbMovieImage movieImage,List<BaseMovie> movies){
+    private void handleMoviePoster(TmdbMovieImage movieImage, List<BaseMovie> movies) {
         if (movieImage != null) {
             mergeMovieAndImage1(movieImage, movies);
             String imageUrl = getImageUrl(movieImage);
@@ -533,11 +537,11 @@ public class Repository {
                 });
     }
 
-    public Subscription sendReply(long id, Reply reply, final CommentReplyCallback callback){
+    public Subscription sendReply(long id, Reply reply, final CommentReplyCallback callback) {
         // TODO: 2016/12/22 not success return status code 404
-        Logger.d("sendReply:"+id+"..."+reply.getComment());
-        return service.sendReply(id,reply)
-                .onErrorResumeNext(refreshTokenAndRetry(service.sendReply(id,reply)))
+        Logger.d("sendReply:" + id + "..." + reply.getComment());
+        return service.sendReply(id, reply)
+                .onErrorResumeNext(refreshTokenAndRetry(service.sendReply(id, reply)))
                 .compose(RxUtil.<Comment>threadSwitch())
                 .subscribe(new Observer<Comment>() {
                     @Override
@@ -558,7 +562,7 @@ public class Repository {
                 });
     }
 
-    public Subscription sendComment(Comment comment, final CommentsCallback callback){
+    public Subscription sendComment(Comment comment, final CommentsCallback callback) {
         return service.sendComment(comment)
                 .onErrorResumeNext(refreshTokenAndRetry(service.sendComment(comment)))
                 .compose(RxUtil.<Comment>threadSwitch())
@@ -602,6 +606,82 @@ public class Repository {
                     @Override
                     public void onNext(Person person) {
                         callback.onBaseDataSuccess(person);
+                    }
+                });
+    }
+
+    public Subscription getStaffMovieCredits(String traktID) {
+        return service.getStaffMovieCredits(traktID)
+                .compose(RxUtil.<PeopleCredit>threadSwitch())
+                .subscribe(new Observer<PeopleCredit>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(PeopleCredit peopleCredit) {
+                        List<Staff> cast = peopleCredit.getCast();
+                        Logger.d("人物作品...作为角色");
+                        for (Staff staff : cast) {
+                            Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...饰演:" + staff.getCharacter());
+                        }
+
+                        Logger.d("人物作品...作为工作人员");
+                        Crew crew = peopleCredit.getCrew();
+                        List<Staff> directing = crew.getDirecting();
+                        if (directing != null && directing.size() > 0) {
+                            for (Staff staff : directing) {
+                                Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
+                            }
+                        }
+
+                        List<Staff> writing = crew.getWriting();
+                        if (writing != null && writing.size() > 0) {
+                            for (Staff staff : writing) {
+                                Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
+                            }
+                        }
+
+                        List<Staff> production = crew.getProduction();
+                        if (production != null && production.size() > 0) {
+                            for (Staff staff : production) {
+                                Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
+                            }
+                        }
+
+                        List<Staff> art = crew.getArt();
+                        if (art != null && art.size() > 0) {
+                            for (Staff staff : art) {
+                                Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
+                            }
+                        }
+
+                        List<Staff> camera = crew.getCamera();
+                        if (camera != null && camera.size() > 0) {
+                            for (Staff staff : camera) {
+                                Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
+                            }
+                        }
+
+                        List<Staff> costumeAndMakeUp = crew.getCostumeAndMakeUp();
+                        if (costumeAndMakeUp != null && costumeAndMakeUp.size() > 0) {
+                            for (Staff staff : costumeAndMakeUp) {
+                                Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
+                            }
+                        }
+
+                        List<Staff> sound = crew.getSound();
+                        if (sound != null && sound.size() > 0) {
+                            for (Staff staff : sound) {
+                                Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
+                            }
+                        }
                     }
                 });
     }

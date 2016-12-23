@@ -111,6 +111,7 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 super.onItemChildClick(adapter, view, position);
                 switch (view.getId()) {
+                    case R.id.tv_comments_likes:
                 }
             }
         });

@@ -150,10 +150,10 @@ public interface MoCloudService {
     Observable<Person> getStaff(@Path("id") String id);
 
     @GET("people/{id}/movies")
-    Observable<PeopleCredit> getPeopleMovieCredits(@Path("id")String imdbId);
+    Observable<PeopleCredit> getStaffMovieCredits(@Path("id")String traktId);
 
     @GET("people/{id}/shows")
-    Observable getPeopleShowsCredits(@Path("id")String imdbId);
+    Observable getStaffShowsCredits(@Path("id")String traktId);
 
 //******************************************评 论*******************************************
 

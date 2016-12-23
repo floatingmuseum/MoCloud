@@ -21,8 +21,9 @@ public class StaffDetailPresenter extends Presenter implements DataCallback<Pers
         this.repository = repository;
     }
 
-    public void getData(String tmdbId) {
-        Subscription staffDetailSubscription = repository.getStaffDetail(tmdbId,this);
+    public void getData(String traktId) {
+        Subscription staffDetailSubscription = repository.getStaffDetail(traktId,this);
+        repository.getStaffMovieCredits(traktId);
         compositeSubscription.add(staffDetailSubscription);
     }
 

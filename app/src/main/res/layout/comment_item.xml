@@ -68,11 +68,12 @@
             android:layout_weight="3">
 
             <ImageView
+                android:id="@+id/iv_comment_likes"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
                 android:layout_marginTop="6dp"
                 android:layout_toLeftOf="@+id/tv_comments_likes"
-                android:src="@drawable/comment_like" />
+                android:src="@drawable/appreciate" />
 
             <TextView
                 android:id="@+id/tv_comments_likes"
@@ -86,10 +87,10 @@
             <ImageView
                 android:id="@+id/iv_replies"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
                 android:layout_marginTop="6dp"
                 android:layout_toLeftOf="@+id/tv_comments_replies"
-                android:src="@drawable/comment_reply" />
+                android:src="@drawable/reply" />
 
             <TextView
                 android:id="@+id/tv_comments_replies"
@@ -102,11 +103,6 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <!--<FrameLayout-->
-    <!--android:id="@+id/fl_comment"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
-
     <TextView
         android:id="@+id/tv_comment"
         android:layout_width="match_parent"
@@ -114,16 +110,4 @@
         android:background="@color/comment_content_grey"
         android:padding="6dp"
         tools:text="Everyone keeps suggesting there is a paradox concerning the 5D future humans and their ability to save humanity in the past. It's really not a paradox at all. Everyone assumes humanity survived to ascend to the 5th dimension but how could humanity exist in the future if not for the actions of Cooper.. who was guided by future humans (begin endless loop).\n\nDid anyone ever consider the other important character in the movie? Amelia Brand carried on with the rest of her mission (thanks to Cooper). I postulate that Brand used the human seeds as intended and set up a colony. A colony that would thrive and eventually evolve beyond human. Thus Earth is of little importance, and may have indeed died. These colonists, and the generations that followed, would have been told the story of a great man (Cooper) who saved them from extinction. With the ability to manipulate space-time, they would pay homage to their hero God by helping him in the past so he may fulfill the mission most important to him, to once again see his daughter. Plan B worked beautifully. But the 5d humans, having the power to bend space-time, decided there's no reason why Plan A had to fail." />
-
-    <!--<TextView-->
-    <!--android:id="@+id/tv_spoiler"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:gravity="center"-->
-    <!--android:text="@string/spoiler_alert"-->
-    <!--android:textColor="@color/spoiler_red"-->
-    <!--android:textSize="24sp"-->
-    <!--android:visibility="gone"/>-->
-    <!--</FrameLayout>-->
 </LinearLayout>
