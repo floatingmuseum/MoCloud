@@ -31,6 +31,7 @@ import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.ui.about.AboutActivity;
 import com.floatingmuseum.mocloud.ui.calendar.CalendarActivity;
+import com.floatingmuseum.mocloud.ui.lists.ListsActivity;
 import com.floatingmuseum.mocloud.ui.login.LoginActivity;
 import com.floatingmuseum.mocloud.ui.settings.SettingsActivity;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
@@ -217,6 +218,9 @@ public class MainActivity extends BaseActivity
         switch (id) {
             case R.id.nav_my:
                 startActivity(new Intent(this, UserActivity.class));
+                break;
+            case R.id.nav_lists:
+                startActivity(new Intent(this, ListsActivity.class));
                 break;
             case R.id.nav_calendar:
                 startActivity(new Intent(this, CalendarActivity.class));
