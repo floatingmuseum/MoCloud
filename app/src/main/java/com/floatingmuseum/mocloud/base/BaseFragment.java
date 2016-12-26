@@ -12,6 +12,7 @@ import android.support.v7.widget.GridLayoutManager;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.ui.comments.CommentsContract;
 import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 import com.floatingmuseum.mocloud.ui.mainmovie.trending.MovieTrendingContract;

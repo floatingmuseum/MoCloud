@@ -29,6 +29,7 @@
     <string name="comment_tip">Please write in English.</string>
     <string name="comment_tip1">1.at least five words.\n2.write in English.</string>
     <string name="reply_success">Reply success.</string>
+    <string name="no_data">No data.</string>
 
     <string-array name="tab_names">
         <item>Trending</item>
@@ -38,5 +39,11 @@
         <item>Collected</item>
         <!--<item>Anticipated</item>-->
         <item>Box Office</item>
+    </string-array>
+
+    <string-array name="staff_tab_names">
+        <item>Biography</item>
+        <item>Movie</item>
+        <item>Show</item>
     </string-array>
 </resources>

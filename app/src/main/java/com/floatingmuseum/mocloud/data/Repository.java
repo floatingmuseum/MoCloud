@@ -610,7 +610,7 @@ public class Repository {
                 });
     }
 
-    public Subscription getStaffMovieCredits(String traktID) {
+    public Subscription getStaffMovieCredits(String traktID, final DataCallback callback) {
         return service.getStaffMovieCredits(traktID)
                 .compose(RxUtil.<PeopleCredit>threadSwitch())
                 .subscribe(new Observer<PeopleCredit>() {
@@ -626,6 +626,7 @@ public class Repository {
 
                     @Override
                     public void onNext(PeopleCredit peopleCredit) {
+                        // TODO: 2016/12/26 组合成一个大的staff集合，然后标记itemType 
                         List<Staff> cast = peopleCredit.getCast();
                         Logger.d("人物作品...作为角色");
                         for (Staff staff : cast) {
@@ -682,6 +683,7 @@ public class Repository {
                                 Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
                             }
                         }
+                        callback.onBaseDataSuccess(peopleCredit);
                     }
                 });
     }
