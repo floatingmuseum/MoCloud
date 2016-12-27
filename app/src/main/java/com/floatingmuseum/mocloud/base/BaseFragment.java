@@ -70,11 +70,12 @@ abstract public class BaseFragment extends Fragment {
         }
     }
 
-    protected void openMovieDetailActivity(Movie movie){
+    protected void openMovieDetailActivity(Movie movie,boolean hasPoster){
         Logger.d("打开Activity...Movie:"+movie.getTitle()+"...TmdbID:"+movie.getIds().getTmdb());
         Intent intent = new Intent(context, MovieDetailActivity.class);
 //        intent.putExtra(MovieDetailActivity.MOVIE_ID,movie.getIds().getSlug());
         intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,movie);
+        intent.putExtra(MovieDetailActivity.MOVIE_HAS_POSTER,hasPoster);
 //        intent.putExtra(MovieDetailActivity.MOVIE_TITLE,movie.getTitle());
         context.startActivity(intent);
     }

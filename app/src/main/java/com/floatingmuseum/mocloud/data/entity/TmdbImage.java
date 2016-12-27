@@ -56,8 +56,6 @@ public class TmdbImage implements Parcelable {
         this.cacheFile = cacheFile;
     }
 
-    public TmdbImage() {
-    }
 
     @Override
     public int describeContents() {
@@ -73,6 +71,9 @@ public class TmdbImage implements Parcelable {
         dest.writeSerializable(this.cacheFile);
     }
 
+    public TmdbImage() {
+    }
+
     protected TmdbImage(Parcel in) {
         this.id = in.readInt();
         this.hasCache = in.readByte() != 0;
@@ -81,4 +82,15 @@ public class TmdbImage implements Parcelable {
         this.cacheFile = (File) in.readSerializable();
     }
 
+    public static final Creator<TmdbImage> CREATOR = new Creator<TmdbImage>() {
+        @Override
+        public TmdbImage createFromParcel(Parcel source) {
+            return new TmdbImage(source);
+        }
+
+        @Override
+        public TmdbImage[] newArray(int size) {
+            return new TmdbImage[size];
+        }
+    };
 }

@@ -78,7 +78,7 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-                openMovieDetailActivity(boxOfficeList.get(i).getMovie());
+                openMovieDetailActivity(boxOfficeList.get(i).getMovie(),true);
             }
         });
 

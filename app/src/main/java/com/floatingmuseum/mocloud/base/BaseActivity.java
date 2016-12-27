@@ -88,20 +88,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    protected void setStaffClickListener(View view, final int id, final String name, final String imageUrl) {
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(BaseActivity.this, StaffDetailActivity.class);
-//                String avatarUrl = hasImage(staff.getTmdbPeopleImage())?staff.getTmdbPeopleImage().getProfiles().get(0).getFile_path():null;
-//                intent.putExtra(StaffDetailActivity.STAFF_IMAGE_URL, imageUrl);
-                intent.putExtra(StaffDetailActivity.STAFF_NAME, name);
-                intent.putExtra(StaffDetailActivity.STAFF_ID, id);
-                startActivity(intent);
-            }
-        });
-    }
-
     protected void setStaffClickListener(View view, final Staff staff) {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,16 +106,13 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             if (tmdbPeopleImage.isHasCache()) {
                 File file = tmdbPeopleImage.getCacheFile();
                 ImageLoader.load(this, file, headView, R.drawable.default_movie_poster);
-//                load(this, file, headView, R.drawable.default_movie_poster);
                 return;
             }else if (tmdbPeopleImage.isHasAvatar()){
                 ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(tmdbPeopleImage.getProfiles().get(0).getFile_path()), headView, R.drawable.default_movie_poster);
-//                load(this, StringUtil.buildPeopleHeadshotUrl(tmdbPeopleImage.getProfiles().get(0).getFile_path()), headView, R.drawable.default_movie_poster);
                 return;
             }
         }
         ImageLoader.loadDefault(this, headView);
-//        loadDefault(this, headView);
     }
 
     protected void stopRefresh(SwipeRefreshLayout srl) {
@@ -148,37 +131,5 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         } else {
             return super.onOptionsItemSelected(item);
         }
-    }
-
-
-
-    public void loadDefault(Context context, ImageView view) {
-        Glide.with(context).load(R.drawable.default_movie_poster).into(view);
-    }
-
-    public void load(Context context, String url, ImageView view, int placeHolder) {
-        Drawable default_image;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            default_image = context.getResources().getDrawable(placeHolder, null);
-        } else {
-            default_image = context.getResources().getDrawable(placeHolder);
-        }
-        Glide.with(context)
-                .load(url)
-                .placeholder(default_image)
-                .into(view);
-    }
-
-    public void load(Context context, File file, ImageView view, int placeHolder) {
-        Drawable default_image;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            default_image = context.getResources().getDrawable(placeHolder, null);
-        } else {
-            default_image = context.getResources().getDrawable(placeHolder);
-        }
-        Glide.with(context)
-                .load(file)
-                .placeholder(default_image)
-                .into(view);
     }
 }

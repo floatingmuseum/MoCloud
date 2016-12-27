@@ -81,7 +81,7 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-                openMovieDetailActivity(trendingList.get(i).getMovie());
+                openMovieDetailActivity(trendingList.get(i).getMovie(),true);
             }
         });
 

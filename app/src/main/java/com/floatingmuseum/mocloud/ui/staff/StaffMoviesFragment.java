@@ -73,7 +73,7 @@ public class StaffMoviesFragment extends BaseFragment {
         staffMoviesRv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-                openMovieDetailActivity(works.get(i).getMovie());
+                openMovieDetailActivity(works.get(i).getMovie(),false);
             }
         });
     }

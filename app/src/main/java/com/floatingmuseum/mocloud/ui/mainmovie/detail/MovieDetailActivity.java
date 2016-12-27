@@ -38,6 +38,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class MovieDetailActivity extends BaseActivity implements BaseDetailActivity {
     public static final String MOVIE_OBJECT = "movie_object";
+    public static final String MOVIE_HAS_POSTER = "has_poster";
 
     private MovieDetailPresenter presenter;
 
@@ -76,56 +77,46 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         ButterKnife.bind(this);
 
         movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
-
+        boolean hasPoster = getIntent().getBooleanExtra(MOVIE_HAS_POSTER, false);
         presenter = new MovieDetailPresenter(this, Repository.getInstance());
 
         actionBar.setTitle(movie.getTitle());
-        initPosterAndTitle(movie);
+        initPosterAndTitle(movie, hasPoster);
         presenter.getData(movie);
     }
 
-    private void initPosterAndTitle(Movie movie) {
-        TmdbMovieImage image = movie.getImage();
-        if (image != null) {
-            File posterFile = movie.getImage().getCacheFile();
-            if (posterFile != null && posterFile.exists()) {
-                ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
-//                load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
-            } else {
-                if (image.getPosters() != null && image.getPosters().size() > 0) {
-                    ImageLoader.load(this, StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path()), iv_poster, R.drawable.default_movie_poster);
-                    load(this, StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path()), iv_poster, R.drawable.default_movie_poster);
-                } else {
-                    ImageLoader.loadDefault(this, iv_poster);
-//                    loadDefault(this, iv_poster);
-                }
-            }
-        } else {
-            ImageLoader.loadDefault(this, iv_poster);
-//            loadDefault(this, iv_poster);
-        }
-
+    private void initPosterAndTitle(Movie movie, boolean hasPoster) {
         tv_movie_title.setText(movie.getTitle());
+        if (hasPoster) {
+            loadPoster(movie.getImage());
+        } else {
+            presenter.getPoster(movie.getIds().getTmdb());
+        }
     }
-
-//    private void initBaseData(TmdbStaff.Credits.Cast cast) {
-//        File posterFile = ImageCacheManager.hasCacheImage(cast.getId(), ImageCacheManager.TYPE_POSTER);
-//        if (posterFile != null) {
-//            ImageLoader.load(this, posterFile, iv_poster, R.drawable.default_movie_poster);
-//        } else {
-//            if (cast.getPoster_path() != null) {
-//                ImageLoader.load(this, StringUtil.buildPosterUrl(cast.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
-//            } else {
-//                ImageLoader.loadDefault(this, iv_poster);
-//            }
-//        }
-//        tv_movie_title.setText(cast.getTitle());
-//        tv_released.setText(cast.getRelease_date());
-//    }
 
     @Override
     protected void initView() {
 
+    }
+
+    public void onPosterSuccess(TmdbMovieImage tmdbMovieImage) {
+        loadPoster(tmdbMovieImage);
+    }
+
+    private void loadPoster(TmdbMovieImage image) {
+        if (image != null) {
+            if (image.isHasCache() && image.getCacheFile().exists()) {
+                ImageLoader.load(this, image.getCacheFile(), iv_poster, R.drawable.default_movie_poster);
+            } else {
+                if (image.getPosters() != null && image.getPosters().size() > 0) {
+                    ImageLoader.load(this, StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path()), iv_poster, R.drawable.default_movie_poster);
+                } else {
+                    ImageLoader.loadDefault(this, iv_poster);
+                }
+            }
+        } else {
+            ImageLoader.loadDefault(this, iv_poster);
+        }
     }
 
     public void onBaseDataSuccess(Movie movie) {
@@ -183,9 +174,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MovieDetailActivity.this, CommentsActivity.class);
-                    intent.putExtra(CommentsActivity.MOVIE_OBJECT,movie);
-//                    intent.putExtra(CommentsActivity.MOVIE_ID, movie.getIds().getSlug());
-//                    intent.putExtra(CommentsActivity.MOVIE_TITLE, movie.getTitle());
+                    intent.putExtra(CommentsActivity.MOVIE_OBJECT, movie);
                     startActivity(intent);
                 }
             });
@@ -203,7 +192,6 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             Image image = comment.getUser().getImages();
             if (image != null && image.getAvatar() != null) {
                 ImageLoader.loadDontAnimate(this, image.getAvatar().getFull(), iv_userhead, R.drawable.default_userhead);
-//                Glide.with(this).load(image.getAvatar().getFull()).placeholder(R.drawable.default_userhead).into(iv_userhead);
             }
 
             tv_username.setText(comment.getUser().getUsername());
@@ -214,7 +202,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             tv_comments_likes.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Logger.d("评论ID："+comment.getId()+"...");
+                    Logger.d("评论ID：" + comment.getId() + "...");
                 }
             });
 
@@ -222,11 +210,11 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MovieDetailActivity.this, SingleCommentActivity.class);
-                    intent.putExtra(SingleCommentActivity.MAIN_COMMENT,comment);
+                    intent.putExtra(SingleCommentActivity.MAIN_COMMENT, comment);
                     startActivity(intent);
                 }
             });
-            commentContainer.addView(comment_item,i);
+            commentContainer.addView(comment_item, i);
         }
     }
 

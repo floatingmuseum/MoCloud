@@ -81,7 +81,7 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-                openMovieDetailActivity(collectedList.get(i).getMovie());
+                openMovieDetailActivity(collectedList.get(i).getMovie(),true);
             }
         });
         requestBaseDataIfUserNotScrollToFragments(srl,presenter);

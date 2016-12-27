@@ -5,6 +5,7 @@ import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieDetail;
 import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 
 import java.util.List;
@@ -16,4 +17,5 @@ import java.util.Objects;
 public interface MovieDetailCallback<T> extends DataCallback<T>{
     void onPeopleSuccess(List<Staff> staffs);
     void onCommentsSuccess(List<Comment> comments);
+    void onPosterSuccess(TmdbMovieImage tmdbMovieImage);
 }

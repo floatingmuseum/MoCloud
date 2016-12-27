@@ -9,6 +9,7 @@ import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.orhanobut.logger.Logger;
 
@@ -48,6 +49,10 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
         compositeSubscription.add(movieCommentsSubscription);
     }
 
+    public void getPoster(int tmdb) {
+        repository.getMoviePoster(tmdb,this);
+    }
+
     @Override
     public void onBaseDataSuccess(Movie movie) {
         activity.onBaseDataSuccess(movie);
@@ -61,6 +66,11 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     @Override
     public void onCommentsSuccess(List<Comment> comments) {
         activity.onCommentsSuccess(comments);
+    }
+
+    @Override
+    public void onPosterSuccess(TmdbMovieImage tmdbMovieImage) {
+        activity.onPosterSuccess(tmdbMovieImage);
     }
 
     @Override
