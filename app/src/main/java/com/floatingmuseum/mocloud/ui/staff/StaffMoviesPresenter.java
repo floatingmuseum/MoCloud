@@ -4,12 +4,15 @@ import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
+import com.floatingmuseum.mocloud.data.entity.Staff;
+
+import java.util.List;
 
 /**
  * Created by Floatingmuseum on 2016/12/26.
  */
 
-public class StaffMoviesPresenter extends Presenter implements DataCallback<PeopleCredit> {
+public class StaffMoviesPresenter extends Presenter implements DataCallback<List<Staff>> {
 
     private StaffMoviesFragment fragment;
     private Repository repository;
@@ -24,8 +27,8 @@ public class StaffMoviesPresenter extends Presenter implements DataCallback<Peop
     }
 
     @Override
-    public void onBaseDataSuccess(PeopleCredit peopleCredit) {
-        fragment.onBaseDataSuccess(peopleCredit);
+    public void onBaseDataSuccess(List<Staff> works) {
+        fragment.onBaseDataSuccess(works);
     }
 
     @Override

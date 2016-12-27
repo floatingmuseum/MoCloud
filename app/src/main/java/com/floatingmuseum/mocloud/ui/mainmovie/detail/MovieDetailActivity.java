@@ -4,28 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
 import com.floatingmuseum.mocloud.data.Repository;
-import com.floatingmuseum.mocloud.data.entity.Actor;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Image;
 import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
-import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
-import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
-import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
-import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.ui.comments.SingleCommentActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
@@ -152,7 +142,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         for (int i = 0; i < staffs.size(); i++) {
             if (i == 0 && hasDirector) {
                 Staff director = staffs.get(0);
-                LinearLayout director_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
+                LinearLayout director_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_staff, ll_crew, false);
                 setStaffClickListener(director_item, director);
                 RatioImageView iv_staff_headshot = (RatioImageView) director_item.findViewById(R.id.iv_staff_headshot);
                 TextView tv_crew_job = (TextView) director_item.findViewById(R.id.tv_crew_job);
@@ -164,7 +154,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
                 ll_crew.addView(director_item);
             } else {
                 Staff actor = staffs.get(i);
-                LinearLayout actor_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.staff_item, ll_crew, false);
+                LinearLayout actor_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_staff, ll_crew, false);
                 setStaffClickListener(actor_item, actor);
                 RatioImageView iv_staff_headshot = (RatioImageView) actor_item.findViewById(R.id.iv_staff_headshot);
                 TextView tv_crew_job = (TextView) actor_item.findViewById(R.id.tv_crew_job);

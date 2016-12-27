@@ -50,6 +50,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.floatingmuseum.mocloud.utils.RxUtil.threadSwitch;
+
 
 /**
  * Created by Floatingmuseum on 2016/7/11.
@@ -612,8 +614,14 @@ public class Repository {
 
     public Subscription getStaffMovieCredits(String traktID, final DataCallback callback) {
         return service.getStaffMovieCredits(traktID)
-                .compose(RxUtil.<PeopleCredit>threadSwitch())
-                .subscribe(new Observer<PeopleCredit>() {
+                .map(new Func1<PeopleCredit, List<Staff>>() {
+                    @Override
+                    public List<Staff> call(PeopleCredit peopleCredit) {
+                        return DataMachine.mixingStaffWorks(peopleCredit);
+                    }
+                })
+                .compose(RxUtil.<List<Staff>>threadSwitch())
+                .subscribe(new Observer<List<Staff>>() {
                     @Override
                     public void onCompleted() {
 
@@ -625,65 +633,8 @@ public class Repository {
                     }
 
                     @Override
-                    public void onNext(PeopleCredit peopleCredit) {
-                        // TODO: 2016/12/26 组合成一个大的staff集合，然后标记itemType 
-                        List<Staff> cast = peopleCredit.getCast();
-                        Logger.d("人物作品...作为角色");
-                        for (Staff staff : cast) {
-                            Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...饰演:" + staff.getCharacter());
-                        }
-
-                        Logger.d("人物作品...作为工作人员");
-                        Crew crew = peopleCredit.getCrew();
-                        List<Staff> directing = crew.getDirecting();
-                        if (directing != null && directing.size() > 0) {
-                            for (Staff staff : directing) {
-                                Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
-                            }
-                        }
-
-                        List<Staff> writing = crew.getWriting();
-                        if (writing != null && writing.size() > 0) {
-                            for (Staff staff : writing) {
-                                Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
-                            }
-                        }
-
-                        List<Staff> production = crew.getProduction();
-                        if (production != null && production.size() > 0) {
-                            for (Staff staff : production) {
-                                Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
-                            }
-                        }
-
-                        List<Staff> art = crew.getArt();
-                        if (art != null && art.size() > 0) {
-                            for (Staff staff : art) {
-                                Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
-                            }
-                        }
-
-                        List<Staff> camera = crew.getCamera();
-                        if (camera != null && camera.size() > 0) {
-                            for (Staff staff : camera) {
-                                Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
-                            }
-                        }
-
-                        List<Staff> costumeAndMakeUp = crew.getCostumeAndMakeUp();
-                        if (costumeAndMakeUp != null && costumeAndMakeUp.size() > 0) {
-                            for (Staff staff : costumeAndMakeUp) {
-                                Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
-                            }
-                        }
-
-                        List<Staff> sound = crew.getSound();
-                        if (sound != null && sound.size() > 0) {
-                            for (Staff staff : sound) {
-                                Logger.d("人物作品...电影:" + staff.getMovie().getTitle() + "...负责:" + staff.getJob());
-                            }
-                        }
-                        callback.onBaseDataSuccess(peopleCredit);
+                    public void onNext(List<Staff> works) {
+                        callback.onBaseDataSuccess(works);
                     }
                 });
     }
