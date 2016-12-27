@@ -106,11 +106,9 @@
                 android:id="@+id/ll_crew"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"></LinearLayout>
+                android:orientation="horizontal"
+                android:weightSum="4"></LinearLayout>
 
-            <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>-->
             <TextView
                 style="@style/detail_title"
                 android:text="@string/comments" />
@@ -129,13 +127,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"></LinearLayout>
+
             <TextView
                 android:id="@+id/tv_comments_more"
-                android:visibility="gone"
                 style="@style/detail_title"
                 android:layout_width="match_parent"
                 android:gravity="right"
-                android:text="@string/see_more"/>
+                android:text="@string/see_more"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -1,32 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:mocloud="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal">
-<com.floatingmuseum.mocloud.widgets.RatioImageView
-    android:layout_weight="2"
-    android:id="@+id/iv_staff_headshot"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="0dp"
+    android:layout_weight="1"
     android:layout_height="wrap_content"
-    mocloud:image_ratio="1.42"
-    />
+    android:padding="1dp"
+    android:orientation="vertical">
+
+    <com.floatingmuseum.mocloud.widgets.RatioImageView
+        android:id="@+id/iv_staff_headshot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        mocloud:image_ratio="1.42"
+        tools:src="@drawable/default_movie_poster" />
+
     <LinearLayout
-        android:layout_below="@+id/iv_staff_headshot"
-        android:layout_width="0dp"
-        android:layout_weight="8"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/tv_crew_job"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
         <TextView
             android:id="@+id/tv_crew_realname"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:text="Will Smith" />
+
         <TextView
             android:id="@+id/tv_crew_character"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:text="Hancok" />
     </LinearLayout>
 </LinearLayout>
