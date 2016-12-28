@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -26,6 +27,8 @@ import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
