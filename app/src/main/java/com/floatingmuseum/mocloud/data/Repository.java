@@ -13,6 +13,7 @@ import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Crew;
+import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.People;
@@ -20,6 +21,7 @@ import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.entity.Stats;
 import com.floatingmuseum.mocloud.data.entity.TmdbImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
@@ -83,18 +85,6 @@ public class Repository {
      * 首页数据
      ********************************************************/
 
-//    flatMap(new Func1<List<BaseMovie>, Observable<BaseMovie>>() {
-//        @Override
-//        public Observable<BaseMovie> call(List<BaseMovie> baseMovies) {
-//            movies.addAll(baseMovies);
-//            return Observable.from(movies);
-//        }
-//    }).flatMap(new Func1<BaseMovie, Observable<TmdbMovieImage>>() {
-//        @Override
-//        public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
-//            return getTmdbMovieImageObservable(baseMovie.getMovie());
-//        }
-//    })
     public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
         Logger.d("getMovieTrendingData");
         final List<BaseMovie> movies = new ArrayList<>();
@@ -729,6 +719,85 @@ public class Repository {
                     public void onNext(UserSettings userSettings) {
                         Logger.d("UserSettings:onNext:" + userSettings);
                         callback.onBaseDataSuccess(userSettings);
+                    }
+                });
+    }
+
+    public Subscription getUserFollowers(String slug){
+        return service.getUserFollowers(slug)
+                .onErrorResumeNext(refreshTokenAndRetry(service.getUserFollowers(slug)))
+                .compose(RxUtil.<List<Follower>>threadSwitch())
+                .subscribe(new Observer<List<Follower>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("UserData:getUserFollowers...onError");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<Follower> followers) {
+                        if (followers!=null && followers.size()>0){
+                            for (Follower follower : followers) {
+                                Logger.d("UserData:getUserFollowers...onNext:"+follower.getUser().getUsername());
+                            }
+                        }
+                    }
+                });
+    }
+
+    public Subscription getUserFollowing(String slug){
+        return service.getUserFollowing(slug)
+                .onErrorResumeNext(refreshTokenAndRetry(service.getUserFollowing(slug)))
+                .compose(RxUtil.<List<Follower>>threadSwitch())
+                .subscribe(new Observer<List<Follower>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("UserData:getUserFollowing...onError");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<Follower> followers) {
+                        if (followers!=null && followers.size()>0){
+                            for (Follower follower : followers) {
+                                Logger.d("UserData:getUserFollowing...onNext:"+follower.getUser().getUsername());
+                            }
+                        }
+                    }
+                });
+    }
+
+    public Subscription getUserStats(String slug){
+        return service.getUserStats(slug)
+                .onErrorResumeNext(refreshTokenAndRetry(service.getUserStats(slug)))
+                .compose(RxUtil.<Stats>threadSwitch())
+                .subscribe(new Observer<Stats>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("UserData:getUserStats...onError");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Stats stats) {
+                        if (stats!=null) {
+                            Logger.d("UserData:getUserStats...onNext:"+stats.getMovies().getMinutes());
+                        }
                     }
                 });
     }

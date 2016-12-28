@@ -21,6 +21,8 @@ import com.floatingmuseum.mocloud.data.entity.Ids;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.Sharing;
+import com.floatingmuseum.mocloud.data.entity.User;
+import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
@@ -102,6 +104,7 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
         rv_comments.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
+                Logger.d("条目被点击");
                 Intent intent = new Intent(CommentsActivity.this, SingleCommentActivity.class);
                 intent.putExtra(SingleCommentActivity.MAIN_COMMENT, commentsData.get(i));
                 startActivity(intent);
@@ -111,7 +114,15 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 super.onItemChildClick(adapter, view, position);
                 switch (view.getId()) {
+                    case R.id.iv_userhead:
+                        Logger.d("头像被点击");
+                        User user = commentsData.get(position).getUser();
+                        Intent intent = new Intent(CommentsActivity.this, UserActivity.class);
+                        intent.putExtra(UserActivity.USER_OBJECT,user);
+                        startActivity(intent);
+                        break;
                     case R.id.tv_comments_likes:
+                        break;
                 }
             }
         });

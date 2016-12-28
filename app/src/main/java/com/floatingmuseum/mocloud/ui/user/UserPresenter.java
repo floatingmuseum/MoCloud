@@ -1,7 +1,6 @@
 package com.floatingmuseum.mocloud.ui.user;
 
 import com.floatingmuseum.mocloud.base.Presenter;
-import com.floatingmuseum.mocloud.data.Repository;
 
 /**
  * Created by Floatingmuseum on 2016/12/28.
@@ -12,5 +11,11 @@ public class UserPresenter extends Presenter {
 
     public UserPresenter(UserActivity activity){
         this.activity = activity;
+    }
+
+    public void start(String slug) {
+        repository.getUserFollowers(slug);
+        repository.getUserFollowing(slug);
+        repository.getUserStats(slug);
     }
 }

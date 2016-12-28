@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.data.net;
 
 
 import com.floatingmuseum.mocloud.data.entity.Comment;
+import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
@@ -9,6 +10,7 @@ import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.Reply;
+import com.floatingmuseum.mocloud.data.entity.Stats;
 import com.floatingmuseum.mocloud.data.entity.TmdbImagesConfiguration;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
@@ -16,6 +18,7 @@ import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
+import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
 
 import java.util.List;
@@ -64,6 +67,18 @@ public interface MoCloudService {
     @POST("oauth/revoke")
     Observable<Response> revokeToken(@Body String accessToken);
 
+//*******************************************用 户*******************************************
+    @GET("users/{id}?extended=full")
+    Observable<User> getUserProfile(@Path("id")String slug);
+
+    @GET("users/{id}/followers?extended=full")
+    Observable<List<Follower>> getUserFollowers(@Path("id")String slug);
+
+    @GET("users/{id}/following?extended=full")
+    Observable<List<Follower>> getUserFollowing(@Path("id")String slug);
+
+    @GET("users/{id}/stats")
+    Observable<Stats> getUserStats(@Path("id")String slug);
 //*******************************************电  影*******************************************
     /**
      * 电影趋势
@@ -160,7 +175,7 @@ public interface MoCloudService {
     /**
      * 获取电影评论
      */
-    @GET("movies/{id}/comments/{sort}?extended=images")
+    @GET("movies/{id}/comments/{sort}?extended=full,images")
     Observable<List<Comment>> getComments(@Path("id")String id, @Path("sort")String sort, @Query("limit")int limit, @Query("page")int page);
 
     //评论电影 OAuth Required
