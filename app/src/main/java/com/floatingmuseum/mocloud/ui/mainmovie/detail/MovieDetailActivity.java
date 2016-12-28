@@ -197,7 +197,12 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
                 ImageLoader.loadDontAnimate(this, image.getAvatar().getFull(), iv_userhead, R.drawable.default_userhead);
             }
 
-            tv_username.setText(comment.getUser().getUsername());
+            String name = comment.getUser().getName();
+            if (name!=null && name.length()>0){
+                tv_username.setText(name);
+            }else{
+                tv_username.setText(comment.getUser().getUsername());
+            }
             tv_updatetime.setText(TimeUtil.formatGmtTime(comment.getUpdated_at()));
             tv_comments_likes.setText("" + comment.getLikes());
             tv_comments_replies.setText("" + comment.getReplies());

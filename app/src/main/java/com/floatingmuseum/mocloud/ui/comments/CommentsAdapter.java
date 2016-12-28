@@ -33,25 +33,25 @@ public class CommentsAdapter extends BaseQuickAdapter<Comment> {
                 .setText(R.id.tv_comments_replies, "" + comment.getReplies())
                 .setText(R.id.tv_comments_likes, "" + comment.getLikes())
                 .setText(R.id.tv_comment, comment.getComment())
-                .setVisible(R.id.tv_spoiler_tip,comment.isSpoiler()?true:false);
+                .setVisible(R.id.tv_spoiler_tip, comment.isSpoiler() ? true : false);
 
         User user = comment.getUser();
         ImageView iv_userhead = baseViewHolder.getView(R.id.iv_userhead);
-        if(comment.getUser().isPrivateX()){
-            baseViewHolder.setText(R.id.tv_username,user.getUsername());
+        if (comment.getUser().isPrivateX()) {
+            baseViewHolder.setText(R.id.tv_username, user.getUsername());
             ImageLoader.loadDontAnimate(mContext, "", iv_userhead, R.drawable.default_userhead);
-        }else{
-            baseViewHolder.setText(R.id.tv_username,getUserName(user));
+        } else {
+            baseViewHolder.setText(R.id.tv_username, getUserName(user));
             ImageLoader.loadDontAnimate(mContext, user.getImages().getAvatar().getFull(), iv_userhead, R.drawable.default_userhead);
         }
     }
 
-    private String getUserName(User user){
-        String nickName = user.getName();
-        if (nickName == null || nickName.equals("")) {
-            return user.getUsername();
+    private String getUserName(User user) {
+        String name = user.getName();
+        if (name != null && name.length() > 0) {
+            return name;
         } else {
-            return nickName;
+            return user.getUsername();
         }
     }
 }
