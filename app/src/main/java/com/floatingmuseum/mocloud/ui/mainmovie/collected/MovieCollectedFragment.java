@@ -51,7 +51,7 @@ public class MovieCollectedFragment extends BaseFragment implements MovieCollect
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
 
-        presenter = new MovieCollectedPresenter(this, Repository.getInstance());
+        presenter = new MovieCollectedPresenter(this);
 
         initView();
         return rootView;

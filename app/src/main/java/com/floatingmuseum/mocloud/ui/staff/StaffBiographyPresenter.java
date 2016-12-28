@@ -12,11 +12,9 @@ import com.floatingmuseum.mocloud.data.entity.Person;
 public class StaffBiographyPresenter extends Presenter implements DataCallback<Person> {
 
     private StaffBiographyFragment fragment;
-    private Repository repository;
 
-    public StaffBiographyPresenter(StaffBiographyFragment fragment, Repository repository){
+    public StaffBiographyPresenter(StaffBiographyFragment fragment){
         this.fragment = fragment;
-        this.repository = repository;
     }
 
     public void start(String staffId){

@@ -93,7 +93,7 @@ public class SingleCommentActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
 
-        presenter = new SingleCommentPresenter(this, Repository.getInstance());
+        presenter = new SingleCommentPresenter(this);
         mainCommentContent = getIntent().getParcelableExtra(MAIN_COMMENT);
         initView();
         presenter.getData(mainCommentContent.getId());

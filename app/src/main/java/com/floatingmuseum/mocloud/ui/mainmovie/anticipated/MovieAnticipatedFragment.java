@@ -49,7 +49,7 @@ public class MovieAnticipatedFragment extends BaseFragment implements MovieAntic
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
 
-        presenter = new MovieAnticipatedPresenter(this, Repository.getInstance());
+        presenter = new MovieAnticipatedPresenter(this);
 
         initView();
         return rootView;

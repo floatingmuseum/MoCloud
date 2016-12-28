@@ -69,7 +69,7 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
 
         movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
         actionBar.setTitle(movie.getTitle());
-        presenter = new CommentsPresenter(this, Repository.getInstance());
+        presenter = new CommentsPresenter(this);
 
         initView();
     }

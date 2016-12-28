@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.ui.login;
 
 import android.support.annotation.NonNull;
 
+import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
@@ -12,14 +13,12 @@ import com.orhanobut.logger.Logger;
 /**
  * Created by Floatingmuseum on 2016/9/18.
  */
-public class LoginPresenter implements DataCallback<TraktToken> {
+public class LoginPresenter extends Presenter implements DataCallback<TraktToken> {
 
-    LoginActivity loginActivity;
-    Repository repository;
+    private LoginActivity loginActivity;
 
-    public LoginPresenter(@NonNull LoginActivity loginActivity, @NonNull Repository repository){
+    public LoginPresenter(@NonNull LoginActivity loginActivity){
         this.loginActivity = loginActivity;
-        this.repository = repository;
     }
 
     public void exchangeAccessToken(String code){

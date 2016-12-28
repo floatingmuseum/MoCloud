@@ -50,7 +50,7 @@ public class MovieTrendingFragment extends BaseFragment implements MovieTrending
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
 
-        presenter = new MovieTrendingPresenter(this, Repository.getInstance());
+        presenter = new MovieTrendingPresenter(this);
 
         initView();
         return rootView;

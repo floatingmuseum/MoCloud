@@ -55,7 +55,7 @@ public class LoginActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
 
         ButterKnife.bind(this);
-        loginPresenter = new LoginPresenter(this, Repository.getInstance());
+        loginPresenter = new LoginPresenter(this);
         initView();
     }
 

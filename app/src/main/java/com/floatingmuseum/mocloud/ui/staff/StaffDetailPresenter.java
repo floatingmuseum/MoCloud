@@ -14,11 +14,9 @@ import rx.Subscription;
 
 public class StaffDetailPresenter extends Presenter implements DataCallback<Person> {
     private StaffDetailActivity activity;
-    private Repository repository;
 
-    public StaffDetailPresenter(StaffDetailActivity activity, Repository repository) {
+    public StaffDetailPresenter(StaffDetailActivity activity) {
         this.activity = activity;
-        this.repository = repository;
     }
 
     public void getData(String traktId) {

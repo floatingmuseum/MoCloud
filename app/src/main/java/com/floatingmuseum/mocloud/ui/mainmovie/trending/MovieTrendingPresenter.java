@@ -3,6 +3,7 @@ package com.floatingmuseum.mocloud.ui.mainmovie.trending;
 
 import android.support.annotation.NonNull;
 
+import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
@@ -13,16 +14,14 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/4/19.
  */
-public class MovieTrendingPresenter implements MovieTrendingContract.Presenter, DataCallback<List<BaseMovie>> {
+public class MovieTrendingPresenter extends Presenter implements MovieTrendingContract.Presenter, DataCallback<List<BaseMovie>> {
 
     private MovieTrendingContract.View trendingView;
     private int limit = 12;
     private int pageNum = 1;
     protected Boolean shouldClean;
-    private Repository repository;
 
-    MovieTrendingPresenter(@NonNull MovieTrendingContract.View trendingView,@NonNull Repository repository){
-        this.repository = repository;
+    MovieTrendingPresenter(@NonNull MovieTrendingContract.View trendingView){
         this.trendingView = trendingView;
     }
 

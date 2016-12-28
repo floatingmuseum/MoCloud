@@ -19,12 +19,12 @@ import rx.Subscription;
 public class MainPresenter extends Presenter implements DataCallback<UserSettings> {
 
     MainActivity mainActivity;
-    Repository repository;
+//    Repository repository;
 
 
-    public MainPresenter(@NonNull MainActivity mainActivity, @NonNull Repository repository) {
+    public MainPresenter(@NonNull MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        this.repository = repository;
+//        this.repository = repository;
     }
 
     public void getUserSettings() {

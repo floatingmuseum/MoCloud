@@ -15,11 +15,9 @@ import java.util.List;
 public class StaffMoviesPresenter extends Presenter implements DataCallback<List<Staff>> {
 
     private StaffMoviesFragment fragment;
-    private Repository repository;
 
-    public StaffMoviesPresenter(StaffMoviesFragment fragment, Repository repository){
+    public StaffMoviesPresenter(StaffMoviesFragment fragment){
         this.fragment = fragment;
-        this.repository = repository;
     }
 
     public void start(String staffId) {

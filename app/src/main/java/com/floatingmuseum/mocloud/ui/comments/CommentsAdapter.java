@@ -41,6 +41,7 @@ public class CommentsAdapter extends BaseQuickAdapter<Comment> {
             baseViewHolder.setText(R.id.tv_username, user.getUsername());
             ImageLoader.loadDontAnimate(mContext, "", iv_userhead, R.drawable.default_userhead);
         } else {
+            Logger.d("Gif:"+"用户名:"+user.getUsername()+"..."+user.getImages().getAvatar().getFull());
             baseViewHolder.setText(R.id.tv_username, getUserName(user));
             ImageLoader.loadDontAnimate(mContext, user.getImages().getAvatar().getFull(), iv_userhead, R.drawable.default_userhead);
         }

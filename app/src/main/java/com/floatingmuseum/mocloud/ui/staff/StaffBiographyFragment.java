@@ -55,7 +55,7 @@ public class StaffBiographyFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_staff_bio, container, false);
         ButterKnife.bind(this, view);
         staffId = getArguments().getString("staffid");
-        presenter = new StaffBiographyPresenter(this, Repository.getInstance());
+        presenter = new StaffBiographyPresenter(this);
         requestBaseData();
         return view;
     }

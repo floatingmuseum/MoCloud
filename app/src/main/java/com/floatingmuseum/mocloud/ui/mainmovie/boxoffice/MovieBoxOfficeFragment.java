@@ -54,7 +54,7 @@ public class MovieBoxOfficeFragment extends BaseFragment implements MovieBoxOffi
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
 
-        presenter = new MovieBoxOfficePresenter(this, Repository.getInstance());
+        presenter = new MovieBoxOfficePresenter(this);
 
         initView();
         return rootView;

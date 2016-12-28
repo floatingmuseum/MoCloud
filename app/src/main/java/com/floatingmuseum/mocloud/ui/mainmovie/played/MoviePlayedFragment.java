@@ -51,7 +51,7 @@ public class MoviePlayedFragment extends BaseFragment implements MoviePlayedCont
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
 
-        presenter = new MoviePlayedPresenter(this, Repository.getInstance());
+        presenter = new MoviePlayedPresenter(this);
 
         initView();
         return rootView;

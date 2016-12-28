@@ -77,7 +77,7 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
 
         ButterKnife.bind(this);
-        mainPresenter = new MainPresenter(this, Repository.getInstance());
+        mainPresenter = new MainPresenter(this);
 
         setSupportActionBar(toolbar);
         isLogin = SPUtil.isLogin();

@@ -25,7 +25,6 @@ import rx.subscriptions.CompositeSubscription;
 public class MovieDetailPresenter extends Presenter implements MovieDetailCallback<Movie> {
 
     MovieDetailActivity activity;
-    Repository repository;
     private int limit = 4;
     private int page = 1;
     private Subscription movieDetailSubscription;
@@ -34,9 +33,8 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
 //    private CompositeSubscription compositeSubscription;
 
 
-    MovieDetailPresenter(@NonNull MovieDetailActivity activity,@NonNull Repository repository){
+    MovieDetailPresenter(@NonNull MovieDetailActivity activity){
         this.activity = activity;
-        this.repository = repository;
     }
 
     public void getData(Movie movie){

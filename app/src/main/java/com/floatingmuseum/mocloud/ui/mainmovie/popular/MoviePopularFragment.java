@@ -50,7 +50,7 @@ public class MoviePopularFragment extends BaseFragment implements MoviePopularCo
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
 
-        presenter = new MoviePopularPresenter(this, Repository.getInstance());
+        presenter = new MoviePopularPresenter(this);
 
         initView();
         return rootView;

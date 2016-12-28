@@ -81,7 +81,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
 
         movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
         boolean hasPoster = getIntent().getBooleanExtra(MOVIE_HAS_POSTER, false);
-        presenter = new MovieDetailPresenter(this, Repository.getInstance());
+        presenter = new MovieDetailPresenter(this);
 
         actionBar.setTitle(movie.getTitle());
         initPosterAndTitle(movie, hasPoster);

@@ -19,11 +19,9 @@ import rx.Subscription;
 public class SingleCommentPresenter extends Presenter implements CommentReplyCallback<List<Comment>> {
 
     private SingleCommentActivity activity;
-    private Repository repository;
 
-    public SingleCommentPresenter(SingleCommentActivity activity, Repository repository){
+    public SingleCommentPresenter(SingleCommentActivity activity){
         this.activity = activity;
-        this.repository = repository;
     }
 
     public void getData(long commentId){

@@ -10,10 +10,8 @@ import com.floatingmuseum.mocloud.data.Repository;
 public class StaffShowsPresenter extends Presenter {
 
     private StaffShowsFragment fragment;
-    private Repository repository;
 
-    public StaffShowsPresenter(StaffShowsFragment fragment, Repository repository){
+    public StaffShowsPresenter(StaffShowsFragment fragment){
         this.fragment = fragment;
-        this.repository  = repository;
     }
 }
