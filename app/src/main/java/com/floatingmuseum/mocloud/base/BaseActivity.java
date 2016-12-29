@@ -21,12 +21,14 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
+import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.ui.staff.StaffDetailActivity;
 import com.floatingmuseum.mocloud.ui.comments.CommentsContract;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by Floatingmuseum on 2016/8/31.

@@ -10,6 +10,7 @@ import com.floatingmuseum.mocloud.data.callback.CommentReplyCallback;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.callback.CommentsCallback;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
+import com.floatingmuseum.mocloud.data.callback.UserDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Crew;
@@ -723,7 +724,7 @@ public class Repository {
                 });
     }
 
-    public Subscription getUserFollowers(String slug){
+    public Subscription getUserFollowers(String slug, final UserDetailCallback callback) {
         return service.getUserFollowers(slug)
                 .onErrorResumeNext(refreshTokenAndRetry(service.getUserFollowers(slug)))
                 .compose(RxUtil.<List<Follower>>threadSwitch())
@@ -741,16 +742,12 @@ public class Repository {
 
                     @Override
                     public void onNext(List<Follower> followers) {
-                        if (followers!=null && followers.size()>0){
-                            for (Follower follower : followers) {
-                                Logger.d("UserData:getUserFollowers...onNext:"+follower.getUser().getUsername());
-                            }
-                        }
+                        callback.onUserFollowersSuccess(followers);
                     }
                 });
     }
 
-    public Subscription getUserFollowing(String slug){
+    public Subscription getUserFollowing(String slug, final UserDetailCallback callback) {
         return service.getUserFollowing(slug)
                 .onErrorResumeNext(refreshTokenAndRetry(service.getUserFollowing(slug)))
                 .compose(RxUtil.<List<Follower>>threadSwitch())
@@ -768,16 +765,12 @@ public class Repository {
 
                     @Override
                     public void onNext(List<Follower> followers) {
-                        if (followers!=null && followers.size()>0){
-                            for (Follower follower : followers) {
-                                Logger.d("UserData:getUserFollowing...onNext:"+follower.getUser().getUsername());
-                            }
-                        }
+                        callback.onUserFollowingSuccess(followers);
                     }
                 });
     }
 
-    public Subscription getUserStats(String slug){
+    public Subscription getUserStats(String slug, final UserDetailCallback callback) {
         return service.getUserStats(slug)
                 .onErrorResumeNext(refreshTokenAndRetry(service.getUserStats(slug)))
                 .compose(RxUtil.<Stats>threadSwitch())
@@ -795,9 +788,10 @@ public class Repository {
 
                     @Override
                     public void onNext(Stats stats) {
-                        if (stats!=null) {
-                            Logger.d("UserData:getUserStats...onNext:"+stats.getMovies().getMinutes());
+                        if (stats != null) {
+                            Logger.d("UserData:getUserStats...onNext:" + stats.getMovies().getMinutes());
                         }
+                        callback.onUserStatsSuccess(stats);
                     }
                 });
     }

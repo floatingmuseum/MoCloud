@@ -10,6 +10,7 @@ import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.ResUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
+import com.floatingmuseum.mocloud.utils.TraktUtil;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -28,32 +29,16 @@ public class CommentsAdapter extends BaseQuickAdapter<Comment> {
             baseViewHolder.setBackgroundColor(R.id.comment_title, ResUtil.getColor(R.color.comment_review_title_grey, null));
             baseViewHolder.setBackgroundColor(R.id.tv_comment, ResUtil.getColor(R.color.comment_review_content_grey, null));
         }
+        User user = comment.getUser();
 
         baseViewHolder.setText(R.id.tv_updatetime, TimeUtil.formatGmtTime(comment.getUpdated_at()))
                 .setText(R.id.tv_comments_replies, "" + comment.getReplies())
                 .setText(R.id.tv_comments_likes, "" + comment.getLikes())
                 .setText(R.id.tv_comment, comment.getComment())
+                .setText(R.id.tv_username, TraktUtil.getUsername(user))
                 .addOnClickListener(R.id.iv_userhead)
                 .setVisible(R.id.tv_spoiler_tip, comment.isSpoiler() ? true : false);
-
-        User user = comment.getUser();
         ImageView iv_userhead = baseViewHolder.getView(R.id.iv_userhead);
-        if (comment.getUser().isPrivateX()) {
-            baseViewHolder.setText(R.id.tv_username, user.getUsername());
-            ImageLoader.loadDontAnimate(mContext, "", iv_userhead, R.drawable.default_userhead);
-        } else {
-            Logger.d("Gif:"+"用户名:"+user.getUsername()+"..."+user.getImages().getAvatar().getFull());
-            baseViewHolder.setText(R.id.tv_username, getUserName(user));
-            ImageLoader.loadDontAnimate(mContext, user.getImages().getAvatar().getFull(), iv_userhead, R.drawable.default_userhead);
-        }
-    }
-
-    private String getUserName(User user) {
-        String name = user.getName();
-        if (name != null && name.length() > 0) {
-            return name;
-        } else {
-            return user.getUsername();
-        }
+        ImageLoader.loadDontAnimate(mContext, TraktUtil.getUserAvatar(user), iv_userhead, R.drawable.default_userhead);
     }
 }

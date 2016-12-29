@@ -18,7 +18,7 @@ public class AuthInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         String accessToken = SPUtil.getAccessToken();
         if (accessToken != null && accessToken.length() > 0) {
-//            Logger.d("AccessToken:"+accessToken);
+            Logger.d("AccessToken:"+accessToken);
             Request request = chain.request()
                     .newBuilder()
                     .addHeader("Authorization", "Bearer " + accessToken)
