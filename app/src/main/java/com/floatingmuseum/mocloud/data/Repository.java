@@ -97,6 +97,7 @@ public class Repository {
                 .subscribe(new Observer<TmdbMovieImage>() {
                     @Override
                     public void onCompleted() {
+                        Logger.d("图片耗时:...onCompleted");
                         callback.onBaseDataSuccess(movies);
                     }
 
@@ -109,9 +110,12 @@ public class Repository {
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
                         Logger.d("getMovieTrendingData...onNext:" + movieImage);
-                        Logger.d("图片耗时:..."+ count);
-                        count++;
+                        long startTime = System.currentTimeMillis();
+                        Logger.d("图片耗时:..."+ count+"...开始");
                         handleMoviePoster(movieImage, movies);
+                        long endTime = System.currentTimeMillis();
+                        Logger.d("图片耗时:..."+ count+"...结束...耗时:"+(endTime-startTime));
+                        count++;
                     }
                 });
     }
@@ -295,7 +299,7 @@ public class Repository {
                 }).flatMap(new Func1<BaseMovie, Observable<TmdbMovieImage>>() {
                     @Override
                     public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
-                        return getTmdbMovieImageObservable(baseMovie.getMovie());
+                        return getTmdbMovieImageObservable(baseMovie.getMovie()).subscribeOn(Schedulers.io());
                     }
                 });
             }
