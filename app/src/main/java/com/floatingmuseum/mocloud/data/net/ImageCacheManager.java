@@ -63,6 +63,7 @@ public class ImageCacheManager {
     }
 
     public static File hasCacheImage(int tmdbID, int imageType) {
+        long startTime = System.currentTimeMillis();
         if (!PermissionsUtil.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             Logger.d("没有读写权限，不检查Cache");
             return null;
@@ -82,10 +83,14 @@ public class ImageCacheManager {
 //            Logger.d("文件名:" + file.getName() + "...TmdbID:" + tmdbID +"切割后:"+id+ "...lastModifiedTime:" + file.lastModified());
             if (id.equals(String.valueOf(tmdbID))) {
 //                Logger.d("文件已存在:" + tmdbID+"...Uri:"+file.toURI().toString());
+                long endTime = System.currentTimeMillis();
+                Logger.d("图片耗时...文件检索成功耗时:"+(endTime-startTime));
                 return file;
             }
         }
 //        Logger.d("文件不存在:" + tmdbID);
+        long successEndTime = System.currentTimeMillis();
+        Logger.d("图片耗时...文件检索失败耗时:"+(successEndTime-startTime));
         return null;
     }
 
@@ -144,12 +149,15 @@ public class ImageCacheManager {
     }
 
     private static long getDirSize(File dir) {
+        long startTime = System.currentTimeMillis();
         long size = 0;
         File[] files = dir.listFiles();
         for (File file : files) {
 //            Logger.d("图片:" + file.getName() + "...大小:" + FileUtil.bytesToKb(file.length()));
             size += file.length();
         }
+        long endTime = System.currentTimeMillis();
+        Logger.d("图片耗时...获取文件夹大小耗时:"+(endTime-startTime));
         return size;
     }
 
@@ -157,6 +165,8 @@ public class ImageCacheManager {
      * 降低图片文件夹大小
      */
     private static void reduceDirSize(long reduceSize, File dir) {
+        long startTime = System.currentTimeMillis();
+
         File[] files = dir.listFiles();
         //按图片最后修改时间排序
         Arrays.sort(files, new Comparator<File>() {
@@ -183,5 +193,7 @@ public class ImageCacheManager {
             Logger.d("图片被删除:" + file.getName());
             file.delete();
         }
+        long endTime = System.currentTimeMillis();
+        Logger.d("图片耗时...缩减文件夹耗时:"+(endTime-startTime));
     }
 }

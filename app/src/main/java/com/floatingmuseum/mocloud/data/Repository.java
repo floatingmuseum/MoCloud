@@ -69,6 +69,7 @@ public class Repository {
     public static final String COMMENTS_SORT_NEWEST = "newest";
     public static final String COMMENTS_SORT_OLDEST = "oldest";
     public static final String COMMENTS_SORT_REPLIES = "replies";
+    private int count;//计数
 
     public Repository() {
         service = MoCloudFactory.getInstance();
@@ -88,6 +89,7 @@ public class Repository {
 
     public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
         Logger.d("getMovieTrendingData");
+        count = 0;
         final List<BaseMovie> movies = new ArrayList<>();
         service.getMovieTrending(pageNum, limit)
                 .compose(getEachPoster(movies))
@@ -107,6 +109,8 @@ public class Repository {
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
                         Logger.d("getMovieTrendingData...onNext:" + movieImage);
+                        Logger.d("图片耗时:..."+ count);
+                        count++;
                         handleMoviePoster(movieImage, movies);
                     }
                 });
