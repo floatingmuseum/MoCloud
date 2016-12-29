@@ -22,8 +22,10 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.data.entity.User;
+import com.floatingmuseum.mocloud.ui.comments.SingleCommentActivity;
 import com.floatingmuseum.mocloud.ui.staff.StaffDetailActivity;
 import com.floatingmuseum.mocloud.ui.comments.CommentsContract;
+import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 
@@ -122,6 +124,12 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         if (srl != null) {
             srl.setRefreshing(false);
         }
+    }
+
+    protected void openUserActivity(Context context,User user){
+        Intent intent = new Intent(context, UserActivity.class);
+        intent.putExtra(UserActivity.USER_OBJECT,user);
+        startActivity(intent);
     }
 
     @Override

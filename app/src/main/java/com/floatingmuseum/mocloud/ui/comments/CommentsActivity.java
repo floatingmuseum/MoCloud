@@ -116,10 +116,11 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
                 switch (view.getId()) {
                     case R.id.iv_userhead:
                         Logger.d("头像被点击");
-                        User user = commentsData.get(position).getUser();
-                        Intent intent = new Intent(CommentsActivity.this, UserActivity.class);
-                        intent.putExtra(UserActivity.USER_OBJECT,user);
-                        startActivity(intent);
+                        openUserActivity(CommentsActivity.this,commentsData.get(position).getUser());
+//                        User user = commentsData.get(position).getUser();
+//                        Intent intent = new Intent(CommentsActivity.this, UserActivity.class);
+//                        intent.putExtra(UserActivity.USER_OBJECT,user);
+//                        startActivity(intent);
                         break;
                     case R.id.tv_comments_likes:
                         break;

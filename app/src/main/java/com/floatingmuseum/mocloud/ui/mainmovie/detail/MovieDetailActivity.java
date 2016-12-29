@@ -17,8 +17,10 @@ import com.floatingmuseum.mocloud.data.entity.Image;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
+import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.ui.comments.SingleCommentActivity;
+import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.NumberFormatUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
@@ -220,6 +222,13 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
                     Intent intent = new Intent(MovieDetailActivity.this, SingleCommentActivity.class);
                     intent.putExtra(SingleCommentActivity.MAIN_COMMENT, comment);
                     startActivity(intent);
+                }
+            });
+
+            iv_userhead.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openUserActivity(MovieDetailActivity.this, comment.getUser());
                 }
             });
             commentContainer.addView(comment_item, i);

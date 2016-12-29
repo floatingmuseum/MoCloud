@@ -1,6 +1,7 @@
 package com.floatingmuseum.mocloud.ui.comments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
@@ -22,6 +23,7 @@ import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Image;
 import com.floatingmuseum.mocloud.data.entity.Reply;
+import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
@@ -101,7 +103,7 @@ public class SingleCommentActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        Logger.d("喜欢数:"+likes+"...回复数:"+replies);
+        Logger.d("喜欢数:" + likes + "...回复数:" + replies);
         likes = mainCommentContent.getLikes();
         replies = mainCommentContent.getReplies();
         tvUsername.setText(mainCommentContent.getUser().getUsername());
@@ -114,6 +116,12 @@ public class SingleCommentActivity extends BaseActivity {
         if (image != null && image.getAvatar() != null) {
             ImageLoader.loadDontAnimate(this, image.getAvatar().getFull(), ivUserhead, R.drawable.default_userhead);
         }
+        ivUserhead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openUserActivity(SingleCommentActivity.this, mainCommentContent.getUser());
+            }
+        });
 
         repliesList = new ArrayList<>();
         adapter = new SingleCommentAdapter(repliesList);
@@ -124,10 +132,20 @@ public class SingleCommentActivity extends BaseActivity {
         rvReplies.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-                String replySomeOne = "@"+repliesList.get(i).getUser().getUsername()+" ";
+                String replySomeOne = "@" + repliesList.get(i).getUser().getUsername() + " ";
                 commentBox.setText(replySomeOne);
                 KeyboardUtil.showSoftInput(commentBox);
 //                openKeyBoard(replySomeOne);
+            }
+
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                super.onItemChildClick(adapter, view, position);
+                switch (view.getId()) {
+                    case R.id.iv_userhead:
+                        openUserActivity(SingleCommentActivity.this, repliesList.get(position).getUser());
+                        break;
+                }
             }
         });
 
@@ -151,7 +169,7 @@ public class SingleCommentActivity extends BaseActivity {
 
     private void sendReply() {
         String replyContent = commentBox.getText().toString();
-        Logger.d("回复内容:"+replyContent+"...isSpoiler"+isSpoiler.isChecked());
+        Logger.d("回复内容:" + replyContent + "...isSpoiler" + isSpoiler.isChecked());
         if (!StringUtil.checkReplyContent(replyContent)) {
             ToastUtil.showToast(R.string.comment_tip1);
             return;
@@ -159,7 +177,7 @@ public class SingleCommentActivity extends BaseActivity {
         Reply reply = new Reply();
         reply.setSpoiler(isSpoiler.isChecked());
         reply.setComment(replyContent);
-        presenter.sendReply(mainCommentContent.getId(),reply);
+        presenter.sendReply(mainCommentContent.getId(), reply);
     }
 
     private void openDialog(Comment comment) {
@@ -178,7 +196,7 @@ public class SingleCommentActivity extends BaseActivity {
     }
 
     public void onSendReplySuccess(Comment comment) {
-        Logger.d("sendReply...onSendReplySuccess:"+comment.getComment());
+        Logger.d("sendReply...onSendReplySuccess:" + comment.getComment());
         repliesList.add(comment);
         adapter.notifyItemInserted(repliesList.indexOf(comment));
         replies++;

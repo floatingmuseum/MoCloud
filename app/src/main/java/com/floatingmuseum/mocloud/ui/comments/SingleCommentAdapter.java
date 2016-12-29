@@ -34,6 +34,7 @@ public class SingleCommentAdapter extends BaseQuickAdapter<Comment> {
                 .setText(R.id.tv_comments_replies, "" + comment.getReplies())
                 .setText(R.id.tv_comments_likes, "" + comment.getLikes())
                 .setText(R.id.tv_comment, comment.getComment())
+                .addOnClickListener(R.id.iv_userhead)
                 .setVisible(R.id.tv_spoiler_tip,comment.isSpoiler()?true:false);
 
         User user = comment.getUser();
