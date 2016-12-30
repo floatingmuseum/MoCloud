@@ -1,0 +1,56 @@
+package com.floatingmuseum.mocloud.ui.trakt_mainmovie.trending;
+
+
+import android.support.annotation.NonNull;
+
+import com.floatingmuseum.mocloud.base.Presenter;
+import com.floatingmuseum.mocloud.data.callback.DataCallback;
+import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.orhanobut.logger.Logger;
+
+import java.util.List;
+
+/**
+ * Created by Floatingmuseum on 2016/4/19.
+ */
+public class MovieTrendingPresenter extends Presenter implements MovieTrendingContract.Presenter, DataCallback<List<BaseMovie>> {
+
+    private MovieTrendingContract.View trendingView;
+    private int limit = 12;
+    private int pageNum = 1;
+    protected Boolean shouldClean;
+
+    MovieTrendingPresenter(@NonNull MovieTrendingContract.View trendingView){
+        this.trendingView = trendingView;
+    }
+
+    @Override
+    public void start(final boolean shouldClean) {
+        Logger.d("刷新...start:"+shouldClean);
+        pageNum = shouldClean?1:++pageNum;
+        this.shouldClean =shouldClean;
+        repository.getMovieTrendingData(pageNum,limit,this);
+    }
+
+    @Override
+    public void onDestroy() {
+
+    }
+
+    @Override
+    public void onBaseDataSuccess(List<BaseMovie> data) {
+        trendingView.refreshData(data,shouldClean);
+        trendingView.stopRefresh();
+    }
+
+    public int getLimit(){
+        return limit;
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        trendingView.stopRefresh();
+        Logger.d("onError");
+        e.printStackTrace();
+    }
+}

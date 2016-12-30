@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.ui.mainmovie.popular;
+package com.floatingmuseum.mocloud.ui.trakt_mainmovie.played;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,9 +12,8 @@ import android.view.ViewGroup;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
-import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
-import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
-import com.floatingmuseum.mocloud.ui.mainmovie.BaseFragment;
+import com.floatingmuseum.mocloud.base.BaseFragment;
+import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,24 +22,24 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Floatingmuseum on 2016/12/30.
+ * Created by Floatingmuseum on 2016/4/13.
  */
-
-public class MoviePopularFragment extends BaseFragment {
+public class MoviePlayedFragment extends BaseFragment implements MoviePlayedContract.View{
 
     @BindView(R.id.rv)
     RecyclerView rv;
     @BindView(R.id.srl)
     SwipeRefreshLayout srl;
 
-    public final static String MOVIE_POPILAR_FRAGMENT = "MoviePopularFragment";
-    private MoviePopularPresenter presenter;
-    private List<TmdbMovieDetail> popularList;
-    private MoviePopularAdapter adapter;
+    public final static String MOVIE_PLAYED_FRAGMENT = "MoviePlayedFragment";
+    private List<BaseMovie> playedList;
+    private MoviePlayedAdapter adapter;
+
+    private MoviePlayedPresenter presenter;
     private GridLayoutManager manager;
 
-    public static MoviePopularFragment newInstance() {
-        MoviePopularFragment fragment = new MoviePopularFragment();
+    public static MoviePlayedFragment newInstance() {
+        MoviePlayedFragment fragment = new MoviePlayedFragment();
         return fragment;
     }
 
@@ -50,17 +49,17 @@ public class MoviePopularFragment extends BaseFragment {
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
 
-        presenter = new MoviePopularPresenter(this);
+        presenter = new MoviePlayedPresenter(this);
 
         initView();
         return rootView;
     }
 
     protected void initView() {
-        popularList = new ArrayList<>();
-        adapter = new MoviePopularAdapter(popularList);
+        playedList = new ArrayList<>();
+        adapter =  new MoviePlayedAdapter(playedList);
         rv.setHasFixedSize(true);
-        manager = new GridLayoutManager(context, 2);
+        manager = new GridLayoutManager(context,2);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -69,22 +68,21 @@ public class MoviePopularFragment extends BaseFragment {
                 presenter.start(true);
             }
         });
-
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-//                loadMore(manager, adapter, presenter, srl);
+                loadMore(manager,adapter,presenter,srl);
             }
         });
 
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-//                openMovieDetailActivity(popularList.get(i), true);
+                openMovieDetailActivity(playedList.get(i).getMovie(),true);
             }
         });
-        requestBaseData();
+        requestBaseDataIfUserNotScrollToFragments(srl,presenter);
     }
 
     @Override
@@ -93,21 +91,27 @@ public class MoviePopularFragment extends BaseFragment {
         presenter.start(true);
     }
 
-
-    public void refreshData(TmdbMovieDataList data, boolean shouldClean) {
-        if (data.getPage() == data.getTotal_pages()) {
+    @Override
+    public void refreshData(List<BaseMovie> newData,boolean shouldClean) {
+        if(newData.size()<presenter.getLimit()){
             alreadyGetAllData = true;
         }
 
-        if (shouldClean) {
-            popularList.clear();
+        if(shouldClean){
+            playedList.clear();
         }
-        popularList.addAll(data.getResults());
+        playedList.addAll(newData);
         adapter.notifyDataSetChanged();
     }
 
-    protected void stopRefresh() {
+    @Override
+    public void stopRefresh() {
         stopRefresh(srl);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     @Override
@@ -115,3 +119,4 @@ public class MoviePopularFragment extends BaseFragment {
         super.onDestroy();
     }
 }
+

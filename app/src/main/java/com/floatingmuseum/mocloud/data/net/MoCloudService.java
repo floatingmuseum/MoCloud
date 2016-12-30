@@ -12,6 +12,8 @@ import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.Stats;
 import com.floatingmuseum.mocloud.data.entity.TmdbImagesConfiguration;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
@@ -141,6 +143,17 @@ public interface MoCloudService {
     Observable<Movie> getMovieDetail(@Path("id") String movieId);
 
     /**
+     * 电影详情 from Tmdb
+     */
+    @GET("https://api.themoviedb.org/3/movie/{id}")
+    Observable<TmdbMovieDetail> getMovieDetail(@Path("id") int tmdbId,@Query("api_key")String tmdbApiKey);
+
+    /**
+     * 电影Popular from Tmdb
+     */
+    @GET("https://api.themoviedb.org/3/movie/popular")
+    Observable<TmdbMovieDataList> getMoviePopular(@Query("page")int page, @Query("api_key")String tmdbApiKey);
+    /**
      * 电影团队 from Trakt
      */
     @GET("movies/{id}/people")
@@ -200,7 +213,7 @@ public interface MoCloudService {
     @GET("")
     Observable<TmdbImagesConfiguration> getTmdbImagesConfiguration(@Query("api_key")String tmdbApiKey);
 
-    @GET(" https://api.themoviedb.org/3/movie/{tmdb_id}/images")
+    @GET("https://api.themoviedb.org/3/movie/{tmdb_id}/images")
     Observable<TmdbMovieImage> getTmdbImages(@Path("tmdb_id")int tmdbID, @Query("api_key")String tmdbApiKey);
 
     @GET("http://webservice.fanart.tv/v3/movies/{imdbID}")

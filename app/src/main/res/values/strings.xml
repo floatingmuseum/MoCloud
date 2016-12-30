@@ -31,14 +31,21 @@
     <string name="reply_success">Reply success.</string>
     <string name="no_data">No data.</string>
 
+    <!--<string-array name="tab_names">-->
+        <!--<item>Trending</item>-->
+        <!--<item>Popular</item>-->
+        <!--<item>Played</item>-->
+        <!--<item>Watched</item>-->
+        <!--<item>Collected</item>-->
+        <!--&lt;!&ndash;<item>Anticipated</item>&ndash;&gt;-->
+        <!--<item>Box Office</item>-->
+    <!--</string-array>-->
+
     <string-array name="tab_names">
-        <item>Trending</item>
         <item>Popular</item>
-        <item>Played</item>
-        <item>Watched</item>
-        <item>Collected</item>
-        <!--<item>Anticipated</item>-->
-        <item>Box Office</item>
+        <item>Now playing</item>
+        <item>Top rated</item>
+        <item>Upcoming</item>
     </string-array>
 
     <string-array name="staff_tab_names">

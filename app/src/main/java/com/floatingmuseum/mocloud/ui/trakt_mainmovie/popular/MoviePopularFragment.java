@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.ui.mainmovie.popular;
+package com.floatingmuseum.mocloud.ui.trakt_mainmovie.popular;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,9 +12,8 @@ import android.view.ViewGroup;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
-import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
-import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
-import com.floatingmuseum.mocloud.ui.mainmovie.BaseFragment;
+import com.floatingmuseum.mocloud.base.BaseFragment;
+import com.floatingmuseum.mocloud.data.entity.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,22 +22,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Floatingmuseum on 2016/12/30.
+ * Created by Floatingmuseum on 2016/4/13.
  */
-
-public class MoviePopularFragment extends BaseFragment {
-
+public class MoviePopularFragment extends BaseFragment implements MoviePopularContract.View {
     @BindView(R.id.rv)
     RecyclerView rv;
     @BindView(R.id.srl)
     SwipeRefreshLayout srl;
 
     public final static String MOVIE_POPILAR_FRAGMENT = "MoviePopularFragment";
-    private MoviePopularPresenter presenter;
-    private List<TmdbMovieDetail> popularList;
+    private List<Movie> popularList;
     private MoviePopularAdapter adapter;
-    private GridLayoutManager manager;
 
+    private MoviePopularPresenter presenter;
+    private GridLayoutManager manager;
     public static MoviePopularFragment newInstance() {
         MoviePopularFragment fragment = new MoviePopularFragment();
         return fragment;
@@ -58,9 +55,9 @@ public class MoviePopularFragment extends BaseFragment {
 
     protected void initView() {
         popularList = new ArrayList<>();
-        adapter = new MoviePopularAdapter(popularList);
+        adapter =  new MoviePopularAdapter(popularList);
         rv.setHasFixedSize(true);
-        manager = new GridLayoutManager(context, 2);
+        manager = new GridLayoutManager(context,2);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -74,17 +71,17 @@ public class MoviePopularFragment extends BaseFragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-//                loadMore(manager, adapter, presenter, srl);
+                loadMore(manager,adapter,presenter,srl);
             }
         });
 
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-//                openMovieDetailActivity(popularList.get(i), true);
+                openMovieDetailActivity(popularList.get(i),true);
             }
         });
-        requestBaseData();
+        requestBaseDataIfUserNotScrollToFragments(srl,presenter);
     }
 
     @Override
@@ -93,21 +90,32 @@ public class MoviePopularFragment extends BaseFragment {
         presenter.start(true);
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
 
-    public void refreshData(TmdbMovieDataList data, boolean shouldClean) {
-        if (data.getPage() == data.getTotal_pages()) {
+    @Override
+    public void refreshData(List<Movie> newData, boolean shouldClean) {
+        if(newData.size()<presenter.getLimit()){
             alreadyGetAllData = true;
         }
 
-        if (shouldClean) {
+        if(shouldClean){
             popularList.clear();
         }
-        popularList.addAll(data.getResults());
+        popularList.addAll(newData);
         adapter.notifyDataSetChanged();
     }
 
-    protected void stopRefresh() {
+    @Override
+    public void stopRefresh() {
         stopRefresh(srl);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     @Override

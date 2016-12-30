@@ -1,8 +1,6 @@
 package com.floatingmuseum.mocloud.data;
 
 import android.Manifest;
-import android.content.Context;
-import android.view.GestureDetector;
 
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.Constants;
@@ -13,7 +11,6 @@ import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.callback.UserDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
-import com.floatingmuseum.mocloud.data.entity.Crew;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
@@ -24,6 +21,8 @@ import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.Stats;
 import com.floatingmuseum.mocloud.data.entity.TmdbImage;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
@@ -41,6 +40,7 @@ import com.orhanobut.logger.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -52,8 +52,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-
-import static com.floatingmuseum.mocloud.utils.RxUtil.threadSwitch;
 
 
 /**
@@ -69,7 +67,6 @@ public class Repository {
     public static final String COMMENTS_SORT_NEWEST = "newest";
     public static final String COMMENTS_SORT_OLDEST = "oldest";
     public static final String COMMENTS_SORT_REPLIES = "replies";
-    private int count;//计数
 
     public Repository() {
         service = MoCloudFactory.getInstance();
@@ -87,14 +84,16 @@ public class Repository {
      * 首页数据
      ********************************************************/
 
+    HashMap<Integer,Long> timeWaste = new HashMap<>();
+
     public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
         Logger.d("getMovieTrendingData");
-        count = 0;
         final List<BaseMovie> movies = new ArrayList<>();
         service.getMovieTrending(pageNum, limit)
                 .compose(getEachPoster(movies))
                 .compose(RxUtil.<TmdbMovieImage>threadSwitch())
                 .subscribe(new Observer<TmdbMovieImage>() {
+
                     @Override
                     public void onCompleted() {
                         Logger.d("图片耗时:...onCompleted");
@@ -109,13 +108,11 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieImage movieImage) {
-                        Logger.d("getMovieTrendingData...onNext:" + movieImage);
-                        long startTime = System.currentTimeMillis();
-                        Logger.d("图片耗时:..."+ count+"...开始");
-                        handleMoviePoster(movieImage, movies);
-                        long endTime = System.currentTimeMillis();
-                        Logger.d("图片耗时:..."+ count+"...结束...耗时:"+(endTime-startTime));
-                        count++;
+                        Logger.d("图片耗时...请求结果:"+movieImage.getId());
+                        if (timeWaste.containsKey(movieImage.getId())) {
+                            Logger.d("图片耗时...请求结果:"+movieImage.getId()+"...耗时:"+(System.currentTimeMillis()-timeWaste.get(movieImage.getId())));
+                        }
+                        handleMoviePoster(movieImage,movies);
                     }
                 });
     }
@@ -277,15 +274,6 @@ public class Repository {
                 });
     }
 
-    private Observable<TmdbMovieImage> getTmdbMovieImageObservable(Movie movie) {
-        int tmdbId = movie.getIds().getTmdb();
-        File file = ImageCacheManager.hasCacheImage(tmdbId, ImageCacheManager.TYPE_POSTER);
-        if (file != null) {
-            return ImageCacheManager.localPosterImage(tmdbId, file);
-        }
-        return service.getTmdbImages(tmdbId, BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
-    }
-
     private Observable.Transformer<List<BaseMovie>, TmdbMovieImage> getEachPoster(final List<BaseMovie> movies) {
         return new Observable.Transformer<List<BaseMovie>, TmdbMovieImage>() {
             @Override
@@ -304,6 +292,19 @@ public class Repository {
                 });
             }
         };
+    }
+
+    private Observable<TmdbMovieImage> getTmdbMovieImageObservable(Movie movie) {
+        int tmdbId = movie.getIds().getTmdb();
+        File file = ImageCacheManager.hasCacheImage(tmdbId, ImageCacheManager.TYPE_POSTER);
+        if (file != null) {
+//            Logger.d("图片耗时...图片来源:本地:"+tmdbId+"..."+movie.getTitle());
+            return ImageCacheManager.localPosterImage(tmdbId, file);
+        }
+        Logger.d("图片耗时...图片来源:网络:"+tmdbId+"..."+movie.getTitle());
+        // TODO: 2016/12/30 This request really wasting time。but if you out of GFW,it could be better
+        timeWaste.put(tmdbId,System.currentTimeMillis());
+        return service.getTmdbImages(tmdbId, BuildConfig.TmdbApiKey);
     }
 
     /**
@@ -338,6 +339,53 @@ public class Repository {
                     @Override
                     public void onNext(Movie movie) {
                         callback.onBaseDataSuccess(movie);
+                    }
+                });
+    }
+
+    public Subscription getMovieDetail(int tmdbId) {
+        Logger.d("测试开始...TmdbMovieDetail");
+        return service.getMovieDetail(tmdbId,BuildConfig.TmdbApiKey)
+                .compose(RxUtil.<TmdbMovieDetail>threadSwitch())
+                .subscribe(new Observer<TmdbMovieDetail>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(TmdbMovieDetail tmdbMovieDetail) {
+                        if (tmdbMovieDetail!=null){
+                            Logger.d("测试new api...TmdbMovieDetail:"+tmdbMovieDetail.getTitle());
+                        }
+                    }
+                });
+    }
+
+    public Subscription getMoviePopular(int pageNum, final DataCallback callback) {
+        Logger.d("测试开始...TmdbMovieDataList");
+        return service.getMoviePopular(pageNum,BuildConfig.TmdbApiKey)
+                .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
+                .subscribe(new Observer<TmdbMovieDataList>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(TmdbMovieDataList tmdbMovieDataList) {
+                        Logger.d("测试new api...TmdbMovieDataList:"+tmdbMovieDataList.getPage()+"...size:"+tmdbMovieDataList.getResults().size());
+                        callback.onBaseDataSuccess(tmdbMovieDataList);
                     }
                 });
     }
@@ -1037,7 +1085,6 @@ public class Repository {
         String url = StringUtil.buildPosterUrl(imageUrl);
         service.downloadImage(url)
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
                 .subscribe(new Subscriber<ResponseBody>() {
                     @Override
                     public void onCompleted() {

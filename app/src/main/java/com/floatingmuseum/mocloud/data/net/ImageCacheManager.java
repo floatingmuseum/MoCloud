@@ -84,13 +84,13 @@ public class ImageCacheManager {
             if (id.equals(String.valueOf(tmdbID))) {
 //                Logger.d("文件已存在:" + tmdbID+"...Uri:"+file.toURI().toString());
                 long endTime = System.currentTimeMillis();
-                Logger.d("图片耗时...文件检索成功耗时:"+(endTime-startTime));
+//                Logger.d("图片耗时...文件检索成功耗时:"+(endTime-startTime));
                 return file;
             }
         }
 //        Logger.d("文件不存在:" + tmdbID);
         long successEndTime = System.currentTimeMillis();
-        Logger.d("图片耗时...文件检索失败耗时:"+(successEndTime-startTime));
+//        Logger.d("图片耗时...文件检索失败耗时:"+(successEndTime-startTime));
         return null;
     }
 

@@ -30,7 +30,7 @@
         </activity>
 
         <activity android:name=".ui.login.LoginActivity"/>
-        <activity android:name=".ui.mainmovie.detail.MovieDetailActivity"/>
+        <activity android:name=".ui.trakt_mainmovie.detail.MovieDetailActivity"/>
         <activity android:name=".ui.comments.CommentsActivity"/>
         <activity android:name=".ui.staff.StaffDetailActivity"/>
         <activity android:name=".ui.user.UserActivity"/>
