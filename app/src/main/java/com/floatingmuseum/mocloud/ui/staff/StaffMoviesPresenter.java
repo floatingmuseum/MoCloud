@@ -33,4 +33,9 @@ public class StaffMoviesPresenter extends Presenter implements DataCallback<List
     public void onError(Throwable e) {
 
     }
+
+    @Override
+    public void start(boolean shouldClean) {
+
+    }
 }

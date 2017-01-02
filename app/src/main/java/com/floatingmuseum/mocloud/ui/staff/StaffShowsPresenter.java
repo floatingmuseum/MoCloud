@@ -14,4 +14,9 @@ public class StaffShowsPresenter extends Presenter {
     public StaffShowsPresenter(StaffShowsFragment fragment){
         this.fragment = fragment;
     }
+
+    @Override
+    public void start(boolean shouldClean) {
+
+    }
 }

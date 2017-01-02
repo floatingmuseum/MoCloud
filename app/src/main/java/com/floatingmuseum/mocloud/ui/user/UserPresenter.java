@@ -44,4 +44,9 @@ public class UserPresenter extends Presenter implements UserDetailCallback{
     public void onError(Exception e) {
 
     }
+
+    @Override
+    public void start(boolean shouldClean) {
+
+    }
 }

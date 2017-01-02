@@ -39,4 +39,9 @@ public class LoginPresenter extends Presenter implements DataCallback<TraktToken
         e.printStackTrace();
         loginActivity.requestTokenFailed();
     }
+
+    @Override
+    public void start(boolean shouldClean) {
+
+    }
 }

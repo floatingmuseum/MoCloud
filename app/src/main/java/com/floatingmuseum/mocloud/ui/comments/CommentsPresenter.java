@@ -58,4 +58,9 @@ public class CommentsPresenter extends Presenter implements CommentsContract.Pre
     @Override
     public void onDestroy() {
     }
+
+    @Override
+    public void start(boolean shouldClean) {
+
+    }
 }

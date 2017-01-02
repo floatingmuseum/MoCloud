@@ -32,6 +32,6 @@ public class MoviePopularPresenter extends Presenter implements DataCallback<Tmd
 
     @Override
     public void onError(Throwable e) {
-
+        fragment.stopRefresh();
     }
 }

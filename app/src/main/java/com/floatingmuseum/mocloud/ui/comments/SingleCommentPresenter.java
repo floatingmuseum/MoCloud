@@ -48,4 +48,9 @@ public class SingleCommentPresenter extends Presenter implements CommentReplyCal
     public void onError(Throwable e) {
 
     }
+
+    @Override
+    public void start(boolean shouldClean) {
+
+    }
 }

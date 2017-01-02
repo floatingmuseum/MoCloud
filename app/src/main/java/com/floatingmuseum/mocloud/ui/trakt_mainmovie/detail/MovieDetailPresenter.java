@@ -73,6 +73,11 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
 
     }
 
+    @Override
+    public void start(boolean shouldClean) {
+
+    }
+
 //    public void unSubscription(){
 //        compositeSubscription.unsubscribe();
 //    }

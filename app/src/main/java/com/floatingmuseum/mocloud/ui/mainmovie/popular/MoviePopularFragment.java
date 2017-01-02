@@ -74,7 +74,7 @@ public class MoviePopularFragment extends BaseFragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-//                loadMore(manager, adapter, presenter, srl);
+                loadMore(manager, adapter, presenter, srl);
             }
         });
 

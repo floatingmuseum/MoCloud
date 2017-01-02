@@ -34,4 +34,9 @@ public class StaffDetailPresenter extends Presenter implements DataCallback<Pers
     public void onError(Throwable e) {
         e.printStackTrace();
     }
+
+    @Override
+    public void start(boolean shouldClean) {
+
+    }
 }
