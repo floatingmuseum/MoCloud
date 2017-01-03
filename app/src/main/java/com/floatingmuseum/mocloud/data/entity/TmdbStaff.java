@@ -1,8 +1,5 @@
 package com.floatingmuseum.mocloud.data.entity;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.List;
 
 /**
@@ -140,225 +137,23 @@ public class TmdbStaff {
 
     public static class Credits {
 
-        private List<Cast> cast;
-        private List<Crew> crew;
+        private List<Staff> cast;
+        private List<Staff> crew;
 
-        public List<Cast> getCast() {
+        public List<Staff> getCast() {
             return cast;
         }
 
-        public void setCast(List<Cast> cast) {
+        public void setCast(List<Staff> cast) {
             this.cast = cast;
         }
 
-        public List<Crew> getCrew() {
+        public List<Staff> getCrew() {
             return crew;
         }
 
-        public void setCrew(List<Crew> crew) {
+        public void setCrew(List<Staff> crew) {
             this.crew = crew;
-        }
-
-        public static class Cast implements Parcelable{
-            private boolean adult;
-            private String character;
-            private String credit_id;
-            private int id;
-            private String original_title;
-            private String poster_path;
-            private String release_date;
-            private String title;
-
-            public boolean isAdult() {
-                return adult;
-            }
-
-            public void setAdult(boolean adult) {
-                this.adult = adult;
-            }
-
-            public String getCharacter() {
-                return character;
-            }
-
-            public void setCharacter(String character) {
-                this.character = character;
-            }
-
-            public String getCredit_id() {
-                return credit_id;
-            }
-
-            public void setCredit_id(String credit_id) {
-                this.credit_id = credit_id;
-            }
-
-            public int getId() {
-                return id;
-            }
-
-            public void setId(int id) {
-                this.id = id;
-            }
-
-            public String getOriginal_title() {
-                return original_title;
-            }
-
-            public void setOriginal_title(String original_title) {
-                this.original_title = original_title;
-            }
-
-            public String getPoster_path() {
-                return poster_path;
-            }
-
-            public void setPoster_path(String poster_path) {
-                this.poster_path = poster_path;
-            }
-
-            public String getRelease_date() {
-                return release_date;
-            }
-
-            public void setRelease_date(String release_date) {
-                this.release_date = release_date;
-            }
-
-            public String getTitle() {
-                return title;
-            }
-
-            public void setTitle(String title) {
-                this.title = title;
-            }
-
-            @Override
-            public int describeContents() {
-                return 0;
-            }
-
-            @Override
-            public void writeToParcel(Parcel dest, int flags) {
-                dest.writeByte(this.adult ? (byte) 1 : (byte) 0);
-                dest.writeString(this.character);
-                dest.writeString(this.credit_id);
-                dest.writeInt(this.id);
-                dest.writeString(this.original_title);
-                dest.writeString(this.poster_path);
-                dest.writeString(this.release_date);
-                dest.writeString(this.title);
-            }
-
-            public Cast() {
-            }
-
-            protected Cast(Parcel in) {
-                this.adult = in.readByte() != 0;
-                this.character = in.readString();
-                this.credit_id = in.readString();
-                this.id = in.readInt();
-                this.original_title = in.readString();
-                this.poster_path = in.readString();
-                this.release_date = in.readString();
-                this.title = in.readString();
-            }
-
-            public static final Creator<Cast> CREATOR = new Creator<Cast>() {
-                @Override
-                public Cast createFromParcel(Parcel source) {
-                    return new Cast(source);
-                }
-
-                @Override
-                public Cast[] newArray(int size) {
-                    return new Cast[size];
-                }
-            };
-        }
-
-        public static class Crew {
-            private boolean adult;
-            private String credit_id;
-            private String department;
-            private int id;
-            private String job;
-            private String original_title;
-            private String poster_path;
-            private String release_date;
-            private String title;
-
-            public boolean isAdult() {
-                return adult;
-            }
-
-            public void setAdult(boolean adult) {
-                this.adult = adult;
-            }
-
-            public String getCredit_id() {
-                return credit_id;
-            }
-
-            public void setCredit_id(String credit_id) {
-                this.credit_id = credit_id;
-            }
-
-            public String getDepartment() {
-                return department;
-            }
-
-            public void setDepartment(String department) {
-                this.department = department;
-            }
-
-            public int getId() {
-                return id;
-            }
-
-            public void setId(int id) {
-                this.id = id;
-            }
-
-            public String getJob() {
-                return job;
-            }
-
-            public void setJob(String job) {
-                this.job = job;
-            }
-
-            public String getOriginal_title() {
-                return original_title;
-            }
-
-            public void setOriginal_title(String original_title) {
-                this.original_title = original_title;
-            }
-
-            public String getPoster_path() {
-                return poster_path;
-            }
-
-            public void setPoster_path(String poster_path) {
-                this.poster_path = poster_path;
-            }
-
-            public String getRelease_date() {
-                return release_date;
-            }
-
-            public void setRelease_date(String release_date) {
-                this.release_date = release_date;
-            }
-
-            public String getTitle() {
-                return title;
-            }
-
-            public void setTitle(String title) {
-                this.title = title;
-            }
         }
     }
 }

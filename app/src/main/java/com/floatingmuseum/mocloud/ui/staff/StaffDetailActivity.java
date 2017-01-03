@@ -23,6 +23,8 @@ import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
+import com.floatingmuseum.mocloud.utils.ImageLoader;
+import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
 
 import java.util.ArrayList;
@@ -55,9 +57,9 @@ public class StaffDetailActivity extends BaseActivity {
     ViewPager staffViewpager;
 
     private String staffName;
-    private String staffId;
-    private TmdbPeopleImage tmdbPeopleImage;
-    private StaffDetailPresenter presenter;
+    private int staffId;
+    private String staffImageUrl;
+//    private StaffDetailPresenter presenter;
 
     @Override
     protected int currentLayoutId() {
@@ -70,18 +72,16 @@ public class StaffDetailActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         staffName = getIntent().getStringExtra(STAFF_NAME);
-        tmdbPeopleImage = getIntent().getParcelableExtra(STAFF_IMAGE);
-        staffId = getIntent().getStringExtra(STAFF_ID);
+        staffImageUrl = getIntent().getStringExtra(STAFF_IMAGE);
+        staffId = getIntent().getIntExtra(STAFF_ID,-1);
 
-//        presenter = new StaffDetailPresenter(this, Repository.getInstance());
         initView();
-//        presenter.getData(staffId);
     }
 
     @Override
     protected void initView() {
         actionBar.setTitle(staffName);
-        loadPeopleImage(tmdbPeopleImage,staffAvatar);
+        ImageLoader.load(this,StringUtil.buildPeopleHeadshotUrl(staffImageUrl),staffAvatar,R.drawable.default_userhead);
         StaffDetailPagerAdapter pagerAdapter = new StaffDetailPagerAdapter(getSupportFragmentManager(),staffId);
         staffViewpager.setAdapter(pagerAdapter);
         staffDetailTab.setupWithViewPager(staffViewpager);

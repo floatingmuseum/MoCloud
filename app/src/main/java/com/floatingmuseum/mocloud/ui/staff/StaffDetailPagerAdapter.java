@@ -14,9 +14,9 @@ import com.floatingmuseum.mocloud.utils.ResUtil;
 
 public class StaffDetailPagerAdapter extends FragmentPagerAdapter {
 
-    private String staffId;
+    private int staffId;
 
-    public StaffDetailPagerAdapter(FragmentManager fm, String staffId) {
+    public StaffDetailPagerAdapter(FragmentManager fm, int staffId) {
         super(fm);
         this.staffId = staffId;
     }

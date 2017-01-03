@@ -16,8 +16,15 @@ import com.orhanobut.logger.Logger;
  */
 
 public class StaffShowsFragment extends BaseFragment {
-    private String staffId;
+    private int staffId;
 
+    public static Fragment newInstance(int staffId) {
+        StaffShowsFragment fragment = new StaffShowsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("staffid",staffId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -30,20 +37,12 @@ public class StaffShowsFragment extends BaseFragment {
 
     @Override
     protected void initView() {
-        staffId = getArguments().getString("staffid");
+        staffId = getArguments().getInt("staffid",-1);
         Logger.d("StaffID:"+staffId);
     }
 
     @Override
     protected void requestBaseData() {
 
-    }
-
-    public static Fragment newInstance(String staffId) {
-        StaffShowsFragment fragment = new StaffShowsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("staffid",staffId);
-        fragment.setArguments(bundle);
-        return fragment;
     }
 }

@@ -38,13 +38,13 @@ public class StaffMoviesAdapter extends BaseQuickAdapter<Staff> {
             holder.setVisible(R.id.item_type_title, false);
         }
 
-        int year = staff.getMovie().getYear();
-        if (year == 0) {
+        String year = staff.getRelease_date();
+        if (year == null || year.length()==0) {
             holder.setVisible(R.id.tv_released_year, false);
         } else {
-            holder.setText(R.id.tv_released_year, String.valueOf(year));
+            holder.setText(R.id.tv_released_year, year);
         }
-        holder.setText(R.id.tv_art_title, staff.getMovie().getTitle());
+        holder.setText(R.id.tv_art_title, staff.getOriginal_title());
         if (staff.getItemType() == Staff.CAST_ITEM) {
             String character = staff.getCharacter();
             if (character == null || character.length() == 0) {

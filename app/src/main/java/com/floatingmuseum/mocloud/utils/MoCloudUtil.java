@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.utils;
 
 
 import com.floatingmuseum.mocloud.data.entity.Follower;
+import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.Stats;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.data.entity.User;
@@ -87,11 +88,11 @@ public class MoCloudUtil {
         return false;
     }
 
-    public static TmdbPeople.Crew getDirector(List<TmdbPeople.Crew> crews) {
+    public static Staff getDirector(List<Staff> crews) {
         if (crews != null && crews.size() > 0) {
-            for (TmdbPeople.Crew crew : crews) {
-                if (crew.getJob().equals("Director")) {
-                    return crew;
+            for (Staff staff : crews) {
+                if (staff.getJob().equals("Director")) {
+                    return staff;
                 }
             }
         }

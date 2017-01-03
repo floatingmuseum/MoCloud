@@ -18,6 +18,7 @@ import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
+import com.floatingmuseum.mocloud.data.entity.TmdbStaffMovieCredits;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.entity.User;
@@ -191,13 +192,16 @@ public interface MoCloudService {
      * 影人详情 from TMDB
      */
     @GET("https://api.themoviedb.org/3/person/{tmdbID}")
-    Observable<TmdbStaff> getStaff(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey,@Query("append_to_response")String append_to_response);
+    Observable<TmdbStaff> getStaff(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
 
     @GET("people/{id}?extended=full")
     Observable<Person> getStaff(@Path("id") String id);
 
     @GET("people/{id}/movies")
     Observable<PeopleCredit> getStaffMovieCredits(@Path("id")String traktId);
+
+    @GET("https://api.themoviedb.org/3/person/{tmdbID}/movie_credits")
+    Observable<TmdbStaffMovieCredits> getStaffMovieCredits(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
 
     @GET("people/{id}/shows")
     Observable getStaffShowsCredits(@Path("id")String traktId);

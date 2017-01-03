@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
  */
 
 public class StaffDetailFragmentFactory {
-    public static Fragment create(int position,String staffId){
+    public static Fragment create(int position, int staffId){
         Fragment fragment = null;
         switch (position){
             case 0:

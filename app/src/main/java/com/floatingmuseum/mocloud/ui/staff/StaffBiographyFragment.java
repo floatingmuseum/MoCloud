@@ -14,6 +14,7 @@ import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.orhanobut.logger.Logger;
 
@@ -45,16 +46,23 @@ public class StaffBiographyFragment extends BaseFragment {
     @BindView(R.id.tv_biography)
     TextView tvBiography;
 
-    private String staffId;
+    private int staffId;
     private StaffBiographyPresenter presenter;
 
+    public static Fragment newInstance(int staffId) {
+        StaffBiographyFragment fragment = new StaffBiographyFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("staffid", staffId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_staff_bio, container, false);
         ButterKnife.bind(this, view);
-        staffId = getArguments().getString("staffid");
+        staffId = getArguments().getInt("staffid",-1);
         presenter = new StaffBiographyPresenter(this);
         requestBaseData();
         return view;
@@ -70,18 +78,10 @@ public class StaffBiographyFragment extends BaseFragment {
         presenter.start(staffId);
     }
 
-    public void onBaseDataSuccess(Person person){
-        tvBirthday.setText(person.getBirthday());
-        tvBirthplace.setText(person.getBirthplace());
-        tvHomepage.setText(person.getHomepage());
-        tvBiography.setText(person.getBiography());
-    }
-
-    public static Fragment newInstance(String staffId) {
-        StaffBiographyFragment fragment = new StaffBiographyFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("staffid", staffId);
-        fragment.setArguments(bundle);
-        return fragment;
+    public void onBaseDataSuccess(TmdbStaff staff){
+        tvBirthday.setText(staff.getBirthday());
+        tvBirthplace.setText(staff.getPlace_of_birth());
+        tvHomepage.setText(staff.getHomepage());
+        tvBiography.setText(staff.getBiography());
     }
 }

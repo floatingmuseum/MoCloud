@@ -26,6 +26,8 @@ import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
+import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
+import com.floatingmuseum.mocloud.data.entity.TmdbStaffMovieCredits;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
@@ -314,52 +316,52 @@ public class Repository {
         return null;
     }
 
-    public void getPeopleImage(People people, final MovieDetailCallback callback) {
-        final List<Staff> staffs = new ArrayList<>();
-        List<Staff> directors = people.getCrew().getDirecting();
-        if (directors != null && directors.size() != 0) {
-            staffs.add(directors.get(0));
-        }
-        List<Staff> actors = people.getCast();
-        if (actors != null && actors.size() != 0) {
-            int actorRequestNumber = staffs.size() == 0 ? 4 : 3;
-            actorRequestNumber = actors.size() < 3 ? actors.size() : actorRequestNumber;
-            for (int i = 0; i < actorRequestNumber; i++) {
-                staffs.add(actors.get(i));
-            }
-        }
-
-        if (staffs.size() != 0) {
-            Observable.from(staffs).flatMap(new Func1<Staff, Observable<TmdbPeopleImage>>() {
-                @Override
-                public Observable<TmdbPeopleImage> call(Staff staff) {
-                    return service.getPeopleImage(staff.getPerson().getIds().getTmdb(), BuildConfig.TmdbApiKey);
-                }
-            }).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<TmdbPeopleImage>() {
-                        @Override
-                        public void onCompleted() {
-//                            callback.onPeopleSuccess(staffs);
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onNext(TmdbPeopleImage tmdbPeopleImage) {
-                            Logger.d("onNext...getPeople...i'm working,even you destroyed activity");
-                            for (Staff staff : staffs) {
-                                if (staff.getPerson().getIds().getTmdb() == tmdbPeopleImage.getId()) {
-                                    staff.setTmdbPeopleImage(tmdbPeopleImage);
-                                }
-                            }
-                        }
-                    });
-        }
-    }
+//    public void getPeopleImage(People people, final MovieDetailCallback callback) {
+//        final List<Staff> staffs = new ArrayList<>();
+//        List<Staff> directors = people.getCrew().getDirecting();
+//        if (directors != null && directors.size() != 0) {
+//            staffs.add(directors.get(0));
+//        }
+//        List<Staff> actors = people.getCast();
+//        if (actors != null && actors.size() != 0) {
+//            int actorRequestNumber = staffs.size() == 0 ? 4 : 3;
+//            actorRequestNumber = actors.size() < 3 ? actors.size() : actorRequestNumber;
+//            for (int i = 0; i < actorRequestNumber; i++) {
+//                staffs.add(actors.get(i));
+//            }
+//        }
+//
+//        if (staffs.size() != 0) {
+//            Observable.from(staffs).flatMap(new Func1<Staff, Observable<TmdbPeopleImage>>() {
+//                @Override
+//                public Observable<TmdbPeopleImage> call(Staff staff) {
+//                    return service.getPeopleImage(staff.getPerson().getIds().getTmdb(), BuildConfig.TmdbApiKey);
+//                }
+//            }).subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new Observer<TmdbPeopleImage>() {
+//                        @Override
+//                        public void onCompleted() {
+////                            callback.onPeopleSuccess(staffs);
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable e) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onNext(TmdbPeopleImage tmdbPeopleImage) {
+//                            Logger.d("onNext...getPeople...i'm working,even you destroyed activity");
+//                            for (Staff staff : staffs) {
+//                                if (staff.getPerson().getIds().getTmdb() == tmdbPeopleImage.getId()) {
+//                                    staff.setTmdbPeopleImage(tmdbPeopleImage);
+//                                }
+//                            }
+//                        }
+//                    });
+//        }
+//    }
 
     /**
      * 电影详情页只显示4个人物。
@@ -502,10 +504,10 @@ public class Repository {
      * 影人数据
      ********************************************************/
 
-    public Subscription getStaffDetail(String traktID, final DataCallback callback) {
-        return service.getStaff(traktID)
-                .compose(RxUtil.<Person>threadSwitch())
-                .subscribe(new Observer<Person>() {
+    public Subscription getStaffDetail(int tmdbId, final DataCallback callback) {
+        return service.getStaff(tmdbId,BuildConfig.TmdbApiKey)
+                .compose(RxUtil.<TmdbStaff>threadSwitch())
+                .subscribe(new Observer<TmdbStaff>() {
                     @Override
                     public void onCompleted() {
 
@@ -517,18 +519,18 @@ public class Repository {
                     }
 
                     @Override
-                    public void onNext(Person person) {
-                        callback.onBaseDataSuccess(person);
+                    public void onNext(TmdbStaff staff) {
+                        callback.onBaseDataSuccess(staff);
                     }
                 });
     }
 
-    public Subscription getStaffMovieCredits(String traktID, final DataCallback callback) {
-        return service.getStaffMovieCredits(traktID)
-                .map(new Func1<PeopleCredit, List<Staff>>() {
+    public Subscription getStaffMovieCredits(int tmdbId, final DataCallback callback) {
+        return service.getStaffMovieCredits(tmdbId,BuildConfig.TmdbApiKey)
+                .map(new Func1<TmdbStaffMovieCredits, List<Staff>>() {
                     @Override
-                    public List<Staff> call(PeopleCredit peopleCredit) {
-                        return DataMachine.mixingStaffWorks(peopleCredit);
+                    public List<Staff> call(TmdbStaffMovieCredits credits) {
+                        return DataMachine.mixingStaffWorks(credits);
                     }
                 })
                 .compose(RxUtil.<List<Staff>>threadSwitch())

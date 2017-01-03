@@ -36,15 +36,15 @@ public class StaffMoviesFragment extends BaseFragment {
     @BindView(R.id.no_data)
     TextView noData;
 
-    private String staffId;
+    private int staffId;
     private StaffMoviesPresenter presenter;
     private List<Staff> works;
     private StaffMoviesAdapter adapter;
 
-    public static Fragment newInstance(String staffId) {
+    public static Fragment newInstance(int staffId) {
         StaffMoviesFragment fragment = new StaffMoviesFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("staffid", staffId);
+        bundle.putInt("staffid", staffId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -53,7 +53,7 @@ public class StaffMoviesFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_staff_movies, container, false);
-        staffId = getArguments().getString("staffid");
+        staffId = getArguments().getInt("staffid",-1);
         ButterKnife.bind(this, view);
         presenter = new StaffMoviesPresenter(this);
         initView();
@@ -73,7 +73,7 @@ public class StaffMoviesFragment extends BaseFragment {
         staffMoviesRv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-                openMovieDetailActivity(works.get(i).getMovie(),false);
+//                openMovieDetailActivity(works.get(i).getMovie(),false);
             }
         });
     }

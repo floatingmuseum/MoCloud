@@ -2,8 +2,6 @@ package com.floatingmuseum.mocloud.base;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -16,13 +14,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.data.entity.User;
-import com.floatingmuseum.mocloud.ui.comments.SingleCommentActivity;
 import com.floatingmuseum.mocloud.ui.staff.StaffDetailActivity;
 import com.floatingmuseum.mocloud.ui.comments.CommentsContract;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
@@ -30,7 +27,6 @@ import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * Created by Floatingmuseum on 2016/8/31.
@@ -97,9 +93,9 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(BaseActivity.this, StaffDetailActivity.class);
-                intent.putExtra(StaffDetailActivity.STAFF_IMAGE,staff.getTmdbPeopleImage());
-                intent.putExtra(StaffDetailActivity.STAFF_NAME, staff.getPerson().getName());
-                intent.putExtra(StaffDetailActivity.STAFF_ID, staff.getPerson().getIds().getSlug());
+                intent.putExtra(StaffDetailActivity.STAFF_IMAGE,staff.getProfile_path());
+                intent.putExtra(StaffDetailActivity.STAFF_NAME, staff.getName());
+                intent.putExtra(StaffDetailActivity.STAFF_ID, staff.getId());
                 startActivity(intent);
             }
         });

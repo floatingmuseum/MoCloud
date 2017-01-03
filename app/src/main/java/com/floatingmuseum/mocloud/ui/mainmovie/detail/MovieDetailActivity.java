@@ -13,6 +13,7 @@ import com.floatingmuseum.mocloud.base.BaseDetailActivity;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Image;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
@@ -104,10 +105,10 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     }
 
     public void onPeopleSuccess(TmdbPeople staffs) {
-        TmdbPeople.Crew director = MoCloudUtil.getDirector(staffs.getCrew());
+        Staff director = MoCloudUtil.getDirector(staffs.getCrew());
         if (director != null) {
             LinearLayout director_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_staff, ll_crew, false);
-//            setStaffClickListener(director_item, director);
+            setStaffClickListener(director_item, director);
             RatioImageView iv_staff_headshot = (RatioImageView) director_item.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) director_item.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) director_item.findViewById(R.id.tv_crew_realname);
@@ -120,12 +121,12 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         }
 
         int showActorNum = director != null ? 3 : 4;
-        List<TmdbPeople.Cast> casts = staffs.getCast();
+        List<Staff> casts = staffs.getCast();
         showActorNum = casts.size() > showActorNum ? showActorNum : casts.size();
         for (int i = 0; i < showActorNum; i++) {
-            TmdbPeople.Cast cast = casts.get(i);
+            Staff cast = casts.get(i);
             LinearLayout actor_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_staff, ll_crew, false);
-//            setStaffClickListener(actor_item, actor);
+            setStaffClickListener(actor_item, cast);
             RatioImageView iv_staff_headshot = (RatioImageView) actor_item.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) actor_item.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) actor_item.findViewById(R.id.tv_crew_realname);
