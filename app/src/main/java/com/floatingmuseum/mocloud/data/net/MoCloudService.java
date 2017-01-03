@@ -154,11 +154,24 @@ public interface MoCloudService {
     @GET("https://api.themoviedb.org/3/movie/popular")
     Observable<TmdbMovieDataList> getMoviePopular(@Query("page")int page, @Query("api_key")String tmdbApiKey);
 
+    /**
+     * 电影NowPlaying from Tmdb
+     */
     @GET("https://api.themoviedb.org/3/movie/now_playing")
     Observable<TmdbMovieDataList> getMovieNowPlaying(@Query("page")int page, @Query("api_key")String tmdbApiKey);
 
+    /**
+     * 电影TopRated from Tmdb
+     */
     @GET("https://api.themoviedb.org/3/movie/top_rated")
     Observable<TmdbMovieDataList> getMovieTopRated(@Query("page")int page, @Query("api_key")String tmdbApiKey);
+
+    /**
+     * 电影Upcoming from Tmdb
+     */
+    @GET("https://api.themoviedb.org/3/movie/upcoming")
+    Observable<TmdbMovieDataList> getMovieUpcoming(@Query("page")int page, @Query("api_key")String tmdbApiKey);
+
     /**
      * 电影团队 from Trakt
      */

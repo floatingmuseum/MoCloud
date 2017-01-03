@@ -388,6 +388,29 @@ public class Repository {
                 });
     }
 
+    public Subscription getMovieUpcoming(int pagNum,final DataCallback callback){
+        return service.getMovieUpcoming(pagNum,BuildConfig.TmdbApiKey)
+                .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
+                .subscribe(new Observer<TmdbMovieDataList>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(TmdbMovieDataList tmdbMovieDataList) {
+                        Logger.d("测试new api...getMovieUpcoming...TmdbMovieDataList:"+tmdbMovieDataList.getPage()+"...size:"+tmdbMovieDataList.getResults().size());
+                        callback.onBaseDataSuccess(tmdbMovieDataList);
+                    }
+                });
+    }
+
     /******************************************
      * 剧目详情
      ********************************************************/
