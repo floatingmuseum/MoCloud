@@ -82,7 +82,7 @@ public class MovieNowPlayingFragment extends BaseFragment {
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-//                openMovieDetailActivity(popularList.get(i), true);
+                openMovieDetailActivity(nowPlayingList.get(i));
             }
         });
         requestBaseData();

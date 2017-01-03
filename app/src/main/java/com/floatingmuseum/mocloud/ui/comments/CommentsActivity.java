@@ -21,6 +21,7 @@ import com.floatingmuseum.mocloud.data.entity.Ids;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.Sharing;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
@@ -54,7 +55,7 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
     public static final String MOVIE_OBJECT = "movie_object";
 
     private CommentsPresenter presenter;
-    private Movie movie;
+    private TmdbMovieDetail movie;
     private List<Comment> commentsData;
     private CommentsAdapter adapter;
     private LinearLayoutManager manager;
@@ -97,7 +98,7 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                loadMore(manager, adapter, movie.getIds().getSlug(), presenter, srl_comments);
+                loadMore(manager, adapter, movie.getImdb_id(), presenter, srl_comments);
             }
         });
 
@@ -117,10 +118,6 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
                     case R.id.iv_userhead:
                         Logger.d("头像被点击");
                         openUserActivity(CommentsActivity.this,commentsData.get(position).getUser());
-//                        User user = commentsData.get(position).getUser();
-//                        Intent intent = new Intent(CommentsActivity.this, UserActivity.class);
-//                        intent.putExtra(UserActivity.USER_OBJECT,user);
-//                        startActivity(intent);
                         break;
                     case R.id.tv_comments_likes:
                         break;
@@ -146,8 +143,8 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
         Comment comment = new Comment();
         comment.setSpoiler(isSpoiler.isChecked());
         comment.setComment(replyContent);
-        comment.setMovie(movie);
-        presenter.sendComment(comment);
+//        comment.setMovie(movie);
+        presenter.sendComment(comment,movie.getImdb_id());
     }
 
     public void onBaseDataSuccess(List<Comment> comments) {
@@ -178,7 +175,7 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
 
     @Override
     public void onRefresh() {
-        presenter.start(movie.getIds().getSlug(), shouldClean);
+        presenter.start(movie.getImdb_id(), shouldClean);
     }
 
     @Override

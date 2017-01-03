@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.ui.trakt_mainmovie.detail;
+package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.support.annotation.NonNull;
 
@@ -8,7 +8,9 @@ import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
+import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ import rx.Subscription;
 /**
  * Created by Floatingmuseum on 2016/7/14.
  */
-public class MovieDetailPresenter extends Presenter implements MovieDetailCallback<Movie> {
+public class MovieDetailPresenter extends Presenter implements MovieDetailCallback<TmdbMovieDetail> {
 
     MovieDetailActivity activity;
     private int limit = 4;
@@ -26,46 +28,34 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     private Subscription movieDetailSubscription;
     private Subscription movieTeamSubscription;
     private Subscription movieCommentsSubscription;
-//    private CompositeSubscription compositeSubscription;
 
 
     MovieDetailPresenter(@NonNull MovieDetailActivity activity){
         this.activity = activity;
     }
 
-    public void getData(Movie movie){
-//        compositeSubscription = new CompositeSubscription();
-        repository.getMovieDetail(movie.getIds().getTmdb());
-        movieTeamSubscription = repository.getMovieTeam(movie.getIds().getSlug(),this);
-        compositeSubscription.add(movieTeamSubscription);
-        movieDetailSubscription = repository.getMovieDetail(movie.getIds().getSlug(),this);
+    public void getData(int tmdbId){
+        movieDetailSubscription = repository.getMovieDetail(tmdbId,this);
         compositeSubscription.add(movieDetailSubscription);
-        movieCommentsSubscription = repository.getMovieComments(movie.getIds().getSlug(), Repository.COMMENTS_SORT_LIKES,limit,page,this,null);
+        movieTeamSubscription = repository.getMovieTeam(tmdbId,this);
+        compositeSubscription.add(movieTeamSubscription);
+    }
+
+    @Override
+    public void onBaseDataSuccess(TmdbMovieDetail movie) {
+        activity.onBaseDataSuccess(movie);
+        movieCommentsSubscription = repository.getMovieComments(movie.getImdb_id(), Repository.COMMENTS_SORT_LIKES,limit,page,this,null);
         compositeSubscription.add(movieCommentsSubscription);
     }
 
-    public void getPoster(int tmdb) {
-        repository.getMoviePoster(tmdb,this);
-    }
-
     @Override
-    public void onBaseDataSuccess(Movie movie) {
-        activity.onBaseDataSuccess(movie);
-    }
-
-    @Override
-    public void onPeopleSuccess(List<Staff> staffs){
+    public void onPeopleSuccess(TmdbPeople staffs){
         activity.onPeopleSuccess(staffs);
     }
 
     @Override
     public void onCommentsSuccess(List<Comment> comments) {
         activity.onCommentsSuccess(comments);
-    }
-
-    @Override
-    public void onPosterSuccess(TmdbMovieImage tmdbMovieImage) {
-        activity.onPosterSuccess(tmdbMovieImage);
     }
 
     @Override
@@ -77,8 +67,4 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     public void start(boolean shouldClean) {
 
     }
-
-//    public void unSubscription(){
-//        compositeSubscription.unsubscribe();
-//    }
 }

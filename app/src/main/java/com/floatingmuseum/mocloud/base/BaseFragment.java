@@ -10,7 +10,7 @@ import android.support.v7.widget.GridLayoutManager;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.floatingmuseum.mocloud.ui.trakt_mainmovie.detail.MovieDetailActivity;
+import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 import com.orhanobut.logger.Logger;
 
 
@@ -69,7 +69,7 @@ abstract public class BaseFragment extends Fragment {
         Intent intent = new Intent(context, MovieDetailActivity.class);
 //        intent.putExtra(MovieDetailActivity.MOVIE_ID,movie.getIds().getSlug());
         intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,movie);
-        intent.putExtra(MovieDetailActivity.MOVIE_HAS_POSTER,hasPoster);
+//        intent.putExtra(MovieDetailActivity.MOVIE_HAS_POSTER,hasPoster);
 //        intent.putExtra(MovieDetailActivity.MOVIE_TITLE,movie.getTitle());
         context.startActivity(intent);
     }

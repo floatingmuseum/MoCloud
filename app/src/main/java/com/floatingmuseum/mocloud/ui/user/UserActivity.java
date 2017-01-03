@@ -16,7 +16,7 @@ import com.floatingmuseum.mocloud.data.entity.Stats;
 import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.SPUtil;
-import com.floatingmuseum.mocloud.utils.TraktUtil;
+import com.floatingmuseum.mocloud.utils.MoCloudUtil;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -85,10 +85,10 @@ public class UserActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        username = TraktUtil.getUsername(user);
+        username = MoCloudUtil.getUsername(user);
         tvUsername.setText(username);
         actionBar.setTitle(username);
-        ImageLoader.loadDontAnimate(this, TraktUtil.getUserAvatar(user), ivUserhead, R.drawable.default_userhead);
+        ImageLoader.loadDontAnimate(this, MoCloudUtil.getUserAvatar(user), ivUserhead, R.drawable.default_userhead);
         if (user.getIds().getSlug().equals(SPUtil.getString(SPUtil.SP_USER_SETTINGS, "slug"))) {
             tvIsFollowing.setVisibility(View.GONE);
         }
@@ -108,9 +108,9 @@ public class UserActivity extends BaseActivity {
     public void onUserStatsSuccess(Stats stats) {
         tvFollowers.setText(String.valueOf(stats.getNetwork().getFollowers()));
         tvFollowing.setText(String.valueOf(stats.getNetwork().getFollowing()));
-        movieStats.setText(username + " has spent " + TraktUtil.getTimeCost(stats.getMovies().getMinutes())
+        movieStats.setText(username + " has spent " + MoCloudUtil.getTimeCost(stats.getMovies().getMinutes())
                 + " for watching " + stats.getMovies().getWatched() + " movies,and has given "
-                + TraktUtil.getAverageRating(stats.getRatings()) + " average rating, "
+                + MoCloudUtil.getAverageRating(stats.getRatings()) + " average rating, "
                 + stats.getMovies().getComments() + " comments.");
         if (stats.getNetwork().getFollowers() == 0) {
             tvIsFollowing.setText("Follow");
@@ -119,7 +119,7 @@ public class UserActivity extends BaseActivity {
 
     public void onUserFollowersSuccess(List<Follower> followers) {
         if (followers != null && followers.size() > 0) {
-            tvIsFollowing.setText(TraktUtil.isFollowing(followers) ? "Following" : "Follow");
+            tvIsFollowing.setText(MoCloudUtil.isFollowing(followers) ? "Following" : "Follow");
         }
     }
 

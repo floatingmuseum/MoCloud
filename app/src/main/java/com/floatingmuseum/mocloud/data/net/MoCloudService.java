@@ -139,7 +139,7 @@ public interface MoCloudService {
     /**
      * 电影详情
      */
-    @GET("movies/{id}?extended=full,images")
+    @GET("movies/{id}")
     Observable<Movie> getMovieDetail(@Path("id") String movieId);
 
     /**

@@ -24,6 +24,7 @@ import com.floatingmuseum.mocloud.data.entity.TmdbImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
+import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
@@ -84,195 +85,7 @@ public class Repository {
      * 首页数据
      ********************************************************/
 
-    HashMap<Integer,Long> timeWaste = new HashMap<>();
-
-    public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
-        Logger.d("getMovieTrendingData");
-        final List<BaseMovie> movies = new ArrayList<>();
-        service.getMovieTrending(pageNum, limit)
-                .compose(getEachPoster(movies))
-                .compose(RxUtil.<TmdbMovieImage>threadSwitch())
-                .subscribe(new Observer<TmdbMovieImage>() {
-
-                    @Override
-                    public void onCompleted() {
-                        Logger.d("图片耗时:...onCompleted");
-                        callback.onBaseDataSuccess(movies);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieTrendingData...onError");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(TmdbMovieImage movieImage) {
-                        Logger.d("图片耗时...请求结果:"+movieImage.getId());
-                        if (timeWaste.containsKey(movieImage.getId())) {
-                            Logger.d("图片耗时...请求结果:"+movieImage.getId()+"...耗时:"+(System.currentTimeMillis()-timeWaste.get(movieImage.getId())));
-                        }
-                        handleMoviePoster(movieImage,movies);
-                    }
-                });
-    }
-
-    public void getMoviePopularData(int pageNum, int limit, final DataCallback callback) {
-        final List<Movie> movies = new ArrayList<>();
-        service.getMoviePopular(pageNum, limit)
-                .flatMap(new Func1<List<Movie>, Observable<Movie>>() {
-                    @Override
-                    public Observable<Movie> call(List<Movie> movieDatas) {
-                        movies.addAll(movieDatas);
-                        return Observable.from(movies);
-                    }
-                }).flatMap(new Func1<Movie, Observable<TmdbMovieImage>>() {
-            @Override
-            public Observable<TmdbMovieImage> call(Movie movie) {
-                return getTmdbMovieImageObservable(movie);
-            }
-        }).compose(RxUtil.<TmdbMovieImage>threadSwitch())
-                .subscribe(new Observer<TmdbMovieImage>() {
-                    @Override
-                    public void onCompleted() {
-                        callback.onBaseDataSuccess(movies);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(TmdbMovieImage movieImage) {
-                        if (movieImage != null) {
-                            mergeMovieAndImage2(movieImage, movies);
-                            String imageUrl = getImageUrl(movieImage);
-                            downLoadImage(movieImage, imageUrl, ImageCacheManager.TYPE_POSTER);
-                        }
-                    }
-                });
-    }
-
-    public void getMoviePlayedData(String period, int pageNum, int limit, final DataCallback callback) {
-        final List<BaseMovie> movies = new ArrayList<>();
-        service.getMoviePlayed(period, pageNum, limit)
-                .compose(getEachPoster(movies))
-                .compose(RxUtil.<TmdbMovieImage>threadSwitch())
-                .subscribe(new Observer<TmdbMovieImage>() {
-                    @Override
-                    public void onCompleted() {
-                        callback.onBaseDataSuccess(movies);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(TmdbMovieImage movieImage) {
-                        handleMoviePoster(movieImage, movies);
-                    }
-                });
-    }
-
-    public void getMovieWatchedData(String period, int pageNum, int limit, final DataCallback callback) {
-        final List<BaseMovie> movies = new ArrayList<>();
-        service.getMovieWatched(period, pageNum, limit)
-                .compose(getEachPoster(movies))
-                .compose(RxUtil.<TmdbMovieImage>threadSwitch())
-                .subscribe(new Observer<TmdbMovieImage>() {
-                    @Override
-                    public void onCompleted() {
-                        callback.onBaseDataSuccess(movies);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(TmdbMovieImage movieImage) {
-                        handleMoviePoster(movieImage, movies);
-                    }
-                });
-    }
-
-    public void getMovieCollectedData(String period, int pageNum, int limit, final DataCallback callback) {
-        final List<BaseMovie> movies = new ArrayList<>();
-        service.getMovieCollected(period, pageNum, limit)
-                .compose(getEachPoster(movies))
-                .compose(RxUtil.<TmdbMovieImage>threadSwitch())
-                .subscribe(new Observer<TmdbMovieImage>() {
-                    @Override
-                    public void onCompleted() {
-                        callback.onBaseDataSuccess(movies);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(TmdbMovieImage movieImage) {
-                        handleMoviePoster(movieImage, movies);
-                    }
-                });
-    }
-
-    /**
-     * 暂时不用
-     */
-    public void getMovieAnticipatedData(int pageNum, int limit, final DataCallback callback) {
-        service.getMovieAnticipated(pageNum, limit)
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new Observer<List<BaseMovie>>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<BaseMovie> movies) {
-                        getTmdbImagesByBaseMovie(movies, callback);
-                    }
-                });
-    }
-
-    public void getMovieBoxOfficeData(final DataCallback callback) {
-        final List<BaseMovie> movies = new ArrayList<>();
-        service.getMovieBoxOffice()
-                .compose(getEachPoster(movies))
-                .compose(RxUtil.<TmdbMovieImage>threadSwitch())
-                .subscribe(new Observer<TmdbMovieImage>() {
-                    @Override
-                    public void onCompleted() {
-                        callback.onBaseDataSuccess(movies);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(TmdbMovieImage movieImage) {
-                        handleMoviePoster(movieImage, movies);
-                    }
-                });
-    }
+    HashMap<Integer, Long> timeWaste = new HashMap<>();
 
     private Observable.Transformer<List<BaseMovie>, TmdbMovieImage> getEachPoster(final List<BaseMovie> movies) {
         return new Observable.Transformer<List<BaseMovie>, TmdbMovieImage>() {
@@ -301,9 +114,9 @@ public class Repository {
 //            Logger.d("图片耗时...图片来源:本地:"+tmdbId+"..."+movie.getTitle());
             return ImageCacheManager.localPosterImage(tmdbId, file);
         }
-        Logger.d("图片耗时...图片来源:网络:"+tmdbId+"..."+movie.getTitle());
+        Logger.d("图片耗时...图片来源:网络:" + tmdbId + "..." + movie.getTitle());
         // TODO: 2016/12/30 This request really wasting time。but if you out of GFW,it could be better
-        timeWaste.put(tmdbId,System.currentTimeMillis());
+        timeWaste.put(tmdbId, System.currentTimeMillis());
         return service.getTmdbImages(tmdbId, BuildConfig.TmdbApiKey);
     }
 
@@ -320,7 +133,7 @@ public class Repository {
 
     public Subscription getMoviePopular(int pageNum, final DataCallback callback) {
         Logger.d("测试开始...TmdbMovieDataList");
-        return service.getMoviePopular(pageNum,BuildConfig.TmdbApiKey)
+        return service.getMoviePopular(pageNum, BuildConfig.TmdbApiKey)
                 .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
                 .subscribe(new Observer<TmdbMovieDataList>() {
                     @Override
@@ -336,14 +149,14 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieDataList tmdbMovieDataList) {
-                        Logger.d("测试new api...getMoviePopular...TmdbMovieDataList:"+tmdbMovieDataList.getPage()+"...size:"+tmdbMovieDataList.getResults().size());
+                        Logger.d("测试new api...getMoviePopular...TmdbMovieDataList:" + tmdbMovieDataList.getPage() + "...size:" + tmdbMovieDataList.getResults().size());
                         callback.onBaseDataSuccess(tmdbMovieDataList);
                     }
                 });
     }
 
-    public Subscription getMovieNowPlaying(int pagNum,final DataCallback callback){
-        return service.getMovieNowPlaying(pagNum,BuildConfig.TmdbApiKey)
+    public Subscription getMovieNowPlaying(int pagNum, final DataCallback callback) {
+        return service.getMovieNowPlaying(pagNum, BuildConfig.TmdbApiKey)
                 .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
                 .subscribe(new Observer<TmdbMovieDataList>() {
                     @Override
@@ -359,14 +172,14 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieDataList tmdbMovieDataList) {
-                        Logger.d("测试new api...getMovieNowPlaying...TmdbMovieDataList:"+tmdbMovieDataList.getPage()+"...size:"+tmdbMovieDataList.getResults().size());
+                        Logger.d("测试new api...getMovieNowPlaying...TmdbMovieDataList:" + tmdbMovieDataList.getPage() + "...size:" + tmdbMovieDataList.getResults().size());
                         callback.onBaseDataSuccess(tmdbMovieDataList);
                     }
                 });
     }
 
-    public Subscription getMovieTopRated(int pagNum,final DataCallback callback){
-        return service.getMovieTopRated(pagNum,BuildConfig.TmdbApiKey)
+    public Subscription getMovieTopRated(int pagNum, final DataCallback callback) {
+        return service.getMovieTopRated(pagNum, BuildConfig.TmdbApiKey)
                 .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
                 .subscribe(new Observer<TmdbMovieDataList>() {
                     @Override
@@ -382,14 +195,14 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieDataList tmdbMovieDataList) {
-                        Logger.d("测试new api...getMovieTopRated...TmdbMovieDataList:"+tmdbMovieDataList.getPage()+"...size:"+tmdbMovieDataList.getResults().size());
+                        Logger.d("测试new api...getMovieTopRated...TmdbMovieDataList:" + tmdbMovieDataList.getPage() + "...size:" + tmdbMovieDataList.getResults().size());
                         callback.onBaseDataSuccess(tmdbMovieDataList);
                     }
                 });
     }
 
-    public Subscription getMovieUpcoming(int pagNum,final DataCallback callback){
-        return service.getMovieUpcoming(pagNum,BuildConfig.TmdbApiKey)
+    public Subscription getMovieUpcoming(int pagNum, final DataCallback callback) {
+        return service.getMovieUpcoming(pagNum, BuildConfig.TmdbApiKey)
                 .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
                 .subscribe(new Observer<TmdbMovieDataList>() {
                     @Override
@@ -405,7 +218,7 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieDataList tmdbMovieDataList) {
-                        Logger.d("测试new api...getMovieUpcoming...TmdbMovieDataList:"+tmdbMovieDataList.getPage()+"...size:"+tmdbMovieDataList.getResults().size());
+                        Logger.d("测试new api...getMovieUpcoming...TmdbMovieDataList:" + tmdbMovieDataList.getPage() + "...size:" + tmdbMovieDataList.getResults().size());
                         callback.onBaseDataSuccess(tmdbMovieDataList);
                     }
                 });
@@ -436,9 +249,8 @@ public class Repository {
                 });
     }
 
-    public Subscription getMovieDetail(int tmdbId) {
-        Logger.d("测试开始...TmdbMovieDetail");
-        return service.getMovieDetail(tmdbId,BuildConfig.TmdbApiKey)
+    public Subscription getMovieDetail(int tmdbId, final MovieDetailCallback callback) {
+        return service.getMovieDetail(tmdbId, BuildConfig.TmdbApiKey)
                 .compose(RxUtil.<TmdbMovieDetail>threadSwitch())
                 .subscribe(new Observer<TmdbMovieDetail>() {
                     @Override
@@ -453,55 +265,32 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieDetail tmdbMovieDetail) {
-                        if (tmdbMovieDetail!=null){
-                            Logger.d("测试new api...TmdbMovieDetail:"+tmdbMovieDetail.getTitle());
+                        if (tmdbMovieDetail != null) {
+                            Logger.d("测试new api...TmdbMovieDetail:" + tmdbMovieDetail.getTitle());
+                            callback.onBaseDataSuccess(tmdbMovieDetail);
                         }
                     }
                 });
     }
 
-    public Subscription getMovieTeam(String movieId, final MovieDetailCallback callback) {
-        final List<Staff> finallyStaffs = new ArrayList<>();
-        return service.getMovieTeam(movieId)
-                .flatMap(new Func1<People, Observable<Staff>>() {
-                    @Override
-                    public Observable<Staff> call(People people) {
-                        List<Staff> staffs = getPeople(people);
-                        finallyStaffs.addAll(staffs);
-                        return Observable.from(staffs);
-                    }
-                }).flatMap(new Func1<Staff, Observable<TmdbPeopleImage>>() {
-                    @Override
-                    public Observable<TmdbPeopleImage> call(Staff staff) {
-                        int tmdbID = staff.getPerson().getIds().getTmdb();
-                        Logger.d("getMovieTrendingData...TmdbID:" + tmdbID);
-                        File file = ImageCacheManager.hasCacheImage(tmdbID, ImageCacheManager.TYPE_AVATAR);
-                        if (file != null) {
-                            return ImageCacheManager.localAvatarImage(tmdbID, file);
-                        }
-                        return service.getPeopleImage(tmdbID, BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
-                    }
-                }).compose(RxUtil.<TmdbPeopleImage>threadSwitch())
-                .subscribe(new Observer<TmdbPeopleImage>() {
+    public Subscription getMovieTeam(int tmdbId, final MovieDetailCallback callback) {
+        return service.getMovieTeam(tmdbId, BuildConfig.TmdbApiKey)
+                .compose(RxUtil.<TmdbPeople>threadSwitch())
+                .subscribe(new Observer<TmdbPeople>() {
                     @Override
                     public void onCompleted() {
-                        callback.onPeopleSuccess(finallyStaffs);
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        callback.onError(e);
                     }
 
                     @Override
-                    public void onNext(TmdbPeopleImage tmdbPeopleImage) {
-                        for (Staff staff : finallyStaffs) {
-                            if (staff.getPerson().getIds().getTmdb() == tmdbPeopleImage.getId()) {
-                                staff.setTmdbPeopleImage(tmdbPeopleImage);
-                            }
-                        }
-                        String imageUrl = getImageUrl(tmdbPeopleImage);
-                        downLoadImage(tmdbPeopleImage, imageUrl, ImageCacheManager.TYPE_AVATAR);
+                    public void onNext(TmdbPeople tmdbPeople) {
+                        callback.onPeopleSuccess(tmdbPeople);
                     }
                 });
     }
@@ -657,7 +446,6 @@ public class Repository {
     }
 
     public Subscription sendReply(long id, Reply reply, final CommentReplyCallback callback) {
-        // TODO: 2016/12/22 not success return status code 404
         Logger.d("sendReply:" + id + "..." + reply.getComment());
         return service.sendReply(id, reply)
                 .onErrorResumeNext(refreshTokenAndRetry(service.sendReply(id, reply)))
@@ -681,9 +469,15 @@ public class Repository {
                 });
     }
 
-    public Subscription sendComment(Comment comment, final CommentsCallback callback) {
-        return service.sendComment(comment)
-                .onErrorResumeNext(refreshTokenAndRetry(service.sendComment(comment)))
+    public Subscription sendComment(final Comment comment, String imdb_id, final CommentsCallback callback) {
+        // TODO: 2017/1/3 comment在设置了movie后，在refresh方法中的comment理论上应该也是带有movie对象的，待测试 
+        return service.getMovieDetail(imdb_id).flatMap(new Func1<Movie, Observable<Comment>>() {
+            @Override
+            public Observable<Comment> call(Movie movie) {
+                comment.setMovie(movie);
+                return service.sendComment(comment);
+            }
+        }).onErrorResumeNext(refreshTokenAndRetry(service.sendComment(comment)))
                 .compose(RxUtil.<Comment>threadSwitch())
                 .subscribe(new Observer<Comment>() {
                     @Override
@@ -941,7 +735,7 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbMovieImage tmdbMovieImage) {
-                        callback.onPosterSuccess(tmdbMovieImage);
+//                        callback.onPosterSuccess(tmdbMovieImage);
                     }
                 });
 

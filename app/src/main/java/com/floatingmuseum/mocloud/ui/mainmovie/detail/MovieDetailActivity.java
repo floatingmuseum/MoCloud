@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.ui.trakt_mainmovie.detail;
+package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,11 +13,13 @@ import com.floatingmuseum.mocloud.base.BaseDetailActivity;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Image;
 import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
+import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.ui.comments.SingleCommentActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
+import com.floatingmuseum.mocloud.utils.MoCloudUtil;
 import com.floatingmuseum.mocloud.utils.NumberFormatUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
@@ -36,7 +38,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class MovieDetailActivity extends BaseActivity implements BaseDetailActivity {
     public static final String MOVIE_OBJECT = "movie_object";
-    public static final String MOVIE_HAS_POSTER = "has_poster";
 
     private MovieDetailPresenter presenter;
 
@@ -62,7 +63,8 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     TextView tv_no_comments;
     @BindView(R.id.tv_comments_more)
     TextView tv_comments_more;
-    private Movie movie;
+
+    private TmdbMovieDetail movie;
 
     @Override
     protected int currentLayoutId() {
@@ -75,90 +77,70 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         ButterKnife.bind(this);
 
         movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
-        boolean hasPoster = getIntent().getBooleanExtra(MOVIE_HAS_POSTER, false);
         presenter = new MovieDetailPresenter(this);
 
         actionBar.setTitle(movie.getTitle());
-        initPosterAndTitle(movie, hasPoster);
-        presenter.getData(movie);
-    }
-
-    private void initPosterAndTitle(Movie movie, boolean hasPoster) {
-        tv_movie_title.setText(movie.getTitle());
-        if (hasPoster) {
-            loadPoster(movie.getImage());
-        } else {
-            presenter.getPoster(movie.getIds().getTmdb());
-        }
+        initView();
+        presenter.getData(movie.getId());
     }
 
     @Override
     protected void initView() {
-
-    }
-
-    public void onPosterSuccess(TmdbMovieImage tmdbMovieImage) {
-        loadPoster(tmdbMovieImage);
-    }
-
-    private void loadPoster(TmdbMovieImage image) {
-        if (image != null) {
-            if (image.isHasCache() && image.getCacheFile().exists()) {
-                ImageLoader.load(this, image.getCacheFile(), iv_poster, R.drawable.default_movie_poster);
-            } else {
-                if (image.getPosters() != null && image.getPosters().size() > 0) {
-                    ImageLoader.load(this, StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path()), iv_poster, R.drawable.default_movie_poster);
-                } else {
-                    ImageLoader.loadDefault(this, iv_poster);
-                }
-            }
-        } else {
-            ImageLoader.loadDefault(this, iv_poster);
-        }
-    }
-
-    public void onBaseDataSuccess(Movie movie) {
-        tv_released.setText(movie.getReleased());
+        // TODO: 2017/1/3 还有TMDB评分可以显示
+        actionBar.setTitle(movie.getTitle());
+        tv_movie_title.setText(movie.getTitle());
+        ImageLoader.load(this, StringUtil.buildPosterUrl(movie.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
+        tv_released.setText(movie.getRelease_date());
         tv_runtime.setText(movie.getRuntime() + " mins");
-        tv_language.setText(movie.getLanguage());
-        Double rating = movie.getRating();
-        tv_rating.setText(NumberFormatUtil.doubleFormatToString(rating, false, 2));
+        tv_language.setText(movie.getOriginal_language());
         tv_overview.setText(movie.getOverview());
     }
 
-    public void onPeopleSuccess(List<Staff> staffs) {
-        boolean hasDirector = staffs.get(0).getJob() != null;
-        for (int i = 0; i < staffs.size(); i++) {
-            if (i == 0 && hasDirector) {
-                Staff director = staffs.get(0);
-                LinearLayout director_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_staff, ll_crew, false);
-                setStaffClickListener(director_item, director);
-                RatioImageView iv_staff_headshot = (RatioImageView) director_item.findViewById(R.id.iv_staff_headshot);
-                TextView tv_crew_job = (TextView) director_item.findViewById(R.id.tv_crew_job);
-                TextView tv_crew_realname = (TextView) director_item.findViewById(R.id.tv_crew_realname);
-                director_item.findViewById(R.id.tv_crew_character).setVisibility(View.GONE);
-                loadPeopleImage(director.getTmdbPeopleImage(), iv_staff_headshot);
-                tv_crew_job.setText(director.getJob());
-                tv_crew_realname.setText(director.getPerson().getName());
-                ll_crew.addView(director_item);
-            } else {
-                Staff actor = staffs.get(i);
-                LinearLayout actor_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_staff, ll_crew, false);
-                setStaffClickListener(actor_item, actor);
-                RatioImageView iv_staff_headshot = (RatioImageView) actor_item.findViewById(R.id.iv_staff_headshot);
-                TextView tv_crew_job = (TextView) actor_item.findViewById(R.id.tv_crew_job);
-                TextView tv_crew_realname = (TextView) actor_item.findViewById(R.id.tv_crew_realname);
-                TextView tv_crew_character = (TextView) actor_item.findViewById(R.id.tv_crew_character);
-                loadPeopleImage(actor.getTmdbPeopleImage(), iv_staff_headshot);
-                tv_crew_job.setText("Actor");
-                tv_crew_realname.setText(actor.getPerson().getName());
-                tv_crew_character.setText(actor.getCharacter());
-                ll_crew.addView(actor_item);
-            }
+    public void onBaseDataSuccess(TmdbMovieDetail movie) {
+        Logger.d("数据获取成功...详情");
+        this.movie = movie;
+        // TODO: 2017/1/3  预算，收益，电影类型等可使用
+        tv_runtime.setText(movie.getRuntime() + " mins");
+    }
+
+    public void onPeopleSuccess(TmdbPeople staffs) {
+        TmdbPeople.Crew director = MoCloudUtil.getDirector(staffs.getCrew());
+        if (director != null) {
+            LinearLayout director_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_staff, ll_crew, false);
+//            setStaffClickListener(director_item, director);
+            RatioImageView iv_staff_headshot = (RatioImageView) director_item.findViewById(R.id.iv_staff_headshot);
+            TextView tv_crew_job = (TextView) director_item.findViewById(R.id.tv_crew_job);
+            TextView tv_crew_realname = (TextView) director_item.findViewById(R.id.tv_crew_realname);
+            director_item.findViewById(R.id.tv_crew_character).setVisibility(View.GONE);
+            ImageLoader.load(this, StringUtil.buildPosterUrl(director.getProfile_path()), iv_staff_headshot, R.drawable.default_movie_poster);
+//            loadPeopleImage(director.getTmdbPeopleImage(), iv_staff_headshot);
+            tv_crew_job.setText(director.getJob());
+            tv_crew_realname.setText(director.getName());
+            ll_crew.addView(director_item);
+        }
+
+        int showActorNum = director != null ? 3 : 4;
+        List<TmdbPeople.Cast> casts = staffs.getCast();
+        showActorNum = casts.size() > showActorNum ? showActorNum : casts.size();
+        for (int i = 0; i < showActorNum; i++) {
+            TmdbPeople.Cast cast = casts.get(i);
+            LinearLayout actor_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_staff, ll_crew, false);
+//            setStaffClickListener(actor_item, actor);
+            RatioImageView iv_staff_headshot = (RatioImageView) actor_item.findViewById(R.id.iv_staff_headshot);
+            TextView tv_crew_job = (TextView) actor_item.findViewById(R.id.tv_crew_job);
+            TextView tv_crew_realname = (TextView) actor_item.findViewById(R.id.tv_crew_realname);
+            TextView tv_crew_character = (TextView) actor_item.findViewById(R.id.tv_crew_character);
+            ImageLoader.load(this, StringUtil.buildPosterUrl(cast.getProfile_path()), iv_staff_headshot, R.drawable.default_movie_poster);
+//            loadPeopleImage(actor.getTmdbPeopleImage(), iv_staff_headshot);
+            tv_crew_job.setText("Actor");
+            tv_crew_realname.setText(cast.getName());
+            tv_crew_character.setText(cast.getCharacter());
+            ll_crew.addView(actor_item);
         }
     }
 
     public void onCommentsSuccess(final List<Comment> comments) {
+        Logger.d("数据获取成功...评论");
         if (comments.size() == 0) {
             tv_no_comments.setVisibility(View.VISIBLE);
             commentContainer.setVisibility(View.GONE);
@@ -193,9 +175,9 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             }
 
             String name = comment.getUser().getName();
-            if (name!=null && name.length()>0){
+            if (name != null && name.length() > 0) {
                 tv_username.setText(name);
-            }else{
+            } else {
                 tv_username.setText(comment.getUser().getUsername());
             }
             tv_updatetime.setText(TimeUtil.formatGmtTime(comment.getUpdated_at()));

@@ -35,8 +35,8 @@ public class CommentsPresenter extends Presenter implements CommentsContract.Pre
         activity.stopRefresh();
     }
 
-    public void sendComment(Comment comment) {
-        repository.sendComment(comment,this);
+    public void sendComment(Comment comment, String imdb_id) {
+        repository.sendComment(comment,imdb_id,this);
     }
 
     @Override

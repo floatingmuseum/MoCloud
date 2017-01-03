@@ -1,16 +1,20 @@
 package com.floatingmuseum.mocloud.utils;
 
+
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.Stats;
+import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.data.entity.User;
 
 import java.util.List;
 
 /**
  * Created by Floatingmuseum on 2016/12/29.
+ * <p>
+ * 主要处理一下各网站独有数据的处理
  */
 
-public class TraktUtil {
+public class MoCloudUtil {
 
     public static String getUsername(User user) {
         if (user.isPrivateX()) {
@@ -81,5 +85,16 @@ public class TraktUtil {
             }
         }
         return false;
+    }
+
+    public static TmdbPeople.Crew getDirector(List<TmdbPeople.Crew> crews) {
+        if (crews != null && crews.size() > 0) {
+            for (TmdbPeople.Crew crew : crews) {
+                if (crew.getJob().equals("Director")) {
+                    return crew;
+                }
+            }
+        }
+        return null;
     }
 }

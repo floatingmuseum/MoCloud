@@ -10,8 +10,7 @@ import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.ResUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
-import com.floatingmuseum.mocloud.utils.TraktUtil;
-import com.orhanobut.logger.Logger;
+import com.floatingmuseum.mocloud.utils.MoCloudUtil;
 
 import java.util.List;
 
@@ -35,10 +34,10 @@ public class CommentsAdapter extends BaseQuickAdapter<Comment> {
                 .setText(R.id.tv_comments_replies, "" + comment.getReplies())
                 .setText(R.id.tv_comments_likes, "" + comment.getLikes())
                 .setText(R.id.tv_comment, comment.getComment())
-                .setText(R.id.tv_username, TraktUtil.getUsername(user))
+                .setText(R.id.tv_username, MoCloudUtil.getUsername(user))
                 .addOnClickListener(R.id.iv_userhead)
                 .setVisible(R.id.tv_spoiler_tip, comment.isSpoiler() ? true : false);
         ImageView iv_userhead = baseViewHolder.getView(R.id.iv_userhead);
-        ImageLoader.loadDontAnimate(mContext, TraktUtil.getUserAvatar(user), iv_userhead, R.drawable.default_userhead);
+        ImageLoader.loadDontAnimate(mContext, MoCloudUtil.getUserAvatar(user), iv_userhead, R.drawable.default_userhead);
     }
 }
