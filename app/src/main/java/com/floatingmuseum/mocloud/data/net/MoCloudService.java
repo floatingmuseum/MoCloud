@@ -153,6 +153,9 @@ public interface MoCloudService {
      */
     @GET("https://api.themoviedb.org/3/movie/popular")
     Observable<TmdbMovieDataList> getMoviePopular(@Query("page")int page, @Query("api_key")String tmdbApiKey);
+
+    @GET("https://api.themoviedb.org/3/movie/now_playing")
+    Observable<TmdbMovieDataList> getMovieNowPlaying(@Query("page")int page, @Query("api_key")String tmdbApiKey);
     /**
      * 电影团队 from Trakt
      */

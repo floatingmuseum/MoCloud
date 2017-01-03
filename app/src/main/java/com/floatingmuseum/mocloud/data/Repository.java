@@ -318,6 +318,53 @@ public class Repository {
         }
     }
 
+    public Subscription getMoviePopular(int pageNum, final DataCallback callback) {
+        Logger.d("测试开始...TmdbMovieDataList");
+        return service.getMoviePopular(pageNum,BuildConfig.TmdbApiKey)
+                .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
+                .subscribe(new Observer<TmdbMovieDataList>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(TmdbMovieDataList tmdbMovieDataList) {
+                        Logger.d("测试new api...getMoviePopular...TmdbMovieDataList:"+tmdbMovieDataList.getPage()+"...size:"+tmdbMovieDataList.getResults().size());
+                        callback.onBaseDataSuccess(tmdbMovieDataList);
+                    }
+                });
+    }
+
+    public Subscription getMovieNowPlaying(int pagNum,final DataCallback callback){
+        return service.getMovieNowPlaying(pagNum,BuildConfig.TmdbApiKey)
+                .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
+                .subscribe(new Observer<TmdbMovieDataList>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(TmdbMovieDataList tmdbMovieDataList) {
+                        Logger.d("测试new api...getMovieNowPlaying...TmdbMovieDataList:"+tmdbMovieDataList.getPage()+"...size:"+tmdbMovieDataList.getResults().size());
+                        callback.onBaseDataSuccess(tmdbMovieDataList);
+                    }
+                });
+    }
+
     /******************************************
      * 剧目详情
      ********************************************************/
@@ -363,29 +410,6 @@ public class Repository {
                         if (tmdbMovieDetail!=null){
                             Logger.d("测试new api...TmdbMovieDetail:"+tmdbMovieDetail.getTitle());
                         }
-                    }
-                });
-    }
-
-    public Subscription getMoviePopular(int pageNum, final DataCallback callback) {
-        Logger.d("测试开始...TmdbMovieDataList");
-        return service.getMoviePopular(pageNum,BuildConfig.TmdbApiKey)
-                .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
-                .subscribe(new Observer<TmdbMovieDataList>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(TmdbMovieDataList tmdbMovieDataList) {
-                        Logger.d("测试new api...TmdbMovieDataList:"+tmdbMovieDataList.getPage()+"...size:"+tmdbMovieDataList.getResults().size());
-                        callback.onBaseDataSuccess(tmdbMovieDataList);
                     }
                 });
     }
