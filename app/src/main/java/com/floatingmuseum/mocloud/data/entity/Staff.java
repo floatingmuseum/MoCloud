@@ -1,9 +1,12 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Floatingmuseum on 2016/8/10.
  */
-public class Staff {
+public class Staff implements Parcelable{
     public static final String CAST_ITEM = "Actors";
     public static final String DIRECTING_ITEM = "Directing";
     public static final String WRITING_ITEM = "Writing";
@@ -151,4 +154,61 @@ public class Staff {
     public void setItemType(String itemType) {
         this.itemType = itemType;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.adult ? (byte) 1 : (byte) 0);
+        dest.writeString(this.credit_id);
+        dest.writeString(this.department);
+        dest.writeInt(this.id);
+        dest.writeString(this.job);
+        dest.writeString(this.original_title);
+        dest.writeString(this.poster_path);
+        dest.writeString(this.profile_path);
+        dest.writeString(this.release_date);
+        dest.writeString(this.title);
+        dest.writeString(this.character);
+        dest.writeString(this.name);
+        dest.writeInt(this.cast_id);
+        dest.writeInt(this.order);
+        dest.writeString(this.itemType);
+    }
+
+    public Staff() {
+    }
+
+    protected Staff(Parcel in) {
+        this.adult = in.readByte() != 0;
+        this.credit_id = in.readString();
+        this.department = in.readString();
+        this.id = in.readInt();
+        this.job = in.readString();
+        this.original_title = in.readString();
+        this.poster_path = in.readString();
+        this.profile_path = in.readString();
+        this.release_date = in.readString();
+        this.title = in.readString();
+        this.character = in.readString();
+        this.name = in.readString();
+        this.cast_id = in.readInt();
+        this.order = in.readInt();
+        this.itemType = in.readString();
+    }
+
+    public static final Creator<Staff> CREATOR = new Creator<Staff>() {
+        @Override
+        public Staff createFromParcel(Parcel source) {
+            return new Staff(source);
+        }
+
+        @Override
+        public Staff[] newArray(int size) {
+            return new Staff[size];
+        }
+    };
 }

@@ -6,10 +6,8 @@ import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.Comment;
-import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
-import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 
 import java.util.List;
@@ -37,25 +35,29 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     public void getData(int tmdbId){
         movieDetailSubscription = repository.getMovieDetail(tmdbId,this);
         compositeSubscription.add(movieDetailSubscription);
-        movieTeamSubscription = repository.getMovieTeam(tmdbId,this);
-        compositeSubscription.add(movieTeamSubscription);
     }
 
     @Override
     public void onBaseDataSuccess(TmdbMovieDetail movie) {
-        activity.onBaseDataSuccess(movie);
         movieCommentsSubscription = repository.getMovieComments(movie.getImdb_id(), Repository.COMMENTS_SORT_LIKES,limit,page,this,null);
         compositeSubscription.add(movieCommentsSubscription);
+        getRatings(movie.getImdb_id());
+        activity.onBaseDataSuccess(movie);
+        activity.onPeopleSuccess(movie.getCredits());
     }
 
-    @Override
-    public void onPeopleSuccess(TmdbPeople staffs){
-        activity.onPeopleSuccess(staffs);
+    public void getRatings(String imdbId){
+        repository.getMovieTraktRatings(imdbId,this);
     }
 
     @Override
     public void onCommentsSuccess(List<Comment> comments) {
         activity.onCommentsSuccess(comments);
+    }
+
+    @Override
+    public void onRatingsSuccess(Ratings ratings) {
+        activity.onRatingsSuccess(ratings);
     }
 
     @Override

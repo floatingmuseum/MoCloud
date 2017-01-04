@@ -12,11 +12,10 @@ import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Image;
-import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
-import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
-import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
+import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.ui.comments.SingleCommentActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
@@ -39,8 +38,20 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class MovieDetailActivity extends BaseActivity implements BaseDetailActivity {
     public static final String MOVIE_OBJECT = "movie_object";
-
-    private MovieDetailPresenter presenter;
+    @BindView(R.id.tv_tmdb_rating)
+    TextView tvTmdbRating;
+    @BindView(R.id.tv_tmdb_rating_count)
+    TextView tvTmdbRatingCount;
+    @BindView(R.id.ll_tmdb_rating)
+    LinearLayout llTmdbRating;
+    @BindView(R.id.tv_trakt_rating)
+    TextView tvTraktRating;
+    @BindView(R.id.tv_trakt_rating_count)
+    TextView tvTraktRatingCount;
+    @BindView(R.id.ll_trakt_rating)
+    LinearLayout llTraktRating;
+    @BindView(R.id.ll_ratings)
+    LinearLayout llRatings;
 
     @BindView(R.id.poster)
     RatioImageView iv_poster;
@@ -66,6 +77,8 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     TextView tv_comments_more;
 
     private TmdbMovieDetail movie;
+    private MovieDetailPresenter presenter;
+
 
     @Override
     protected int currentLayoutId() {
@@ -95,6 +108,8 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         tv_runtime.setText(movie.getRuntime() + " mins");
         tv_language.setText(movie.getOriginal_language());
         tv_overview.setText(movie.getOverview());
+        tvTmdbRating.setText(String.valueOf(movie.getVote_average()));
+        tvTmdbRatingCount.setText(movie.getVote_count() + "votes");
     }
 
     public void onBaseDataSuccess(TmdbMovieDetail movie) {
@@ -104,7 +119,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         tv_runtime.setText(movie.getRuntime() + " mins");
     }
 
-    public void onPeopleSuccess(TmdbPeople staffs) {
+    public void onPeopleSuccess(TmdbStaff.Credits staffs) {
         Staff director = MoCloudUtil.getDirector(staffs.getCrew());
         if (director != null) {
             LinearLayout director_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_staff, ll_crew, false);
@@ -207,6 +222,12 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             });
             commentContainer.addView(comment_item, i);
         }
+    }
+
+    public void onRatingsSuccess(Ratings ratings) {
+        tv_rating.setText(NumberFormatUtil.doubleFormatToString(ratings.getRating(), false, 2) + "/" + ratings.getVotes() + "votes");
+        tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(ratings.getRating(), false, 2));
+        tvTraktRatingCount.setText(ratings.getVotes() + "votes");
     }
 
     @Override

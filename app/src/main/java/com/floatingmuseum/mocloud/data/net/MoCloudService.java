@@ -9,6 +9,7 @@ import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.Stats;
 import com.floatingmuseum.mocloud.data.entity.TmdbImagesConfiguration;
@@ -147,7 +148,10 @@ public interface MoCloudService {
      * 电影详情 from Tmdb
      */
     @GET("https://api.themoviedb.org/3/movie/{id}")
-    Observable<TmdbMovieDetail> getMovieDetail(@Path("id") int tmdbId,@Query("api_key")String tmdbApiKey);
+    Observable<TmdbMovieDetail> getMovieDetail(@Path("id") int tmdbId,@Query("api_key")String tmdbApiKey,@Query("append_to_response")String appendToResponse);
+
+    @GET("movies/{id}/ratings")
+    Observable<Ratings> getMovieTraktRatings(@Path("id")String imdbId);
 
     /**
      * 电影Popular from Tmdb

@@ -1,5 +1,9 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -135,7 +139,7 @@ public class TmdbStaff {
         this.also_known_as = also_known_as;
     }
 
-    public static class Credits {
+    public static class Credits implements Parcelable{
 
         private List<Staff> cast;
         private List<Staff> crew;
@@ -155,5 +159,38 @@ public class TmdbStaff {
         public void setCrew(List<Staff> crew) {
             this.crew = crew;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeList(this.cast);
+            dest.writeList(this.crew);
+        }
+
+        public Credits() {
+        }
+
+        protected Credits(Parcel in) {
+            this.cast = new ArrayList<Staff>();
+            in.readList(this.cast, Staff.class.getClassLoader());
+            this.crew = new ArrayList<Staff>();
+            in.readList(this.crew, Staff.class.getClassLoader());
+        }
+
+        public static final Creator<Credits> CREATOR = new Creator<Credits>() {
+            @Override
+            public Credits createFromParcel(Parcel source) {
+                return new Credits(source);
+            }
+
+            @Override
+            public Credits[] newArray(int size) {
+                return new Credits[size];
+            }
+        };
     }
 }

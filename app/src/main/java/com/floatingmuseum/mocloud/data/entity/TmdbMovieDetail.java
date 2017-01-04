@@ -33,6 +33,7 @@ public class TmdbMovieDetail implements Parcelable{
     private boolean video;
     private double vote_average;
     private int vote_count;
+    private TmdbStaff.Credits credits;
 
     private List<Genres> genres;
 
@@ -240,6 +241,14 @@ public class TmdbMovieDetail implements Parcelable{
 
     public void setSpoken_languages(List<SpokenLanguages> spoken_languages) {
         this.spoken_languages = spoken_languages;
+    }
+
+    public TmdbStaff.Credits getCredits() {
+        return credits;
+    }
+
+    public void setCredits(TmdbStaff.Credits credits) {
+        this.credits = credits;
     }
 
     public static class Genres implements Parcelable {
@@ -525,7 +534,6 @@ public class TmdbMovieDetail implements Parcelable{
         };
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -554,10 +562,11 @@ public class TmdbMovieDetail implements Parcelable{
         dest.writeByte(this.video ? (byte) 1 : (byte) 0);
         dest.writeDouble(this.vote_average);
         dest.writeInt(this.vote_count);
-        dest.writeList(this.genres);
-        dest.writeList(this.production_companies);
-        dest.writeList(this.production_countries);
-        dest.writeList(this.spoken_languages);
+        dest.writeParcelable(this.credits, flags);
+        dest.writeTypedList(this.genres);
+        dest.writeTypedList(this.production_companies);
+        dest.writeTypedList(this.production_countries);
+        dest.writeTypedList(this.spoken_languages);
     }
 
     public TmdbMovieDetail() {
@@ -585,14 +594,11 @@ public class TmdbMovieDetail implements Parcelable{
         this.video = in.readByte() != 0;
         this.vote_average = in.readDouble();
         this.vote_count = in.readInt();
-        this.genres = new ArrayList<Genres>();
-        in.readList(this.genres, Genres.class.getClassLoader());
-        this.production_companies = new ArrayList<ProductionCompanies>();
-        in.readList(this.production_companies, ProductionCompanies.class.getClassLoader());
-        this.production_countries = new ArrayList<ProductionCountries>();
-        in.readList(this.production_countries, ProductionCountries.class.getClassLoader());
-        this.spoken_languages = new ArrayList<SpokenLanguages>();
-        in.readList(this.spoken_languages, SpokenLanguages.class.getClassLoader());
+        this.credits = in.readParcelable(TmdbStaff.Credits.class.getClassLoader());
+        this.genres = in.createTypedArrayList(Genres.CREATOR);
+        this.production_companies = in.createTypedArrayList(ProductionCompanies.CREATOR);
+        this.production_countries = in.createTypedArrayList(ProductionCountries.CREATOR);
+        this.spoken_languages = in.createTypedArrayList(SpokenLanguages.CREATOR);
     }
 
     public static final Creator<TmdbMovieDetail> CREATOR = new Creator<TmdbMovieDetail>() {

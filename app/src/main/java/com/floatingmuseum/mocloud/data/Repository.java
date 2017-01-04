@@ -17,6 +17,7 @@ import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Person;
+import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.Stats;
@@ -206,7 +207,7 @@ public class Repository {
     }
 
     public Subscription getMovieDetail(int tmdbId, final MovieDetailCallback callback) {
-        return service.getMovieDetail(tmdbId, BuildConfig.TmdbApiKey)
+        return service.getMovieDetail(tmdbId, BuildConfig.TmdbApiKey,"credits")
                 .compose(RxUtil.<TmdbMovieDetail>threadSwitch())
                 .subscribe(new Observer<TmdbMovieDetail>() {
                     @Override
@@ -246,7 +247,29 @@ public class Repository {
 
                     @Override
                     public void onNext(TmdbPeople tmdbPeople) {
-                        callback.onPeopleSuccess(tmdbPeople);
+//                        callback.onPeopleSuccess(tmdbPeople);
+                    }
+                });
+    }
+
+    public Subscription getMovieTraktRatings(String imdbId, final MovieDetailCallback callback) {
+        return service.getMovieTraktRatings(imdbId)
+                .compose(RxUtil.<Ratings>threadSwitch())
+                .subscribe(new Observer<Ratings>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(Ratings ratings) {
+                        callback.onRatingsSuccess(ratings);
                     }
                 });
     }
@@ -384,7 +407,7 @@ public class Repository {
      ********************************************************/
 
     public Subscription getStaffDetail(int tmdbId, final DataCallback callback) {
-        return service.getStaff(tmdbId,BuildConfig.TmdbApiKey)
+        return service.getStaff(tmdbId, BuildConfig.TmdbApiKey)
                 .compose(RxUtil.<TmdbStaff>threadSwitch())
                 .subscribe(new Observer<TmdbStaff>() {
                     @Override
@@ -405,7 +428,7 @@ public class Repository {
     }
 
     public Subscription getStaffMovieCredits(int tmdbId, final DataCallback callback) {
-        return service.getStaffMovieCredits(tmdbId,BuildConfig.TmdbApiKey)
+        return service.getStaffMovieCredits(tmdbId, BuildConfig.TmdbApiKey)
                 .map(new Func1<TmdbStaffMovieCredits, List<Staff>>() {
                     @Override
                     public List<Staff> call(TmdbStaffMovieCredits credits) {

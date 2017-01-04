@@ -121,10 +121,7 @@ public class MainActivity extends BaseActivity
             @Override
             public void onClick(View v) {
                 if (isLogin) {
-                    User user = SPUtil.loadUserFromSp();
-                    Intent intent = new Intent(MainActivity.this, UserActivity.class);
-                    intent.putExtra(UserActivity.USER_OBJECT,user);
-                    startActivity(intent);
+                    startUserActivity();
                 } else {
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     MainActivity.this.startActivityForResult(intent, LoginActivity.REQUEST_CODE);
@@ -223,7 +220,7 @@ public class MainActivity extends BaseActivity
 
         switch (id) {
             case R.id.nav_my:
-                startActivity(new Intent(this, UserActivity.class));
+                startUserActivity();
                 break;
             case R.id.nav_lists:
                 startActivity(new Intent(this, ListsActivity.class));
@@ -243,6 +240,13 @@ public class MainActivity extends BaseActivity
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void startUserActivity(){
+        User user = SPUtil.loadUserFromSp();
+        Intent intent = new Intent(MainActivity.this, UserActivity.class);
+        intent.putExtra(UserActivity.USER_OBJECT,user);
+        startActivity(intent);
     }
 
     @Override
