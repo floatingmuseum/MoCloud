@@ -114,7 +114,6 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             TextView tv_crew_realname = (TextView) director_item.findViewById(R.id.tv_crew_realname);
             director_item.findViewById(R.id.tv_crew_character).setVisibility(View.GONE);
             ImageLoader.load(this, StringUtil.buildPosterUrl(director.getProfile_path()), iv_staff_headshot, R.drawable.default_movie_poster);
-//            loadPeopleImage(director.getTmdbPeopleImage(), iv_staff_headshot);
             tv_crew_job.setText(director.getJob());
             tv_crew_realname.setText(director.getName());
             ll_crew.addView(director_item);
@@ -132,7 +131,6 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             TextView tv_crew_realname = (TextView) actor_item.findViewById(R.id.tv_crew_realname);
             TextView tv_crew_character = (TextView) actor_item.findViewById(R.id.tv_crew_character);
             ImageLoader.load(this, StringUtil.buildPosterUrl(cast.getProfile_path()), iv_staff_headshot, R.drawable.default_movie_poster);
-//            loadPeopleImage(actor.getTmdbPeopleImage(), iv_staff_headshot);
             tv_crew_job.setText("Actor");
             tv_crew_realname.setText(cast.getName());
             tv_crew_character.setText(cast.getCharacter());

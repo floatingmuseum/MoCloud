@@ -28,6 +28,9 @@ import com.floatingmuseum.mocloud.MainMovieAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.entity.Ids;
+import com.floatingmuseum.mocloud.data.entity.Image;
+import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.ui.about.AboutActivity;
 import com.floatingmuseum.mocloud.ui.calendar.CalendarActivity;
@@ -118,7 +121,10 @@ public class MainActivity extends BaseActivity
             @Override
             public void onClick(View v) {
                 if (isLogin) {
-                    startActivity(new Intent(MainActivity.this, UserActivity.class));
+                    User user = SPUtil.loadUserFromSp();
+                    Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                    intent.putExtra(UserActivity.USER_OBJECT,user);
+                    startActivity(intent);
                 } else {
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     MainActivity.this.startActivityForResult(intent, LoginActivity.REQUEST_CODE);

@@ -87,52 +87,6 @@ public class Repository {
      * 首页数据
      ********************************************************/
 
-    HashMap<Integer, Long> timeWaste = new HashMap<>();
-
-    private Observable.Transformer<List<BaseMovie>, TmdbMovieImage> getEachPoster(final List<BaseMovie> movies) {
-        return new Observable.Transformer<List<BaseMovie>, TmdbMovieImage>() {
-            @Override
-            public Observable<TmdbMovieImage> call(Observable<List<BaseMovie>> listObservable) {
-                return listObservable.flatMap(new Func1<List<BaseMovie>, Observable<BaseMovie>>() {
-                    @Override
-                    public Observable<BaseMovie> call(List<BaseMovie> baseMovies) {
-                        movies.addAll(baseMovies);
-                        return Observable.from(movies);
-                    }
-                }).flatMap(new Func1<BaseMovie, Observable<TmdbMovieImage>>() {
-                    @Override
-                    public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
-                        return getTmdbMovieImageObservable(baseMovie.getMovie()).subscribeOn(Schedulers.io());
-                    }
-                });
-            }
-        };
-    }
-
-    private Observable<TmdbMovieImage> getTmdbMovieImageObservable(Movie movie) {
-        int tmdbId = movie.getIds().getTmdb();
-        File file = ImageCacheManager.hasCacheImage(tmdbId, ImageCacheManager.TYPE_POSTER);
-        if (file != null) {
-//            Logger.d("图片耗时...图片来源:本地:"+tmdbId+"..."+movie.getTitle());
-            return ImageCacheManager.localPosterImage(tmdbId, file);
-        }
-        Logger.d("图片耗时...图片来源:网络:" + tmdbId + "..." + movie.getTitle());
-        // TODO: 2016/12/30 This request really wasting time。but if you out of GFW,it could be better
-        timeWaste.put(tmdbId, System.currentTimeMillis());
-        return service.getTmdbImages(tmdbId, BuildConfig.TmdbApiKey);
-    }
-
-    /**
-     * 合并图片到集合中，并下载图片
-     */
-    private void handleMoviePoster(TmdbMovieImage movieImage, List<BaseMovie> movies) {
-        if (movieImage != null) {
-            mergeMovieAndImage1(movieImage, movies);
-            String imageUrl = getImageUrl(movieImage);
-            downLoadImage(movieImage, imageUrl, ImageCacheManager.TYPE_POSTER);
-        }
-    }
-
     public Subscription getMoviePopular(int pageNum, final DataCallback callback) {
         Logger.d("测试开始...TmdbMovieDataList");
         return service.getMoviePopular(pageNum, BuildConfig.TmdbApiKey)
@@ -314,81 +268,6 @@ public class Repository {
             return posters.get(0).getFile_path();
         }
         return null;
-    }
-
-//    public void getPeopleImage(People people, final MovieDetailCallback callback) {
-//        final List<Staff> staffs = new ArrayList<>();
-//        List<Staff> directors = people.getCrew().getDirecting();
-//        if (directors != null && directors.size() != 0) {
-//            staffs.add(directors.get(0));
-//        }
-//        List<Staff> actors = people.getCast();
-//        if (actors != null && actors.size() != 0) {
-//            int actorRequestNumber = staffs.size() == 0 ? 4 : 3;
-//            actorRequestNumber = actors.size() < 3 ? actors.size() : actorRequestNumber;
-//            for (int i = 0; i < actorRequestNumber; i++) {
-//                staffs.add(actors.get(i));
-//            }
-//        }
-//
-//        if (staffs.size() != 0) {
-//            Observable.from(staffs).flatMap(new Func1<Staff, Observable<TmdbPeopleImage>>() {
-//                @Override
-//                public Observable<TmdbPeopleImage> call(Staff staff) {
-//                    return service.getPeopleImage(staff.getPerson().getIds().getTmdb(), BuildConfig.TmdbApiKey);
-//                }
-//            }).subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(new Observer<TmdbPeopleImage>() {
-//                        @Override
-//                        public void onCompleted() {
-////                            callback.onPeopleSuccess(staffs);
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable e) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onNext(TmdbPeopleImage tmdbPeopleImage) {
-//                            Logger.d("onNext...getPeople...i'm working,even you destroyed activity");
-//                            for (Staff staff : staffs) {
-//                                if (staff.getPerson().getIds().getTmdb() == tmdbPeopleImage.getId()) {
-//                                    staff.setTmdbPeopleImage(tmdbPeopleImage);
-//                                }
-//                            }
-//                        }
-//                    });
-//        }
-//    }
-
-    /**
-     * 电影详情页只显示4个人物。
-     */
-    private List<Staff> getPeople(People people) {
-        List<Staff> staffs = new ArrayList<>();
-        if (people.getCrew() != null && people.getCrew().getDirecting() != null) {
-            List<Staff> directors = people.getCrew().getDirecting();
-            if (directors.size() != 0) {
-                for (Staff director : directors) {
-                    if (director.getJob().equals("Director")) {
-                        staffs.add(director);
-                        break;
-                    }
-                }
-            }
-        }
-
-        List<Staff> actors = people.getCast();
-        if (actors != null && actors.size() != 0) {
-            int actorRequestNumber = staffs.size() == 0 ? 4 : 3;
-            actorRequestNumber = actors.size() < 3 ? actors.size() : actorRequestNumber;
-            for (int i = 0; i < actorRequestNumber; i++) {
-                staffs.add(actors.get(i));
-            }
-        }
-        return staffs;
     }
 
     /******************************************

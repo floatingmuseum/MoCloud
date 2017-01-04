@@ -89,14 +89,18 @@ public class UserActivity extends BaseActivity {
         tvUsername.setText(username);
         actionBar.setTitle(username);
         ImageLoader.loadDontAnimate(this, MoCloudUtil.getUserAvatar(user), ivUserhead, R.drawable.default_userhead);
-        if (user.getIds().getSlug().equals(SPUtil.getString(SPUtil.SP_USER_SETTINGS, "slug"))) {
+        boolean isUserSelf = user.getIds().getSlug().equals(SPUtil.getString(SPUtil.SP_USER_SETTINGS, "slug", ""));
+        Logger.d("isUserSelf:"+isUserSelf);
+        if (isUserSelf) {
             tvIsFollowing.setVisibility(View.GONE);
         }
-        if (user.isPrivateX()) {
+        if (user.isPrivateX() && !isUserSelf) {
+            // TODO: 2017/1/4 如果是一个private用户，可以获取到的数据有限。但是不确定一个已登录的private用户是否可以访问自己的全部资料
             llUserStats.setVisibility(View.GONE);
             tvUserPrivate.setVisibility(View.VISIBLE);
             return;
         }
+
         tvSeeWatching.setText("See what " + username + " watching now");
         tvSeeWatched.setText("See what " + username + " has watched");
         tvSeeComments.setText("See what " + username + " has commented");

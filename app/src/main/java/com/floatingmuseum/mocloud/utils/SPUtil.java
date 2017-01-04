@@ -7,6 +7,8 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import com.floatingmuseum.mocloud.MoCloud;
+import com.floatingmuseum.mocloud.data.entity.Ids;
+import com.floatingmuseum.mocloud.data.entity.Image;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
@@ -147,6 +149,21 @@ public class SPUtil {
                     .putBoolean("isLogin", true)
                     .apply();
         }
+    }
+
+    public static User loadUserFromSp() {
+        User user = new User();
+        user.setName(getString(SP_USER_SETTINGS, "username", ""));
+        user.setPrivateX(getBoolean(SP_USER_SETTINGS, "private", false));
+        Ids ids = new Ids();
+        ids.setSlug(getString(SP_USER_SETTINGS, "slug", ""));
+        user.setIds(ids);
+        Image.Avatar avatar = new Image.Avatar();
+        avatar.setFull(getString(SP_USER_SETTINGS, "avatar", ""));
+        Image image = new Image();
+        image.setAvatar(avatar);
+        user.setImages(image);
+        return user;
     }
 
     public static void saveUserSettings(UserSettings userSettings) {

@@ -20,9 +20,6 @@ public class StaffDetailPresenter extends Presenter implements DataCallback<Pers
     }
 
     public void getData(String traktId) {
-//        Subscription staffDetailSubscription = repository.getStaffDetail(traktId,this);
-//        repository.getStaffMovieCredits(traktId,this);
-//        compositeSubscription.add(staffDetailSubscription);
     }
 
     @Override
