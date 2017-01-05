@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -175,7 +176,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
         }
         for (int i = 0; i < showSize; i++) {
             final Comment comment = comments.get(i);
-            LinearLayout comment_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.comment_item, commentContainer, false);
+            CardView comment_item = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, commentContainer, false);
             CircleImageView iv_userhead = (CircleImageView) comment_item.findViewById(R.id.iv_userhead);
             TextView tv_username = (TextView) comment_item.findViewById(R.id.tv_username);
             TextView tv_updatetime = (TextView) comment_item.findViewById(R.id.tv_updatetime);
