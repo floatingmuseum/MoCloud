@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#ED1C24</color>
+    <color name="colorPrimaryDark">#BD161C</color>
     <color name="colorAccent">#FF4081</color>
 
     <color name="detail_title">#000000</color>
     <color name="detail_content">#778899</color>
+
+    <color name="widgets_background">#1D1D1D</color>
 
     <color name="comment_title_grey">#F3F3F3</color>
     <color name="comment_content_grey">#FAFAFA</color>
@@ -18,5 +20,5 @@
     <color name="loading">#80171b</color>
     <color name="unreached_progress_color">#80171b</color>
     <color name="reached_progress_color">#1D1D1D</color>
-    <color name="main_movie_item_title" >#FFFFFF</color>
+    <color name="main_movie_item_title">#FFFFFF</color>
 </resources>

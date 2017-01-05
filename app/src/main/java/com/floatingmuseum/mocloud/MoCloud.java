@@ -2,7 +2,6 @@ package com.floatingmuseum.mocloud;
 
 import android.app.Application;
 import android.content.Context;
-
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.github.moduth.blockcanary.BlockCanary;
