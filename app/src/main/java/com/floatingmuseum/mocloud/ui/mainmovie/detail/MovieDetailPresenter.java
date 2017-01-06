@@ -64,9 +64,4 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     public void onError(Throwable e) {
 
     }
-
-    @Override
-    public void start(boolean shouldClean) {
-
-    }
 }

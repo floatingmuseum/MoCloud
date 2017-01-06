@@ -13,7 +13,6 @@ public abstract class Presenter {
 
     protected CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public abstract void start(boolean shouldClean);
     public void unSubscription(){
         compositeSubscription.unsubscribe();
     }

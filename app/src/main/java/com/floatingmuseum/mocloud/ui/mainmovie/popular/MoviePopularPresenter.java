@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.ui.mainmovie.popular;
 
+import com.floatingmuseum.mocloud.base.ListPresenter;
 import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
@@ -8,7 +9,7 @@ import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
  * Created by Floatingmuseum on 2016/12/30.
  */
 
-public class MoviePopularPresenter extends Presenter implements DataCallback<TmdbMovieDataList>{
+public class MoviePopularPresenter extends ListPresenter implements DataCallback<TmdbMovieDataList>{
     private MoviePopularFragment fragment;
     private int pageNum = 1;
     protected boolean shouldClean;

@@ -53,9 +53,4 @@ public class MainPresenter extends Presenter implements DataCallback<UserSetting
         SPUtil.editBoolean("isLogin", false);
         mainActivity.refreshUserView(null);
     }
-
-    @Override
-    public void start(boolean shouldClean) {
-
-    }
 }

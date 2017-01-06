@@ -22,20 +22,16 @@ import java.util.List;
 public class DataMachine {
 
     public static List<Staff> mixingStaffWorks(TmdbStaffMovieCredits peopleCredit) {
-        // TODO: 2017/1/3 数据不是按照Released_Date来排列的，等一个排序
         List<Staff> works = new ArrayList();
         List<Staff> casts = peopleCredit.getCast();
         if (casts != null && casts.size() > 0) {
             sort(casts);
-            Logger.d("人物作品...作为角色");
             for (Staff staff : casts) {
                 staff.setItemType(Staff.CAST_ITEM);
                 works.add(staff);
-                Logger.d("人物作品...电影:" + staff.getOriginal_title() + "...饰演:" + staff.getCharacter());
             }
         }
 
-        Logger.d("人物作品...作为工作人员");
         List<Staff> directors = new ArrayList<>();
         List<Staff> writings = new ArrayList<>();
         List<Staff> cameras = new ArrayList<>();
@@ -138,6 +134,9 @@ public class DataMachine {
         return works;
     }
 
+    /**
+     * 按作品Release日期来重新排序
+     */
     private static List<Staff> sort(List<Staff> staffs) {
         Collections.sort(staffs, new Comparator<Staff>() {
             @Override
@@ -145,18 +144,14 @@ public class DataMachine {
                 boolean has1 = hasDate(lhs.getRelease_date());
                 boolean has2 = hasDate(rhs.getRelease_date());
                 if (!has1 && !has2) {
-                    Logger.d("日期对比...没有日期:" + lhs.getOriginal_title() + ":" + lhs.getRelease_date() + "..." + rhs.getOriginal_title() + ":" + rhs.getRelease_date());
                     return 0;
                 } else if (!has1) {
-                    Logger.d("日期对比...没有日期1:" + lhs.getOriginal_title() + ":" + lhs.getRelease_date() + "..." + rhs.getOriginal_title() + ":" + rhs.getRelease_date());
                     return 1;
                 } else if (!has2) {
-                    Logger.d("日期对比...没有日期2:" + lhs.getOriginal_title() + ":" + lhs.getRelease_date() + "..." + rhs.getOriginal_title() + ":" + rhs.getRelease_date());
                     return -1;
                 }
                 Date date1 = TimeUtil.formatStringToDate(lhs.getRelease_date(), TimeUtil.TIME_FORMAT2);
                 Date date2 = TimeUtil.formatStringToDate(rhs.getRelease_date(), TimeUtil.TIME_FORMAT2);
-                Logger.d("日期对比:" + lhs.getOriginal_title() + ":" + lhs.getRelease_date() + "..." + rhs.getOriginal_title() + ":" + rhs.getRelease_date() + "..." + date1.before(date2));
                 if (date1.before(date2)) {
                     return 1;
                 } else {

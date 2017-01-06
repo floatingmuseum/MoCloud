@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.ui.mainmovie.nowplaying;
 
+import com.floatingmuseum.mocloud.base.ListPresenter;
 import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
@@ -8,7 +9,7 @@ import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
  * Created by Floatingmuseum on 2017/1/3.
  */
 
-public class MovieNowPlayingPresenter extends Presenter implements DataCallback<TmdbMovieDataList> {
+public class MovieNowPlayingPresenter extends ListPresenter implements DataCallback<TmdbMovieDataList> {
 
     private MovieNowPlayingFragment fragment;
     private int pageNum = 1;
