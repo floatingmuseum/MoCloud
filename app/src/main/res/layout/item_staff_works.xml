@@ -41,30 +41,37 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:padding="5dp"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/tv_art_title"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="7"
                     android:layout_height="wrap_content"
-                    tools:text="Man vs animals" />
+                    android:ellipsize="end"
+                    android:lines="1"
+                    tools:text="Man vs animalssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss" />
 
                 <TextView
+                    android:gravity="end"
                     android:id="@+id/tv_released_year"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
                     tools:text="1999-09-22" />
-            </RelativeLayout>
+            </LinearLayout>
+            <!--android:layout_alignParentRight="true"-->
+
 
             <TextView
-                android:padding="5dp"
                 android:id="@+id/tv_role"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="5dp"
                 tools:text="Hansen" />
         </LinearLayout>
 
