@@ -31,9 +31,4 @@ public class StaffBiographyPresenter extends Presenter implements DataCallback<T
     public void onError(Throwable e) {
 
     }
-
-    @Override
-    public void start(boolean shouldClean) {
-
-    }
 }

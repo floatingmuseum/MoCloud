@@ -9,6 +9,7 @@ import android.support.v7.widget.GridLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
+import com.floatingmuseum.mocloud.base.ListPresenter;
 import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
@@ -31,7 +32,7 @@ public abstract class BaseFragment extends Fragment {
         moCloud = (MoCloud) activity.getApplication();
     }
 
-    protected void loadMore(GridLayoutManager manager, BaseQuickAdapter adapter, Presenter presenter, SwipeRefreshLayout srl) {
+    protected void loadMore(GridLayoutManager manager, BaseQuickAdapter adapter, ListPresenter presenter, SwipeRefreshLayout srl) {
         int lastItemPosition = manager.findLastVisibleItemPosition();
 //        Logger.d("最后可见item:"+lastItemPosition+"...总条目数:"+adapter.getItemCount());
         if ((lastItemPosition + 3) == adapter.getItemCount() && !srl.isRefreshing()) {
