@@ -54,6 +54,8 @@ public class UserActivity extends BaseActivity {
     TextView tvSeeWatched;
     @BindView(R.id.tv_see_comments)
     TextView tvSeeComments;
+    @BindView(R.id.tv_see_ratings)
+    TextView tvSeeRatings;
     @BindView(R.id.tv_see_watchlist)
     TextView tvSeeWatchlist;
     @BindView(R.id.tv_see_collection)
@@ -104,6 +106,7 @@ public class UserActivity extends BaseActivity {
         tvSeeWatching.setText("See what " + username + " watching now");
         tvSeeWatched.setText("See what " + username + " has watched");
         tvSeeComments.setText("See what " + username + " has commented");
+        tvSeeRatings.setText("See what " + username + " has rated");
         tvSeeWatchlist.setText("See what " + username + "'s watchlist");
         tvSeeCollection.setText("See what " + username + "'s collections");
         presenter.start(user.getIds().getSlug());

@@ -161,6 +161,11 @@
                     android:text="See what Floatingmuseum has commented" />
 
                 <TextView
+                    android:id="@+id/tv_see_ratings"
+                    style="@style/title_text"
+                    android:text="See what Floatingmuseum has rated" />
+
+                <TextView
                     android:id="@+id/tv_see_watchlist"
                     style="@style/title_text"
                     android:text="See Floatingmuseum's watchlist" />
