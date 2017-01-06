@@ -39,9 +39,10 @@ public class StaffMoviesAdapter extends BaseQuickAdapter<Staff> {
         }
 
         String year = staff.getRelease_date();
-        if (year == null || year.length()==0) {
+        if (year == null || year.length() == 0) {
             holder.setVisible(R.id.tv_released_year, false);
         } else {
+            holder.setVisible(R.id.tv_released_year, true);
             holder.setText(R.id.tv_released_year, year);
         }
         holder.setText(R.id.tv_art_title, staff.getOriginal_title());
@@ -49,10 +50,12 @@ public class StaffMoviesAdapter extends BaseQuickAdapter<Staff> {
             String character = staff.getCharacter();
             if (character == null || character.length() == 0) {
                 holder.setVisible(R.id.tv_role, false);
+                return;
             }
             holder.setText(R.id.tv_role, staff.getCharacter());
         } else {
             holder.setText(R.id.tv_role, staff.getJob());
         }
+        holder.setVisible(R.id.tv_role, true);
     }
 }
