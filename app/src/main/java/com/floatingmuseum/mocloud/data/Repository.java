@@ -432,6 +432,7 @@ public class Repository {
                 .map(new Func1<TmdbStaffMovieCredits, List<Staff>>() {
                     @Override
                     public List<Staff> call(TmdbStaffMovieCredits credits) {
+                        Logger.d("日期对比:map");
                         return DataMachine.mixingStaffWorks(credits);
                     }
                 })
@@ -444,11 +445,13 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
+                        Logger.d("日期对比:onError");
                         e.printStackTrace();
                     }
 
                     @Override
                     public void onNext(List<Staff> works) {
+                        Logger.d("日期对比:onNext");
                         callback.onBaseDataSuccess(works);
                     }
                 });

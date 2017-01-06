@@ -1,10 +1,16 @@
 package com.floatingmuseum.mocloud.data;
 
+import android.text.format.DateUtils;
+
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbStaffMovieCredits;
+import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,6 +26,7 @@ public class DataMachine {
         List<Staff> works = new ArrayList();
         List<Staff> casts = peopleCredit.getCast();
         if (casts != null && casts.size() > 0) {
+            sort(casts);
             Logger.d("人物作品...作为角色");
             for (Staff staff : casts) {
                 staff.setItemType(Staff.CAST_ITEM);
@@ -89,35 +96,82 @@ public class DataMachine {
         }
 
         if (directors.size() > 0) {
+            directors = sort(directors);
             works.addAll(directors);
         }
         if (writings.size() > 0) {
+            writings = sort(writings);
             works.addAll(writings);
         }
         if (cameras.size() > 0) {
+            cameras = sort(cameras);
             works.addAll(cameras);
         }
         if (editings.size() > 0) {
+            editings = sort(editings);
             works.addAll(editings);
         }
         if (arts.size() > 0) {
+            arts = sort(arts);
             works.addAll(arts);
         }
         if (makeups.size() > 0) {
+            makeups = sort(makeups);
             works.addAll(makeups);
         }
         if (productions.size() > 0) {
+            productions = sort(productions);
             works.addAll(productions);
         }
         if (sounds.size() > 0) {
+            sounds = sort(sounds);
             works.addAll(sounds);
         }
         if (visualEffects.size() > 0) {
+            visualEffects = sort(visualEffects);
             works.addAll(visualEffects);
         }
         if (lightings.size() > 0) {
+            lightings = sort(lightings);
             works.addAll(lightings);
         }
         return works;
+    }
+
+    private static List<Staff> sort(List<Staff> staffs) {
+        Collections.sort(staffs, new Comparator<Staff>() {
+            @Override
+            public int compare(Staff lhs, Staff rhs) {
+                boolean has1 = hasDate(lhs.getRelease_date());
+                boolean has2 = hasDate(rhs.getRelease_date());
+                if (!has1 && !has2) {
+                    Logger.d("日期对比...没有日期:" + lhs.getOriginal_title() + ":" + lhs.getRelease_date() + "..." + rhs.getOriginal_title() + ":" + rhs.getRelease_date());
+                    return 0;
+                } else if (!has1) {
+                    Logger.d("日期对比...没有日期1:" + lhs.getOriginal_title() + ":" + lhs.getRelease_date() + "..." + rhs.getOriginal_title() + ":" + rhs.getRelease_date());
+                    return 1;
+                } else if (!has2) {
+                    Logger.d("日期对比...没有日期2:" + lhs.getOriginal_title() + ":" + lhs.getRelease_date() + "..." + rhs.getOriginal_title() + ":" + rhs.getRelease_date());
+                    return -1;
+                }
+                Date date1 = TimeUtil.formatStringToDate(lhs.getRelease_date(), TimeUtil.TIME_FORMAT2);
+                Date date2 = TimeUtil.formatStringToDate(rhs.getRelease_date(), TimeUtil.TIME_FORMAT2);
+                Logger.d("日期对比:" + lhs.getOriginal_title() + ":" + lhs.getRelease_date() + "..." + rhs.getOriginal_title() + ":" + rhs.getRelease_date() + "..." + date1.before(date2));
+                if (date1.before(date2)) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        });
+        return staffs;
+    }
+
+    private static boolean hasDate(String date) {
+        if (date == null || date.length() == 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

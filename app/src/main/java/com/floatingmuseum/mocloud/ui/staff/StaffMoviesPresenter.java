@@ -5,6 +5,7 @@ import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class StaffMoviesPresenter extends Presenter implements DataCallback<List
     }
 
     public void start(int staffId) {
+        Logger.d("日期对比:start");
         repository.getStaffMovieCredits(staffId,this);
     }
 
