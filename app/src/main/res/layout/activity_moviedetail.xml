@@ -44,6 +44,8 @@
                     <TextView
                         android:id="@+id/tv_movie_title"
                         style="@style/detail_content"
+                        android:ellipsize="end"
+                        android:maxLines="2"
                         tools:text="TRON: Legacy" />
 
                     <TextView
