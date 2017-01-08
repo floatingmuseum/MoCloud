@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include layout="@layout/layout_appbar" />
 
-    <android.support.v7.widget.CardView
+    <include
         android:id="@+id/main_comment"
+        layout="@layout/comment_item" />
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardElevation="5dp">
+        android:layout_height="match_parent">
 
-        <include layout="@layout/comment_item" />
-    </android.support.v7.widget.CardView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_replies"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/ll_comments" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_replies"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/main_comment"
-        android:layout_above="@+id/ll_comments"/>
-
-    <include layout="@layout/comment_layout" />
-
-</RelativeLayout>
+        <include layout="@layout/comment_layout" />
+    </RelativeLayout>
+</LinearLayout>

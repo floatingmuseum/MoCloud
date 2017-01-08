@@ -6,11 +6,11 @@
     <include layout="@layout/layout_appbar" />
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:layout_below="@+id/appBarLayout"
-        android:layout_above="@+id/ll_comments"
         android:id="@+id/srl_comments"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_comments"
+        android:layout_below="@+id/appBarLayout">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_comments"
