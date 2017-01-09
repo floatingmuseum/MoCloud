@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.ui.comments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
@@ -27,6 +28,8 @@ import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
+import com.floatingmuseum.mocloud.utils.MoCloudUtil;
+import com.floatingmuseum.mocloud.utils.ResUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
@@ -86,6 +89,7 @@ public class SingleCommentActivity extends BaseActivity {
     private int likes;
     private int replies;
     private TextView tvCommentReplies;
+    private String username;
 
     @Override
     protected int currentLayoutId() {
@@ -107,6 +111,7 @@ public class SingleCommentActivity extends BaseActivity {
     protected void initView() {
         likes = mainCommentContent.getLikes();
         replies = mainCommentContent.getReplies();
+        username = MoCloudUtil.getUsername(mainCommentContent.getUser());
         Logger.d("喜欢数:" + likes + "...回复数:" + replies);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         rvReplies.setLayoutManager(manager);
@@ -114,7 +119,7 @@ public class SingleCommentActivity extends BaseActivity {
         initHeaderView(headerView);
 
         repliesList = new ArrayList<>();
-        adapter = new SingleCommentAdapter(repliesList);
+        adapter = new SingleCommentAdapter(repliesList,username);
         adapter.addHeaderView(headerView);
 
         rvReplies.setAdapter(adapter);
@@ -156,7 +161,9 @@ public class SingleCommentActivity extends BaseActivity {
         tvCommentReplies = (TextView) headerView.findViewById(R.id.tv_comments_replies);
         TextView tvComment = (TextView) headerView.findViewById(R.id.tv_comment);
 
-        tvUsername.setText(mainCommentContent.getUser().getUsername());
+        tvUsername.setText(username);
+        tvUsername.setTextColor(ResUtil.getColor(R.color.comment_owner,null));
+        tvUsername.setTypeface(null, Typeface.BOLD);
         tvUpdateTime.setText(TimeUtil.formatGmtTime(mainCommentContent.getUpdated_at()));
         tvCommentLikes.setText(String.valueOf(likes));
         tvCommentReplies.setText(String.valueOf(replies));

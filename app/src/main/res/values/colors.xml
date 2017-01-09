@@ -21,4 +21,6 @@
     <color name="unreached_progress_color">#80171b</color>
     <color name="reached_progress_color">#1D1D1D</color>
     <color name="main_movie_item_title">#FFFFFF</color>
+    <color name="comment_owner">#000000</color>
+    <color name="comment_user">#737373</color>
 </resources>

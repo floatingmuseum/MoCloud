@@ -1,6 +1,9 @@
 package com.floatingmuseum.mocloud.ui.comments;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -8,8 +11,10 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
+import com.floatingmuseum.mocloud.utils.MoCloudUtil;
 import com.floatingmuseum.mocloud.utils.ResUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -19,8 +24,11 @@ import java.util.List;
 
 public class SingleCommentAdapter extends BaseQuickAdapter<Comment> {
 
-    public SingleCommentAdapter(List<Comment> repliesData){
-        super(R.layout.comment_item,repliesData);
+    private String commentOwner;
+
+    public SingleCommentAdapter(List<Comment> repliesData, String commentOwner) {
+        super(R.layout.comment_item, repliesData);
+        this.commentOwner = commentOwner;
     }
 
     @Override
@@ -35,20 +43,25 @@ public class SingleCommentAdapter extends BaseQuickAdapter<Comment> {
                 .setText(R.id.tv_comment_likes, "" + comment.getLikes())
                 .setText(R.id.tv_comment, comment.getComment())
                 .addOnClickListener(R.id.iv_userhead)
-                .setVisible(R.id.tv_spoiler_tip,comment.isSpoiler()?true:false);
+                .setVisible(R.id.tv_spoiler_tip, comment.isSpoiler() ? true : false);
 
         User user = comment.getUser();
+        String avatarUrl = MoCloudUtil.getUserAvatar(user);
+        String username = MoCloudUtil.getUsername(user);
         ImageView iv_userhead = baseViewHolder.getView(R.id.iv_userhead);
-        if(comment.getUser().isPrivateX()){
-            baseViewHolder.setText(R.id.tv_username,user.getUsername());
-            ImageLoader.loadDontAnimate(mContext, "", iv_userhead, R.drawable.default_userhead);
+        ImageLoader.loadDontAnimate(mContext, avatarUrl, iv_userhead, R.drawable.default_userhead);
+
+        TextView tvUsername = baseViewHolder.getView(R.id.tv_username);
+        if (username.equals(commentOwner)){
+            tvUsername.setTypeface(tvUsername.getTypeface(),Typeface.BOLD);
+            tvUsername.setTextColor(ResUtil.getColor(R.color.comment_owner,null));
         }else{
-            baseViewHolder.setText(R.id.tv_username,getUserName(user));
-            ImageLoader.loadDontAnimate(mContext, user.getImages().getAvatar().getFull(), iv_userhead, R.drawable.default_userhead);
+            tvUsername.setTypeface(Typeface.DEFAULT);
+            tvUsername.setTextColor(ResUtil.getColor(R.color.comment_user,null));
         }
     }
 
-    private String getUserName(User user){
+    private String getUserName(User user) {
         String nickName = user.getName();
         if (nickName == null || nickName.equals("")) {
             return user.getUsername();
