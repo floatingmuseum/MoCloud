@@ -102,7 +102,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
 
     @Override
     protected void initView() {
-        // TODO: 2017/1/3 还有TMDB评分可以显示
+        // TODO: 2017/1/9 Sync watched,collocted,rating,history   watching now user,related movies
         actionBar.setTitle(movie.getTitle());
         tv_movie_title.setText(movie.getTitle());
         ImageLoader.load(this, StringUtil.buildPosterUrl(movie.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
@@ -156,6 +156,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
     }
 
     public void onCommentsSuccess(final List<Comment> comments) {
+        // TODO: 2017/1/9 Sync likes,添加回复当回复数不足3个时
         Logger.d("数据获取成功...评论");
         if (comments.size() == 0) {
             tv_no_comments.setVisibility(View.VISIBLE);

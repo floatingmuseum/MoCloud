@@ -78,6 +78,7 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
     }
 
     protected void initView() {
+        // TODO: 2017/1/9 build sort comments list by newest,oldest,likes,replies
         commentsData = new ArrayList<>();
         adapter = new CommentsAdapter(commentsData);
         rv_comments.setHasFixedSize(true);

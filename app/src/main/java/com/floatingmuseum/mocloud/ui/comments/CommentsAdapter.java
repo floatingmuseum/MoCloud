@@ -24,6 +24,7 @@ public class CommentsAdapter extends BaseQuickAdapter<Comment> {
 
     @Override
     protected void convert(BaseViewHolder baseViewHolder, Comment comment) {
+        // TODO: 2017/1/9 blur spoiler comment 
         if (comment.isReview()) {
             baseViewHolder.setBackgroundColor(R.id.comment_title, ResUtil.getColor(R.color.comment_review_title_grey, null));
             baseViewHolder.setBackgroundColor(R.id.tv_comment, ResUtil.getColor(R.color.comment_review_content_grey, null));

@@ -177,6 +177,7 @@ public class MainActivity extends BaseActivity
 
     public void refreshUserView(UserSettings userSettings) {
         String avatarUrl = userSettings.getUser().getImages().getAvatar().getFull();
+        // TODO: 2017/1/9 第一次登陆后这里头像刷新不出来 
         ImageLoader.load(this, avatarUrl, iv_avatar, R.drawable.default_userhead);
         tv_username.setText(userSettings.getUser().getUsername());
     }
