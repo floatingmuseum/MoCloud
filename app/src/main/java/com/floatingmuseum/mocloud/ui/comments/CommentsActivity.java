@@ -119,7 +119,7 @@ public class CommentsActivity extends BaseActivity implements CommentsContract.V
                         Logger.d("头像被点击");
                         openUserActivity(CommentsActivity.this,commentsData.get(position).getUser());
                         break;
-                    case R.id.tv_comments_likes:
+                    case R.id.tv_comment_likes:
                         break;
                 }
             }

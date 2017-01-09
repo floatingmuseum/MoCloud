@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
@@ -47,26 +48,26 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SingleCommentActivity extends BaseActivity {
 
 
-    @BindView(R.id.iv_userhead)
-    CircleImageView ivUserhead;
-    @BindView(R.id.tv_username)
-    TextView tvUsername;
-    @BindView(R.id.tv_updatetime)
-    TextView tvUpdatetime;
-    @BindView(R.id.tv_spoiler_tip)
-    TextView tvSpoilerTip;
-    @BindView(R.id.tv_comments_likes)
-    TextView tvCommentsLikes;
-    @BindView(R.id.iv_replies)
-    ImageView ivReplies;
-    @BindView(R.id.tv_comments_replies)
-    TextView tvCommentsReplies;
-    @BindView(R.id.comment_title)
-    LinearLayout commentTitle;
-    @BindView(R.id.tv_comment)
-    TextView tvComment;
-    @BindView(R.id.main_comment)
-    CardView mainComment;
+//    @BindView(R.id.iv_userhead)
+//    CircleImageView ivUserhead;
+//    @BindView(R.id.tv_username)
+//    TextView tvUsername;
+//    @BindView(R.id.tv_updatetime)
+//    TextView tvUpdatetime;
+//    @BindView(R.id.tv_spoiler_tip)
+//    TextView tvSpoilerTip;
+//    @BindView(R.id.tv_comments_likes)
+//    TextView tvCommentsLikes;
+//    @BindView(R.id.iv_replies)
+//    ImageView ivReplies;
+//    @BindView(R.id.tv_comments_replies)
+//    TextView tvCommentsReplies;
+//    @BindView(R.id.comment_title)
+//    LinearLayout commentTitle;
+//    @BindView(R.id.tv_comment)
+//    TextView tvComment;
+//    @BindView(R.id.main_comment)
+//    CardView mainComment;
     @BindView(R.id.rv_replies)
     RecyclerView rvReplies;
     @BindView(R.id.comment_box)
@@ -84,6 +85,7 @@ public class SingleCommentActivity extends BaseActivity {
     private CommentReplyDialog replyDialog;
     private int likes;
     private int replies;
+    private TextView tvCommentReplies;
 
     @Override
     protected int currentLayoutId() {
@@ -103,30 +105,18 @@ public class SingleCommentActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        Logger.d("喜欢数:" + likes + "...回复数:" + replies);
         likes = mainCommentContent.getLikes();
         replies = mainCommentContent.getReplies();
-        tvUsername.setText(mainCommentContent.getUser().getUsername());
-        tvUpdatetime.setText(TimeUtil.formatGmtTime(mainCommentContent.getUpdated_at()));
-        tvCommentsLikes.setText(String.valueOf(likes));
-        tvCommentsReplies.setText(String.valueOf(replies));
-        tvComment.setMaxLines(5);
-        tvComment.setText(mainCommentContent.getComment());
-        Image image = mainCommentContent.getUser().getImages();
-        if (image != null && image.getAvatar() != null) {
-            ImageLoader.loadDontAnimate(this, image.getAvatar().getFull(), ivUserhead, R.drawable.default_userhead);
-        }
-        ivUserhead.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openUserActivity(SingleCommentActivity.this, mainCommentContent.getUser());
-            }
-        });
+        Logger.d("喜欢数:" + likes + "...回复数:" + replies);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        rvReplies.setLayoutManager(manager);
+        View headerView = LayoutInflater.from(this).inflate(R.layout.comment_item, rvReplies,false);
+        initHeaderView(headerView);
 
         repliesList = new ArrayList<>();
         adapter = new SingleCommentAdapter(repliesList);
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        rvReplies.setLayoutManager(manager);
+        adapter.addHeaderView(headerView);
+
         rvReplies.setAdapter(adapter);
 
         rvReplies.addOnItemTouchListener(new OnItemClickListener() {
@@ -153,6 +143,32 @@ public class SingleCommentActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 sendReply();
+            }
+        });
+    }
+
+    private void initHeaderView(View headerView) {
+        CircleImageView ivUserhead = (CircleImageView) headerView.findViewById(R.id.iv_userhead);
+        TextView tvUsername = (TextView) headerView.findViewById(R.id.tv_username);
+        TextView tvUpdateTime = (TextView) headerView.findViewById(R.id.tv_updatetime);
+        ImageView ivCommentLikes = (ImageView) headerView.findViewById(R.id.iv_comment_likes);
+        TextView tvCommentLikes = (TextView) headerView.findViewById(R.id.tv_comment_likes);
+        tvCommentReplies = (TextView) headerView.findViewById(R.id.tv_comments_replies);
+        TextView tvComment = (TextView) headerView.findViewById(R.id.tv_comment);
+
+        tvUsername.setText(mainCommentContent.getUser().getUsername());
+        tvUpdateTime.setText(TimeUtil.formatGmtTime(mainCommentContent.getUpdated_at()));
+        tvCommentLikes.setText(String.valueOf(likes));
+        tvCommentReplies.setText(String.valueOf(replies));
+        tvComment.setText(mainCommentContent.getComment());
+        Image image = mainCommentContent.getUser().getImages();
+        if (image != null && image.getAvatar() != null) {
+            ImageLoader.loadDontAnimate(this, image.getAvatar().getFull(), ivUserhead, R.drawable.default_userhead);
+        }
+        ivUserhead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openUserActivity(SingleCommentActivity.this, mainCommentContent.getUser());
             }
         });
     }
@@ -200,7 +216,7 @@ public class SingleCommentActivity extends BaseActivity {
         repliesList.add(comment);
         adapter.notifyItemInserted(repliesList.indexOf(comment));
         replies++;
-        tvCommentsReplies.setText(replies);
+        tvCommentReplies.setText(replies);
         ToastUtil.showToast(R.string.reply_success);
         KeyboardUtil.hideSoftInput(this);
     }

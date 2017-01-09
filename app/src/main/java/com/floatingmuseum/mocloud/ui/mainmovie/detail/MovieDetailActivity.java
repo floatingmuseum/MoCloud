@@ -181,7 +181,7 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             CircleImageView iv_userhead = (CircleImageView) comment_item.findViewById(R.id.iv_userhead);
             TextView tv_username = (TextView) comment_item.findViewById(R.id.tv_username);
             TextView tv_updatetime = (TextView) comment_item.findViewById(R.id.tv_updatetime);
-            TextView tv_comments_likes = (TextView) comment_item.findViewById(R.id.tv_comments_likes);
+            TextView tv_comments_likes = (TextView) comment_item.findViewById(R.id.tv_comment_likes);
             TextView tv_comments_replies = (TextView) comment_item.findViewById(R.id.tv_comments_replies);
             TextView tv_comment = (TextView) comment_item.findViewById(R.id.tv_comment);
 
