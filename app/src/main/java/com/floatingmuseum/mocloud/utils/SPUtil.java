@@ -20,6 +20,11 @@ public class SPUtil {
 
     public static final String SP_USER_SETTINGS = "UserSettings";
 
+    public static final String KEY_ACCESS_TOKEN = "access_token";
+    public static final String KEY_REFRESH_TOKEN = "refresh_token";
+    public static final String KEY_IS_LOGIN = "isLogin";
+    public static final String KEY_COMMENTS_SORT_CONDITION = "comments_sort_condition";
+
     public static String getString(String spFileName, String key, String defaultValue) {
         return MoCloud.context.getSharedPreferences(spFileName, Context.MODE_PRIVATE)
                 .getString(key, defaultValue);
@@ -144,9 +149,9 @@ public class SPUtil {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MoCloud.context);
         if (!TextUtils.isEmpty(traktToken.getAccess_token()) && !TextUtils.isEmpty(traktToken.getRefresh_token())) {
             preferences.edit()
-                    .putString("access_token", traktToken.getAccess_token())
-                    .putString("refresh_token", traktToken.getRefresh_token())
-                    .putBoolean("isLogin", true)
+                    .putString(KEY_ACCESS_TOKEN, traktToken.getAccess_token())
+                    .putString(KEY_REFRESH_TOKEN, traktToken.getRefresh_token())
+                    .putBoolean(KEY_IS_LOGIN, true)
                     .apply();
         }
     }
@@ -205,16 +210,16 @@ public class SPUtil {
 
     public static boolean isLogin() {
         return PreferenceManager.getDefaultSharedPreferences(MoCloud.context)
-                .getBoolean("isLogin", false);
+                .getBoolean(KEY_IS_LOGIN, false);
     }
 
     public static String getAccessToken() {
         return PreferenceManager.getDefaultSharedPreferences(MoCloud.context)
-                .getString("access_token", null);
+                .getString(KEY_ACCESS_TOKEN, null);
     }
 
     public static String getRefreshToken() {
         return PreferenceManager.getDefaultSharedPreferences(MoCloud.context)
-                .getString("refresh_token", null);
+                .getString(KEY_REFRESH_TOKEN, null);
     }
 }

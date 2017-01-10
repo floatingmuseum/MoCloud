@@ -152,6 +152,9 @@ public class DataMachine {
                 }
                 Date date1 = TimeUtil.formatStringToDate(lhs.getRelease_date(), TimeUtil.TIME_FORMAT2);
                 Date date2 = TimeUtil.formatStringToDate(rhs.getRelease_date(), TimeUtil.TIME_FORMAT2);
+                if (!date1.before(date2) && !date1.after(date2)) {
+                    return 0;
+                }
                 if (date1.before(date2)) {
                     return 1;
                 } else {

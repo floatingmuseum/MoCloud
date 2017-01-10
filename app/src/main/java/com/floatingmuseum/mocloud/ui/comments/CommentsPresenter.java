@@ -13,20 +13,19 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/9/2.
  */
-public class CommentsPresenter extends Presenter implements CommentsContract.Presenter,CommentsCallback<List<Comment>> {
+public class CommentsPresenter extends Presenter implements CommentsCallback<List<Comment>> {
 
     CommentsActivity activity;
     private int limit = 20;
     private int page = 1;
 
-    public CommentsPresenter(@NonNull CommentsActivity activity){
+    public CommentsPresenter(@NonNull CommentsActivity activity) {
         this.activity = activity;
     }
 
-    @Override
-    public void start(String movieId,boolean shouldClean) {
-        page = shouldClean?1:++page;
-        repository.getMovieComments(movieId,Repository.COMMENTS_SORT_NEWEST,limit,page,null,this);
+    public void start(String sortCondition, String movieId, boolean shouldClean) {
+        page = shouldClean ? 1 : ++page;
+        repository.getMovieComments(movieId, sortCondition, limit, page, null, this);
     }
 
     @Override
@@ -36,7 +35,7 @@ public class CommentsPresenter extends Presenter implements CommentsContract.Pre
     }
 
     public void sendComment(Comment comment, String imdb_id) {
-        repository.sendComment(comment,imdb_id,this);
+        repository.sendComment(comment, imdb_id, this);
     }
 
     @Override
@@ -51,11 +50,7 @@ public class CommentsPresenter extends Presenter implements CommentsContract.Pre
         e.printStackTrace();
     }
 
-    public int getLimit(){
+    public int getLimit() {
         return limit;
-    }
-
-    @Override
-    public void onDestroy() {
     }
 }

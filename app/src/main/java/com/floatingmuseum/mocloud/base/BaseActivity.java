@@ -17,14 +17,14 @@ import android.widget.ImageView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.Staff;
-import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.data.entity.User;
+import com.floatingmuseum.mocloud.ui.comments.CommentsPresenter;
 import com.floatingmuseum.mocloud.ui.staff.StaffDetailActivity;
-import com.floatingmuseum.mocloud.ui.comments.CommentsContract;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.StringUtil;
+import com.orhanobut.logger.Logger;
 
 import java.io.File;
 
@@ -74,11 +74,11 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      * 加载更多
      * 条件：
      */
-    protected void loadMore(LinearLayoutManager manager, BaseQuickAdapter adapter, String movieId, CommentsContract.Presenter presenter, SwipeRefreshLayout srl) {
+    protected void loadMoreComments(LinearLayoutManager manager, BaseQuickAdapter adapter, String sortCondition, String movieId, CommentsPresenter presenter, SwipeRefreshLayout srl) {
         int lastItemPosition = manager.findLastVisibleItemPosition();
         if (lastItemPosition == (adapter.getItemCount() - 4) && !alreadyGetAllData && firstSeeLastItem) {
             firstSeeLastItem = false;
-            presenter.start(movieId, false);
+            presenter.start(sortCondition, movieId, false);
             shouldClean = false;
             if (notFirstLoadData) {
                 srl.setRefreshing(true);
@@ -93,7 +93,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(BaseActivity.this, StaffDetailActivity.class);
-                intent.putExtra(StaffDetailActivity.STAFF_IMAGE,staff.getProfile_path());
+                intent.putExtra(StaffDetailActivity.STAFF_IMAGE, staff.getProfile_path());
                 intent.putExtra(StaffDetailActivity.STAFF_NAME, staff.getName());
                 intent.putExtra(StaffDetailActivity.STAFF_ID, staff.getId());
                 startActivity(intent);
@@ -102,12 +102,12 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     }
 
     protected void loadPeopleImage(TmdbPeopleImage tmdbPeopleImage, ImageView headView) {
-        if (tmdbPeopleImage!=null){
+        if (tmdbPeopleImage != null) {
             if (tmdbPeopleImage.isHasCache()) {
                 File file = tmdbPeopleImage.getCacheFile();
                 ImageLoader.load(this, file, headView, R.drawable.default_movie_poster);
                 return;
-            }else if (tmdbPeopleImage.isHasAvatar()){
+            } else if (tmdbPeopleImage.isHasAvatar()) {
                 ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(tmdbPeopleImage.getProfiles().get(0).getFile_path()), headView, R.drawable.default_movie_poster);
                 return;
             }
@@ -122,9 +122,9 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    protected void openUserActivity(Context context,User user){
+    protected void openUserActivity(Context context, User user) {
         Intent intent = new Intent(context, UserActivity.class);
-        intent.putExtra(UserActivity.USER_OBJECT,user);
+        intent.putExtra(UserActivity.USER_OBJECT, user);
         startActivity(intent);
     }
 

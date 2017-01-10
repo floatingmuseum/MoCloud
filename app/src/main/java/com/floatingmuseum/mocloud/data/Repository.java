@@ -67,11 +67,6 @@ public class Repository {
     private static Repository repository;
     protected MoCloudService service;
 
-    public static final String COMMENTS_SORT_LIKES = "likes";
-    public static final String COMMENTS_SORT_NEWEST = "newest";
-    public static final String COMMENTS_SORT_OLDEST = "oldest";
-    public static final String COMMENTS_SORT_REPLIES = "replies";
-
     public Repository() {
         service = MoCloudFactory.getInstance();
     }
@@ -297,8 +292,9 @@ public class Repository {
      * 评论数据
      ********************************************************/
 
-    public Subscription getMovieComments(String movieId, String commentsSort, int limit, int page, final MovieDetailCallback movieDetailCallback, final CommentsCallback commentsCallback) {
-        return service.getComments(movieId, commentsSort, limit, page)
+    public Subscription getMovieComments(String movieId, String sortCondition, int limit, int page, final MovieDetailCallback movieDetailCallback, final CommentsCallback commentsCallback) {
+        Logger.d("加载Comment:"+movieId+"..."+sortCondition+"..."+limit+"..."+page+"..."+movieDetailCallback+"..."+commentsCallback);
+        return service.getComments(movieId, sortCondition, limit, page)
                 .compose(RxUtil.<List<Comment>>threadSwitch())
                 .subscribe(new Observer<List<Comment>>() {
                     @Override

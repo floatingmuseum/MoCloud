@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/sort_by_newest"
+        android:checkable="true"
+        android:orderInCategory="97"
+        android:title="@string/comments_sort_by_newest"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/sort_by_oldest"
+        android:checkable="true"
+        android:orderInCategory="98"
+        android:title="@string/comments_sort_by_oldest"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/sort_by_likes"
+        android:checkable="true"
+        android:orderInCategory="99"
+        android:title="@string/comments_sort_by_likes"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/sort_by_replies"
+        android:checkable="true"
+        android:orderInCategory="100"
+        android:title="@string/comments_sort_by_replies"
+        app:showAsAction="never" />
+</menu>

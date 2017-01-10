@@ -81,10 +81,7 @@ public class MainActivity extends BaseActivity
 
         ButterKnife.bind(this);
         mainPresenter = new MainPresenter(this);
-
-        setSupportActionBar(toolbar);
         isLogin = SPUtil.isLogin();
-
         initView();
     }
 

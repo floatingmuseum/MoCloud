@@ -25,13 +25,14 @@ public class CommentsAdapter extends BaseQuickAdapter<Comment> {
     @Override
     protected void convert(BaseViewHolder baseViewHolder, Comment comment) {
         // TODO: 2017/1/9 blur spoiler comment 
+        // TODO: 2017/1/10 时间显示创建时间，如果有更新，后面浅灰色显示更新时间，缩小likes和replies跟各自数量的间距,有些用户名过长
         if (comment.isReview()) {
             baseViewHolder.setBackgroundColor(R.id.comment_title, ResUtil.getColor(R.color.comment_review_title_grey, null));
             baseViewHolder.setBackgroundColor(R.id.tv_comment, ResUtil.getColor(R.color.comment_review_content_grey, null));
         }
         User user = comment.getUser();
 
-        baseViewHolder.setText(R.id.tv_updatetime, TimeUtil.formatGmtTime(comment.getUpdated_at()))
+        baseViewHolder.setText(R.id.tv_updatetime, TimeUtil.formatGmtTime(comment.getCreated_at()))
                 .setText(R.id.tv_comments_replies, "" + comment.getReplies())
                 .setText(R.id.tv_comment_likes, "" + comment.getLikes())
                 .setText(R.id.tv_comment, comment.getComment())

@@ -9,6 +9,7 @@ import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
+import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
 
     @Override
     public void onBaseDataSuccess(TmdbMovieDetail movie) {
-        movieCommentsSubscription = repository.getMovieComments(movie.getImdb_id(), Repository.COMMENTS_SORT_LIKES,limit,page,this,null);
+        movieCommentsSubscription = repository.getMovieComments(movie.getImdb_id(), CommentsActivity.SORT_BY_LIKES,limit,page,this,null);
         compositeSubscription.add(movieCommentsSubscription);
         getRatings(movie.getImdb_id());
         activity.onBaseDataSuccess(movie);
