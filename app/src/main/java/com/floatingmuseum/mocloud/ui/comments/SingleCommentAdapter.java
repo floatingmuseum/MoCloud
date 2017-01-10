@@ -1,6 +1,5 @@
 package com.floatingmuseum.mocloud.ui.comments;
 
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,7 +13,6 @@ import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.MoCloudUtil;
 import com.floatingmuseum.mocloud.utils.ResUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
-import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -59,14 +57,6 @@ public class SingleCommentAdapter extends BaseQuickAdapter<Comment> {
             tvUsername.setTypeface(Typeface.DEFAULT);
             tvUsername.setTextColor(ResUtil.getColor(R.color.comment_user,null));
         }
-    }
-
-    private String getUserName(User user) {
-        String nickName = user.getName();
-        if (nickName == null || nickName.equals("")) {
-            return user.getUsername();
-        } else {
-            return nickName;
-        }
+        tvUsername.setText(username);
     }
 }
