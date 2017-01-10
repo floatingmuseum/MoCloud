@@ -173,11 +173,8 @@ public class CommentsActivity extends BaseActivity implements SwipeRefreshLayout
             commentsData.clear();
         }
         commentsData.addAll(comments);
-        for (Comment comment : commentsData) {
-            Logger.d("创建时间:" + TimeUtil.formatGmtTime(comment.getCreated_at()) + "...更新时间:" + TimeUtil.formatGmtTime(comment.getUpdated_at()));
-        }
         if (shouldClean) {
-            manager.scrollToPosition(1);
+            manager.scrollToPosition(0);
         }
         adapter.notifyDataSetChanged();
         shouldClean = true;

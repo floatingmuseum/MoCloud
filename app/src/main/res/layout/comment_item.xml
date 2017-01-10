@@ -39,8 +39,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:textColor="@color/comment_user"
+                    android:ellipsize="end"
                     android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:textColor="@color/comment_user"
                     tools:text="Serggyo Alejandro" />
 
                 <TextView
@@ -73,8 +75,9 @@
 
                 <ImageView
                     android:id="@+id/iv_comment_likes"
-                    android:layout_width="wrap_content"
+                    android:layout_width="20dp"
                     android:layout_height="20dp"
+                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
                     android:layout_toLeftOf="@+id/tv_comment_likes"
                     android:src="@drawable/appreciate" />
@@ -83,15 +86,16 @@
                     android:id="@+id/tv_comment_likes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="6dp"
+                    android:layout_marginRight="10dp"
                     android:layout_marginTop="6dp"
                     android:layout_toLeftOf="@+id/iv_replies"
                     tools:text="137" />
 
                 <ImageView
                     android:id="@+id/iv_replies"
-                    android:layout_width="wrap_content"
+                    android:layout_width="20dp"
                     android:layout_height="20dp"
+                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
                     android:layout_toLeftOf="@+id/tv_comments_replies"
                     android:src="@drawable/reply" />
