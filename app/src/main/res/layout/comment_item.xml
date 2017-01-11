@@ -12,7 +12,7 @@
         <LinearLayout
             android:id="@+id/comment_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:background="@color/comment_title_grey"
             android:orientation="horizontal">
 
@@ -38,6 +38,7 @@
                     android:id="@+id/tv_username"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:gravity="center_vertical"
@@ -46,26 +47,54 @@
                     tools:text="Serggyo Alejandro" />
 
                 <TextView
-                    android:id="@+id/tv_updatetime"
+                    android:id="@+id/tv_createtime"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     tools:text="2014-12-27T17:32:52.000Z" />
 
-                <TextView
-                    android:id="@+id/tv_spoiler_tip"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/ll_tip"
+                    android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:background="@color/spoiler_red"
-                    android:gravity="center_vertical"
-                    android:padding="2dp"
-                    android:text="@string/spoiler_alert"
-                    android:textColor="@color/white_text"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    tools:text="@string/spoiler_alert" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_spoiler_tip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:background="@color/spoiler_red"
+                        android:gravity="center_vertical"
+                        android:padding="2dp"
+                        android:text="@string/spoiler_alert"
+                        android:textColor="@color/white_text"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        tools:text="@string/spoiler_alert"
+                        tools:visibility="visible" />
+                    <!--android:layout_weight="1"-->
+                    <TextView
+                        android:id="@+id/tv_review_tip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:background="@color/review_tip_bg"
+                        android:gravity="center_vertical"
+                        android:padding="2dp"
+                        android:text="@string/review_tip"
+                        android:textColor="@color/white_text"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        tools:text="@string/review_tip"
+                        tools:visibility="visible" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <RelativeLayout
@@ -118,5 +147,14 @@
             android:background="@color/comment_content_grey"
             android:padding="6dp"
             tools:text="Everyone keeps suggesting there is a paradox concerning the 5D future humans and their ability to save humanity in the past. It's really not a paradox at all. Everyone assumes humanity survived to ascend to the 5th dimension but how could humanity exist in the future if not for the actions of Cooper.. who was guided by future humans (begin endless loop).\n\nDid anyone ever consider the other important character in the movie? Amelia Brand carried on with the rest of her mission (thanks to Cooper). I postulate that Brand used the human seeds as intended and set up a colony. A colony that would thrive and eventually evolve beyond human. Thus Earth is of little importance, and may have indeed died. These colonists, and the generations that followed, would have been told the story of a great man (Cooper) who saved them from extinction. With the ability to manipulate space-time, they would pay homage to their hero God by helping him in the past so he may fulfill the mission most important to him, to once again see his daughter. Plan B worked beautifully. But the 5d humans, having the power to bend space-time, decided there's no reason why Plan A had to fail." />
+        <TextView
+            android:id="@+id/tv_updatetime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/comment_content_grey"
+            android:padding="6dp"
+            android:gravity="end"
+            android:textColor="@color/text_updatetime"
+            tools:text="---updated at 2016-10-01 07:22:21"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>

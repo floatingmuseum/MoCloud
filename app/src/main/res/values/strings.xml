@@ -15,7 +15,7 @@
     <string name="comments">Comments</string>
     <string name="see_more">More...</string>
     <string name="crew">Crew</string>
-    <string name="spoiler_alert">Spoiler Alert</string>
+    <string name="spoiler_alert">Spoiler</string>
     <string name="action_type_switch">Switch to TV</string>
     <string name="click_to_login">Click to login</string>
     <string name="birth_place">Birthplace</string>
@@ -34,6 +34,7 @@
     <string name="comments_sort_by_oldest">Sort by oldest</string>
     <string name="comments_sort_by_likes">Sort by likes</string>
     <string name="comments_sort_by_replies">Sort by replies</string>
+    <string name="review_tip">Review</string>
 
     <!--<string-array name="tab_names">-->
         <!--<item>Trending</item>-->

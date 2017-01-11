@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
@@ -181,28 +182,37 @@ public class MovieDetailActivity extends BaseActivity implements BaseDetailActiv
             CardView comment_item = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, commentContainer, false);
             CircleImageView iv_userhead = (CircleImageView) comment_item.findViewById(R.id.iv_userhead);
             TextView tv_username = (TextView) comment_item.findViewById(R.id.tv_username);
+            TextView tv_createtime = (TextView) comment_item.findViewById(R.id.tv_createtime);
             TextView tv_updatetime = (TextView) comment_item.findViewById(R.id.tv_updatetime);
             TextView tv_comments_likes = (TextView) comment_item.findViewById(R.id.tv_comment_likes);
             TextView tv_comments_replies = (TextView) comment_item.findViewById(R.id.tv_comments_replies);
             TextView tv_comment = (TextView) comment_item.findViewById(R.id.tv_comment);
+            LinearLayout ll_tip = (LinearLayout) comment_item.findViewById(R.id.ll_tip);
+            TextView tv_spoiler_tip = (TextView) comment_item.findViewById(R.id.tv_spoiler_tip);
+            TextView tv_review_tip = (TextView) comment_item.findViewById(R.id.tv_review_tip);
 
-            Image image = comment.getUser().getImages();
-            if (image != null && image.getAvatar() != null) {
-                ImageLoader.loadDontAnimate(this, image.getAvatar().getFull(), iv_userhead, R.drawable.default_userhead);
-            }
+            String avatarUrl = MoCloudUtil.getUserAvatar(comment.getUser());
+            ImageLoader.loadDontAnimate(this, avatarUrl, iv_userhead, R.drawable.default_userhead);
 
-            String name = comment.getUser().getName();
-            if (name != null && name.length() > 0) {
-                tv_username.setText(name);
-            } else {
-                tv_username.setText(comment.getUser().getUsername());
-            }
-            tv_updatetime.setText(TimeUtil.formatGmtTime(comment.getUpdated_at()));
+            String name = MoCloudUtil.getUsername(comment.getUser());
+            tv_username.setText(name);
+
+            tv_createtime.setText(TimeUtil.formatGmtTime(comment.getCreated_at()));
             tv_comments_likes.setText("" + comment.getLikes());
             tv_comments_replies.setText("" + comment.getReplies());
             tv_comment.setText(comment.getComment());
             tv_comment.setMaxLines(5);
             tv_comment.setEllipsize(TextUtils.TruncateAt.END);
+            tv_updatetime.setVisibility(comment.getCreated_at().equals(comment.getUpdated_at()) ? View.GONE : View.VISIBLE);
+            tv_updatetime.setText("---updated at " + TimeUtil.formatGmtTime(comment.getUpdated_at()));
+
+            if (comment.isSpoiler() || comment.isReview()) {
+                tv_spoiler_tip.setVisibility(comment.isSpoiler()?View.VISIBLE:View.GONE);
+                tv_review_tip.setVisibility(comment.isReview()?View.VISIBLE:View.GONE);
+            }else{
+                ll_tip.setVisibility(View.GONE);
+            }
+
             tv_comments_likes.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
