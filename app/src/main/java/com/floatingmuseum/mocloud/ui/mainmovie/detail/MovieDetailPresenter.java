@@ -61,6 +61,15 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
         activity.onRatingsSuccess(ratings);
     }
 
+    public void sendComment(Comment comment, String imdb_id) {
+        repository.sendComment(comment,imdb_id,this);
+    }
+
+    @Override
+    public void onSendCommentSuccess(Comment comment) {
+        activity.onSendCommentSuccess(comment);
+    }
+
     @Override
     public void onError(Throwable e) {
 

@@ -18,6 +18,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
+import com.floatingmuseum.mocloud.base.BaseCommentsItemAdapter;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Ids;
@@ -69,7 +70,7 @@ public class CommentsActivity extends BaseActivity implements SwipeRefreshLayout
     private CommentsPresenter presenter;
     private TmdbMovieDetail movie;
     private List<Comment> commentsData;
-    private CommentsAdapter adapter;
+    private BaseCommentsItemAdapter adapter;
     private LinearLayoutManager manager;
     private String currentSortCondition;
     private MenuItem miSortByNewest;
@@ -97,7 +98,7 @@ public class CommentsActivity extends BaseActivity implements SwipeRefreshLayout
     protected void initView() {
         // TODO: 2017/1/9 build sort comments list by newest,oldest,likes,replies
         commentsData = new ArrayList<>();
-        adapter = new CommentsAdapter(commentsData);
+        adapter = new BaseCommentsItemAdapter(commentsData);
         rv_comments.setHasFixedSize(true);
         manager = new LinearLayoutManager(this);
         srl_comments.setOnRefreshListener(this);
@@ -185,6 +186,8 @@ public class CommentsActivity extends BaseActivity implements SwipeRefreshLayout
         ToastUtil.showToast(R.string.reply_success);
         commentsData.add(0, comment);
         adapter.notifyItemInserted(0);
+        commentBox.setText("");
+        isSpoiler.setChecked(false);
         KeyboardUtil.hideSoftInput(this);
     }
 

@@ -21,6 +21,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
+import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
+import com.floatingmuseum.mocloud.base.BaseCommentsItemAdapter;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Image;
@@ -48,29 +50,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Floatingmuseum on 2016/12/20.
  */
 
-public class SingleCommentActivity extends BaseActivity {
+public class SingleCommentActivity extends BaseCommentsActivity {
 
-
-//    @BindView(R.id.iv_userhead)
-//    CircleImageView ivUserhead;
-//    @BindView(R.id.tv_username)
-//    TextView tvUsername;
-//    @BindView(R.id.tv_updatetime)
-//    TextView tvUpdatetime;
-//    @BindView(R.id.tv_spoiler_tip)
-//    TextView tvSpoilerTip;
-//    @BindView(R.id.tv_comments_likes)
-//    TextView tvCommentsLikes;
-//    @BindView(R.id.iv_replies)
-//    ImageView ivReplies;
-//    @BindView(R.id.tv_comments_replies)
-//    TextView tvCommentsReplies;
-//    @BindView(R.id.comment_title)
-//    LinearLayout commentTitle;
-//    @BindView(R.id.tv_comment)
-//    TextView tvComment;
-//    @BindView(R.id.main_comment)
-//    CardView mainComment;
     @BindView(R.id.rv_replies)
     RecyclerView rvReplies;
     @BindView(R.id.comment_box)
@@ -84,11 +65,11 @@ public class SingleCommentActivity extends BaseActivity {
     private Comment mainCommentContent;
     private SingleCommentPresenter presenter;
     private List<Comment> repliesList;
-    private SingleCommentAdapter adapter;
+    private BaseCommentsItemAdapter adapter;
     private CommentReplyDialog replyDialog;
     private int likes;
     private int replies;
-    private TextView tvCommentReplies;
+//    private TextView tvCommentReplies;
     private String username;
 
     @Override
@@ -115,11 +96,12 @@ public class SingleCommentActivity extends BaseActivity {
         Logger.d("喜欢数:" + likes + "...回复数:" + replies);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         rvReplies.setLayoutManager(manager);
-        View headerView = LayoutInflater.from(this).inflate(R.layout.comment_item, rvReplies,false);
-        initHeaderView(headerView);
+        CardView headerView = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, rvReplies,false);
+        initCommentItem(this,headerView,mainCommentContent,true);
+//        initHeaderView(headerView);
 
         repliesList = new ArrayList<>();
-        adapter = new SingleCommentAdapter(repliesList,username);
+        adapter = new BaseCommentsItemAdapter(repliesList,username);
         adapter.addHeaderView(headerView);
 
         rvReplies.setAdapter(adapter);
@@ -153,31 +135,33 @@ public class SingleCommentActivity extends BaseActivity {
     }
 
     private void initHeaderView(View headerView) {
-        CircleImageView ivUserhead = (CircleImageView) headerView.findViewById(R.id.iv_userhead);
-        TextView tvUsername = (TextView) headerView.findViewById(R.id.tv_username);
-        TextView tvUpdateTime = (TextView) headerView.findViewById(R.id.tv_updatetime);
-        ImageView ivCommentLikes = (ImageView) headerView.findViewById(R.id.iv_comment_likes);
-        TextView tvCommentLikes = (TextView) headerView.findViewById(R.id.tv_comment_likes);
-        tvCommentReplies = (TextView) headerView.findViewById(R.id.tv_comments_replies);
-        TextView tvComment = (TextView) headerView.findViewById(R.id.tv_comment);
-
-        tvUsername.setText(username);
-        tvUsername.setTextColor(ResUtil.getColor(R.color.comment_owner,null));
-        tvUsername.setTypeface(null, Typeface.BOLD);
-        tvUpdateTime.setText(TimeUtil.formatGmtTime(mainCommentContent.getUpdated_at()));
-        tvCommentLikes.setText(String.valueOf(likes));
-        tvCommentReplies.setText(String.valueOf(replies));
-        tvComment.setText(mainCommentContent.getComment());
-        Image image = mainCommentContent.getUser().getImages();
-        if (image != null && image.getAvatar() != null) {
-            ImageLoader.loadDontAnimate(this, image.getAvatar().getFull(), ivUserhead, R.drawable.default_userhead);
-        }
-        ivUserhead.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openUserActivity(SingleCommentActivity.this, mainCommentContent.getUser());
-            }
-        });
+//        CircleImageView ivUserhead = (CircleImageView) headerView.findViewById(R.id.iv_userhead);
+//        TextView tvUsername = (TextView) headerView.findViewById(R.id.tv_username);
+//        TextView tvCreateTime = (TextView) headerView.findViewById(R.id.tv_createtime);
+//        TextView tvUpdateTime = (TextView) headerView.findViewById(R.id.tv_updatetime);
+//        ImageView ivCommentLikes = (ImageView) headerView.findViewById(R.id.iv_comment_likes);
+//        TextView tvCommentLikes = (TextView) headerView.findViewById(R.id.tv_comment_likes);
+//        tvCommentReplies = (TextView) headerView.findViewById(R.id.tv_comments_replies);
+//        TextView tvComment = (TextView) headerView.findViewById(R.id.tv_comment);
+//
+//        tvUsername.setText(username);
+//        tvUsername.setTextColor(ResUtil.getColor(R.color.comment_owner,null));
+//        tvUsername.setTypeface(null, Typeface.BOLD);
+//        tvCreateTime.setText(TimeUtil.formatGmtTime(mainCommentContent.getCreated_at()));
+//        tvUpdateTime.setText(TimeUtil.formatGmtTime(mainCommentContent.getUpdated_at()));
+//        tvCommentLikes.setText(String.valueOf(likes));
+//        tvCommentReplies.setText(String.valueOf(replies));
+//        tvComment.setText(mainCommentContent.getComment());
+//        Image image = mainCommentContent.getUser().getImages();
+//        if (image != null && image.getAvatar() != null) {
+//            ImageLoader.loadDontAnimate(this, image.getAvatar().getFull(), ivUserhead, R.drawable.default_userhead);
+//        }
+//        ivUserhead.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openUserActivity(SingleCommentActivity.this, mainCommentContent.getUser());
+//            }
+//        });
     }
 
     private void openKeyBoard(String replySomeOne) {
@@ -188,6 +172,16 @@ public class SingleCommentActivity extends BaseActivity {
         commentBox.requestFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(commentBox, 0);
+    }
+
+    public void onBaseDataSuccess(List<Comment> replies) {
+        if (replies == null && replies.size() == 0) {
+            return;
+        }
+
+        repliesList.clear();
+        repliesList.addAll(replies);
+        adapter.notifyDataSetChanged();
     }
 
     private void sendReply() {
@@ -201,21 +195,6 @@ public class SingleCommentActivity extends BaseActivity {
         reply.setSpoiler(isSpoiler.isChecked());
         reply.setComment(replyContent);
         presenter.sendReply(mainCommentContent.getId(), reply);
-    }
-
-    private void openDialog(Comment comment) {
-        replyDialog = new CommentReplyDialog(this, presenter, comment);
-        replyDialog.show();
-    }
-
-    public void onBaseDataSuccess(List<Comment> replies) {
-        if (replies == null && replies.size() == 0) {
-            return;
-        }
-
-        repliesList.clear();
-        repliesList.addAll(replies);
-        adapter.notifyDataSetChanged();
     }
 
     public void onSendReplySuccess(Comment comment) {

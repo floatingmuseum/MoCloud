@@ -24,8 +24,8 @@ public class SingleCommentAdapter extends BaseQuickAdapter<Comment> {
 
     private String commentOwner;
 
-    public SingleCommentAdapter(List<Comment> repliesData, String commentOwner) {
-        super(R.layout.comment_item, repliesData);
+    public SingleCommentAdapter(List<Comment> commentsData, String commentOwner) {
+        super(R.layout.comment_item, commentsData);
         this.commentOwner = commentOwner;
     }
 

@@ -10,7 +10,7 @@ import java.util.TimeZone;
  */
 public class TimeUtil {
 
-    public static final String GMT_ISO8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.mmm'Z'";
+    public static final String GMT_ISO8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     public static final String TIME_FORMAT1 = "yyyy-MM-dd HH:mm:ss";
     public static final String TIME_FORMAT2 = "yyyy-MM-dd";
 

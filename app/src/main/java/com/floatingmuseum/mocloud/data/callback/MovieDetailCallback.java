@@ -15,7 +15,7 @@ import java.util.Objects;
 /**
  * Created by Floatingmuseum on 2016/8/15.
  */
-public interface MovieDetailCallback<T> extends DataCallback<T>{
+public interface MovieDetailCallback<T> extends CommentsCallback<T>{
     void onCommentsSuccess(List<Comment> comments);
     void onRatingsSuccess(Ratings ratings);
 }
