@@ -30,6 +30,7 @@ import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
 import com.floatingmuseum.mocloud.utils.MoCloudUtil;
 import com.floatingmuseum.mocloud.utils.NumberFormatUtil;
+import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
@@ -331,6 +332,10 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     }
 
     private void inflateCommentLayout() {
+        if (!SPUtil.isLogin()) {
+            ToastUtil.showToast(R.string.not_login);
+            return;
+        }
         Logger.d("tv_no_more_comments...");
         ll_comments_reply = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.comment_layout, commentContainer, false);
         is_spoiler = (CheckBox) ll_comments_reply.findViewById(R.id.is_spoiler);
@@ -377,6 +382,11 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tv_rating.setText(NumberFormatUtil.doubleFormatToString(ratings.getRating(), false, 2) + "/" + ratings.getVotes() + "votes");
         tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(ratings.getRating(), false, 2));
         tvTraktRatingCount.setText(ratings.getVotes() + "votes");
+    }
+
+    @Override
+    protected void onError(Exception e) {
+
     }
 
     @Override

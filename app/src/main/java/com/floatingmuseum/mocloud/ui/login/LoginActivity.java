@@ -130,4 +130,9 @@ public class LoginActivity extends BaseActivity{
             }
         }
     }
+
+    @Override
+    protected void onError(Exception e) {
+
+    }
 }

@@ -24,4 +24,9 @@ public class SettingsActivity extends BaseActivity {
     protected void initView() {
 
     }
+
+    @Override
+    protected void onError(Exception e) {
+
+    }
 }

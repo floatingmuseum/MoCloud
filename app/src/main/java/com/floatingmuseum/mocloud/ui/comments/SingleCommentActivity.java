@@ -32,6 +32,7 @@ import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
 import com.floatingmuseum.mocloud.utils.MoCloudUtil;
 import com.floatingmuseum.mocloud.utils.ResUtil;
+import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
@@ -66,10 +67,9 @@ public class SingleCommentActivity extends BaseCommentsActivity {
     private SingleCommentPresenter presenter;
     private List<Comment> repliesList;
     private BaseCommentsItemAdapter adapter;
-    private CommentReplyDialog replyDialog;
     private int likes;
     private int replies;
-//    private TextView tvCommentReplies;
+    //    private TextView tvCommentReplies;
     private String username;
 
     @Override
@@ -96,12 +96,12 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         Logger.d("喜欢数:" + likes + "...回复数:" + replies);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         rvReplies.setLayoutManager(manager);
-        CardView headerView = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, rvReplies,false);
-        initCommentItem(this,headerView,mainCommentContent,true);
+        CardView headerView = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, rvReplies, false);
+        initCommentItem(this, headerView, mainCommentContent, true);
 //        initHeaderView(headerView);
 
         repliesList = new ArrayList<>();
-        adapter = new BaseCommentsItemAdapter(repliesList,username);
+        adapter = new BaseCommentsItemAdapter(repliesList, username);
         adapter.addHeaderView(headerView);
 
         rvReplies.setAdapter(adapter);
@@ -185,6 +185,10 @@ public class SingleCommentActivity extends BaseCommentsActivity {
     }
 
     private void sendReply() {
+        if (!SPUtil.isLogin()) {
+            ToastUtil.showToast(R.string.not_login);
+            return;
+        }
         String replyContent = commentBox.getText().toString();
         Logger.d("回复内容:" + replyContent + "...isSpoiler" + isSpoiler.isChecked());
         if (!StringUtil.checkReplyContent(replyContent)) {
@@ -205,6 +209,11 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         tvCommentReplies.setText(replies);
         ToastUtil.showToast(R.string.reply_success);
         KeyboardUtil.hideSoftInput(this);
+    }
+
+    @Override
+    protected void onError(Exception e) {
+
     }
 
     @Override

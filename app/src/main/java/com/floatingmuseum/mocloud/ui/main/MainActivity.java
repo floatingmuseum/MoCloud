@@ -264,6 +264,11 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    protected void onError(Exception e) {
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mainPresenter.unSubscription();

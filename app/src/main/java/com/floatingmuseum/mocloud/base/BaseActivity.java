@@ -151,4 +151,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             return super.onOptionsItemSelected(item);
         }
     }
+
+    protected abstract void onError(Exception e);
 }

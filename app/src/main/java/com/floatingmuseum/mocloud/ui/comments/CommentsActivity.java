@@ -152,6 +152,10 @@ public class CommentsActivity extends BaseActivity implements SwipeRefreshLayout
     }
 
     private void sendComment() {
+        if (!SPUtil.isLogin()) {
+            ToastUtil.showToast(R.string.not_login);
+            return;
+        }
         String replyContent = commentBox.getText().toString();
         Logger.d("回复内容:" + replyContent + "...isSpoiler" + isSpoiler.isChecked());
         if (!StringUtil.checkReplyContent(replyContent)) {
@@ -204,11 +208,11 @@ public class CommentsActivity extends BaseActivity implements SwipeRefreshLayout
         return true;
     }
 
-    private void setCheckedMenuItem(){
-        miSortByNewest.setChecked(currentSortCondition.equals(SORT_BY_NEWEST)?true:false);
-        miSortByOldest.setChecked(currentSortCondition.equals(SORT_BY_OLDEST)?true:false);
-        miSortByLikes.setChecked(currentSortCondition.equals(SORT_BY_LIKES)?true:false);
-        miSortByReplies.setChecked(currentSortCondition.equals(SORT_BY_REPLIES)?true:false);
+    private void setCheckedMenuItem() {
+        miSortByNewest.setChecked(currentSortCondition.equals(SORT_BY_NEWEST) ? true : false);
+        miSortByOldest.setChecked(currentSortCondition.equals(SORT_BY_OLDEST) ? true : false);
+        miSortByLikes.setChecked(currentSortCondition.equals(SORT_BY_LIKES) ? true : false);
+        miSortByReplies.setChecked(currentSortCondition.equals(SORT_BY_REPLIES) ? true : false);
     }
 
     @Override
@@ -320,6 +324,11 @@ public class CommentsActivity extends BaseActivity implements SwipeRefreshLayout
     @Override
     public void onRefresh() {
         presenter.start(currentSortCondition, movie.getImdb_id(), shouldClean);
+    }
+
+    @Override
+    protected void onError(Exception e) {
+
     }
 
     @Override

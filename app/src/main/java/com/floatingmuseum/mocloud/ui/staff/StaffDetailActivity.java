@@ -92,6 +92,11 @@ public class StaffDetailActivity extends BaseActivity {
     }
 
     @Override
+    protected void onError(Exception e) {
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
     }
