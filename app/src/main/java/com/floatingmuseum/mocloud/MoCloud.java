@@ -23,7 +23,7 @@ public class MoCloud extends Application implements ThemeUtils.switchColor{
         super.onCreate();
         context = this;
         Repository.init();
-        ImageCacheManager.init();
+//        ImageCacheManager.init();
         LeakCanary.install(this);
         BlockCanary.install(this,new AppBlockCanaryContext()).start();
     }
