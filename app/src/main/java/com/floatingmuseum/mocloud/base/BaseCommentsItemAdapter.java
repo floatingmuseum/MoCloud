@@ -38,16 +38,19 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment> {
     protected void convert(BaseViewHolder baseViewHolder, Comment comment) {
         User user = comment.getUser();
         String username = MoCloudUtil.getUsername(user);
+        Integer userRating = comment.getUser_rating();
         baseViewHolder.setText(R.id.tv_createtime, TimeUtil.formatGmtTime(comment.getCreated_at()))
                 .setText(R.id.tv_updatetime, "---updated at " + TimeUtil.formatGmtTime(comment.getUpdated_at()))
                 .setText(R.id.tv_comments_replies, "" + comment.getReplies())
                 .setText(R.id.tv_comment_likes, "" + comment.getLikes())
                 .setText(R.id.tv_comment, comment.getComment())
                 .setText(R.id.tv_username, username)
+                .setText(R.id.tv_rating_tip, userRating + "/10")
                 .addOnClickListener(R.id.iv_userhead)
                 .setVisible(R.id.tv_spoiler_tip, comment.isSpoiler() ? true : false)
                 .setVisible(R.id.tv_review_tip, comment.isReview() ? true : false)
-                .setVisible(R.id.ll_tip, comment.isSpoiler() || comment.isReview() ? true : false)
+                .setVisible(R.id.tv_rating_tip, userRating == null ? false : true)
+                .setVisible(R.id.ll_tip, comment.isSpoiler() || comment.isReview() || userRating != null ? true : false)
                 .setVisible(R.id.tv_updatetime, comment.getCreated_at().equals(comment.getUpdated_at()) ? false : true);
         ImageView iv_userhead = baseViewHolder.getView(R.id.iv_userhead);
         ImageLoader.loadDontAnimate(mContext, MoCloudUtil.getUserAvatar(user), iv_userhead, R.drawable.default_userhead);
@@ -55,7 +58,7 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment> {
         if (commentOwner == null) {
             return;
         }
-        Logger.d("楼主:"+commentOwner+"...当前楼昵称:"+username);
+
         if (username.equals(commentOwner)) {
             tvUsername.setTypeface(tvUsername.getTypeface(), Typeface.BOLD);
             tvUsername.setTextColor(ResUtil.getColor(R.color.comment_owner, null));

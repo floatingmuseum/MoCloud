@@ -46,7 +46,7 @@ public class StaffDetailActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.staff_avatar)
-    ImageView staffAvatar;
+    RatioImageView staffAvatar;
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.staff_detail_tab)

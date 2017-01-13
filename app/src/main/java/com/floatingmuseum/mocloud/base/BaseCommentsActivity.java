@@ -39,6 +39,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
         LinearLayout ll_tip = (LinearLayout) comment_item.findViewById(R.id.ll_tip);
         TextView tv_spoiler_tip = (TextView) comment_item.findViewById(R.id.tv_spoiler_tip);
         TextView tv_review_tip = (TextView) comment_item.findViewById(R.id.tv_review_tip);
+        TextView tv_rating_tip = (TextView) comment_item.findViewById(R.id.tv_rating_tip);
 
         String avatarUrl = MoCloudUtil.getUserAvatar(comment.getUser());
         ImageLoader.loadDontAnimate(this, avatarUrl, iv_userhead, R.drawable.default_userhead);
@@ -53,10 +54,16 @@ public abstract class BaseCommentsActivity extends BaseActivity {
 
         tv_updatetime.setVisibility(comment.getCreated_at().equals(comment.getUpdated_at()) ? View.GONE : View.VISIBLE);
         tv_updatetime.setText("---updated at " + TimeUtil.formatGmtTime(comment.getUpdated_at()));
-
-        if (comment.isSpoiler() || comment.isReview()) {
+        Integer userRating = comment.getUser_rating();
+        if (comment.isSpoiler() || comment.isReview() || userRating != null) {
             tv_spoiler_tip.setVisibility(comment.isSpoiler() ? View.VISIBLE : View.GONE);
             tv_review_tip.setVisibility(comment.isReview() ? View.VISIBLE : View.GONE);
+            if (userRating != null) {
+                tv_rating_tip.setVisibility(View.VISIBLE);
+                tv_rating_tip.setText(userRating + "/10");
+            } else {
+                tv_rating_tip.setVisibility(View.GONE);
+            }
         } else {
             ll_tip.setVisibility(View.GONE);
         }

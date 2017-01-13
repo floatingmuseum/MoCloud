@@ -21,7 +21,7 @@ public class Comment implements Parcelable {
     private String updated_at;
     private int replies;
     private int likes;
-    private int user_rating;
+    private Integer user_rating;
     private User user;
     private Sharing sharing;
     private Movie movie;
@@ -106,11 +106,11 @@ public class Comment implements Parcelable {
         this.likes = likes;
     }
 
-    public int getUser_rating() {
+    public Integer getUser_rating() {
         return user_rating;
     }
 
-    public void setUser_rating(int user_rating) {
+    public void setUser_rating(Integer user_rating) {
         this.user_rating = user_rating;
     }
 
