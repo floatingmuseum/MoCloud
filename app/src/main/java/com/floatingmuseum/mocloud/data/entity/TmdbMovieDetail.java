@@ -10,8 +10,9 @@ import java.util.List;
  * Created by Floatingmuseum on 2016/12/30.
  */
 
-public class TmdbMovieDetail implements Parcelable{
+public class TmdbMovieDetail implements Parcelable {
 
+    private boolean fromStaffWorks;
     private boolean adult;
     private String backdrop_path;
     private BelongsToCollection belongs_to_collection;
@@ -42,6 +43,14 @@ public class TmdbMovieDetail implements Parcelable{
     private List<ProductionCountries> production_countries;
 
     private List<SpokenLanguages> spoken_languages;
+
+    public boolean isFromStaffWorks() {
+        return fromStaffWorks;
+    }
+
+    public void setFromStaffWorks(boolean fromStaffWorks) {
+        this.fromStaffWorks = fromStaffWorks;
+    }
 
     public boolean isAdult() {
         return adult;
@@ -303,7 +312,7 @@ public class TmdbMovieDetail implements Parcelable{
         };
     }
 
-    public static class ProductionCompanies implements Parcelable{
+    public static class ProductionCompanies implements Parcelable {
         private String name;
         private int id;
 
@@ -355,7 +364,7 @@ public class TmdbMovieDetail implements Parcelable{
         };
     }
 
-    public static class ProductionCountries implements Parcelable{
+    public static class ProductionCountries implements Parcelable {
         private String iso_3166_1;
         private String name;
 
@@ -407,7 +416,7 @@ public class TmdbMovieDetail implements Parcelable{
         };
     }
 
-    public static class SpokenLanguages implements Parcelable{
+    public static class SpokenLanguages implements Parcelable {
         private String iso_639_1;
         private String name;
 
@@ -459,7 +468,7 @@ public class TmdbMovieDetail implements Parcelable{
         };
     }
 
-    public static class BelongsToCollection implements Parcelable{
+    public static class BelongsToCollection implements Parcelable {
 
         private int id;
         private String name;
@@ -541,6 +550,7 @@ public class TmdbMovieDetail implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.fromStaffWorks ? (byte) 1 : (byte) 0);
         dest.writeByte(this.adult ? (byte) 1 : (byte) 0);
         dest.writeString(this.backdrop_path);
         dest.writeParcelable(this.belongs_to_collection, flags);
@@ -573,6 +583,7 @@ public class TmdbMovieDetail implements Parcelable{
     }
 
     protected TmdbMovieDetail(Parcel in) {
+        this.fromStaffWorks = in.readByte() != 0;
         this.adult = in.readByte() != 0;
         this.backdrop_path = in.readString();
         this.belongs_to_collection = in.readParcelable(BelongsToCollection.class.getClassLoader());

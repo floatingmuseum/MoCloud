@@ -49,6 +49,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class MovieDetailActivity extends BaseCommentsActivity implements BaseDetailActivity {
     public static final String MOVIE_OBJECT = "movie_object";
+//    public static final String MOVIE_STAFF = "movie_staff";
+
     @BindView(R.id.sv_movie_detail)
     ScrollView svMovieDetail;
     @BindView(R.id.ll_movie_detail)
@@ -96,6 +98,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     private CheckBox is_spoiler;
     private EditText comment_box;
     private LinearLayout ll_comments_reply;
+    private Staff staff;
 
 
     @Override
@@ -110,10 +113,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
         movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
         presenter = new MovieDetailPresenter(this);
-
-        actionBar.setTitle(movie.getTitle());
-        initView();
         presenter.getData(movie.getId());
+        initView();
     }
 
     @Override
@@ -123,6 +124,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tv_movie_title.setText(movie.getTitle());
         ImageLoader.load(this, StringUtil.buildPosterUrl(movie.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
         tv_released.setText(movie.getRelease_date());
+        if (movie.isFromStaffWorks()) {
+            return;
+        }
         tv_runtime.setText(movie.getRuntime() + " mins");
         tv_language.setText(movie.getOriginal_language());
         tv_overview.setText(movie.getOverview());
@@ -135,6 +139,10 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         this.movie = movie;
         // TODO: 2017/1/3  预算，收益，电影类型等可使用
         tv_runtime.setText(movie.getRuntime() + " mins");
+        tv_language.setText(movie.getOriginal_language());
+        tv_overview.setText(movie.getOverview());
+        tvTmdbRating.setText(String.valueOf(movie.getVote_average()));
+        tvTmdbRatingCount.setText(movie.getVote_count() + "votes");
     }
 
     public void onPeopleSuccess(TmdbStaff.Credits staffs) {
@@ -370,7 +378,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     public void onSendCommentSuccess(Comment comment) {
         CardView comment_item = buildCommentItem(comment);
         ToastUtil.showToast(R.string.comment_success);
-        resetCommentBox(comment_box,is_spoiler);
+        resetCommentBox(comment_box, is_spoiler);
 //        KeyboardUtil.hideSoftInput(this);
 //        comment_box.setText("");
 //        is_spoiler.setChecked(false);
