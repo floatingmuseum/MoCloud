@@ -36,6 +36,7 @@
     <string name="comments_sort_by_replies">Sort by replies</string>
     <string name="review_tip">Review</string>
     <string name="not_login">Please login first.</string>
+    <string name="under_construction">This is under construction.</string>
 
     <!--<string-array name="tab_names">-->
         <!--<item>Trending</item>-->
