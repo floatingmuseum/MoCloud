@@ -27,6 +27,7 @@ import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Image;
 import com.floatingmuseum.mocloud.data.entity.Reply;
+import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
@@ -105,14 +106,22 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         adapter.addHeaderView(headerView);
 
         rvReplies.setAdapter(adapter);
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initCommentReplyBox(mainCommentContent.getUser());
+            }
+        });
 
         rvReplies.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-                String replySomeOne = "@" + repliesList.get(i).getUser().getUsername() + " ";
-                commentBox.setText(replySomeOne);
-                KeyboardUtil.showSoftInput(commentBox);
-//                openKeyBoard(replySomeOne);
+//                String username = MoCloudUtil.getUsername(repliesList.get(i).getUser());
+//                String replySomeOne = "@" + username + " ";
+//                commentBox.setText(replySomeOne);
+//                commentBox.setSelection(replySomeOne.length());
+//                KeyboardUtil.showSoftInput(commentBox);
+                initCommentReplyBox(repliesList.get(i).getUser());
             }
 
             @Override
@@ -132,6 +141,14 @@ public class SingleCommentActivity extends BaseCommentsActivity {
                 sendReply();
             }
         });
+    }
+
+    private void initCommentReplyBox(User user) {
+        String username = MoCloudUtil.getUsername(user);
+        String replySomeOne = "@" + username + " ";
+        commentBox.setText(replySomeOne);
+        commentBox.setSelection(replySomeOne.length());
+        KeyboardUtil.showSoftInput(commentBox);
     }
 
     private void initHeaderView(View headerView) {

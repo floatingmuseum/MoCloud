@@ -146,7 +146,7 @@ public class Comment implements Parcelable {
         dest.writeString(this.updated_at);
         dest.writeInt(this.replies);
         dest.writeInt(this.likes);
-        dest.writeInt(this.user_rating);
+        dest.writeValue(this.user_rating);
         dest.writeParcelable(this.user, flags);
         dest.writeParcelable(this.sharing, flags);
         dest.writeParcelable(this.movie, flags);
@@ -165,7 +165,7 @@ public class Comment implements Parcelable {
         this.updated_at = in.readString();
         this.replies = in.readInt();
         this.likes = in.readInt();
-        this.user_rating = in.readInt();
+        this.user_rating = (Integer) in.readValue(Integer.class.getClassLoader());
         this.user = in.readParcelable(User.class.getClassLoader());
         this.sharing = in.readParcelable(Sharing.class.getClassLoader());
         this.movie = in.readParcelable(Movie.class.getClassLoader());
