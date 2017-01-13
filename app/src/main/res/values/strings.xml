@@ -38,6 +38,7 @@
     <string name="review_tip">Review</string>
     <string name="not_login">Please login first.</string>
     <string name="under_construction">This is under construction.</string>
+    <string name="staff_role">Role</string>
 
     <!--<string-array name="tab_names">-->
         <!--<item>Trending</item>-->

@@ -4,72 +4,79 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="5dp">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/item_type_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="5dp"
         android:visibility="gone">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_centerInParent="true"
-            android:background="@android:color/black" />
 
         <TextView
             android:id="@+id/tv_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:background="@android:color/darker_gray"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
             tools:text="Actor" />
     </RelativeLayout>
 
-    <android.support.v7.widget.CardView
-        style="@style/card_style">
+    <android.support.v7.widget.CardView style="@style/card_style">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:padding="1dp">
+
+            <com.floatingmuseum.mocloud.widgets.RatioImageView
+                android:id="@+id/iv_poster"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="2"
+                app:image_ratio="1.42"
+                android:src="@drawable/default_movie_poster"
+                tools:src="@drawable/default_movie_poster" />
 
             <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="5dp">
+                android:layout_weight="4"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/detail_title"
+                    android:text="@string/movie_title" />
 
                 <TextView
                     android:id="@+id/tv_art_title"
-                    android:layout_width="0dp"
-                    android:layout_weight="7"
-                    android:layout_height="wrap_content"
+                    style="@style/detail_content"
                     android:ellipsize="end"
                     android:lines="1"
                     tools:text="Man vs animalssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss" />
 
                 <TextView
-                    android:gravity="end"
+                    style="@style/detail_title"
+                    android:text="@string/staff_role" />
+
+                <TextView
+                    android:id="@+id/tv_role"
+                    style="@style/detail_content"
+                    tools:text="Hansen" />
+
+                <TextView
+                    style="@style/detail_title"
+                    android:text="@string/released" />
+
+                <TextView
                     android:id="@+id/tv_released_year"
-                    android:layout_width="0dp"
-                    android:layout_weight="3"
-                    android:layout_height="wrap_content"
+                    style="@style/detail_content"
                     tools:text="1999-09-22" />
             </LinearLayout>
-            <!--android:layout_alignParentRight="true"-->
-
-
-            <TextView
-                android:id="@+id/tv_role"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                tools:text="Hansen" />
         </LinearLayout>
-
 
     </android.support.v7.widget.CardView>
 
