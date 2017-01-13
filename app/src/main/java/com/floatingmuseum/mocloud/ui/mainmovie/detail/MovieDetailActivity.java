@@ -272,7 +272,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     private CardView buildCommentItem(final Comment comment) {
         CardView comment_item = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, commentContainer, false);
-        initCommentItem(this,comment_item,comment,false);
+        initCommentItem(this, comment_item, comment, false);
 //        CircleImageView iv_userhead = (CircleImageView) comment_item.findViewById(R.id.iv_userhead);
 //        TextView tv_username = (TextView) comment_item.findViewById(R.id.tv_username);
 //        TextView tv_createtime = (TextView) comment_item.findViewById(R.id.tv_createtime);
@@ -369,7 +369,11 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     public void onSendCommentSuccess(Comment comment) {
         CardView comment_item = buildCommentItem(comment);
-        ToastUtil.showToast(R.string.reply_success);
+        ToastUtil.showToast(R.string.comment_success);
+        resetCommentBox(comment_box,is_spoiler);
+//        KeyboardUtil.hideSoftInput(this);
+//        comment_box.setText("");
+//        is_spoiler.setChecked(false);
         if (commentContainer.getChildCount() == 3) {
             tv_comments_more.setVisibility(View.VISIBLE);
             ll_comments_reply.setVisibility(View.GONE);

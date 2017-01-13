@@ -222,10 +222,11 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         Logger.d("sendReply...onSendReplySuccess:" + comment.getComment());
         repliesList.add(comment);
         adapter.notifyItemInserted(repliesList.indexOf(comment));
+//        rvReplies.scrollToPosition();
         replies++;
         tvCommentReplies.setText(replies);
         ToastUtil.showToast(R.string.reply_success);
-        KeyboardUtil.hideSoftInput(this);
+        resetCommentBox(commentBox, isSpoiler);
     }
 
     @Override

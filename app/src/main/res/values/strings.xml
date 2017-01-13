@@ -29,6 +29,7 @@
     <string name="comment_tip">Please write in English.</string>
     <string name="comment_tip1">1.at least five words.\n2.write in English.</string>
     <string name="reply_success">Reply success.</string>
+    <string name="comment_success">Comment success.</string>
     <string name="no_data">No data.</string>
     <string name="comments_sort_by_newest">Sort by newest</string>
     <string name="comments_sort_by_oldest">Sort by oldest</string>

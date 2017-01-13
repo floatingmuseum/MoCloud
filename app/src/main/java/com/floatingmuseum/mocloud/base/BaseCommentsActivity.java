@@ -6,6 +6,8 @@ import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -13,6 +15,7 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.ui.comments.SingleCommentActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
+import com.floatingmuseum.mocloud.utils.KeyboardUtil;
 import com.floatingmuseum.mocloud.utils.MoCloudUtil;
 import com.floatingmuseum.mocloud.utils.ResUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
@@ -98,5 +101,11 @@ public abstract class BaseCommentsActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    protected void resetCommentBox(EditText commentBox, CheckBox isSpoiler) {
+        commentBox.setText("");
+        isSpoiler.setChecked(false);
+        KeyboardUtil.hideSoftInput(this);
     }
 }

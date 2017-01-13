@@ -18,6 +18,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
+import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseCommentsItemAdapter;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.Comment;
@@ -48,7 +49,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Floatingmuseum on 2016/9/1.
  */
-public class CommentsActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class CommentsActivity extends BaseCommentsActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.rv_comments)
     RecyclerView rv_comments;
@@ -187,12 +188,13 @@ public class CommentsActivity extends BaseActivity implements SwipeRefreshLayout
 
     public void onSendCommentSuccess(Comment comment) {
         Logger.d("sendComment...onSendCommentSuccess:" + comment.getComment());
-        ToastUtil.showToast(R.string.reply_success);
+        ToastUtil.showToast(R.string.comment_success);
         commentsData.add(0, comment);
         adapter.notifyItemInserted(0);
-        commentBox.setText("");
-        isSpoiler.setChecked(false);
-        KeyboardUtil.hideSoftInput(this);
+        resetCommentBox(commentBox,isSpoiler);
+//        commentBox.setText("");
+//        isSpoiler.setChecked(false);
+//        KeyboardUtil.hideSoftInput(this);
     }
 
     @Override
@@ -203,7 +205,6 @@ public class CommentsActivity extends BaseActivity implements SwipeRefreshLayout
         miSortByOldest = menu.findItem(R.id.sort_by_oldest);
         miSortByLikes = menu.findItem(R.id.sort_by_likes);
         miSortByReplies = menu.findItem(R.id.sort_by_replies);
-        Logger.d("onCreateOptionsMenu");
         setCheckedMenuItem();
         return true;
     }
