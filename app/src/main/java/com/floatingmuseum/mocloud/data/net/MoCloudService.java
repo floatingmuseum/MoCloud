@@ -4,6 +4,7 @@ package com.floatingmuseum.mocloud.data.net;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
+import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Person;
@@ -150,8 +151,17 @@ public interface MoCloudService {
     @GET("https://api.themoviedb.org/3/movie/{id}")
     Observable<TmdbMovieDetail> getMovieDetail(@Path("id") int tmdbId,@Query("api_key")String tmdbApiKey,@Query("append_to_response")String appendToResponse);
 
+    /**
+     * Trakt评分
+     */
     @GET("movies/{id}/ratings")
     Observable<Ratings> getMovieTraktRatings(@Path("id")String imdbId);
+
+    /**
+     * Imdb评分
+     */
+    @GET("http://www.omdbapi.com/")
+    Observable<OmdbInfo> getMovieImdbRatings(@Query("i") String imdbId);
 
     /**
      * 电影Popular from Tmdb

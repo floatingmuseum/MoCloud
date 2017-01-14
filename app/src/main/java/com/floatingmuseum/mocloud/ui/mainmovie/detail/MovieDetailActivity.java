@@ -20,6 +20,7 @@ import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Image;
+import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
@@ -67,6 +68,12 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     TextView tvTraktRatingCount;
     @BindView(R.id.ll_trakt_rating)
     LinearLayout llTraktRating;
+    @BindView(R.id.tv_imdb_rating)
+    TextView tvImdbRating;
+    @BindView(R.id.tv_imdb_rating_count)
+    TextView tvImdbRatingCount;
+    @BindView(R.id.ll_imdb_rating)
+    LinearLayout llImdbRating;
     @BindView(R.id.ll_ratings)
     LinearLayout llRatings;
 
@@ -390,10 +397,20 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         commentContainer.addView(comment_item);
     }
 
-    public void onRatingsSuccess(Ratings ratings) {
+    public void onTraktRatingsSuccess(Ratings ratings) {
+        Logger.d("TraktRating:" + ratings.getRating() + "..." + ratings.getVotes());
         tv_rating.setText(NumberFormatUtil.doubleFormatToString(ratings.getRating(), false, 2) + "/" + ratings.getVotes() + "votes");
         tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(ratings.getRating(), false, 2));
         tvTraktRatingCount.setText(ratings.getVotes() + "votes");
+    }
+
+    public void onImdbRatingsSuccess(OmdbInfo omdbInfo) {
+        Logger.d("ImdbRating:" + omdbInfo.getImdbRating() + "..." + omdbInfo.getImdbVotes());
+        String imdbRating = omdbInfo.getImdbRating();
+        tvImdbRating.setText(imdbRating == null ? "N/A" : imdbRating);
+        String imdbVotes = omdbInfo.getImdbVotes();
+        imdbVotes = imdbVotes == null ? "N/A" : omdbInfo.getImdbVotes().replace(",", "") + "votes";
+        tvImdbRatingCount.setText(imdbVotes);
     }
 
     @Override

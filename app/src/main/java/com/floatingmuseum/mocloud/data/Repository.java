@@ -14,6 +14,7 @@ import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
+import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Person;
@@ -202,7 +203,7 @@ public class Repository {
     }
 
     public Subscription getMovieDetail(int tmdbId, final MovieDetailCallback callback) {
-        return service.getMovieDetail(tmdbId, BuildConfig.TmdbApiKey,"credits")
+        return service.getMovieDetail(tmdbId, BuildConfig.TmdbApiKey, "credits")
                 .compose(RxUtil.<TmdbMovieDetail>threadSwitch())
                 .subscribe(new Observer<TmdbMovieDetail>() {
                     @Override
@@ -258,13 +259,37 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
+                        Logger.d("getMovieTraktRatings...onError");
                         e.printStackTrace();
                         callback.onError(e);
                     }
 
                     @Override
                     public void onNext(Ratings ratings) {
-                        callback.onRatingsSuccess(ratings);
+                        callback.onTraktRatingsSuccess(ratings);
+                    }
+                });
+    }
+
+    public Subscription getMovieImdbRatings(String imdbId, final MovieDetailCallback callback) {
+        return service.getMovieImdbRatings(imdbId)
+                .compose(RxUtil.<OmdbInfo>threadSwitch())
+                .subscribe(new Observer<OmdbInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("getMovieImdbRatings...onError");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(OmdbInfo omdbInfo) {
+                        callback.onImdbRatingsSuccess(omdbInfo);
                     }
                 });
     }
@@ -293,7 +318,7 @@ public class Repository {
      ********************************************************/
 
     public Subscription getMovieComments(String movieId, String sortCondition, int limit, int page, final MovieDetailCallback movieDetailCallback, final CommentsCallback commentsCallback) {
-        Logger.d("加载Comment:"+movieId+"..."+sortCondition+"..."+limit+"..."+page+"..."+movieDetailCallback+"..."+commentsCallback);
+        Logger.d("加载Comment:" + movieId + "..." + sortCondition + "..." + limit + "..." + page + "..." + movieDetailCallback + "..." + commentsCallback);
         return service.getComments(movieId, sortCondition, limit, page)
                 .compose(RxUtil.<List<Comment>>threadSwitch())
                 .subscribe(new Observer<List<Comment>>() {

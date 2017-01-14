@@ -104,8 +104,9 @@
 
                 <LinearLayout
                     android:id="@+id/ll_tmdb_rating"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -132,8 +133,9 @@
 
                 <LinearLayout
                     android:id="@+id/ll_trakt_rating"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -152,6 +154,35 @@
 
                     <TextView
                         android:id="@+id/tv_trakt_rating_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="2"
+                        tools:text="21103votes" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_imdb_rating"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="6"
+                        android:src="@drawable/imdb_log" />
+
+                    <TextView
+                        android:id="@+id/tv_imdb_rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="2"
+                        tools:text="8.3" />
+
+                    <TextView
+                        android:id="@+id/tv_imdb_rating_count"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_weight="2"
@@ -179,7 +210,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="4"/>
+                android:weightSum="4" />
 
             <TextView
                 style="@style/detail_title"
@@ -189,7 +220,7 @@
                 android:id="@+id/ll_comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"/>
+                android:orientation="vertical" />
 
             <TextView
                 android:id="@+id/tv_no_more_comments"

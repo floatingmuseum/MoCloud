@@ -6,6 +6,7 @@ import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.Comment;
+import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
@@ -29,26 +30,27 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     private Subscription movieCommentsSubscription;
 
 
-    MovieDetailPresenter(@NonNull MovieDetailActivity activity){
+    MovieDetailPresenter(@NonNull MovieDetailActivity activity) {
         this.activity = activity;
     }
 
-    public void getData(int tmdbId){
-        movieDetailSubscription = repository.getMovieDetail(tmdbId,this);
+    public void getData(int tmdbId) {
+        movieDetailSubscription = repository.getMovieDetail(tmdbId, this);
         compositeSubscription.add(movieDetailSubscription);
     }
 
     @Override
     public void onBaseDataSuccess(TmdbMovieDetail movie) {
-        movieCommentsSubscription = repository.getMovieComments(movie.getImdb_id(), CommentsActivity.SORT_BY_LIKES,limit,page,this,null);
+        movieCommentsSubscription = repository.getMovieComments(movie.getImdb_id(), CommentsActivity.SORT_BY_LIKES, limit, page, this, null);
         compositeSubscription.add(movieCommentsSubscription);
         getRatings(movie.getImdb_id());
         activity.onBaseDataSuccess(movie);
         activity.onPeopleSuccess(movie.getCredits());
     }
 
-    public void getRatings(String imdbId){
-        repository.getMovieTraktRatings(imdbId,this);
+    public void getRatings(String imdbId) {
+        repository.getMovieTraktRatings(imdbId, this);
+        repository.getMovieImdbRatings(imdbId, this);
     }
 
     @Override
@@ -57,12 +59,17 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     }
 
     @Override
-    public void onRatingsSuccess(Ratings ratings) {
-        activity.onRatingsSuccess(ratings);
+    public void onTraktRatingsSuccess(Ratings ratings) {
+        activity.onTraktRatingsSuccess(ratings);
+    }
+
+    @Override
+    public void onImdbRatingsSuccess(OmdbInfo omdbInfo) {
+        activity.onImdbRatingsSuccess(omdbInfo);
     }
 
     public void sendComment(Comment comment, String imdb_id) {
-        repository.sendComment(comment,imdb_id,this);
+        repository.sendComment(comment, imdb_id, this);
     }
 
     @Override
