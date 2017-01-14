@@ -11,6 +11,7 @@ import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -43,14 +44,15 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     public void onBaseDataSuccess(TmdbMovieDetail movie) {
         movieCommentsSubscription = repository.getMovieComments(movie.getImdb_id(), CommentsActivity.SORT_BY_LIKES, limit, page, this, null);
         compositeSubscription.add(movieCommentsSubscription);
-        getRatings(movie.getImdb_id());
         activity.onBaseDataSuccess(movie);
         activity.onPeopleSuccess(movie.getCredits());
+        Logger.d("电影名onBaseDataSuccess:" + movie.getTitle() + "..." + movie.getImdb_id());
+        getRatings(movie.getImdb_id());
     }
 
     public void getRatings(String imdbId) {
-        repository.getMovieTraktRatings(imdbId, this);
-        repository.getMovieImdbRatings(imdbId, this);
+        compositeSubscription.add(repository.getMovieTraktRatings(imdbId, this));
+        compositeSubscription.add(repository.getMovieImdbRatings(imdbId, this));
     }
 
     @Override

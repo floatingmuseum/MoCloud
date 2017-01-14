@@ -213,7 +213,9 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Logger.d("getMovieDetail...onError");
+                        e.printStackTrace();
+                        callback.onError(e);
                     }
 
                     @Override
@@ -329,6 +331,7 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         if (movieDetailCallback != null) {
                             movieDetailCallback.onError(e);
                         } else {

@@ -120,6 +120,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
         movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
         presenter = new MovieDetailPresenter(this);
+        Logger.d("电影名onCreate:" + movie.getTitle() + "..." + movie.getId());
         presenter.getData(movie.getId());
         initView();
     }

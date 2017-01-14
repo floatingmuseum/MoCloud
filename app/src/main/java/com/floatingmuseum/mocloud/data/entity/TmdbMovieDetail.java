@@ -26,7 +26,7 @@ public class TmdbMovieDetail implements Parcelable {
     private double popularity;
     private String poster_path;
     private String release_date;
-    private int revenue;
+    private long revenue;
     private int runtime;
     private String status;
     private String tagline;
@@ -156,11 +156,11 @@ public class TmdbMovieDetail implements Parcelable {
         this.release_date = release_date;
     }
 
-    public int getRevenue() {
+    public long getRevenue() {
         return revenue;
     }
 
-    public void setRevenue(int revenue) {
+    public void setRevenue(long revenue) {
         this.revenue = revenue;
     }
 
@@ -564,7 +564,7 @@ public class TmdbMovieDetail implements Parcelable {
         dest.writeDouble(this.popularity);
         dest.writeString(this.poster_path);
         dest.writeString(this.release_date);
-        dest.writeInt(this.revenue);
+        dest.writeLong(this.revenue);
         dest.writeInt(this.runtime);
         dest.writeString(this.status);
         dest.writeString(this.tagline);
@@ -597,7 +597,7 @@ public class TmdbMovieDetail implements Parcelable {
         this.popularity = in.readDouble();
         this.poster_path = in.readString();
         this.release_date = in.readString();
-        this.revenue = in.readInt();
+        this.revenue = in.readLong();
         this.runtime = in.readInt();
         this.status = in.readString();
         this.tagline = in.readString();
