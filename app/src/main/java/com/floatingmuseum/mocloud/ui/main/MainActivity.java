@@ -2,15 +2,12 @@ package com.floatingmuseum.mocloud.ui.main;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -27,14 +24,11 @@ import android.widget.TextView;
 import com.floatingmuseum.mocloud.MainMovieAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
-import com.floatingmuseum.mocloud.data.Repository;
-import com.floatingmuseum.mocloud.data.entity.Ids;
-import com.floatingmuseum.mocloud.data.entity.Image;
 import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.ui.about.AboutActivity;
 import com.floatingmuseum.mocloud.ui.calendar.CalendarActivity;
-import com.floatingmuseum.mocloud.ui.lists.ListsActivity;
+import com.floatingmuseum.mocloud.ui.recommendations.RecommendationsActivity;
 import com.floatingmuseum.mocloud.ui.login.LoginActivity;
 import com.floatingmuseum.mocloud.ui.settings.SettingsActivity;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
@@ -45,10 +39,8 @@ import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 
 
-import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Optional;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -220,8 +212,8 @@ public class MainActivity extends BaseActivity
             case R.id.nav_my:
                 startUserActivity();
                 break;
-            case R.id.nav_lists:
-                startActivity(new Intent(this, ListsActivity.class));
+            case R.id.nav_recommendations:
+                startActivity(new Intent(this, RecommendationsActivity.class));
                 break;
             case R.id.nav_calendar:
                 startActivity(new Intent(this, CalendarActivity.class));
@@ -241,6 +233,10 @@ public class MainActivity extends BaseActivity
     }
 
     private void startUserActivity(){
+        if (!SPUtil.isLogin()) {
+            ToastUtil.showToast(R.string.not_login);
+            return;
+        }
         User user = SPUtil.loadUserFromSp();
         Intent intent = new Intent(MainActivity.this, UserActivity.class);
         intent.putExtra(UserActivity.USER_OBJECT,user);

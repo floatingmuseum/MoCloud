@@ -34,7 +34,7 @@
         <activity android:name=".ui.comments.CommentsActivity"/>
         <activity android:name=".ui.staff.StaffDetailActivity"/>
         <activity android:name=".ui.user.UserActivity"/>
-        <activity android:name=".ui.lists.ListsActivity"/>
+        <activity android:name=".ui.recommendations.RecommendationsActivity"/>
         <activity android:name=".ui.calendar.CalendarActivity"/>
         <activity android:name=".ui.about.AboutActivity"/>
         <activity android:name=".ui.settings.SettingsActivity"/>
