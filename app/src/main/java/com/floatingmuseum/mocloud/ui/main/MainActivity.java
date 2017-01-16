@@ -224,9 +224,6 @@ public class MainActivity extends BaseActivity
             case R.id.nav_about:
                 startActivity(new Intent(this, AboutActivity.class));
                 break;
-            case R.id.nav_logout:
-                mainPresenter.logout();
-                break;
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;

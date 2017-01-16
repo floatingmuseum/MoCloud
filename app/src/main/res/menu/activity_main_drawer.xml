@@ -24,11 +24,6 @@
             android:id="@+id/nav_about"
             android:icon="@drawable/drawer_about_black_48dp"
             android:title="About" />
-
-        <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/drawer_logout_black_48dp"
-            android:title="Log Out" />
     </group>
 
     <!--<item android:title="Communicate">-->
