@@ -82,8 +82,8 @@ public class MovieTopRatedFragment extends BaseFragment {
 
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
-            public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-                openMovieDetailActivity(topRatedList.get(i));
+            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
+                openMovieDetailActivity(topRatedList.get(position));
             }
         });
         requestBaseData();

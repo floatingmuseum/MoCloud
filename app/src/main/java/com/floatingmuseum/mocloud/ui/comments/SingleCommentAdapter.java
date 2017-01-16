@@ -20,7 +20,7 @@ import java.util.List;
  * Created by Floatingmuseum on 2016/12/20.
  */
 
-public class SingleCommentAdapter extends BaseQuickAdapter<Comment> {
+public class SingleCommentAdapter extends BaseQuickAdapter<Comment,BaseViewHolder> {
 
     private String commentOwner;
 

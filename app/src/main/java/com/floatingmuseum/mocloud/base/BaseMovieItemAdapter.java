@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
@@ -19,7 +20,7 @@ import java.util.List;
  * Created by Floatingmuseum on 2016/12/1.
  */
 
-public abstract class BaseMovieItemAdapter<T extends Object> extends BaseQuickAdapter<T> {
+public abstract class BaseMovieItemAdapter<T extends Object,K extends BaseViewHolder> extends BaseQuickAdapter<T,K> {
     public BaseMovieItemAdapter(int layoutResId, List data) {
         super(layoutResId, data);
     }

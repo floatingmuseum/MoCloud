@@ -82,8 +82,8 @@ public class MovieUpcomingFragment extends BaseFragment {
 
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
-            public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-                openMovieDetailActivity(upcomingList.get(i));
+            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
+                openMovieDetailActivity(upcomingList.get(position));
             }
         });
         requestBaseData();

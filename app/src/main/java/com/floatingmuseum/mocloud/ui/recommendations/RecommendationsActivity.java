@@ -105,8 +105,9 @@ public class RecommendationsActivity extends BaseActivity implements SwipeRefres
         adapter.setOnItemSwipeListener(swipeListener);
         rvRecommendations.addOnItemTouchListener(new OnItemClickListener() {
             @Override
-            public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-                Logger.d("SimpleOnItemClick:"+data.get(i).getTitle()+"...position:"+i+"...size:"+data.size());
+            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Logger.d("SimpleOnItemClick:"+data.get(position).getTitle()+"...position:"+position+"...size:"+data.size());
+
             }
         });
     }

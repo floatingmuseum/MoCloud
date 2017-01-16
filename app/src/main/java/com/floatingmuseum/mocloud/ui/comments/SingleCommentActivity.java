@@ -115,13 +115,13 @@ public class SingleCommentActivity extends BaseCommentsActivity {
 
         rvReplies.addOnItemTouchListener(new OnItemClickListener() {
             @Override
-            public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
-//                String username = MoCloudUtil.getUsername(repliesList.get(i).getUser());
+            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
+                //                String username = MoCloudUtil.getUsername(repliesList.get(i).getUser());
 //                String replySomeOne = "@" + username + " ";
 //                commentBox.setText(replySomeOne);
 //                commentBox.setSelection(replySomeOne.length());
 //                KeyboardUtil.showSoftInput(commentBox);
-                initCommentReplyBox(repliesList.get(i).getUser());
+                initCommentReplyBox(repliesList.get(position).getUser());
             }
 
             @Override

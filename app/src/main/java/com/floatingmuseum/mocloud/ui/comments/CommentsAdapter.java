@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/9/1.
  */
-public class CommentsAdapter extends BaseQuickAdapter<Comment> {
+public class CommentsAdapter extends BaseQuickAdapter<Comment,BaseViewHolder> {
     public CommentsAdapter(List<Comment> data) {
         super(R.layout.comment_item, data);
     }

@@ -82,7 +82,7 @@ dependencies {
     compile rootProject.ext.dependencies["rxjava"]
     compile rootProject.ext.dependencies["rxandroid"]
     compile rootProject.ext.dependencies["adapter-rxjava"]
-    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v2.0.7'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v2.7.8'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.android.support:support-v4:25.0.0'
     compile 'com.daimajia.numberprogressbar:library:1.2'

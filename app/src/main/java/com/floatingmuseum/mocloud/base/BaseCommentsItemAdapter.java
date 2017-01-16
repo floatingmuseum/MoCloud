@@ -21,7 +21,7 @@ import java.util.List;
  * Created by Floatingmuseum on 2017/1/11.
  */
 
-public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment> {
+public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment,BaseViewHolder> {
 
     private String commentOwner;
 

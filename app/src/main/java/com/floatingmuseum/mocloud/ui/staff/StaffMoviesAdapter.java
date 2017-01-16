@@ -19,7 +19,7 @@ import java.util.List;
  * Created by Floatingmuseum on 2016/12/27.
  */
 
-public class StaffMoviesAdapter extends BaseQuickAdapter<Staff> {
+public class StaffMoviesAdapter extends BaseQuickAdapter<Staff,BaseViewHolder> {
 
     List<Staff> data;
 

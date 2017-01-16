@@ -15,7 +15,7 @@ import java.util.List;
  * Created by Floatingmuseum on 2017/1/16.
  */
 
-public class RecommendationsAdapter extends BaseItemDraggableAdapter<Movie> {
+public class RecommendationsAdapter extends BaseItemDraggableAdapter<Movie,BaseViewHolder> {
 
     public RecommendationsAdapter(List<Movie> data) {
         super(R.layout.item_recommendations, data);

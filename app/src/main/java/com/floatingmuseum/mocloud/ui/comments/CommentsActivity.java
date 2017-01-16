@@ -123,10 +123,10 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
 
         rv_comments.addOnItemTouchListener(new OnItemClickListener() {
             @Override
-            public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
+            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Logger.d("条目被点击");
                 Intent intent = new Intent(CommentsActivity.this, SingleCommentActivity.class);
-                intent.putExtra(SingleCommentActivity.MAIN_COMMENT, commentsData.get(i));
+                intent.putExtra(SingleCommentActivity.MAIN_COMMENT, commentsData.get(position));
                 startActivity(intent);
             }
 

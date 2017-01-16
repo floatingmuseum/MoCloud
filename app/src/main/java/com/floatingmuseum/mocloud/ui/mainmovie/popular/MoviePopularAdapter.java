@@ -14,7 +14,7 @@ import java.util.List;
  * Created by Floatingmuseum on 2016/12/30.
  */
 
-public class MoviePopularAdapter extends BaseQuickAdapter<TmdbMovieDetail> {
+public class MoviePopularAdapter extends BaseQuickAdapter<TmdbMovieDetail,BaseViewHolder> {
 
     public MoviePopularAdapter(List<TmdbMovieDetail> data) {
         super(R.layout.item_movie_trending, data);
