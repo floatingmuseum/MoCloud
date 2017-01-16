@@ -137,13 +137,13 @@ public class MainActivity extends BaseActivity
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        SPUtil.editBoolean("hasEverRequestWriteExternalStoragePermission",true);
+                        SPUtil.editBoolean("hasEverRequestWriteExternalStoragePermission", true);
                         requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_ASK_PERMISSIONS);
                     }
                 }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                SPUtil.editBoolean("hasEverRequestWriteExternalStoragePermission",true);
+                SPUtil.editBoolean("hasEverRequestWriteExternalStoragePermission", true);
                 dialog.dismiss();
             }
         });
@@ -213,7 +213,7 @@ public class MainActivity extends BaseActivity
                 startUserActivity();
                 break;
             case R.id.nav_recommendations:
-                startActivity(new Intent(this, RecommendationsActivity.class));
+                startRecommendationsActivity();
                 break;
             case R.id.nav_calendar:
                 startActivity(new Intent(this, CalendarActivity.class));
@@ -229,14 +229,22 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
-    private void startUserActivity(){
+    private void startRecommendationsActivity() {
+        if (!SPUtil.isLogin()) {
+            ToastUtil.showToast(R.string.not_login);
+            return;
+        }
+        startActivity(new Intent(this, RecommendationsActivity.class));
+    }
+
+    private void startUserActivity() {
         if (!SPUtil.isLogin()) {
             ToastUtil.showToast(R.string.not_login);
             return;
         }
         User user = SPUtil.loadUserFromSp();
         Intent intent = new Intent(MainActivity.this, UserActivity.class);
-        intent.putExtra(UserActivity.USER_OBJECT,user);
+        intent.putExtra(UserActivity.USER_OBJECT, user);
         startActivity(intent);
     }
 

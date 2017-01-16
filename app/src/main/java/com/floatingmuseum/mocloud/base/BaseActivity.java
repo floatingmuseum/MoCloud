@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.Comment;
+import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
 import com.floatingmuseum.mocloud.data.entity.User;
@@ -38,6 +39,7 @@ import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

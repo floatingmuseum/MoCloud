@@ -8,6 +8,7 @@ import com.floatingmuseum.mocloud.data.callback.CommentReplyCallback;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.callback.CommentsCallback;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
+import com.floatingmuseum.mocloud.data.callback.RecommendationsCallback;
 import com.floatingmuseum.mocloud.data.callback.UserDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
@@ -640,6 +641,53 @@ public class Repository {
                             Logger.d("UserData:getUserStats...onNext:" + stats.getMovies().getMinutes());
                         }
                         callback.onUserStatsSuccess(stats);
+                    }
+                });
+    }
+
+    public Subscription getRecommendations(final RecommendationsCallback callback) {
+        return service.getRecommendations()
+                .onErrorResumeNext(refreshTokenAndRetry(service.getRecommendations()))
+                .compose(RxUtil.<List<Movie>>threadSwitch())
+                .subscribe(new Observer<List<Movie>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("getRecommendations.onError");
+                        e.printStackTrace();
+                        onError(e);
+                    }
+
+                    @Override
+                    public void onNext(List<Movie> movies) {
+                        getTmdbImagesByMovie(movies, callback);
+                    }
+                });
+    }
+
+    public Subscription hideMovie(String slug, final RecommendationsCallback callback) {
+        return service.hideMovie(slug)
+                .onErrorResumeNext(refreshTokenAndRetry(service.hideMovie(slug)))
+                .compose(RxUtil.threadSwitch())
+                .subscribe(new Observer() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        onError(e);
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                        callback.onHideMovieSuccess();
                     }
                 });
     }

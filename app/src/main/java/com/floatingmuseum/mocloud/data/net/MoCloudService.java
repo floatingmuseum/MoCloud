@@ -32,6 +32,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.HEAD;
 import retrofit2.http.Header;
@@ -201,6 +202,12 @@ public interface MoCloudService {
 
     @GET("https://api.themoviedb.org/3/person/{tmdbID}/images")
     Observable<TmdbPeopleImage> getPeopleImage(@Path("tmdbID") int tmdbId,@Query("api_key")String tmdbApiKey);
+
+    @GET("recommendations/movies?extended=full")
+    Observable<List<Movie>> getRecommendations();
+
+    @DELETE("recommendations/movies/{id}")
+    Observable<ResponseBody> hideMovie(@Path("id")String slug);
 
     /**
      * 影人详情 from TMDB
