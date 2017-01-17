@@ -21,14 +21,15 @@ import rx.schedulers.Schedulers;
 
 public class RxUtil {
 
-//    Observable.Transformer<T,T> schedulerTransFormer = new Observable.Transformer() {
-//        @Override
-//        public Object call(Object o) {
-//            return null;
-//        }
-//    }
+    private static Observable.Transformer schedulerTransFormer = new Observable.Transformer() {
+        @Override
+        public Observable call(Object observable) {
+            return ((Observable) observable).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
+        }
+    };
 
-    public static Func1<TmdbMovieDataList,TmdbMovieDataList> checkLocalPosterCache = new Func1<TmdbMovieDataList, TmdbMovieDataList>() {
+    private static Func1<TmdbMovieDataList, TmdbMovieDataList> checkLocalPosterCache = new Func1<TmdbMovieDataList, TmdbMovieDataList>() {
         @Override
         public TmdbMovieDataList call(TmdbMovieDataList tmdbMovieDataList) {
             if (!PermissionsUtil.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -46,18 +47,11 @@ public class RxUtil {
         }
     };
 
-    public static Func1 checkLocalPosterCache(){
+    public static Func1 checkLocalPosterCache() {
         return checkLocalPosterCache;
     }
 
     public static <T> Observable.Transformer<T, T> threadSwitch() {
-        return new Observable.Transformer<T, T>() {
-            @Override
-            public Observable<T> call(Observable<T> tObservable) {
-                return tObservable
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread());
-            }
-        };
+        return (Observable.Transformer<T, T>) schedulerTransFormer;
     }
 }
