@@ -47,11 +47,13 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
         activity.onBaseDataSuccess(movie);
         activity.onPeopleSuccess(movie.getCredits());
         Logger.d("电影名onBaseDataSuccess:" + movie.getTitle() + "..." + movie.getImdb_id());
-        getRatings(movie.getImdb_id());
     }
 
-    public void getRatings(String imdbId) {
+    public void getTraktRatings(String imdbId) {
         compositeSubscription.add(repository.getMovieTraktRatings(imdbId, this));
+    }
+
+    public void getImdbRatings(String imdbId) {
         compositeSubscription.add(repository.getMovieImdbRatings(imdbId, this));
     }
 

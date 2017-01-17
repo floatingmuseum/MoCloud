@@ -20,10 +20,12 @@ import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Image;
+import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.ui.comments.SingleCommentActivity;
@@ -50,7 +52,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class MovieDetailActivity extends BaseCommentsActivity implements BaseDetailActivity {
     public static final String MOVIE_OBJECT = "movie_object";
-//    public static final String MOVIE_STAFF = "movie_staff";
+//    public static final String MOVIE_OBJECT_TRAKT= "movie_object_trakt";
 
     @BindView(R.id.sv_movie_detail)
     ScrollView svMovieDetail;
@@ -130,7 +132,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         // TODO: 2017/1/9 Sync watched,collocted,rating,history   watching now user,related movies
         actionBar.setTitle(movie.getTitle());
         tv_movie_title.setText(movie.getTitle());
-        ImageLoader.load(this, StringUtil.buildPosterUrl(movie.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
         tv_released.setText(movie.getRelease_date());
         if (movie.isFromStaffWorks()) {
             return;
@@ -138,12 +139,34 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tv_runtime.setText(movie.getRuntime() + " mins");
         tv_language.setText(movie.getOriginal_language());
         tv_overview.setText(movie.getOverview());
+        if (movie.isTraktItem()) {
+            tv_rating.setText(NumberFormatUtil.doubleFormatToString(movie.getTraktRatings(), false, 2) + "/" + movie.getTraktVotes() + "votes");
+            tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie.getTraktRatings(), false, 2));
+            tvTraktRatingCount.setText(movie.getTraktVotes() + "votes");
+            TmdbMovieImage image = movie.getImage();
+            if (image.isHasCache()) {
+                ImageLoader.load(this, image.getCacheFile(), iv_poster, R.drawable.default_movie_poster);
+            } else {
+                if (image.isHasPoster()) {
+                    ImageLoader.load(this, StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path()), iv_poster, R.drawable.default_movie_poster);
+                } else {
+                    ImageLoader.loadDefault(this, iv_poster);
+                }
+            }
+            presenter.getImdbRatings(movie.getImdb_id());
+            return;
+        }
+        ImageLoader.load(this, StringUtil.buildPosterUrl(movie.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
+        presenter.getTraktRatings(movie.getImdb_id());
         tvTmdbRating.setText(String.valueOf(movie.getVote_average()));
         tvTmdbRatingCount.setText(movie.getVote_count() + "votes");
     }
 
     public void onBaseDataSuccess(TmdbMovieDetail movie) {
         Logger.d("数据获取成功...详情");
+        if (this.movie.isTraktItem()) {
+            presenter.getImdbRatings(movie.getImdb_id());
+        }
         this.movie = movie;
         // TODO: 2017/1/3  预算，收益，电影类型等可使用
         tv_runtime.setText(movie.getRuntime() + " mins");

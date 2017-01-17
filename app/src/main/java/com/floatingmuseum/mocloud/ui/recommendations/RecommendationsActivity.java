@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.ui.recommendations;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +19,8 @@ import com.chad.library.adapter.base.listener.OnItemSwipeListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
+import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 
@@ -72,42 +75,57 @@ public class RecommendationsActivity extends BaseActivity implements SwipeRefres
             }
         });
 
-        OnItemSwipeListener swipeListener = new OnItemSwipeListener(){
+        OnItemSwipeListener swipeListener = new OnItemSwipeListener() {
 
             @Override
             public void onItemSwipeStart(RecyclerView.ViewHolder viewHolder, int i) {
-                Logger.d("onItemSwipeStart:...position:"+i);
+                Logger.d("onItemSwipeStart:...position:" + i);
             }
 
             @Override
             public void clearView(RecyclerView.ViewHolder viewHolder, int i) {
-                Logger.d("clearView:...position"+i);
+                Logger.d("clearView:...position" + i);
             }
 
             @Override
             public void onItemSwiped(RecyclerView.ViewHolder viewHolder, int i) {
                 Movie movie = data.get(i);
-                Logger.d("onItemSwiped:...position"+i+"...Movie:"+movie.getTitle());
+                Logger.d("onItemSwiped:...position" + i + "...Movie:" + movie.getTitle());
                 presenter.hideMovie(data.get(i).getIds().getSlug());
             }
 
             @Override
             public void onItemSwipeMoving(Canvas canvas, RecyclerView.ViewHolder viewHolder, float dx, float dy, boolean isCurrentlyActive) {
-                Logger.d("onItemSwipeStart:...dx:"+dx+"...dy:"+dy+"...isCurrentlyActive:"+isCurrentlyActive);
+                Logger.d("onItemSwipeStart:...dx:" + dx + "...dy:" + dy + "...isCurrentlyActive:" + isCurrentlyActive);
             }
         };
 
         ItemDragAndSwipeCallback mItemDragAndSwipeCallback = new ItemDragAndSwipeCallback(adapter);
         ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(mItemDragAndSwipeCallback);
         mItemTouchHelper.attachToRecyclerView(rvRecommendations);
-        mItemDragAndSwipeCallback.setSwipeMoveFlags(ItemTouchHelper.START| ItemTouchHelper.END);
+        mItemDragAndSwipeCallback.setSwipeMoveFlags(ItemTouchHelper.START | ItemTouchHelper.END);
         adapter.enableSwipeItem();
         adapter.setOnItemSwipeListener(swipeListener);
         rvRecommendations.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Logger.d("SimpleOnItemClick:"+data.get(position).getTitle()+"...position:"+position+"...size:"+data.size());
-
+                Logger.d("SimpleOnItemClick:" + data.get(position).getTitle() + "...position:" + position + "...size:" + data.size());
+                Movie movie = data.get(position);
+                TmdbMovieDetail movieDetail = new TmdbMovieDetail();
+                movieDetail.setId(movie.getIds().getTmdb());
+                movieDetail.setImdb_id(movie.getIds().getImdb());
+                movieDetail.setTitle(movie.getTitle());
+                movieDetail.setRelease_date(movie.getReleased());
+                movieDetail.setOriginal_language(movie.getLanguage());
+                movieDetail.setRuntime(movie.getRuntime());
+                movieDetail.setOverview(movie.getOverview());
+                movieDetail.setTraktItem(true);
+                movieDetail.setTraktRatings(movie.getRating());
+                movieDetail.setTraktVotes(movie.getVotes());
+                movieDetail.setImage(movie.getImage());
+                Intent intent = new Intent(RecommendationsActivity.this, MovieDetailActivity.class);
+                intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,movieDetail);
+                startActivity(intent);
             }
         });
     }
@@ -129,7 +147,7 @@ public class RecommendationsActivity extends BaseActivity implements SwipeRefres
         adapter.notifyDataSetChanged();
     }
 
-    public void onHideMovieSuccess(){
+    public void onHideMovieSuccess() {
         ToastUtil.showToast("Hide success.");
     }
 

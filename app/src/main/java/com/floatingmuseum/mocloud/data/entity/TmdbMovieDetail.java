@@ -13,6 +13,7 @@ import java.util.List;
 public class TmdbMovieDetail implements Parcelable {
 
     private boolean fromStaffWorks;
+    private boolean isTraktItem;
     private boolean adult;
     private String backdrop_path;
     private BelongsToCollection belongs_to_collection;
@@ -34,7 +35,11 @@ public class TmdbMovieDetail implements Parcelable {
     private boolean video;
     private double vote_average;
     private int vote_count;
+    private double traktRatings;
+    private int traktVotes;
     private TmdbStaff.Credits credits;
+
+    private TmdbMovieImage image;
 
     private List<Genres> genres;
 
@@ -258,6 +263,38 @@ public class TmdbMovieDetail implements Parcelable {
 
     public void setCredits(TmdbStaff.Credits credits) {
         this.credits = credits;
+    }
+
+    public boolean isTraktItem() {
+        return isTraktItem;
+    }
+
+    public void setTraktItem(boolean traktItem) {
+        isTraktItem = traktItem;
+    }
+
+    public int getTraktVotes() {
+        return traktVotes;
+    }
+
+    public void setTraktVotes(int traktVotes) {
+        this.traktVotes = traktVotes;
+    }
+
+    public double getTraktRatings() {
+        return traktRatings;
+    }
+
+    public void setTraktRatings(double traktRatings) {
+        this.traktRatings = traktRatings;
+    }
+
+    public TmdbMovieImage getImage() {
+        return image;
+    }
+
+    public void setImage(TmdbMovieImage image) {
+        this.image = image;
     }
 
     public static class Genres implements Parcelable {
@@ -551,6 +588,7 @@ public class TmdbMovieDetail implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.fromStaffWorks ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isTraktItem ? (byte) 1 : (byte) 0);
         dest.writeByte(this.adult ? (byte) 1 : (byte) 0);
         dest.writeString(this.backdrop_path);
         dest.writeParcelable(this.belongs_to_collection, flags);
@@ -572,7 +610,10 @@ public class TmdbMovieDetail implements Parcelable {
         dest.writeByte(this.video ? (byte) 1 : (byte) 0);
         dest.writeDouble(this.vote_average);
         dest.writeInt(this.vote_count);
+        dest.writeDouble(this.traktRatings);
+        dest.writeInt(this.traktVotes);
         dest.writeParcelable(this.credits, flags);
+        dest.writeParcelable(this.image, flags);
         dest.writeTypedList(this.genres);
         dest.writeTypedList(this.production_companies);
         dest.writeTypedList(this.production_countries);
@@ -584,6 +625,7 @@ public class TmdbMovieDetail implements Parcelable {
 
     protected TmdbMovieDetail(Parcel in) {
         this.fromStaffWorks = in.readByte() != 0;
+        this.isTraktItem = in.readByte() != 0;
         this.adult = in.readByte() != 0;
         this.backdrop_path = in.readString();
         this.belongs_to_collection = in.readParcelable(BelongsToCollection.class.getClassLoader());
@@ -605,7 +647,10 @@ public class TmdbMovieDetail implements Parcelable {
         this.video = in.readByte() != 0;
         this.vote_average = in.readDouble();
         this.vote_count = in.readInt();
+        this.traktRatings = in.readDouble();
+        this.traktVotes = in.readInt();
         this.credits = in.readParcelable(TmdbStaff.Credits.class.getClassLoader());
+        this.image = in.readParcelable(TmdbMovieImage.class.getClassLoader());
         this.genres = in.createTypedArrayList(Genres.CREATOR);
         this.production_companies = in.createTypedArrayList(ProductionCompanies.CREATOR);
         this.production_countries = in.createTypedArrayList(ProductionCountries.CREATOR);
