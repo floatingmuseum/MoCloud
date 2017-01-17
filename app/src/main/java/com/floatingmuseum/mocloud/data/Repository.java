@@ -56,6 +56,7 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -88,6 +89,7 @@ public class Repository {
     public Subscription getMoviePopular(int pageNum, final DataCallback callback) {
         Logger.d("测试开始...TmdbMovieDataList");
         return service.getMoviePopular(pageNum, BuildConfig.TmdbApiKey)
+                .map(RxUtil.checkLocalPosterCache())
                 .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
                 .subscribe(new Observer<TmdbMovieDataList>() {
                     @Override
@@ -105,12 +107,14 @@ public class Repository {
                     public void onNext(TmdbMovieDataList tmdbMovieDataList) {
                         Logger.d("测试new api...getMoviePopular...TmdbMovieDataList:" + tmdbMovieDataList.getPage() + "...size:" + tmdbMovieDataList.getResults().size());
                         callback.onBaseDataSuccess(tmdbMovieDataList);
+                        downLoadImage(tmdbMovieDataList, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
 
     public Subscription getMovieNowPlaying(int pagNum, final DataCallback callback) {
         return service.getMovieNowPlaying(pagNum, BuildConfig.TmdbApiKey)
+                .map(RxUtil.checkLocalPosterCache())
                 .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
                 .subscribe(new Observer<TmdbMovieDataList>() {
                     @Override
@@ -128,12 +132,14 @@ public class Repository {
                     public void onNext(TmdbMovieDataList tmdbMovieDataList) {
                         Logger.d("测试new api...getMovieNowPlaying...TmdbMovieDataList:" + tmdbMovieDataList.getPage() + "...size:" + tmdbMovieDataList.getResults().size());
                         callback.onBaseDataSuccess(tmdbMovieDataList);
+                        downLoadImage(tmdbMovieDataList, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
 
     public Subscription getMovieTopRated(int pagNum, final DataCallback callback) {
         return service.getMovieTopRated(pagNum, BuildConfig.TmdbApiKey)
+                .map(RxUtil.checkLocalPosterCache())
                 .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
                 .subscribe(new Observer<TmdbMovieDataList>() {
                     @Override
@@ -151,12 +157,14 @@ public class Repository {
                     public void onNext(TmdbMovieDataList tmdbMovieDataList) {
                         Logger.d("测试new api...getMovieTopRated...TmdbMovieDataList:" + tmdbMovieDataList.getPage() + "...size:" + tmdbMovieDataList.getResults().size());
                         callback.onBaseDataSuccess(tmdbMovieDataList);
+                        downLoadImage(tmdbMovieDataList, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
 
     public Subscription getMovieUpcoming(int pagNum, final DataCallback callback) {
         return service.getMovieUpcoming(pagNum, BuildConfig.TmdbApiKey)
+                .map(RxUtil.checkLocalPosterCache())
                 .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
                 .subscribe(new Observer<TmdbMovieDataList>() {
                     @Override
@@ -174,6 +182,7 @@ public class Repository {
                     public void onNext(TmdbMovieDataList tmdbMovieDataList) {
                         Logger.d("测试new api...getMovieUpcoming...TmdbMovieDataList:" + tmdbMovieDataList.getPage() + "...size:" + tmdbMovieDataList.getResults().size());
                         callback.onBaseDataSuccess(tmdbMovieDataList);
+                        downLoadImage(tmdbMovieDataList, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
@@ -906,6 +915,62 @@ public class Repository {
         }
     }
 
+    private void downLoadImage(TmdbMovieDataList tmdbMovieDataList, final int imageType) {
+        if (!PermissionsUtil.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Logger.d("没有读写权限，不下载");
+            return;
+        }
+        List<TmdbMovieDetail> movies = tmdbMovieDataList.getResults();
+        if (tmdbMovieDataList != null) {
+            Observable.from(movies)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new Action1<TmdbMovieDetail>() {
+                        @Override
+                        public void call(TmdbMovieDetail movie) {
+                            downLoadImage(movie, imageType);
+                        }
+                    });
+        }
+    }
+
+    private void downLoadImage(final TmdbMovieDetail movie, final int imageType) {
+        File file = movie.getImageCacheFile();
+        if (file != null) {
+            Logger.d("图片下载:...已存在图片" + movie.getTitle());
+            return;
+        }
+        Logger.d("图片下载:...准备下载" + movie.getTitle());
+        String posterUrl = movie.getPoster_path();
+        if (posterUrl != null || posterUrl.length() > 0) {
+            final String fileName = "TMDB-" + movie.getId() + StringUtil.getFileSuffix(posterUrl);
+            String url = StringUtil.buildPosterUrl(posterUrl);
+            service.downloadImage(url)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new Subscriber<ResponseBody>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Logger.d("图片下载:...出错:" + fileName + "..." + movie.getTitle());
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+                            Logger.d("图片下载:...网络获取成功,开始写入磁盘" + movie.getTitle());
+                            ImageCacheManager.writeToDisk(responseBody, fileName, imageType);
+                        }
+                    });
+        }
+    }
+
+
+    /**
+     * 这个download只在Recommendations中使用
+     */
     private void downLoadImage(TmdbImage image, String imageUrl, final int imageType) {
         if (imageUrl == null) {
             return;

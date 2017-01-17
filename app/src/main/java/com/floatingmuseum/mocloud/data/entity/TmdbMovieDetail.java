@@ -3,6 +3,7 @@ package com.floatingmuseum.mocloud.data.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,15 +39,11 @@ public class TmdbMovieDetail implements Parcelable {
     private double traktRatings;
     private int traktVotes;
     private TmdbStaff.Credits credits;
-
+    private File imageCacheFile;
     private TmdbMovieImage image;
-
     private List<Genres> genres;
-
     private List<ProductionCompanies> production_companies;
-
     private List<ProductionCountries> production_countries;
-
     private List<SpokenLanguages> spoken_languages;
 
     public boolean isFromStaffWorks() {
@@ -295,6 +292,14 @@ public class TmdbMovieDetail implements Parcelable {
 
     public void setImage(TmdbMovieImage image) {
         this.image = image;
+    }
+
+    public File getImageCacheFile() {
+        return imageCacheFile;
+    }
+
+    public void setImageCacheFile(File imageCacheFile) {
+        this.imageCacheFile = imageCacheFile;
     }
 
     public static class Genres implements Parcelable {
@@ -613,6 +618,7 @@ public class TmdbMovieDetail implements Parcelable {
         dest.writeDouble(this.traktRatings);
         dest.writeInt(this.traktVotes);
         dest.writeParcelable(this.credits, flags);
+        dest.writeSerializable(this.imageCacheFile);
         dest.writeParcelable(this.image, flags);
         dest.writeTypedList(this.genres);
         dest.writeTypedList(this.production_companies);
@@ -650,6 +656,7 @@ public class TmdbMovieDetail implements Parcelable {
         this.traktRatings = in.readDouble();
         this.traktVotes = in.readInt();
         this.credits = in.readParcelable(TmdbStaff.Credits.class.getClassLoader());
+        this.imageCacheFile = (File) in.readSerializable();
         this.image = in.readParcelable(TmdbMovieImage.class.getClassLoader());
         this.genres = in.createTypedArrayList(Genres.CREATOR);
         this.production_companies = in.createTypedArrayList(ProductionCompanies.CREATOR);

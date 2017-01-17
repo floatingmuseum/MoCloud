@@ -130,7 +130,7 @@ public class ImageCacheManager {
                 sink = Okio.buffer(Okio.sink(file));
                 sink.write(body.source(), body.contentLength());
                 sink.flush();
-//                Logger.d("图片" + file.getName() + "...保存到..." + file.getAbsolutePath());
+                Logger.d("图片下载:..." + file.getName() + "...保存到..." + file.getAbsolutePath());
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
