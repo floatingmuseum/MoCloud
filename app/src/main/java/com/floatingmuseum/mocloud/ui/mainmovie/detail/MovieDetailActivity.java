@@ -123,7 +123,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
         presenter = new MovieDetailPresenter(this);
         Logger.d("电影名onCreate:" + movie.getTitle() + "..." + movie.getId());
-        presenter.getData(movie.getId());
+        presenter.getData(movie);
         initView();
     }
 
@@ -134,6 +134,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tv_movie_title.setText(movie.getTitle());
         tv_released.setText(movie.getRelease_date());
         if (movie.isFromStaffWorks()) {
+            ImageLoader.load(this, StringUtil.buildPosterUrl(movie.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
             return;
         }
         tv_runtime.setText(movie.getRuntime() + " mins");
@@ -153,20 +154,15 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     ImageLoader.loadDefault(this, iv_poster);
                 }
             }
-            presenter.getImdbRatings(movie.getImdb_id());
             return;
         }
         ImageLoader.load(this, StringUtil.buildPosterUrl(movie.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
-        presenter.getTraktRatings(movie.getImdb_id());
         tvTmdbRating.setText(String.valueOf(movie.getVote_average()));
         tvTmdbRatingCount.setText(movie.getVote_count() + "votes");
     }
 
     public void onBaseDataSuccess(TmdbMovieDetail movie) {
         Logger.d("数据获取成功...详情");
-        if (this.movie.isTraktItem()) {
-            presenter.getImdbRatings(movie.getImdb_id());
-        }
         this.movie = movie;
         // TODO: 2017/1/3  预算，收益，电影类型等可使用
         tv_runtime.setText(movie.getRuntime() + " mins");

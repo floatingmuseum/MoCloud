@@ -26,27 +26,30 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     MovieDetailActivity activity;
     private int limit = 4;
     private int page = 1;
-    private Subscription movieDetailSubscription;
-    private Subscription movieTeamSubscription;
-    private Subscription movieCommentsSubscription;
-
+    private boolean isTraktItem = false;
 
     MovieDetailPresenter(@NonNull MovieDetailActivity activity) {
         this.activity = activity;
     }
 
-    public void getData(int tmdbId) {
-        movieDetailSubscription = repository.getMovieDetail(tmdbId, this);
-        compositeSubscription.add(movieDetailSubscription);
+    public void getData(TmdbMovieDetail movie) {
+        compositeSubscription.add(repository.getMovieDetail(movie.getId(), this));
+        if (movie.isTraktItem()) {
+            isTraktItem = movie.isTraktItem();
+            getImdbRatings(movie.getImdb_id());
+        }
     }
 
     @Override
     public void onBaseDataSuccess(TmdbMovieDetail movie) {
-        movieCommentsSubscription = repository.getMovieComments(movie.getImdb_id(), CommentsActivity.SORT_BY_LIKES, limit, page, this, null);
-        compositeSubscription.add(movieCommentsSubscription);
+        compositeSubscription.add(repository.getMovieComments(movie.getImdb_id(), CommentsActivity.SORT_BY_LIKES, limit, page, this, null));
         activity.onBaseDataSuccess(movie);
         activity.onPeopleSuccess(movie.getCredits());
         Logger.d("电影名onBaseDataSuccess:" + movie.getTitle() + "..." + movie.getImdb_id());
+        if (!isTraktItem) {
+            getTraktRatings(movie.getImdb_id());
+            getImdbRatings(movie.getImdb_id());
+        }
     }
 
     public void getTraktRatings(String imdbId) {
