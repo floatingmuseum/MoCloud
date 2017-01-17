@@ -941,7 +941,7 @@ public class Repository {
         }
         Logger.d("图片下载:...准备下载" + movie.getTitle());
         String posterUrl = movie.getPoster_path();
-        if (posterUrl != null || posterUrl.length() > 0) {
+        if (posterUrl != null && posterUrl.length() > 0) {
             final String fileName = "TMDB-" + movie.getId() + StringUtil.getFileSuffix(posterUrl);
             String url = StringUtil.buildPosterUrl(posterUrl);
             service.downloadImage(url)
