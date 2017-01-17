@@ -20,6 +20,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.orhanobut.logger.Logger;
 
 import java.io.BufferedOutputStream;
@@ -47,10 +48,10 @@ public class ImageLoader {
         } else {
             default_image = context.getResources().getDrawable(placeHolder);
         }
-            Glide.with(context)
-                    .load(url)
-                    .placeholder(default_image)
-                    .into(view);
+        Glide.with(context)
+                .load(url)
+                .placeholder(default_image)
+                .into(view);
     }
 
     public static void load(Context context, File file, ImageView view, int placeHolder) {
@@ -93,6 +94,18 @@ public class ImageLoader {
                 .dontAnimate()
                 .placeholder(default_image)
                 .into(view);
+    }
+
+    public static void loadFromTmdbMovieImage(Context context, TmdbMovieImage image, final ImageView view, int placeHolder) {
+        if (image != null) {
+            if (image.isHasCache()) {
+                load(context, image.getCacheFile(), view, R.drawable.default_movie_poster);
+            } else if (image.isHasPoster()) {
+                load(context, StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path()), view, R.drawable.default_movie_poster);
+            }
+        } else {
+            loadDefault(context, view);
+        }
     }
 
     public static void loadFromDrawable(Context context, int drawable, ImageView view) {

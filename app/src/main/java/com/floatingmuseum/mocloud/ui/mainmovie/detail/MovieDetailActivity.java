@@ -144,16 +144,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             tv_rating.setText(NumberFormatUtil.doubleFormatToString(movie.getTraktRatings(), false, 2) + "/" + movie.getTraktVotes() + "votes");
             tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie.getTraktRatings(), false, 2));
             tvTraktRatingCount.setText(movie.getTraktVotes() + "votes");
-            TmdbMovieImage image = movie.getImage();
-            if (image.isHasCache()) {
-                ImageLoader.load(this, image.getCacheFile(), iv_poster, R.drawable.default_movie_poster);
-            } else {
-                if (image.isHasPoster()) {
-                    ImageLoader.load(this, StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path()), iv_poster, R.drawable.default_movie_poster);
-                } else {
-                    ImageLoader.loadDefault(this, iv_poster);
-                }
-            }
+            ImageLoader.loadFromTmdbMovieImage(this, movie.getImage(), iv_poster, R.drawable.default_movie_poster);
             return;
         }
         ImageLoader.load(this, StringUtil.buildPosterUrl(movie.getPoster_path()), iv_poster, R.drawable.default_movie_poster);

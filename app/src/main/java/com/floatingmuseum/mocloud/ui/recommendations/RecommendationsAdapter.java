@@ -36,15 +36,6 @@ public class RecommendationsAdapter extends BaseItemDraggableAdapter<Movie, Base
         CardView cardView = baseViewHolder.getView(R.id.cardview);
 //        cardView.setForeground(android.R.attr.selectableItemBackground);
         RatioImageView ivPoster = baseViewHolder.getView(R.id.iv_poster);
-        TmdbMovieImage image = movie.getImage();
-        if (image.isHasCache()) {
-            ImageLoader.load(mContext, image.getCacheFile(), ivPoster, R.drawable.default_movie_poster);
-        } else {
-            if (image.isHasPoster()) {
-                ImageLoader.load(mContext, StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path()), ivPoster, R.drawable.default_movie_poster);
-            } else {
-                ImageLoader.loadDefault(mContext, ivPoster);
-            }
-        }
+        ImageLoader.loadFromTmdbMovieImage(mContext, movie.getImage(), ivPoster, R.drawable.default_movie_poster);
     }
 }
