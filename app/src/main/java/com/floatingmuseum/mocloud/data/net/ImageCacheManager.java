@@ -53,7 +53,7 @@ public class ImageCacheManager {
         initDir();
     }
 
-    private static void initDir(){
+    private static void initDir() {
         if (!posterDir.exists()) {
             posterDir.mkdirs();
         }
@@ -79,7 +79,7 @@ public class ImageCacheManager {
 
         for (File file : files) {
             String fileName = file.getName();
-            String id = fileName.substring(fileName.indexOf("-")+1,fileName.indexOf("."));
+            String id = fileName.substring(fileName.indexOf("-") + 1, fileName.indexOf("."));
 //            Logger.d("文件名:" + file.getName() + "...TmdbID:" + tmdbID +"切割后:"+id+ "...lastModifiedTime:" + file.lastModified());
             if (id.equals(String.valueOf(tmdbID))) {
 //                Logger.d("文件已存在:" + tmdbID+"...Uri:"+file.toURI().toString());
@@ -112,13 +112,13 @@ public class ImageCacheManager {
 
     public static void writeToDisk(ResponseBody body, String fileName, int imageType) {
         File dir = imageType == TYPE_POSTER ? posterDir : avatarDir;
-        long nowDirSize = getDirSize(dir);
+//        long nowDirSize = getDirSize(dir);
 //        Logger.d("图片缓存文件夹当前大小:" + nowDirSize + "...配置大小:" + dirSize + "...KB大小:" + FileUtil.bytesToKb(nowDirSize) + "...MB大小:" + FileUtil.bytesToMb(nowDirSize));
-        if (nowDirSize > dirSize) {
-            //计算超出文件夹限制的size
-            long reduceSize = nowDirSize + body.contentLength() - dirSize;
-            reduceDirSize(reduceSize, dir);
-        }
+//        if (nowDirSize > dirSize) {
+//            //计算超出文件夹限制的size
+//            long reduceSize = nowDirSize + body.contentLength() - dirSize;
+//            reduceDirSize(reduceSize, dir);
+//        }
         if (body != null) {
 //            Logger.d("responseBody:" + body.contentLength() + "..." + fileName);
             if (!dir.exists()) {
@@ -157,7 +157,7 @@ public class ImageCacheManager {
             size += file.length();
         }
         long endTime = System.currentTimeMillis();
-        Logger.d("图片耗时...获取文件夹大小耗时:"+(endTime-startTime));
+        Logger.d("图片耗时...获取文件夹大小耗时:" + (endTime - startTime));
         return size;
     }
 
@@ -165,6 +165,7 @@ public class ImageCacheManager {
      * 降低图片文件夹大小
      */
     private static void reduceDirSize(long reduceSize, File dir) {
+        // TODO: 2017/1/17 这里耗时严重值得优化，不应该每一张图片遍历缩减一次，而是当全部图片获取完毕后，一次性遍历缩减
         long startTime = System.currentTimeMillis();
 
         File[] files = dir.listFiles();
@@ -172,6 +173,8 @@ public class ImageCacheManager {
         Arrays.sort(files, new Comparator<File>() {
             @Override
             public int compare(File file1, File file2) {
+                // TODO: 2017/1/17  java.lang.IllegalArgumentException: Comparison method violates its general contract!
+                Logger.d("最后修改时间比较:" + (int) (file1.lastModified() - file2.lastModified()));
                 return (int) (file1.lastModified() - file2.lastModified());
             }
         });
@@ -194,6 +197,6 @@ public class ImageCacheManager {
             file.delete();
         }
         long endTime = System.currentTimeMillis();
-        Logger.d("图片耗时...缩减文件夹耗时:"+(endTime-startTime));
+        Logger.d("图片耗时...缩减文件夹耗时:" + (endTime - startTime));
     }
 }
