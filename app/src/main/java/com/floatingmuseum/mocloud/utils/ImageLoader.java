@@ -50,6 +50,7 @@ public class ImageLoader {
         }
         Glide.with(context)
                 .load(url)
+                .error(default_image)
                 .placeholder(default_image)
                 .into(view);
     }

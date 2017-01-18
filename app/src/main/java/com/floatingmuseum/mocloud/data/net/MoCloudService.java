@@ -12,6 +12,7 @@ import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Reply;
+import com.floatingmuseum.mocloud.data.entity.StaffImages;
 import com.floatingmuseum.mocloud.data.entity.Stats;
 import com.floatingmuseum.mocloud.data.entity.TmdbImagesConfiguration;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
@@ -223,6 +224,9 @@ public interface MoCloudService {
 
     @GET("https://api.themoviedb.org/3/person/{tmdbID}/movie_credits")
     Observable<TmdbStaffMovieCredits> getStaffMovieCredits(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
+
+    @GET("https://api.themoviedb.org/3/person/{tmdbID}/images")
+    Observable<StaffImages> getStaffImages(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
 
     @GET("people/{id}/shows")
     Observable getStaffShowsCredits(@Path("id")String traktId);

@@ -22,6 +22,7 @@ import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.entity.StaffImages;
 import com.floatingmuseum.mocloud.data.entity.Stats;
 import com.floatingmuseum.mocloud.data.entity.TmdbImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
@@ -484,6 +485,28 @@ public class Repository {
                     @Override
                     public void onNext(List<Staff> works) {
                         callback.onBaseDataSuccess(works);
+                    }
+                });
+    }
+
+    public Subscription getStaffImages(int tmdbId, final DataCallback callback) {
+        return service.getStaffImages(tmdbId, BuildConfig.TmdbApiKey)
+                .compose(RxUtil.<StaffImages>threadSwitch())
+                .subscribe(new Observer<StaffImages>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(StaffImages staffImages) {
+                        callback.onBaseDataSuccess(staffImages);
                     }
                 });
     }

@@ -93,6 +93,49 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/watchlist_round_corner_bg"
+                    android:gravity="center"
+                    android:text="Add to watchlist"
+                    android:textColor="#009edf"
+                    android:textStyle="bold"
+                    tools:text="Add to watchlist" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/history_round_corner_bg"
+                    android:gravity="center"
+                    android:text="Add to history"
+                    android:textColor="#8e44ad"
+                    android:textStyle="bold"
+                    tools:text="Add to history" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/collections_round_corner_bg"
+                    android:gravity="center"
+                    android:text="Add to Collections"
+                    android:textColor="#16a085"
+                    android:textStyle="bold"
+                    tools:text="Add to Collections" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/ll_ratings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
