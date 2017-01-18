@@ -1,6 +1,7 @@
 package com.floatingmuseum.mocloud.data.net;
 
 import android.Manifest;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
 
@@ -41,15 +42,16 @@ public class ImageCacheManager {
     private static File avatarDir;
     private static long dirSize;
 
-    public static void init() {
-        String posterDirName = SPUtil.getString(POSTER_DIR_NAME, "MoCloudImageCache/poster");
-        String avatarDirName = SPUtil.getString(AVATAR_DIR_NAME, "MoCloudImageCache/avatar");
+    public static void init(Context context) {
+        String posterDirName = SPUtil.getString(POSTER_DIR_NAME, "poster");
+        String avatarDirName = SPUtil.getString(AVATAR_DIR_NAME, "avatar");
+//        MoCloudImageCache/
         //默认大小10mb
         long cacheDirSize = SPUtil.getLong(IMAGE_DIR_SIZE, 10 * 1024 * 1024);
         //海报和头像各占一半缓存
         dirSize = cacheDirSize / 2;
-        posterDir = new File(Environment.getExternalStorageDirectory(), posterDirName);
-        avatarDir = new File(Environment.getExternalStorageDirectory(), avatarDirName);
+        posterDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), posterDirName);
+        avatarDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), avatarDirName);
         initDir();
     }
 
