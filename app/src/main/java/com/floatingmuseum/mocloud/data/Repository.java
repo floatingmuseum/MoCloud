@@ -87,6 +87,75 @@ public class Repository {
      * 首页数据
      ********************************************************/
 
+    public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
+        Logger.d("getMovieTrendingData");
+        final List<BaseMovie> movies = new ArrayList<>();
+        service.getMovieTrending(pageNum, limit)
+                .compose(getEachPoster(movies))
+                .compose(RxUtil.<TmdbMovieImage>threadSwitch())
+                .subscribe(new Observer<TmdbMovieImage>() {
+                    @Override
+                    public void onCompleted() {
+                        callback.onBaseDataSuccess(movies);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("getMovieTrendingData...onError");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(TmdbMovieImage movieImage) {
+                        Logger.d("getMovieTrendingData...onNext:" + movieImage);
+                        handleMoviePoster(movieImage, movies);
+                    }
+                });
+    }
+
+    private Observable.Transformer<List<BaseMovie>, TmdbMovieImage> getEachPoster(final List<BaseMovie> movies) {
+        return new Observable.Transformer<List<BaseMovie>, TmdbMovieImage>() {
+            @Override
+            public Observable<TmdbMovieImage> call(Observable<List<BaseMovie>> listObservable) {
+                return listObservable.flatMap(new Func1<List<BaseMovie>, Observable<BaseMovie>>() {
+                    @Override
+                    public Observable<BaseMovie> call(List<BaseMovie> baseMovies) {
+                        movies.addAll(baseMovies);
+                        return Observable.from(movies);
+                    }
+                }).flatMap(new Func1<BaseMovie, Observable<TmdbMovieImage>>() {
+                    @Override
+                    public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
+                        return getTmdbMovieImageObservable(baseMovie.getMovie()).subscribeOn(Schedulers.io());
+                    }
+                });
+            }
+        };
+    }
+
+    private Observable<TmdbMovieImage> getTmdbMovieImageObservable(Movie movie) {
+        int tmdbId = movie.getIds().getTmdb();
+        File file = ImageCacheManager.hasCacheImage(tmdbId, ImageCacheManager.TYPE_POSTER);
+        if (file != null) {
+            return ImageCacheManager.localPosterImage(tmdbId, file);
+        }
+        return service.getTmdbImages(tmdbId, BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * 合并图片到集合中，并下载图片
+     */
+    private void handleMoviePoster(TmdbMovieImage movieImage, List<BaseMovie> movies) {
+        if (movieImage != null) {
+            mergeMovieAndImage1(movieImage, movies);
+            String imageUrl = getImageUrl(movieImage);
+            downLoadImage(movieImage, imageUrl, ImageCacheManager.TYPE_POSTER);
+        }
+    }
+
+    /***************************************************************************************************************/
+
     public Subscription getMoviePopular(int pageNum, final DataCallback callback) {
         Logger.d("测试开始...TmdbMovieDataList");
         return service.getMoviePopular(pageNum, BuildConfig.TmdbApiKey)

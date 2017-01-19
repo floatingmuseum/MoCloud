@@ -41,6 +41,7 @@ public class ImageCacheManager {
     private static File posterDir;
     private static File avatarDir;
     private static long dirSize;
+    private static boolean reducing = false;
 
     public static void init(Context context) {
         String posterDirName = SPUtil.getString(POSTER_DIR_NAME, "poster");
@@ -114,9 +115,10 @@ public class ImageCacheManager {
 
     public static void writeToDisk(ResponseBody body, String fileName, int imageType) {
         File dir = imageType == TYPE_POSTER ? posterDir : avatarDir;
-//        long nowDirSize = getDirSize(dir);
-//        Logger.d("图片缓存文件夹当前大小:" + nowDirSize + "...配置大小:" + dirSize + "...KB大小:" + FileUtil.bytesToKb(nowDirSize) + "...MB大小:" + FileUtil.bytesToMb(nowDirSize));
-//        if (nowDirSize > dirSize) {
+        long nowDirSize = getDirSize(dir);
+        Logger.d("图片缓存文件夹当前大小:" + nowDirSize + "...配置大小:" + dirSize + "...KB大小:" + FileUtil.bytesToKb(nowDirSize) + "...MB大小:" + FileUtil.bytesToMb(nowDirSize));
+//        Logger.d("图片耗时...reducing:"+reducing+"...文件夹大小MB:"+FileUtil.bytesToMb(nowDirSize));
+//        if (nowDirSize > dirSize && !reducing) {
 //            //计算超出文件夹限制的size
 //            long reduceSize = nowDirSize + body.contentLength() - dirSize;
 //            reduceDirSize(reduceSize, dir);
@@ -159,7 +161,7 @@ public class ImageCacheManager {
             size += file.length();
         }
         long endTime = System.currentTimeMillis();
-        Logger.d("图片耗时...获取文件夹大小耗时:" + (endTime - startTime));
+        Logger.d("图片耗时...获取文件夹大小耗时:" + (endTime - startTime) + "...文件数:" + files.length + "...文件夹大小:" + size + "...KB:" + FileUtil.bytesToKb(size) + "...MB:" + FileUtil.bytesToMb(size));
         return size;
     }
 
@@ -167,19 +169,26 @@ public class ImageCacheManager {
      * 降低图片文件夹大小
      */
     private static void reduceDirSize(long reduceSize, File dir) {
+        reducing = true;
+        reduceSize = 1000000;
         // TODO: 2017/1/17 这里耗时严重值得优化，不应该每一张图片遍历缩减一次，而是当全部图片获取完毕后，一次性遍历缩减
+        // TODO: 2017/1/19 删除过程中可能导致adapter中一些item引用的图片文件被删掉，导致滑动回去时item显示不到图片
         long startTime = System.currentTimeMillis();
 
         File[] files = dir.listFiles();
         //按图片最后修改时间排序
+        long sortStartTime = System.currentTimeMillis();
         Arrays.sort(files, new Comparator<File>() {
             @Override
             public int compare(File file1, File file2) {
-                // TODO: 2017/1/17  java.lang.IllegalArgumentException: Comparison method violates its general contract!
+                // TODO: 2017/1/17  java.lang.IllegalArgumentException: Comparison method violates its general contract! 可能MainActivity的内存泄漏就是这里
                 Logger.d("最后修改时间比较:" + (int) (file1.lastModified() - file2.lastModified()));
+//                int result = (int) (file1.lastModified() - file2.lastModified());
                 return (int) (file1.lastModified() - file2.lastModified());
             }
         });
+        long sortEndTime = System.currentTimeMillis();
+        Logger.d("图片耗时...排序文件夹耗时:" + (sortEndTime - sortStartTime));
 
         //获取足够图片数量大小来删除，以达到降低文件夹大小到设置值
         List<File> toRemove = new ArrayList<>();
@@ -200,5 +209,6 @@ public class ImageCacheManager {
         }
         long endTime = System.currentTimeMillis();
         Logger.d("图片耗时...缩减文件夹耗时:" + (endTime - startTime));
+        reducing = false;
     }
 }

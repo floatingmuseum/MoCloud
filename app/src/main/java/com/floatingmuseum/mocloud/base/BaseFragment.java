@@ -59,6 +59,26 @@ abstract public class BaseFragment extends Fragment {
         }
     }
 
+    protected void loadMore(GridLayoutManager manager, BaseQuickAdapter adapter, ListPresenter presenter, SwipeRefreshLayout srl) {
+        int lastItemPosition = manager.findLastVisibleItemPosition();
+//        Logger.d("lastItemPosition:"+lastItemPosition+"...可加载位置:"+(adapter.getItemCount()-4)+"...alreadyGetAllData:"+alreadyGetAllData+"...firstSeeLastItem:"+firstSeeLastItem+"...notFirstLoadData:"+notFirstLoadData);
+//        if(lastItemPosition>(adapter.getItemCount()-4) && !alreadyGetAllData && firstSeeLastItem){
+//            firstSeeLastItem = false;
+//            presenter.start(false);
+//            if(notFirstLoadData){
+//                srl.setRefreshing(true);
+//            }else{
+//                notFirstLoadData = true;
+//            }
+//        }
+//        Logger.d("最后可见item:"+lastItemPosition+"...总条目数:"+adapter.getItemCount());
+        if ((lastItemPosition+3)==adapter.getItemCount() && !srl.isRefreshing()){
+            srl.setRefreshing(true);
+//            Logger.d("刷新...BaseFragment..."+srl);
+            presenter.start(false);
+        }
+    }
+
     protected void stopRefresh(SwipeRefreshLayout srl){
 //        firstSeeLastItem = true;
         if(srl!=null){
@@ -96,7 +116,7 @@ abstract public class BaseFragment extends Fragment {
      * @param srl
      * @param presenter
      */
-    protected void requestBaseDataIfUserNotScrollToFragments(SwipeRefreshLayout srl,BasePresenter presenter){
+    protected void requestBaseDataIfUserNotScrollToFragments(SwipeRefreshLayout srl,ListPresenter presenter){
         isViewPrepared = true;
         if (isViewPrepared && isFirstVisibleToUser && isVisibleToUser){
             isFirstVisibleToUser = false;
