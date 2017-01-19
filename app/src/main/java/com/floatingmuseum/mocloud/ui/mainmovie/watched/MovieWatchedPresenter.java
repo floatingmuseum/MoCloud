@@ -26,7 +26,7 @@ public class MovieWatchedPresenter extends ListPresenter implements DataCallback
     public void start(boolean shouldClean) {
         pageNum = shouldClean?1:++pageNum;
         this.shouldClean =shouldClean;
-//        repository.getMovieWatchedData(period,pageNum,limit,this);
+        repository.getMovieWatchedData(period,pageNum,limit,this);
     }
 
     public int getLimit(){

@@ -28,7 +28,7 @@ public class MovieCollectedPresenter extends ListPresenter implements DataCallba
     public void start(boolean shouldClean) {
         pageNum = shouldClean?1:++pageNum;
         this.shouldClean =shouldClean;
-//        repository.getMovieCollectedData(period,pageNum,limit,this);
+        repository.getMovieCollectedData(period,pageNum,limit,this);
     }
 
     @Override

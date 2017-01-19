@@ -40,23 +40,23 @@
     <string name="under_construction">This is under construction.</string>
     <string name="staff_role">Role</string>
 
-    <!--<string-array name="tab_names">-->
-        <!--<item>Trending</item>-->
-        <!--<item>Popular</item>-->
-        <!--<item>Played</item>-->
-        <!--<item>Watched</item>-->
-        <!--<item>Collected</item>-->
-        <!--&lt;!&ndash;<item>Anticipated</item>&ndash;&gt;-->
-        <!--<item>Box Office</item>-->
-    <!--</string-array>-->
-
     <string-array name="tab_names">
-        <item>Popular</item>
-        <item>Now playing</item>
-        <item>Top rated</item>
-        <item>Upcoming</item>
         <item>Trending</item>
+        <item>Popular</item>
+        <item>Played</item>
+        <item>Watched</item>
+        <item>Collected</item>
+        <!--<item>Anticipated</item>-->
+        <item>Box Office</item>
     </string-array>
+
+    <!--<string-array name="tab_names">-->
+        <!--<item>Popular</item>-->
+        <!--<item>Now playing</item>-->
+        <!--<item>Top rated</item>-->
+        <!--<item>Upcoming</item>-->
+        <!--<item>Trending</item>-->
+    <!--</string-array>-->
 
     <string-array name="staff_tab_names">
         <item>Biography</item>

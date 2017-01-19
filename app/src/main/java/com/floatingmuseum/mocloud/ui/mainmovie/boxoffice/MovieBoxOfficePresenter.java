@@ -25,7 +25,7 @@ public class MovieBoxOfficePresenter extends ListPresenter implements DataCallba
 
     @Override
     public void start(boolean shouldClean) {
-//        repository.getMovieBoxOfficeData(this);
+        repository.getMovieBoxOfficeData(this);
     }
 
     @Override

@@ -15,8 +15,7 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.ui.mainmovie.BaseFragment;
-import com.floatingmuseum.mocloud.ui.mainmovie.nowplaying.MovieNowPlayingPresenter;
-import com.floatingmuseum.mocloud.ui.mainmovie.popular.MoviePopularAdapter;
+import com.floatingmuseum.mocloud.ui.mainmovie.popular.TmdbMoviePopularAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,7 @@ public class MovieTopRatedFragment extends BaseFragment {
     public final static String MOVIE_TOP_RATED_FRAGMENT = "MovieTopRatedFragment";
     private MovieTopRatedPresenter presenter;
     private List<TmdbMovieDetail> topRatedList;
-    private MoviePopularAdapter adapter;
+    private TmdbMoviePopularAdapter adapter;
     private GridLayoutManager manager;
 
     public static MovieTopRatedFragment newInstance() {
@@ -60,7 +59,7 @@ public class MovieTopRatedFragment extends BaseFragment {
 
     private void initView() {
         topRatedList = new ArrayList<>();
-        adapter = new MoviePopularAdapter(topRatedList);
+        adapter = new TmdbMoviePopularAdapter(topRatedList);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context, 2);
         rv.setLayoutManager(manager);
