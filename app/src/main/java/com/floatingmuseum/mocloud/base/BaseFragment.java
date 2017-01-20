@@ -9,6 +9,7 @@ import android.support.v7.widget.GridLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
+import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
@@ -94,6 +95,18 @@ abstract public class BaseFragment extends Fragment {
         movie.setPoster_path(staff.getPoster_path());
         movie.setRelease_date(staff.getRelease_date());
         movie.setFromStaffWorks(true);
+        intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,movie);
+        context.startActivity(intent);
+    }
+
+    protected void openMovieDetailActivity(Movie movie){
+        Intent intent = new Intent(context, MovieDetailActivity.class);
+//        TmdbMovieDetail movie = new TmdbMovieDetail();
+//        movie.setId(staff.getId());
+//        movie.setTitle(staff.getTitle());
+//        movie.setPoster_path(staff.getPoster_path());
+//        movie.setRelease_date(staff.getRelease_date());
+//        movie.setFromStaffWorks(true);
         intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,movie);
         context.startActivity(intent);
     }

@@ -92,7 +92,7 @@ public interface MoCloudService {
      * Returns all movies being watched right now. Movies with the most users are returned first.
      * limit每页数据的数量
      */
-    @GET("movies/trending")
+    @GET("movies/trending?extended=full")
     Observable<List<BaseMovie>> getMovieTrending(@Query("page") int page,@Query("limit")int limit);
 
     /**

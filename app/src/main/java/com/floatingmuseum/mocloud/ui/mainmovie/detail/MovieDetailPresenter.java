@@ -6,6 +6,7 @@ import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.Comment;
+import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
@@ -30,6 +31,12 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
 
     MovieDetailPresenter(@NonNull MovieDetailActivity activity) {
         this.activity = activity;
+    }
+
+    public void getData(Movie movie) {
+        compositeSubscription.add(repository.getMovieTeam(movie.getIds().getSlug(), this));
+        compositeSubscription.add(repository.getMovieComments(movie.getIds().getSlug(), CommentsActivity.SORT_BY_LIKES, limit, page, this, null));
+        compositeSubscription.add(repository.getMovieImdbRatings(movie.getIds().getImdb(), this));
     }
 
     public void getData(TmdbMovieDetail movie) {

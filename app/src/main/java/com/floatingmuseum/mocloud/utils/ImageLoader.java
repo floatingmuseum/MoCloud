@@ -20,7 +20,9 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
+import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
 
 import java.io.BufferedOutputStream;
@@ -107,6 +109,26 @@ public class ImageLoader {
         } else {
             loadDefault(context, view);
         }
+    }
+
+    public static void loadPoster(Context context, RatioImageView posterView, Movie movie, int placeHolder) {
+        TmdbMovieImage image = movie.getImage();
+        Logger.d("MovieName:" + movie.getTitle() + "..." + image);
+        if (image != null) {
+            if (image.isHasCache()) {
+                File file = image.getCacheFile();
+                load(context, file, posterView, R.drawable.default_movie_poster);
+                Logger.d("图片从本地加载:" + movie.getTitle() + "..." + file.getName());
+                return;
+            } else if (image.isHasPoster()) {
+                String tmdbPosterUrl = StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path());
+                load(context, tmdbPosterUrl, posterView, R.drawable.default_movie_poster);
+                Logger.d("图片从网络加载:" + movie.getTitle() + "..." + image.getId() + "...tmdbPosterUrl:" + tmdbPosterUrl);
+                return;
+            }
+        }
+        Logger.d("没有图片showImage:" + movie.getTitle());
+        loadDefault(context, posterView);
     }
 
     public static void loadFromDrawable(Context context, int drawable, ImageView view) {

@@ -1,7 +1,10 @@
 package com.floatingmuseum.mocloud.data;
 
 import android.text.format.DateUtils;
+import android.util.SparseArray;
 
+import com.floatingmuseum.mocloud.data.entity.MovieTeam;
+import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbStaffMovieCredits;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
@@ -171,5 +174,28 @@ public class DataMachine {
         } else {
             return true;
         }
+    }
+
+    public static MovieTeam mixingStaffWorks(People people){
+        ArrayList team = new ArrayList();
+        List<Staff> directors = people.getCrew().getDirecting();
+        if (directors!=null && directors.size()>0){
+            team.add(directors.get(0));
+        }
+        List<Staff> casts = people.getCast();
+        int castNum;
+        if (team.size()>0){
+            castNum = casts.size()<3?casts.size():3;
+        }else{
+            castNum = casts.size()<4?casts.size():4;
+        }
+        for (int i = 0; i < castNum; i++) {
+            team.add(casts.get(i));
+        }
+
+        MovieTeam movieTeam = new MovieTeam();
+        movieTeam.setDetailShowList(team);
+        movieTeam.setPeople(people);
+        return movieTeam;
     }
 }

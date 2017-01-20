@@ -15,6 +15,7 @@ import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
+import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
@@ -465,10 +466,18 @@ public class Repository {
                 });
     }
 
-    public Subscription getMovieTeam(int tmdbId, final MovieDetailCallback callback) {
-        return service.getMovieTeam(tmdbId, BuildConfig.TmdbApiKey)
-                .compose(RxUtil.<TmdbPeople>threadSwitch())
-                .subscribe(new Observer<TmdbPeople>() {
+    public Subscription getMovieTeam(String slug, final MovieDetailCallback callback) {
+        return service.getMovieTeam(slug)
+                .map(new Func1<People, MovieTeam>() {
+                    @Override
+                    public MovieTeam call(People people) {
+                        // TODO: 2017/1/20 这里去DataMachine里处理一下数据，旨在提取出1个导演3个主演用于MovieDetail显示，剩下一个原始List用于MovieDetail中点击more时使用
+                        DataMachine.mixingStaffWorks(people);
+                        return null;
+                    }
+                })
+                .compose(RxUtil.<MovieTeam>threadSwitch())
+                .subscribe(new Observer<MovieTeam>() {
                     @Override
                     public void onCompleted() {
 
@@ -481,7 +490,7 @@ public class Repository {
                     }
 
                     @Override
-                    public void onNext(TmdbPeople tmdbPeople) {
+                    public void onNext(MovieTeam movieTeam) {
 //                        callback.onPeopleSuccess(tmdbPeople);
                     }
                 });

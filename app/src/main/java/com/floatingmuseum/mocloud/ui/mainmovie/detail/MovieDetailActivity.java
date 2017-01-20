@@ -103,6 +103,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     TextView tv_comments_more;
 
     private TmdbMovieDetail movie;
+    private Movie movie_object;
     private MovieDetailPresenter presenter;
     private CheckBox is_spoiler;
     private EditText comment_box;
@@ -120,11 +121,26 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
 
-        movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
+//        movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
+        movie_object = getIntent().getParcelableExtra(MOVIE_OBJECT);
         presenter = new MovieDetailPresenter(this);
-        Logger.d("电影名onCreate:" + movie.getTitle() + "..." + movie.getId());
-        presenter.getData(movie);
-        initView();
+//        Logger.d("电影名onCreate:" + movie.getTitle() + "..." + movie.getId());
+        presenter.getData(movie_object);
+//        initView();
+        initViewMovie();
+    }
+
+    protected void initViewMovie(){
+        actionBar.setTitle(movie_object.getTitle());
+        tv_movie_title.setText(movie_object.getTitle());
+        tv_released.setText(movie_object.getReleased());
+        tv_runtime.setText(movie_object.getRuntime() + " mins");
+        tv_language.setText(movie_object.getLanguage());
+        tv_overview.setText(movie_object.getOverview());
+        tv_rating.setText(NumberFormatUtil.doubleFormatToString(movie_object.getRating(), false, 2) + "/" + movie.getTraktVotes() + "votes");
+        tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie_object.getRating(), false, 2));
+        tvTraktRatingCount.setText(movie_object.getVotes() + "votes");
+        ImageLoader.loadPoster(this,iv_poster,movie_object,R.drawable.default_movie_poster);
     }
 
     @Override
