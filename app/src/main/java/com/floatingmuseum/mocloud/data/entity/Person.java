@@ -1,10 +1,14 @@
 package com.floatingmuseum.mocloud.data.entity;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class Person {
+public class Person implements Parcelable{
 
     private String name;
     private Ids ids;
@@ -78,4 +82,47 @@ public class Person {
     public void setHomepage(String homepage) {
         this.homepage = homepage;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.name);
+        dest.writeParcelable(this.ids, flags);
+        dest.writeParcelable(this.images, flags);
+        dest.writeString(this.biography);
+        dest.writeString(this.birthday);
+        dest.writeString(this.death);
+        dest.writeString(this.birthplace);
+        dest.writeString(this.homepage);
+    }
+
+    public Person() {
+    }
+
+    protected Person(Parcel in) {
+        this.name = in.readString();
+        this.ids = in.readParcelable(Ids.class.getClassLoader());
+        this.images = in.readParcelable(Image.class.getClassLoader());
+        this.biography = in.readString();
+        this.birthday = in.readString();
+        this.death = in.readString();
+        this.birthplace = in.readString();
+        this.homepage = in.readString();
+    }
+
+    public static final Creator<Person> CREATOR = new Creator<Person>() {
+        @Override
+        public Person createFromParcel(Parcel source) {
+            return new Person(source);
+        }
+
+        @Override
+        public Person[] newArray(int size) {
+            return new Person[size];
+        }
+    };
 }

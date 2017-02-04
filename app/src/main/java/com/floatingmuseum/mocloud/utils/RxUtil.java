@@ -3,7 +3,6 @@ package com.floatingmuseum.mocloud.utils;
 import android.Manifest;
 
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
-import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.orhanobut.logger.Logger;
 
@@ -36,13 +35,13 @@ public class RxUtil {
                 Logger.d("没有读写权限，不下载");
                 return tmdbMovieDataList;
             }
-            List<TmdbMovieDetail> movies = tmdbMovieDataList.getResults();
-            for (TmdbMovieDetail movie : movies) {
-                File file = ImageCacheManager.hasCacheImage(movie.getId(), ImageCacheManager.TYPE_POSTER);
-                if (file != null) {
-                    movie.setImageCacheFile(file);
-                }
-            }
+//            List<TmdbMovieDetail> movies = tmdbMovieDataList.getResults();
+//            for (TmdbMovieDetail movie : movies) {
+//                File file = ImageCacheManager.hasCacheImage(movie.getId(), ImageCacheManager.TYPE_POSTER);
+//                if (file != null) {
+//                    movie.setImageCacheFile(file);
+//                }
+//            }
             return tmdbMovieDataList;
         }
     };

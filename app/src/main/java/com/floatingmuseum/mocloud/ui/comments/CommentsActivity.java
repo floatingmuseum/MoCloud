@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,24 +16,14 @@ import android.widget.ImageView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
-import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseCommentsItemAdapter;
-import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.Comment;
-import com.floatingmuseum.mocloud.data.entity.Ids;
 import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.floatingmuseum.mocloud.data.entity.Reply;
-import com.floatingmuseum.mocloud.data.entity.Sharing;
-import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
-import com.floatingmuseum.mocloud.data.entity.User;
-import com.floatingmuseum.mocloud.ui.user.UserActivity;
-import com.floatingmuseum.mocloud.utils.KeyboardUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
-import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -69,7 +58,8 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     public static final String SORT_BY_REPLIES = "replies";
 
     private CommentsPresenter presenter;
-    private TmdbMovieDetail movie;
+//    private TmdbMovieDetail movie;
+    private Movie movie;
     private List<Comment> commentsData;
     private BaseCommentsItemAdapter adapter;
     private LinearLayoutManager manager;
@@ -117,7 +107,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                loadMoreComments(manager, adapter, currentSortCondition, movie.getImdb_id(), presenter, srl_comments);
+//                loadMoreComments(manager, adapter, currentSortCondition, movie.getImdb_id(), presenter, srl_comments);
             }
         });
 
@@ -166,8 +156,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         Comment comment = new Comment();
         comment.setSpoiler(isSpoiler.isChecked());
         comment.setComment(replyContent);
-//        comment.setMovie(movie);
-        presenter.sendComment(comment, movie.getImdb_id());
+//        presenter.sendComment(comment, movie.getImdb_id());
     }
 
     public void onBaseDataSuccess(List<Comment> comments) {
@@ -324,7 +313,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
 
     @Override
     public void onRefresh() {
-        presenter.start(currentSortCondition, movie.getImdb_id(), shouldClean);
+//        presenter.start(currentSortCondition, movie.getImdb_id(), shouldClean);
     }
 
     @Override

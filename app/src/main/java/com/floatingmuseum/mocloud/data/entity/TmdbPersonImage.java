@@ -9,7 +9,7 @@ import java.util.List;
  * Created by Floatingmuseum on 2016/12/8.
  */
 
-public class TmdbPeopleImage extends TmdbImage implements Parcelable{
+public class TmdbPersonImage extends TmdbImage implements Parcelable{
 
     private List<Profiles> profiles;
 
@@ -139,23 +139,23 @@ public class TmdbPeopleImage extends TmdbImage implements Parcelable{
         dest.writeTypedList(this.profiles);
     }
 
-    public TmdbPeopleImage() {
+    public TmdbPersonImage() {
     }
 
-    protected TmdbPeopleImage(Parcel in) {
+    protected TmdbPersonImage(Parcel in) {
         super(in);
         this.profiles = in.createTypedArrayList(Profiles.CREATOR);
     }
 
-    public static final Creator<TmdbPeopleImage> CREATOR = new Creator<TmdbPeopleImage>() {
+    public static final Creator<TmdbPersonImage> CREATOR = new Creator<TmdbPersonImage>() {
         @Override
-        public TmdbPeopleImage createFromParcel(Parcel source) {
-            return new TmdbPeopleImage(source);
+        public TmdbPersonImage createFromParcel(Parcel source) {
+            return new TmdbPersonImage(source);
         }
 
         @Override
-        public TmdbPeopleImage[] newArray(int size) {
-            return new TmdbPeopleImage[size];
+        public TmdbPersonImage[] newArray(int size) {
+            return new TmdbPersonImage[size];
         }
     };
 }

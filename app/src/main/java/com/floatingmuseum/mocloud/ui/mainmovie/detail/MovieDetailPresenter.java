@@ -3,26 +3,22 @@ package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 import android.support.annotation.NonNull;
 
 import com.floatingmuseum.mocloud.base.Presenter;
-import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
-import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
-import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
-import rx.Subscription;
-
 
 /**
  * Created by Floatingmuseum on 2016/7/14.
  */
-public class MovieDetailPresenter extends Presenter implements MovieDetailCallback<TmdbMovieDetail> {
+public class MovieDetailPresenter extends Presenter implements MovieDetailCallback{
 
     MovieDetailActivity activity;
     private int limit = 4;
@@ -39,24 +35,17 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
         compositeSubscription.add(repository.getMovieImdbRatings(movie.getIds().getImdb(), this));
     }
 
-    public void getData(TmdbMovieDetail movie) {
-        compositeSubscription.add(repository.getMovieDetail(movie.getId(), this));
-        if (movie.isTraktItem()) {
-            isTraktItem = movie.isTraktItem();
-            getImdbRatings(movie.getImdb_id());
-        }
-    }
+//    public void getData(TmdbMovieDetail movie) {
+//        compositeSubscription.add(repository.getMovieDetail(movie.getId(), this));
+//        if (movie.isTraktItem()) {
+//            isTraktItem = movie.isTraktItem();
+//            getImdbRatings(movie.getImdb_id());
+//        }
+//    }
 
     @Override
-    public void onBaseDataSuccess(TmdbMovieDetail movie) {
-        compositeSubscription.add(repository.getMovieComments(movie.getImdb_id(), CommentsActivity.SORT_BY_LIKES, limit, page, this, null));
-        activity.onBaseDataSuccess(movie);
-        activity.onPeopleSuccess(movie.getCredits());
-        Logger.d("电影名onBaseDataSuccess:" + movie.getTitle() + "..." + movie.getImdb_id());
-        if (!isTraktItem) {
-            getTraktRatings(movie.getImdb_id());
-            getImdbRatings(movie.getImdb_id());
-        }
+    public void onMovieTeamSuccess(MovieTeam movieTeam) {
+        activity.onMovieTeamSuccess(movieTeam);
     }
 
     public void getTraktRatings(String imdbId) {
@@ -89,6 +78,11 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     @Override
     public void onSendCommentSuccess(Comment comment) {
         activity.onSendCommentSuccess(comment);
+    }
+
+    @Override
+    public void onBaseDataSuccess(Object o) {
+
     }
 
     @Override

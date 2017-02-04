@@ -2,46 +2,30 @@ package com.floatingmuseum.mocloud.base;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.R;
-import com.floatingmuseum.mocloud.data.entity.Comment;
-import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.Staff;
-import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
+import com.floatingmuseum.mocloud.data.entity.TmdbPersonImage;
 import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.ui.comments.CommentsPresenter;
-import com.floatingmuseum.mocloud.ui.comments.SingleCommentActivity;
-import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 import com.floatingmuseum.mocloud.ui.staff.StaffDetailActivity;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
-import com.floatingmuseum.mocloud.utils.MoCloudUtil;
-import com.floatingmuseum.mocloud.utils.ResUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
-import com.floatingmuseum.mocloud.utils.TimeUtil;
-import com.orhanobut.logger.Logger;
 
 import java.io.File;
-import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Floatingmuseum on 2016/8/31.
@@ -108,15 +92,15 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(BaseActivity.this, StaffDetailActivity.class);
-                intent.putExtra(StaffDetailActivity.STAFF_IMAGE, staff.getProfile_path());
-                intent.putExtra(StaffDetailActivity.STAFF_NAME, staff.getName());
-                intent.putExtra(StaffDetailActivity.STAFF_ID, staff.getId());
+//                intent.putExtra(StaffDetailActivity.STAFF_IMAGE, staff.getProfile_path());
+//                intent.putExtra(StaffDetailActivity.STAFF_NAME, staff.getName());
+//                intent.putExtra(StaffDetailActivity.STAFF_ID, staff.getId());
                 startActivity(intent);
             }
         });
     }
 
-    protected void loadPeopleImage(TmdbPeopleImage tmdbPeopleImage, ImageView headView) {
+    protected void loadPeopleImage(TmdbPersonImage tmdbPeopleImage, ImageView headView) {
         if (tmdbPeopleImage != null) {
             if (tmdbPeopleImage.isHasCache()) {
                 File file = tmdbPeopleImage.getCacheFile();

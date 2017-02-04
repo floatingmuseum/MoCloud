@@ -22,7 +22,7 @@ public class StaffMoviesPresenter extends Presenter implements DataCallback<List
     }
 
     public void start(int staffId) {
-        repository.getStaffMovieCredits(staffId,this);
+//        repository.getStaffMovieCredits(staffId,this);
     }
 
     @Override

@@ -18,77 +18,20 @@ public class Staff implements Parcelable{
     public static final String SOUND_ITEM = "Sound";
     public static final String VISUAL_EFFECTS_ITEM = "Visual Effects";
     public static final String LIGHTING_ITEM = "Lighting";
+    public static final String CREW_ITEM = "Crew";
 
-    private boolean adult;
-    private String credit_id;
-    private String department;
-    private int id;
-    private String job;
-    private String original_title;
-    private String poster_path;
-    private String profile_path;
-    private String release_date;
-    private String title;
+    private Person person;
     private String character;
-    private String name;
-    private int cast_id;
-    private int order;
+    private String job;
     private String itemType;
+    private TmdbPersonImage tmdbPersonImage;
 
-    public int getOrder() {
-        return order;
+    public String getItemType() {
+        return itemType;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
-    }
-
-    public int getCast_id() {
-        return cast_id;
-    }
-
-    public void setCast_id(int cast_id) {
-        this.cast_id = cast_id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isAdult() {
-        return adult;
-    }
-
-    public void setAdult(boolean adult) {
-        this.adult = adult;
-    }
-
-    public String getCredit_id() {
-        return credit_id;
-    }
-
-    public void setCredit_id(String credit_id) {
-        this.credit_id = credit_id;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
     }
 
     public String getJob() {
@@ -99,46 +42,6 @@ public class Staff implements Parcelable{
         this.job = job;
     }
 
-    public String getOriginal_title() {
-        return original_title;
-    }
-
-    public void setOriginal_title(String original_title) {
-        this.original_title = original_title;
-    }
-
-    public String getPoster_path() {
-        return poster_path;
-    }
-
-    public void setPoster_path(String poster_path) {
-        this.poster_path = poster_path;
-    }
-
-    public String getProfile_path() {
-        return profile_path;
-    }
-
-    public void setProfile_path(String profile_path) {
-        this.profile_path = profile_path;
-    }
-
-    public String getRelease_date() {
-        return release_date;
-    }
-
-    public void setRelease_date(String release_date) {
-        this.release_date = release_date;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getCharacter() {
         return character;
     }
@@ -147,12 +50,23 @@ public class Staff implements Parcelable{
         this.character = character;
     }
 
-    public String getItemType() {
-        return itemType;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setItemType(String itemType) {
-        this.itemType = itemType;
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public TmdbPersonImage getTmdbPersonImage() {
+        return tmdbPersonImage;
+    }
+
+    public void setTmdbPersonImage(TmdbPersonImage tmdbPersonImage) {
+        this.tmdbPersonImage = tmdbPersonImage;
+    }
+
+    public Staff() {
     }
 
     @Override
@@ -162,42 +76,19 @@ public class Staff implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(this.adult ? (byte) 1 : (byte) 0);
-        dest.writeString(this.credit_id);
-        dest.writeString(this.department);
-        dest.writeInt(this.id);
-        dest.writeString(this.job);
-        dest.writeString(this.original_title);
-        dest.writeString(this.poster_path);
-        dest.writeString(this.profile_path);
-        dest.writeString(this.release_date);
-        dest.writeString(this.title);
+        dest.writeParcelable(this.person, flags);
         dest.writeString(this.character);
-        dest.writeString(this.name);
-        dest.writeInt(this.cast_id);
-        dest.writeInt(this.order);
+        dest.writeString(this.job);
         dest.writeString(this.itemType);
-    }
-
-    public Staff() {
+        dest.writeParcelable(this.tmdbPersonImage, flags);
     }
 
     protected Staff(Parcel in) {
-        this.adult = in.readByte() != 0;
-        this.credit_id = in.readString();
-        this.department = in.readString();
-        this.id = in.readInt();
-        this.job = in.readString();
-        this.original_title = in.readString();
-        this.poster_path = in.readString();
-        this.profile_path = in.readString();
-        this.release_date = in.readString();
-        this.title = in.readString();
+        this.person = in.readParcelable(Person.class.getClassLoader());
         this.character = in.readString();
-        this.name = in.readString();
-        this.cast_id = in.readInt();
-        this.order = in.readInt();
+        this.job = in.readString();
         this.itemType = in.readString();
+        this.tmdbPersonImage = in.readParcelable(TmdbPersonImage.class.getClassLoader());
     }
 
     public static final Creator<Staff> CREATOR = new Creator<Staff>() {

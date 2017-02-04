@@ -12,7 +12,7 @@ public class TmdbMovieDataList {
     private int total_results;
     private int total_pages;
     private Dates dates;
-    private List<TmdbMovieDetail> results;
+//    private List<TmdbMovieDetail> results;
 
     public int getPage() {
         return page;
@@ -46,13 +46,13 @@ public class TmdbMovieDataList {
         this.dates = dates;
     }
 
-    public List<TmdbMovieDetail> getResults() {
-        return results;
-    }
-
-    public void setResults(List<TmdbMovieDetail> results) {
-        this.results = results;
-    }
+//    public List<TmdbMovieDetail> getResults() {
+//        return results;
+//    }
+//
+//    public void setResults(List<TmdbMovieDetail> results) {
+//        this.results = results;
+//    }
 
     private static class Dates{
         private String maximum;

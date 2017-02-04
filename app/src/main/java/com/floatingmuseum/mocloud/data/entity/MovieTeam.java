@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MovieTeam {
     private People people;
-    private List detailShowList;
+    private List<Staff> detailShowList;
 
     public People getPeople() {
         return people;
@@ -18,11 +18,11 @@ public class MovieTeam {
         this.people = people;
     }
 
-    public List getDetailShowList() {
+    public List<Staff> getDetailShowList() {
         return detailShowList;
     }
 
-    public void setDetailShowList(List detailShowList) {
+    public void setDetailShowList(List<Staff> detailShowList) {
         this.detailShowList = detailShowList;
     }
 }

@@ -22,6 +22,7 @@ import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
+import com.floatingmuseum.mocloud.data.entity.TmdbPersonImage;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
 
@@ -108,6 +109,14 @@ public class ImageLoader {
             }
         } else {
             loadDefault(context, view);
+        }
+    }
+
+    public static void loadFromTmdbPersonImage(Context context, TmdbPersonImage image, final ImageView view, int placeHolder) {
+        if (image!=null && image.getProfiles()!=null && image.getProfiles().size()>0) {
+            load(context,StringUtil.buildPeopleHeadshotUrl(image.getProfiles().get(0).getFile_path()),view,placeHolder);
+        }else{
+            loadDefault(context,view);
         }
     }
 

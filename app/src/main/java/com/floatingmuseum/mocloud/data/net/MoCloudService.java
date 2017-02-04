@@ -16,12 +16,8 @@ import com.floatingmuseum.mocloud.data.entity.StaffImages;
 import com.floatingmuseum.mocloud.data.entity.Stats;
 import com.floatingmuseum.mocloud.data.entity.TmdbImagesConfiguration;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
-import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
-import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
-import com.floatingmuseum.mocloud.data.entity.TmdbPeopleImage;
-import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
-import com.floatingmuseum.mocloud.data.entity.TmdbStaffMovieCredits;
+import com.floatingmuseum.mocloud.data.entity.TmdbPersonImage;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.entity.User;
@@ -35,10 +31,7 @@ import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-import retrofit2.http.HEAD;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Streaming;
@@ -150,8 +143,8 @@ public interface MoCloudService {
     /**
      * 电影详情 from Tmdb
      */
-    @GET("https://api.themoviedb.org/3/movie/{id}")
-    Observable<TmdbMovieDetail> getMovieDetail(@Path("id") int tmdbId,@Query("api_key")String tmdbApiKey,@Query("append_to_response")String appendToResponse);
+//    @GET("https://api.themoviedb.org/3/movie/{id}")
+//    Observable<TmdbMovieDetail> getMovieDetail(@Path("id") int tmdbId,@Query("api_key")String tmdbApiKey,@Query("append_to_response")String appendToResponse);
 
     /**
      * Trakt评分
@@ -198,11 +191,11 @@ public interface MoCloudService {
     /**
      * 电影团队 from TMDB
      */
-    @GET("https://api.themoviedb.org/3/movie/{tmdbID}/credits")
-    Observable<TmdbPeople> getMovieTeam(@Path("tmdbID") int tmdbId,@Query("api_key")String tmdbApiKey);
+//    @GET("https://api.themoviedb.org/3/movie/{tmdbID}/credits")
+//    Observable<TmdbPeople> getMovieTeam(@Path("tmdbID") int tmdbId,@Query("api_key")String tmdbApiKey);
 
     @GET("https://api.themoviedb.org/3/person/{tmdbID}/images")
-    Observable<TmdbPeopleImage> getPeopleImage(@Path("tmdbID") int tmdbId,@Query("api_key")String tmdbApiKey);
+    Observable<TmdbPersonImage> getPersonImagesFromTmdb(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
 
     @GET("recommendations/movies?extended=full")
     Observable<List<Movie>> getRecommendations();
@@ -213,8 +206,8 @@ public interface MoCloudService {
     /**
      * 影人详情 from TMDB
      */
-    @GET("https://api.themoviedb.org/3/person/{tmdbID}")
-    Observable<TmdbStaff> getStaff(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
+//    @GET("https://api.themoviedb.org/3/person/{tmdbID}")
+//    Observable<TmdbStaff> getStaff(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
 
     @GET("people/{id}?extended=full")
     Observable<Person> getStaff(@Path("id") String id);
@@ -222,8 +215,8 @@ public interface MoCloudService {
     @GET("people/{id}/movies")
     Observable<PeopleCredit> getStaffMovieCredits(@Path("id")String traktId);
 
-    @GET("https://api.themoviedb.org/3/person/{tmdbID}/movie_credits")
-    Observable<TmdbStaffMovieCredits> getStaffMovieCredits(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
+//    @GET("https://api.themoviedb.org/3/person/{tmdbID}/movie_credits")
+//    Observable<TmdbStaffMovieCredits> getStaffMovieCredits(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
 
     @GET("https://api.themoviedb.org/3/person/{tmdbID}/images")
     Observable<StaffImages> getStaffImages(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);

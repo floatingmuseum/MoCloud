@@ -10,8 +10,6 @@ import android.support.v7.widget.GridLayoutManager;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.base.ListPresenter;
-import com.floatingmuseum.mocloud.base.Presenter;
-import com.floatingmuseum.mocloud.data.entity.TmdbMovieDetail;
 import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 
 /**
@@ -42,11 +40,11 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-    protected void openMovieDetailActivity(TmdbMovieDetail detail){
-        Intent intent = new Intent(context, MovieDetailActivity.class);
-        intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,detail);
-        context.startActivity(intent);
-    }
+//    protected void openMovieDetailActivity(TmdbMovieDetail detail){
+//        Intent intent = new Intent(context, MovieDetailActivity.class);
+//        intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,detail);
+//        context.startActivity(intent);
+//    }
 
     protected void stopRefresh(SwipeRefreshLayout srl) {
 //        firstSeeLastItem = true;

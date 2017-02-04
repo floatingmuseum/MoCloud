@@ -11,12 +11,7 @@ import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
-import com.floatingmuseum.mocloud.data.Repository;
-import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.Staff;
-import com.floatingmuseum.mocloud.data.entity.TmdbStaff;
-import com.floatingmuseum.mocloud.utils.StringUtil;
-import com.orhanobut.logger.Logger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,10 +73,10 @@ public class StaffBiographyFragment extends BaseFragment {
         presenter.start(staffId);
     }
 
-    public void onBaseDataSuccess(TmdbStaff staff){
-        tvBirthday.setText(staff.getBirthday());
-        tvBirthplace.setText(staff.getPlace_of_birth());
-        tvHomepage.setText(staff.getHomepage());
-        tvBiography.setText(staff.getBiography());
+    public void onBaseDataSuccess(Staff staff){
+//        tvBirthday.setText(staff.getPerson());
+//        tvBirthplace.setText(staff.getPlace_of_birth());
+//        tvHomepage.setText(staff.getHomepage());
+//        tvBiography.setText(staff.getBiography());
     }
 }

@@ -16,6 +16,9 @@ public class Crew {
     private List<Staff> writing;
     private List<Staff> sound;
     private List<Staff> camera;
+    private List<Staff> editing;
+    private List<Staff> lighting;
+    @SerializedName("visual effects") private List<Staff> visualEffects;
 
     public List<Staff> getDirecting() {
         return directing;
@@ -79,5 +82,29 @@ public class Crew {
 
     public void setCamera(List<Staff> camera) {
         this.camera = camera;
+    }
+
+    public List<Staff> getEditing() {
+        return editing;
+    }
+
+    public void setEditing(List<Staff> editing) {
+        this.editing = editing;
+    }
+
+    public List<Staff> getVisualEffects() {
+        return visualEffects;
+    }
+
+    public void setVisualEffects(List<Staff> visualEffects) {
+        this.visualEffects = visualEffects;
+    }
+
+    public List<Staff> getLighting() {
+        return lighting;
+    }
+
+    public void setLighting(List<Staff> lighting) {
+        this.lighting = lighting;
     }
 }

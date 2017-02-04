@@ -4,7 +4,6 @@ package com.floatingmuseum.mocloud.utils;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.Stats;
-import com.floatingmuseum.mocloud.data.entity.TmdbPeople;
 import com.floatingmuseum.mocloud.data.entity.User;
 
 import java.util.List;
