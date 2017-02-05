@@ -32,7 +32,7 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     public void getData(Movie movie) {
         compositeSubscription.add(repository.getMovieTeam(movie.getIds().getSlug(), this));
         compositeSubscription.add(repository.getMovieComments(movie.getIds().getSlug(), CommentsActivity.SORT_BY_LIKES, limit, page, this, null));
-        compositeSubscription.add(repository.getMovieImdbRatings(movie.getIds().getImdb(), this));
+        compositeSubscription.add(repository.getMovieOtherRatings(movie.getIds().getImdb(), this));
     }
 
 //    public void getData(TmdbMovieDetail movie) {
@@ -48,14 +48,6 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
         activity.onMovieTeamSuccess(movieTeam);
     }
 
-    public void getTraktRatings(String imdbId) {
-        compositeSubscription.add(repository.getMovieTraktRatings(imdbId, this));
-    }
-
-    public void getImdbRatings(String imdbId) {
-        compositeSubscription.add(repository.getMovieImdbRatings(imdbId, this));
-    }
-
     @Override
     public void onCommentsSuccess(List<Comment> comments) {
         activity.onCommentsSuccess(comments);
@@ -67,8 +59,8 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     }
 
     @Override
-    public void onImdbRatingsSuccess(OmdbInfo omdbInfo) {
-        activity.onImdbRatingsSuccess(omdbInfo);
+    public void onOtherRatingsSuccess(OmdbInfo omdbInfo) {
+        activity.onOtherRatingsSuccess(omdbInfo);
     }
 
     public void sendComment(Comment comment, String imdb_id) {

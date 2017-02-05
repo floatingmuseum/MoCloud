@@ -527,8 +527,8 @@ public class Repository {
                 });
     }
 
-    public Subscription getMovieImdbRatings(String imdbId, final MovieDetailCallback callback) {
-        return service.getMovieImdbRatings(imdbId)
+    public Subscription getMovieOtherRatings(String imdbId, final MovieDetailCallback callback) {
+        return service.getMovieOtherRatings(imdbId,"true")
                 .compose(RxUtil.<OmdbInfo>threadSwitch())
                 .subscribe(new Observer<OmdbInfo>() {
                     @Override
@@ -545,7 +545,7 @@ public class Repository {
 
                     @Override
                     public void onNext(OmdbInfo omdbInfo) {
-                        callback.onImdbRatingsSuccess(omdbInfo);
+                        callback.onOtherRatingsSuccess(omdbInfo);
                     }
                 });
     }

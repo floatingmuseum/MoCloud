@@ -25,11 +25,11 @@
 
     <style name="detail_title" parent="detail_text">
         <item name="android:textColor">@color/detail_title</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">19sp</item>
     </style>
     <style name="detail_content" parent="detail_text">
         <item name="android:color">@color/detail_content</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="transparentText">

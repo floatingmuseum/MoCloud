@@ -154,9 +154,10 @@ public interface MoCloudService {
 
     /**
      * Imdb评分
+     * tomato评分
      */
     @GET("http://www.omdbapi.com/")
-    Observable<OmdbInfo> getMovieImdbRatings(@Query("i") String imdbId);
+    Observable<OmdbInfo> getMovieOtherRatings(@Query("i") String imdbId,@Query("tomatoes")String b);
 
     /**
      * 电影Popular from Tmdb

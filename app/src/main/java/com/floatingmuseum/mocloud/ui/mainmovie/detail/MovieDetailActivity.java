@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
@@ -49,12 +50,14 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     ScrollView svMovieDetail;
     @BindView(R.id.ll_movie_detail)
     LinearLayout movieDetailContainer;
-    @BindView(R.id.tv_tmdb_rating)
-    TextView tvTmdbRating;
-    @BindView(R.id.tv_tmdb_rating_count)
-    TextView tvTmdbRatingCount;
-    @BindView(R.id.ll_tmdb_rating)
-    LinearLayout llTmdbRating;
+    @BindView(R.id.iv_tomato_popcorn_state)
+    ImageView ivTomatoPopcornState;
+    @BindView(R.id.tv_tomato_rating)
+    TextView tvTomatoRating;
+    @BindView(R.id.tv_tomato_rating_count)
+    TextView tvTomatoRatingCount;
+    @BindView(R.id.ll_tomato_rating)
+    LinearLayout llTomatoRating;
     @BindView(R.id.tv_trakt_rating)
     TextView tvTraktRating;
     @BindView(R.id.tv_trakt_rating_count)
@@ -415,13 +418,23 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tvTraktRatingCount.setText(ratings.getVotes() + "votes");
     }
 
-    public void onImdbRatingsSuccess(OmdbInfo omdbInfo) {
-        Logger.d("ImdbRating:" + omdbInfo.getImdbRating() + "..." + omdbInfo.getImdbVotes());
+    public void onOtherRatingsSuccess(OmdbInfo omdbInfo) {
+        Logger.d("ImdbRating:" + omdbInfo.getImdbRating() + "..." + omdbInfo.getImdbVotes()+"...tomatoesRating:"+omdbInfo.getTomatoUserRating()+"..."+omdbInfo.getTomatoUserReviews());
         String imdbRating = omdbInfo.getImdbRating();
         tvImdbRating.setText(imdbRating == null ? "N/A" : imdbRating);
         String imdbVotes = omdbInfo.getImdbVotes();
         imdbVotes = imdbVotes == null ? "N/A" : omdbInfo.getImdbVotes().replace(",", "") + "votes";
         tvImdbRatingCount.setText(imdbVotes);
+        llImdbRating.setVisibility(View.VISIBLE);
+
+        String tomatoUserRating = omdbInfo.getTomatoUserRating();
+        double tomatoRating = Double.valueOf(tomatoUserRating);
+        if (tomatoRating<3.5){
+            Glide.with(this).load(R.drawable.popcorn_bad).into(ivTomatoPopcornState);
+        }
+        tvTomatoRating.setText(tomatoUserRating);
+        tvTomatoRatingCount.setText(omdbInfo.getTomatoUserReviews()+"votes");
+        llTomatoRating.setVisibility(View.VISIBLE);
     }
 
     @Override

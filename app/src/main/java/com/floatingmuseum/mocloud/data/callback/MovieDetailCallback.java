@@ -14,5 +14,5 @@ public interface MovieDetailCallback extends CommentsCallback{
     void onMovieTeamSuccess(MovieTeam movieTeam);
     void onCommentsSuccess(List<Comment> comments);
     void onTraktRatingsSuccess(Ratings ratings);
-    void onImdbRatingsSuccess(OmdbInfo omdbInfo);
+    void onOtherRatingsSuccess(OmdbInfo omdbInfo);
 }
