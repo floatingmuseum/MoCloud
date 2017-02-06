@@ -68,7 +68,8 @@ public class StaffDetailActivity extends BaseActivity {
     @Override
     protected void initView() {
         actionBar.setTitle(staff.getPerson().getName());
-        ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(staff.getTmdbPersonImage().getProfiles().get(0).getFile_path()), staffAvatar, R.drawable.default_movie_poster);
+        ImageLoader.loadFromTmdbPersonImage(this,staff.getTmdbPersonImage(),staffAvatar,R.drawable.default_movie_poster);
+//        ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(staff.getTmdbPersonImage().getProfiles().get(0).getFile_path()), staffAvatar, R.drawable.default_movie_poster);
         StaffDetailPagerAdapter pagerAdapter = new StaffDetailPagerAdapter(getSupportFragmentManager(), staff);
         staffViewpager.setAdapter(pagerAdapter);
         staffDetailTab.setupWithViewPager(staffViewpager);
