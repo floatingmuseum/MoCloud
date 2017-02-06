@@ -13,6 +13,7 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.orhanobut.logger.Logger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +42,8 @@ public class StaffBiographyFragment extends BaseFragment {
     LinearLayout llHomepage;
     @BindView(R.id.tv_biography)
     TextView tvBiography;
+    @BindView(R.id.ll_biography)
+    LinearLayout llBiography;
 
     private Staff staff;
     private StaffBiographyPresenter presenter;
@@ -67,11 +70,20 @@ public class StaffBiographyFragment extends BaseFragment {
     @Override
     protected void initView() {
         Person person = staff.getPerson();
-        tvBirthday.setText(person.getBirthday());
-        tvBirthplace.setText(person.getBirthplace());
-        tvHomepage.setText(person.getHomepage());
-        tvBiography.setText(person.getBiography());
-        tvDeathday.setText(person.getDeath());
+        Logger.d("Birthday:" + person.getBirthday() + "...DeathDay:" + person.getDeath() + "...BirthPlace:" + person.getBirthplace() + "...HomePage:" + person.getHomepage() + "...Bio:" + person.getBiography());
+        initText(person.getBirthday(), tvBirthday, llBirthday);
+        initText(person.getDeath(), tvDeathday, llDeathday);
+        initText(person.getBirthplace(), tvBirthplace, llBirthplace);
+        initText(person.getHomepage(), tvHomepage, llHomepage);
+        initText(person.getBiography(), tvBiography, llBiography);
+    }
+
+    private void initText(String text, TextView textView, LinearLayout linearLayout) {
+        if (text != null && text.length() > 0) {
+            textView.setText(text);
+        } else {
+            linearLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
