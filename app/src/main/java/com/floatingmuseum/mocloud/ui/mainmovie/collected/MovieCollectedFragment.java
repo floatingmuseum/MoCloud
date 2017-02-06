@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class MovieCollectedFragment extends BaseFragment{
+public class MovieCollectedFragment extends BaseFragment {
 
     @BindView(R.id.rv)
     RecyclerView rv;
@@ -59,9 +59,9 @@ public class MovieCollectedFragment extends BaseFragment{
 
     protected void initView() {
         collectedList = new ArrayList<>();
-        adapter =  new MovieCollectedAdapter(collectedList);
+        adapter = new MovieCollectedAdapter(collectedList);
         rv.setHasFixedSize(true);
-        manager = new GridLayoutManager(context,2);
+        manager = new GridLayoutManager(context, 2);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -74,17 +74,17 @@ public class MovieCollectedFragment extends BaseFragment{
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                loadMore(manager,adapter,presenter,srl);
+                loadMore(manager, adapter, presenter, srl);
             }
         });
 
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
-//                openMovieDetailActivity(collectedList.get(i).getMovie(),true);
+                openMovieDetailActivity(collectedList.get(position).getMovie());
             }
         });
-        requestBaseDataIfUserNotScrollToFragments(srl,presenter);
+        requestBaseDataIfUserNotScrollToFragments(srl, presenter);
     }
 
     @Override
@@ -95,11 +95,11 @@ public class MovieCollectedFragment extends BaseFragment{
     }
 
     public void refreshData(List<BaseMovie> newData, boolean shouldClean) {
-        if(newData.size()<presenter.getLimit()){
+        if (newData.size() < presenter.getLimit()) {
             alreadyGetAllData = true;
         }
 
-        if(shouldClean){
+        if (shouldClean) {
             collectedList.clear();
         }
         collectedList.addAll(newData);

@@ -85,26 +85,8 @@ abstract public class BaseFragment extends Fragment {
         }
     }
 
-    protected void openMovieDetailActivity(Staff staff){
-        Intent intent = new Intent(context, MovieDetailActivity.class);
-//        TmdbMovieDetail movie = new TmdbMovieDetail();
-//        movie.setId(staff.getId());
-//        movie.setTitle(staff.getTitle());
-//        movie.setPoster_path(staff.getPoster_path());
-//        movie.setRelease_date(staff.getRelease_date());
-//        movie.setFromStaffWorks(true);
-//        intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,movie);
-        context.startActivity(intent);
-    }
-
     protected void openMovieDetailActivity(Movie movie){
         Intent intent = new Intent(context, MovieDetailActivity.class);
-//        TmdbMovieDetail movie = new TmdbMovieDetail();
-//        movie.setId(staff.getId());
-//        movie.setTitle(staff.getTitle());
-//        movie.setPoster_path(staff.getPoster_path());
-//        movie.setRelease_date(staff.getRelease_date());
-//        movie.setFromStaffWorks(true);
         intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,movie);
         context.startActivity(intent);
     }

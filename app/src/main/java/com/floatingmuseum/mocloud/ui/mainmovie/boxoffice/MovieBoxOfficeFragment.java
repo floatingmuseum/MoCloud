@@ -39,7 +39,7 @@ public class MovieBoxOfficeFragment extends BaseFragment {
     private MovieBoxOfficeAdapter adapter;
 
     private MovieBoxOfficePresenter presenter;
-//    private GridLayoutManager manager;
+    //    private GridLayoutManager manager;
     private LinearLayoutManager manager;
 
 
@@ -62,7 +62,7 @@ public class MovieBoxOfficeFragment extends BaseFragment {
 
     protected void initView() {
         boxOfficeList = new ArrayList<>();
-        adapter =  new MovieBoxOfficeAdapter(boxOfficeList);
+        adapter = new MovieBoxOfficeAdapter(boxOfficeList);
         rv.setHasFixedSize(true);
 //        manager = new GridLayoutManager(context,2);
         manager = new LinearLayoutManager(context);
@@ -78,11 +78,11 @@ public class MovieBoxOfficeFragment extends BaseFragment {
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
-//                openMovieDetailActivity(boxOfficeList.get(i).getMovie(),true);
+                openMovieDetailActivity(boxOfficeList.get(position).getMovie());
             }
         });
 
-        requestBaseDataIfUserNotScrollToFragments(srl,presenter);
+        requestBaseDataIfUserNotScrollToFragments(srl, presenter);
 
 //        isViewPrepared = true;
     }

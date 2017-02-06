@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class MoviePlayedFragment extends BaseFragment{
+public class MoviePlayedFragment extends BaseFragment {
 
     @BindView(R.id.rv)
     RecyclerView rv;
@@ -59,9 +59,9 @@ public class MoviePlayedFragment extends BaseFragment{
 
     protected void initView() {
         playedList = new ArrayList<>();
-        adapter =  new MoviePlayedAdapter(playedList);
+        adapter = new MoviePlayedAdapter(playedList);
         rv.setHasFixedSize(true);
-        manager = new GridLayoutManager(context,2);
+        manager = new GridLayoutManager(context, 2);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -74,17 +74,17 @@ public class MoviePlayedFragment extends BaseFragment{
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                loadMore(manager,adapter,presenter,srl);
+                loadMore(manager, adapter, presenter, srl);
             }
         });
 
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
-//                openMovieDetailActivity(playedList.get(i).getMovie(),true);
+                openMovieDetailActivity(playedList.get(position).getMovie());
             }
         });
-        requestBaseDataIfUserNotScrollToFragments(srl,presenter);
+        requestBaseDataIfUserNotScrollToFragments(srl, presenter);
     }
 
     @Override
@@ -94,12 +94,12 @@ public class MoviePlayedFragment extends BaseFragment{
     }
 
 
-    public void refreshData(List<BaseMovie> newData,boolean shouldClean) {
-        if(newData.size()<presenter.getLimit()){
+    public void refreshData(List<BaseMovie> newData, boolean shouldClean) {
+        if (newData.size() < presenter.getLimit()) {
             alreadyGetAllData = true;
         }
 
-        if(shouldClean){
+        if (shouldClean) {
             playedList.clear();
         }
         playedList.addAll(newData);
