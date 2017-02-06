@@ -92,9 +92,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(BaseActivity.this, StaffDetailActivity.class);
-//                intent.putExtra(StaffDetailActivity.STAFF_IMAGE, staff.getProfile_path());
-//                intent.putExtra(StaffDetailActivity.STAFF_NAME, staff.getName());
-//                intent.putExtra(StaffDetailActivity.STAFF_ID, staff.getId());
+                intent.putExtra(StaffDetailActivity.STAFF_OBJECT,staff);
                 startActivity(intent);
             }
         });

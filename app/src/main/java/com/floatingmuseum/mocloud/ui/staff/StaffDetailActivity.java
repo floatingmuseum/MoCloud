@@ -1,7 +1,5 @@
 package com.floatingmuseum.mocloud.ui.staff;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -14,17 +12,14 @@ import android.widget.ImageView;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
+import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.StaffImages;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
-import com.floatingmuseum.mocloud.utils.RxUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.orhanobut.logger.Logger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.Observable;
-import rx.Observer;
-import rx.functions.Func1;
 
 /**
  * Created by Floatingmuseum on 2016/12/6.
@@ -32,18 +27,11 @@ import rx.functions.Func1;
 
 public class StaffDetailActivity extends BaseActivity {
 
-
-    public static final String STAFF_IMAGE = "staff_image";
-    public static final String STAFF_NAME = "staff_name";
-    public static final String STAFF_ID = "staff_id";
+    public static final String STAFF_OBJECT = "staff_object";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    //    @BindView(R.id.staff_avatar)
-//    RatioImageView staffAvatar;
     @BindView(R.id.staff_avatar)
     ImageView staffAvatar;
-    //    @BindView(R.id.rv_pic_wall)
-//    RecyclerView rvPicWall;
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.staff_detail_tab)
@@ -56,7 +44,8 @@ public class StaffDetailActivity extends BaseActivity {
     private String staffName;
     private int staffId;
     private String staffImageUrl;
-//    private StaffDetailPresenter presenter;
+    private Staff staff;
+    //    private StaffDetailPresenter presenter;
 //    private StaffImagesAdapter adapter;
 //    private List<StaffImages.Profiles> imagesList;
 
@@ -70,9 +59,7 @@ public class StaffDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
 
-        staffName = getIntent().getStringExtra(STAFF_NAME);
-        staffImageUrl = getIntent().getStringExtra(STAFF_IMAGE);
-        staffId = getIntent().getIntExtra(STAFF_ID, -1);
+        staff = getIntent().getParcelableExtra(STAFF_OBJECT);
         initView();
 //        presenter = new StaffDetailPresenter(this);
 //        presenter.getStaffImages(staffId);
@@ -80,9 +67,9 @@ public class StaffDetailActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        actionBar.setTitle(staffName);
-        ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(staffImageUrl), staffAvatar, R.drawable.default_movie_poster);
-        StaffDetailPagerAdapter pagerAdapter = new StaffDetailPagerAdapter(getSupportFragmentManager(), staffId);
+        actionBar.setTitle(staff.getPerson().getName());
+        ImageLoader.load(this, StringUtil.buildPeopleHeadshotUrl(staff.getTmdbPersonImage().getProfiles().get(0).getFile_path()), staffAvatar, R.drawable.default_movie_poster);
+        StaffDetailPagerAdapter pagerAdapter = new StaffDetailPagerAdapter(getSupportFragmentManager(), staff.getPerson().getIds().getSlug());
         staffViewpager.setAdapter(pagerAdapter);
         staffDetailTab.setupWithViewPager(staffViewpager);
 

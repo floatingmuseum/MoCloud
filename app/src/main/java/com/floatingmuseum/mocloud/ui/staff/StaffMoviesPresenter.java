@@ -21,7 +21,7 @@ public class StaffMoviesPresenter extends Presenter implements DataCallback<List
         this.fragment = fragment;
     }
 
-    public void start(int staffId) {
+    public void start(String slug) {
 //        repository.getStaffMovieCredits(staffId,this);
     }
 

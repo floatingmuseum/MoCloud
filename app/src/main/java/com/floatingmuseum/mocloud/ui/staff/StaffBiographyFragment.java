@@ -41,13 +41,13 @@ public class StaffBiographyFragment extends BaseFragment {
     @BindView(R.id.tv_biography)
     TextView tvBiography;
 
-    private int staffId;
+    private String slug;
     private StaffBiographyPresenter presenter;
 
-    public static Fragment newInstance(int staffId) {
+    public static Fragment newInstance(String slug) {
         StaffBiographyFragment fragment = new StaffBiographyFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("staffid", staffId);
+        bundle.putString("slug", slug);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -57,7 +57,7 @@ public class StaffBiographyFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_staff_bio, container, false);
         ButterKnife.bind(this, view);
-        staffId = getArguments().getInt("staffid",-1);
+        slug = getArguments().getString("slug");
         presenter = new StaffBiographyPresenter(this);
         requestBaseData();
         return view;
@@ -70,7 +70,7 @@ public class StaffBiographyFragment extends BaseFragment {
 
     @Override
     protected void requestBaseData() {
-        presenter.start(staffId);
+        presenter.start(slug);
     }
 
     public void onBaseDataSuccess(Staff staff){

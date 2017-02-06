@@ -16,12 +16,12 @@ import com.orhanobut.logger.Logger;
  */
 
 public class StaffShowsFragment extends BaseFragment {
-    private int staffId;
+    private String slug;
 
-    public static Fragment newInstance(int staffId) {
+    public static Fragment newInstance(String slug) {
         StaffShowsFragment fragment = new StaffShowsFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("staffid",staffId);
+        bundle.putString("slug",slug);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -37,8 +37,8 @@ public class StaffShowsFragment extends BaseFragment {
 
     @Override
     protected void initView() {
-        staffId = getArguments().getInt("staffid",-1);
-        Logger.d("StaffID:"+staffId);
+        slug = getArguments().getString("slug");
+        Logger.d("StaffID:"+slug);
     }
 
     @Override

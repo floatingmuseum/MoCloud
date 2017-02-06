@@ -7,17 +7,17 @@ import android.support.v4.app.Fragment;
  */
 
 public class StaffDetailFragmentFactory {
-    public static Fragment create(int position, int staffId){
+    public static Fragment create(int position, String slug){
         Fragment fragment = null;
         switch (position){
             case 0:
-                fragment = StaffBiographyFragment.newInstance(staffId);
+                fragment = StaffBiographyFragment.newInstance(slug);
                 break;
             case 1:
-                fragment = StaffMoviesFragment.newInstance(staffId);
+                fragment = StaffMoviesFragment.newInstance(slug);
                 break;
             case 2:
-                fragment = StaffShowsFragment.newInstance(staffId);
+                fragment = StaffShowsFragment.newInstance(slug);
                 break;
         }
         return fragment;

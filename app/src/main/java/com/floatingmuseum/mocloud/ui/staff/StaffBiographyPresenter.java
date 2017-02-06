@@ -16,7 +16,7 @@ public class StaffBiographyPresenter extends Presenter implements DataCallback<S
         this.fragment = fragment;
     }
 
-    public void start(int staffId){
+    public void start(String slug){
 //        repository.getStaffDetail(staffId,this);
     }
 

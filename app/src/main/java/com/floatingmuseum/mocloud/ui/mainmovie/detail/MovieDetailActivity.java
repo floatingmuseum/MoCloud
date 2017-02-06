@@ -183,7 +183,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         if (detailShowList.get(0).getJob() != null) {
             Staff director = detailShowList.get(0);
             LinearLayout director_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_staff, ll_crew, false);
-//            setStaffClickListener(director_item, director);
+            setStaffClickListener(director_item, director);
             RatioImageView iv_staff_headshot = (RatioImageView) director_item.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) director_item.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) director_item.findViewById(R.id.tv_crew_realname);
@@ -239,62 +239,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         for (int i = 0; i < showSize; i++) {
             final Comment comment = comments.get(i);
             CardView comment_item = buildCommentItem(comment);
-//            CardView comment_item = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, commentContainer, false);
-//            CircleImageView iv_userhead = (CircleImageView) comment_item.findViewById(R.id.iv_userhead);
-//            TextView tv_username = (TextView) comment_item.findViewById(R.id.tv_username);
-//            TextView tv_createtime = (TextView) comment_item.findViewById(R.id.tv_createtime);
-//            TextView tv_updatetime = (TextView) comment_item.findViewById(R.id.tv_updatetime);
-//            TextView tv_comments_likes = (TextView) comment_item.findViewById(R.id.tv_comment_likes);
-//            TextView tv_comments_replies = (TextView) comment_item.findViewById(R.id.tv_comments_replies);
-//            TextView tv_comment = (TextView) comment_item.findViewById(R.id.tv_comment);
-//            LinearLayout ll_tip = (LinearLayout) comment_item.findViewById(R.id.ll_tip);
-//            TextView tv_spoiler_tip = (TextView) comment_item.findViewById(R.id.tv_spoiler_tip);
-//            TextView tv_review_tip = (TextView) comment_item.findViewById(R.id.tv_review_tip);
-//
-//            String avatarUrl = MoCloudUtil.getUserAvatar(comment.getUser());
-//            ImageLoader.loadDontAnimate(this, avatarUrl, iv_userhead, R.drawable.default_userhead);
-//
-//            String name = MoCloudUtil.getUsername(comment.getUser());
-//            tv_username.setText(name);
-//
-//            tv_createtime.setText(TimeUtil.formatGmtTime(comment.getCreated_at()));
-//            tv_comments_likes.setText("" + comment.getLikes());
-//            tv_comments_replies.setText("" + comment.getReplies());
-//            tv_comment.setText(comment.getComment());
-//            tv_comment.setMaxLines(5);
-//            tv_comment.setEllipsize(TextUtils.TruncateAt.END);
-//            tv_updatetime.setVisibility(comment.getCreated_at().equals(comment.getUpdated_at()) ? View.GONE : View.VISIBLE);
-//            tv_updatetime.setText("---updated at " + TimeUtil.formatGmtTime(comment.getUpdated_at()));
-//
-//            if (comment.isSpoiler() || comment.isReview()) {
-//                tv_spoiler_tip.setVisibility(comment.isSpoiler() ? View.VISIBLE : View.GONE);
-//                tv_review_tip.setVisibility(comment.isReview() ? View.VISIBLE : View.GONE);
-//            } else {
-//                ll_tip.setVisibility(View.GONE);
-//            }
-//
-//            tv_comments_likes.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Logger.d("评论ID：" + comment.getId() + "...");
-//                }
-//            });
-//
-//            comment_item.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(MovieDetailActivity.this, SingleCommentActivity.class);
-//                    intent.putExtra(SingleCommentActivity.MAIN_COMMENT, comment);
-//                    startActivity(intent);
-//                }
-//            });
-//
-//            iv_userhead.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    openUserActivity(MovieDetailActivity.this, comment.getUser());
-//                }
-//            });
             commentContainer.addView(comment_item);
         }
     }
@@ -302,61 +246,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     private CardView buildCommentItem(final Comment comment) {
         CardView comment_item = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, commentContainer, false);
         initCommentItem(this, comment_item, comment, false);
-//        CircleImageView iv_userhead = (CircleImageView) comment_item.findViewById(R.id.iv_userhead);
-//        TextView tv_username = (TextView) comment_item.findViewById(R.id.tv_username);
-//        TextView tv_createtime = (TextView) comment_item.findViewById(R.id.tv_createtime);
-//        TextView tv_updatetime = (TextView) comment_item.findViewById(R.id.tv_updatetime);
-//        TextView tv_comments_likes = (TextView) comment_item.findViewById(R.id.tv_comment_likes);
-//        TextView tv_comments_replies = (TextView) comment_item.findViewById(R.id.tv_comments_replies);
-//        TextView tv_comment = (TextView) comment_item.findViewById(R.id.tv_comment);
-//        LinearLayout ll_tip = (LinearLayout) comment_item.findViewById(R.id.ll_tip);
-//        TextView tv_spoiler_tip = (TextView) comment_item.findViewById(R.id.tv_spoiler_tip);
-//        TextView tv_review_tip = (TextView) comment_item.findViewById(R.id.tv_review_tip);
-//
-//        String avatarUrl = MoCloudUtil.getUserAvatar(comment.getUser());
-//        ImageLoader.loadDontAnimate(this, avatarUrl, iv_userhead, R.drawable.default_userhead);
-//
-//        String name = MoCloudUtil.getUsername(comment.getUser());
-//        tv_username.setText(name);
-//
-//        tv_createtime.setText(TimeUtil.formatGmtTime(comment.getCreated_at()));
-//        tv_comments_likes.setText("" + comment.getLikes());
-//        tv_comments_replies.setText("" + comment.getReplies());
-//        tv_comment.setText(comment.getComment());
-//        tv_comment.setMaxLines(5);
-//        tv_comment.setEllipsize(TextUtils.TruncateAt.END);
-//        tv_updatetime.setVisibility(comment.getCreated_at().equals(comment.getUpdated_at()) ? View.GONE : View.VISIBLE);
-//        tv_updatetime.setText("---updated at " + TimeUtil.formatGmtTime(comment.getUpdated_at()));
-//
-//        if (comment.isSpoiler() || comment.isReview()) {
-//            tv_spoiler_tip.setVisibility(comment.isSpoiler() ? View.VISIBLE : View.GONE);
-//            tv_review_tip.setVisibility(comment.isReview() ? View.VISIBLE : View.GONE);
-//        } else {
-//            ll_tip.setVisibility(View.GONE);
-//        }
-//
-//        tv_comments_likes.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Logger.d("评论ID：" + comment.getId() + "...");
-//            }
-//        });
-//
-//        comment_item.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MovieDetailActivity.this, SingleCommentActivity.class);
-//                intent.putExtra(SingleCommentActivity.MAIN_COMMENT, comment);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        iv_userhead.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openUserActivity(MovieDetailActivity.this, comment.getUser());
-//            }
-//        });
         return comment_item;
     }
 
