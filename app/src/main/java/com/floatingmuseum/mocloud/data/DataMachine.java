@@ -176,26 +176,31 @@ public class DataMachine {
 
     public static MovieTeam mixingStaffsWorks(PeopleCredit people) {
         ArrayList<Staff> team = new ArrayList();
-        List<Staff> directors = people.getCrew().getDirecting();
-        if (directors != null && directors.size() > 0) {
-            for (Staff director : directors) {
-                if (director.getJob().equals("Director")) {
-                    team.add(director);
-                    break;
+        if (people != null) {
+            if (people.getCrew() != null) {
+                List<Staff> directors = people.getCrew().getDirecting();
+                if (directors != null && directors.size() > 0) {
+                    for (Staff director : directors) {
+                        if (director.getJob().equals("Director")) {
+                            team.add(director);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (people.getCast() != null) {
+                List<Staff> casts = people.getCast();
+                int castNum;
+                if (team.size() > 0) {
+                    castNum = casts.size() < 3 ? casts.size() : 3;
+                } else {
+                    castNum = casts.size() < 4 ? casts.size() : 4;
+                }
+                for (int i = 0; i < castNum; i++) {
+                    team.add(casts.get(i));
                 }
             }
         }
-        List<Staff> casts = people.getCast();
-        int castNum;
-        if (team.size() > 0) {
-            castNum = casts.size() < 3 ? casts.size() : 3;
-        } else {
-            castNum = casts.size() < 4 ? casts.size() : 4;
-        }
-        for (int i = 0; i < castNum; i++) {
-            team.add(casts.get(i));
-        }
-
         MovieTeam movieTeam = new MovieTeam();
         movieTeam.setDetailShowList(team);
         movieTeam.setPeopleCredit(people);

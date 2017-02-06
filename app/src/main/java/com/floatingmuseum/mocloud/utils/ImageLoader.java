@@ -113,10 +113,14 @@ public class ImageLoader {
     }
 
     public static void loadFromTmdbPersonImage(Context context, TmdbPersonImage image, final ImageView view, int placeHolder) {
-        if (image!=null && image.getProfiles()!=null && image.getProfiles().size()>0) {
-            load(context,StringUtil.buildPeopleHeadshotUrl(image.getProfiles().get(0).getFile_path()),view,placeHolder);
-        }else{
-            loadDefault(context,view);
+        if (image.isHasCache()) {
+            Logger.d("Load from sdcard");
+            load(context, image.getCacheFile(), view, placeHolder);
+        } else if (image != null && image.getProfiles() != null && image.getProfiles().size() > 0) {
+            Logger.d("Load from web");
+            load(context, StringUtil.buildPeopleHeadshotUrl(image.getProfiles().get(0).getFile_path()), view, placeHolder);
+        } else {
+            loadDefault(context, view);
         }
     }
 

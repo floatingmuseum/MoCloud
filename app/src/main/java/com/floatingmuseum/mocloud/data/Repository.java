@@ -17,9 +17,7 @@ import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
-import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
-import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.StaffImages;
@@ -294,6 +292,15 @@ public class Repository {
         return service.getTmdbImages(tmdbId, BuildConfig.TmdbApiKey);
     }
 
+    private Observable<TmdbPersonImage> getTmdbStaffImageObservable(Staff staff) {
+        int tmdbId = staff.getPerson().getIds().getTmdb();
+        File file = ImageCacheManager.hasCacheImage(tmdbId, ImageCacheManager.TYPE_AVATAR);
+        if (file != null) {
+            return ImageCacheManager.localAvatarImage(tmdbId, file);
+        }
+        return service.getPersonImagesFromTmdb(tmdbId, BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
+    }
+
     /**
      * 合并图片到集合中，并下载图片
      */
@@ -304,109 +311,6 @@ public class Repository {
             downLoadImage(movieImage, imageUrl, ImageCacheManager.TYPE_POSTER);
         }
     }
-
-    /***************************************************************************************************************/
-
-//    public Subscription getMoviePopular(int pageNum, final DataCallback callback) {
-//        Logger.d("测试开始...TmdbMovieDataList");
-//        return service.getMoviePopular(pageNum, BuildConfig.TmdbApiKey)
-//                .map(RxUtil.checkLocalPosterCache())
-//                .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
-//                .subscribe(new Observer<TmdbMovieDataList>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                        callback.onError(e);
-//                    }
-//
-//                    @Override
-//                    public void onNext(TmdbMovieDataList tmdbMovieDataList) {
-//                        Logger.d("测试new api...getMoviePopular...TmdbMovieDataList:" + tmdbMovieDataList.getPage() + "...size:" + tmdbMovieDataList.getResults().size());
-//                        callback.onBaseDataSuccess(tmdbMovieDataList);
-//                        downLoadImage(tmdbMovieDataList, ImageCacheManager.TYPE_POSTER);
-//                    }
-//                });
-//    }
-
-//    public Subscription getMovieNowPlaying(int pagNum, final DataCallback callback) {
-//        return service.getMovieNowPlaying(pagNum, BuildConfig.TmdbApiKey)
-//                .map(RxUtil.checkLocalPosterCache())
-//                .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
-//                .subscribe(new Observer<TmdbMovieDataList>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                        callback.onError(e);
-//                    }
-//
-//                    @Override
-//                    public void onNext(TmdbMovieDataList tmdbMovieDataList) {
-//                        Logger.d("测试new api...getMovieNowPlaying...TmdbMovieDataList:" + tmdbMovieDataList.getPage() + "...size:" + tmdbMovieDataList.getResults().size());
-//                        callback.onBaseDataSuccess(tmdbMovieDataList);
-//                        downLoadImage(tmdbMovieDataList, ImageCacheManager.TYPE_POSTER);
-//                    }
-//                });
-//    }
-
-//    public Subscription getMovieTopRated(int pagNum, final DataCallback callback) {
-//        return service.getMovieTopRated(pagNum, BuildConfig.TmdbApiKey)
-//                .map(RxUtil.checkLocalPosterCache())
-//                .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
-//                .subscribe(new Observer<TmdbMovieDataList>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                        callback.onError(e);
-//                    }
-//
-//                    @Override
-//                    public void onNext(TmdbMovieDataList tmdbMovieDataList) {
-//                        Logger.d("测试new api...getMovieTopRated...TmdbMovieDataList:" + tmdbMovieDataList.getPage() + "...size:" + tmdbMovieDataList.getResults().size());
-//                        callback.onBaseDataSuccess(tmdbMovieDataList);
-//                        downLoadImage(tmdbMovieDataList, ImageCacheManager.TYPE_POSTER);
-//                    }
-//                });
-//    }
-
-//    public Subscription getMovieUpcoming(int pagNum, final DataCallback callback) {
-//        return service.getMovieUpcoming(pagNum, BuildConfig.TmdbApiKey)
-//                .map(RxUtil.checkLocalPosterCache())
-//                .compose(RxUtil.<TmdbMovieDataList>threadSwitch())
-//                .subscribe(new Observer<TmdbMovieDataList>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                        callback.onError(e);
-//                    }
-//
-//                    @Override
-//                    public void onNext(TmdbMovieDataList tmdbMovieDataList) {
-//                        Logger.d("测试new api...getMovieUpcoming...TmdbMovieDataList:" + tmdbMovieDataList.getPage() + "...size:" + tmdbMovieDataList.getResults().size());
-//                        callback.onBaseDataSuccess(tmdbMovieDataList);
-//                        downLoadImage(tmdbMovieDataList, ImageCacheManager.TYPE_POSTER);
-//                    }
-//                });
-//    }
 
     /******************************************
      * 剧目详情
@@ -433,32 +337,6 @@ public class Repository {
                 });
     }
 
-//    public Subscription getMovieDetail(int tmdbId, final MovieDetailCallback callback) {
-//        return service.getMovieDetail(tmdbId, BuildConfig.TmdbApiKey, "credits")
-//                .compose(RxUtil.<TmdbMovieDetail>threadSwitch())
-//                .subscribe(new Observer<TmdbMovieDetail>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Logger.d("getMovieDetail...onError");
-//                        e.printStackTrace();
-//                        callback.onError(e);
-//                    }
-//
-//                    @Override
-//                    public void onNext(TmdbMovieDetail tmdbMovieDetail) {
-//                        if (tmdbMovieDetail != null) {
-//                            Logger.d("测试new api...TmdbMovieDetail:" + tmdbMovieDetail.getTitle());
-//                            callback.onBaseDataSuccess(tmdbMovieDetail);
-//                        }
-//                    }
-//                });
-//    }
-
     public Subscription getMovieTeam(String slug, final MovieDetailCallback callback) {
         return service.getMovieTeam(slug)
                 .map(new Func1<PeopleCredit, MovieTeam>() {
@@ -476,7 +354,8 @@ public class Repository {
                 }).flatMap(new Func1<Staff, Observable<TmdbPersonImage>>() {
                     @Override
                     public Observable<TmdbPersonImage> call(Staff staff) {
-                        return service.getPersonImagesFromTmdb(staff.getPerson().getIds().getTmdb(),BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
+                        return getTmdbStaffImageObservable(staff);
+//                        return service.getPersonImagesFromTmdb(staff.getPerson().getIds().getTmdb(),BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
                     }
                 })
                 .compose(RxUtil.<TmdbPersonImage>threadSwitch())
@@ -498,6 +377,8 @@ public class Repository {
                         for (Staff staff : detailShowList) {
                             if (staff.getPerson().getIds().getTmdb()==personImage.getId()) {
                                 staff.setTmdbPersonImage(personImage);
+                                String imageUrl = getImageUrl(staff.getTmdbPersonImage());
+                                downLoadImage(staff.getTmdbPersonImage(), imageUrl, ImageCacheManager.TYPE_AVATAR);
                             }
                         }
 //                        callback.onPeopleSuccess(tmdbPeople);
@@ -505,28 +386,13 @@ public class Repository {
                 });
     }
 
-    public Subscription getMovieTraktRatings(String imdbId, final MovieDetailCallback callback) {
-        return service.getMovieTraktRatings(imdbId)
-                .compose(RxUtil.<Ratings>threadSwitch())
-                .subscribe(new Observer<Ratings>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieTraktRatings...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(Ratings ratings) {
-                        callback.onTraktRatingsSuccess(ratings);
-                    }
-                });
-    }
+//    private void handleStaffPoster(TmdbPersonImage movieImage, List<BaseMovie> movies) {
+//        if (movieImage != null) {
+//            mergeMovieAndImage1(movieImage, movies);
+//            String imageUrl = getImageUrl(movieImage);
+//            downLoadImage(movieImage, imageUrl, ImageCacheManager.TYPE_POSTER);
+//        }
+//    }
 
     public Subscription getMovieOtherRatings(String imdbId, final MovieDetailCallback callback) {
         return service.getMovieOtherRatings(imdbId,"true")
@@ -1234,10 +1100,6 @@ public class Repository {
 //        }
 //    }
 
-
-    /**
-     * 这个download只在Recommendations中使用
-     */
     private void downLoadImage(TmdbImage image, String imageUrl, final int imageType) {
         if (imageUrl == null) {
             return;

@@ -1,6 +1,5 @@
 package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -22,10 +21,8 @@ import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Staff;
-import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
-import com.floatingmuseum.mocloud.utils.MoCloudUtil;
 import com.floatingmuseum.mocloud.utils.NumberFormatUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;

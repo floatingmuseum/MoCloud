@@ -73,7 +73,7 @@ public class StaffMoviesFragment extends BaseFragment {
         staffMoviesRv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
-                // TODO: 2017/2/6 没有海报 
+                // TODO: 2017/2/6 没有海报
                 openMovieDetailActivity(works.get(position).getMovie());
             }
         });

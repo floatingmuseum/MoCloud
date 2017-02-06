@@ -149,8 +149,8 @@ public interface MoCloudService {
     /**
      * Trakt评分
      */
-    @GET("movies/{id}/ratings")
-    Observable<Ratings> getMovieTraktRatings(@Path("id")String imdbId);
+//    @GET("movies/{id}/ratings")
+//    Observable<Ratings> getMovieTraktRatings(@Path("id")String imdbId);
 
     /**
      * Imdb评分
