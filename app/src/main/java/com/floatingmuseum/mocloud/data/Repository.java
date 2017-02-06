@@ -18,6 +18,7 @@ import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.People;
+import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.Staff;
@@ -460,11 +461,11 @@ public class Repository {
 
     public Subscription getMovieTeam(String slug, final MovieDetailCallback callback) {
         return service.getMovieTeam(slug)
-                .map(new Func1<People, MovieTeam>() {
+                .map(new Func1<PeopleCredit, MovieTeam>() {
                     @Override
-                    public MovieTeam call(People people) {
+                    public MovieTeam call(PeopleCredit credit) {
                         // TODO: 2017/1/20 这里去DataMachine里处理一下数据，旨在提取出1个导演3个主演用于MovieDetail显示，剩下一个原始List用于MovieDetail中点击more时使用
-                        team = DataMachine.mixingStaffWorks(people);
+                        team = DataMachine.mixingStaffsWorks(credit);
                         return team;
                     }
                 }).flatMap(new Func1<MovieTeam, Observable<Staff>>() {
@@ -705,32 +706,32 @@ public class Repository {
 //                });
 //    }
 
-//    public Subscription getStaffMovieCredits(int tmdbId, final DataCallback callback) {
-//        return service.getStaffMovieCredits(tmdbId, BuildConfig.TmdbApiKey)
-//                .map(new Func1<TmdbStaffMovieCredits, List<Staff>>() {
-//                    @Override
-//                    public List<Staff> call(TmdbStaffMovieCredits credits) {
-//                        return DataMachine.mixingStaffWorks(credits);
-//                    }
-//                })
-//                .compose(RxUtil.<List<Staff>>threadSwitch())
-//                .subscribe(new Observer<List<Staff>>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onNext(List<Staff> works) {
-//                        callback.onBaseDataSuccess(works);
-//                    }
-//                });
-//    }
+    public Subscription getStaffMovieCredits(String slug, final DataCallback callback) {
+        return service.getStaffMovieCredits(slug)
+                .map(new Func1<PeopleCredit, List<Staff>>() {
+                    @Override
+                    public List<Staff> call(PeopleCredit credits) {
+                        return DataMachine.mixingPersonWorks(credits);
+                    }
+                })
+                .compose(RxUtil.<List<Staff>>threadSwitch())
+                .subscribe(new Observer<List<Staff>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<Staff> works) {
+                        callback.onBaseDataSuccess(works);
+                    }
+                });
+    }
 
     public Subscription getStaffImages(int tmdbId, final DataCallback callback) {
         return service.getStaffImages(tmdbId, BuildConfig.TmdbApiKey)

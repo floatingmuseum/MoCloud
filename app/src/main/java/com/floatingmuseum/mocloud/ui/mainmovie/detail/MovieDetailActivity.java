@@ -115,7 +115,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
 
-//        movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
         movie_object = getIntent().getParcelableExtra(MOVIE_OBJECT);
         presenter = new MovieDetailPresenter(this);
 //        Logger.d("电影名onCreate:" + movie.getTitle() + "..." + movie.getId());

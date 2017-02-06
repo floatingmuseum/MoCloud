@@ -25,6 +25,7 @@ public class Staff implements Parcelable{
     private String job;
     private String itemType;
     private TmdbPersonImage tmdbPersonImage;
+    private Movie movie;
 
     public String getItemType() {
         return itemType;
@@ -66,6 +67,14 @@ public class Staff implements Parcelable{
         this.tmdbPersonImage = tmdbPersonImage;
     }
 
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+
     public Staff() {
     }
 
@@ -81,6 +90,7 @@ public class Staff implements Parcelable{
         dest.writeString(this.job);
         dest.writeString(this.itemType);
         dest.writeParcelable(this.tmdbPersonImage, flags);
+        dest.writeParcelable(this.movie, flags);
     }
 
     protected Staff(Parcel in) {
@@ -89,6 +99,7 @@ public class Staff implements Parcelable{
         this.job = in.readString();
         this.itemType = in.readString();
         this.tmdbPersonImage = in.readParcelable(TmdbPersonImage.class.getClassLoader());
+        this.movie = in.readParcelable(Movie.class.getClassLoader());
     }
 
     public static final Creator<Staff> CREATOR = new Creator<Staff>() {

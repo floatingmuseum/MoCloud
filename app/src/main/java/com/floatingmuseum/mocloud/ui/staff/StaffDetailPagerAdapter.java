@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.utils.ResUtil;
 
 /**
@@ -14,16 +15,16 @@ import com.floatingmuseum.mocloud.utils.ResUtil;
 
 public class StaffDetailPagerAdapter extends FragmentPagerAdapter {
 
-    private String slug;
+    private Staff staff;
 
-    public StaffDetailPagerAdapter(FragmentManager fm, String slug) {
+    public StaffDetailPagerAdapter(FragmentManager fm, Staff staff) {
         super(fm);
-        this.slug = slug;
+        this.staff = staff;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return StaffDetailFragmentFactory.create(position,slug);
+        return StaffDetailFragmentFactory.create(position,staff);
     }
 
     @Override

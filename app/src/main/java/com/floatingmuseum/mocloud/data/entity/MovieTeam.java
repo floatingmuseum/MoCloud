@@ -7,15 +7,15 @@ import java.util.List;
  */
 
 public class MovieTeam {
-    private People people;
+    private PeopleCredit peopleCredit;
     private List<Staff> detailShowList;
 
-    public People getPeople() {
-        return people;
+    public PeopleCredit getPeopleCredit() {
+        return peopleCredit;
     }
 
-    public void setPeople(People people) {
-        this.people = people;
+    public void setPeopleCredit(PeopleCredit peopleCredit) {
+        this.peopleCredit = peopleCredit;
     }
 
     public List<Staff> getDetailShowList() {

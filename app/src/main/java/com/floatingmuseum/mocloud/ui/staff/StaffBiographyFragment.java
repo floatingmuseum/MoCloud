@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
+import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 
 import butterknife.BindView;
@@ -41,13 +42,13 @@ public class StaffBiographyFragment extends BaseFragment {
     @BindView(R.id.tv_biography)
     TextView tvBiography;
 
-    private String slug;
+    private Staff staff;
     private StaffBiographyPresenter presenter;
 
-    public static Fragment newInstance(String slug) {
+    public static Fragment newInstance(Staff staff) {
         StaffBiographyFragment fragment = new StaffBiographyFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("slug", slug);
+        bundle.putParcelable("staff", staff);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -57,26 +58,23 @@ public class StaffBiographyFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_staff_bio, container, false);
         ButterKnife.bind(this, view);
-        slug = getArguments().getString("slug");
-        presenter = new StaffBiographyPresenter(this);
-        requestBaseData();
+        staff = getArguments().getParcelable("staff");
+//        presenter = new StaffBiographyPresenter(this);
+        initView();
         return view;
     }
 
     @Override
     protected void initView() {
-
+        Person person = staff.getPerson();
+        tvBirthday.setText(person.getBirthday());
+        tvBirthplace.setText(person.getBirthplace());
+        tvHomepage.setText(person.getHomepage());
+        tvBiography.setText(person.getBiography());
+        tvDeathday.setText(person.getDeath());
     }
 
     @Override
     protected void requestBaseData() {
-        presenter.start(slug);
-    }
-
-    public void onBaseDataSuccess(Staff staff){
-//        tvBirthday.setText(staff.getPerson());
-//        tvBirthplace.setText(staff.getPlace_of_birth());
-//        tvHomepage.setText(staff.getHomepage());
-//        tvBiography.setText(staff.getBiography());
     }
 }

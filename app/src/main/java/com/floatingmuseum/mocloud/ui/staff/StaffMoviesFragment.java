@@ -36,15 +36,15 @@ public class StaffMoviesFragment extends BaseFragment {
     @BindView(R.id.no_data)
     TextView noData;
 
-    private String slug;
+    private Staff staff;
     private StaffMoviesPresenter presenter;
     private List<Staff> works;
     private StaffMoviesAdapter adapter;
 
-    public static Fragment newInstance(String slug) {
+    public static Fragment newInstance(Staff staff) {
         StaffMoviesFragment fragment = new StaffMoviesFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("slug", slug);
+        bundle.putParcelable("staff", staff);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -53,7 +53,7 @@ public class StaffMoviesFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_staff_movies, container, false);
-        slug = getArguments().getString("slug");
+        staff = getArguments().getParcelable("staff");
         ButterKnife.bind(this, view);
         presenter = new StaffMoviesPresenter(this);
         initView();
@@ -73,17 +73,21 @@ public class StaffMoviesFragment extends BaseFragment {
         staffMoviesRv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
-//                openMovieDetailActivity(works.get(position));
+                // TODO: 2017/2/6 没有海报 
+                openMovieDetailActivity(works.get(position).getMovie());
             }
         });
     }
 
     @Override
     protected void requestBaseData() {
-        presenter.start(slug);
+        presenter.start(staff.getPerson().getIds().getSlug());
     }
 
     public void onBaseDataSuccess(List<Staff> works) {
+//        for (Staff work : works) {
+//            Logger.d("电影名:" + work.getMovie().getTitle() + "...ReleasedYear:" + work.getMovie().getReleased() + "..." + work.getCharacter() + "..." + work.getJob());
+//        }
         this.works.addAll(works);
         adapter.notifyDataSetChanged();
     }

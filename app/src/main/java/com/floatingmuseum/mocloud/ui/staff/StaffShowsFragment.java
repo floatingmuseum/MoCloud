@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
+import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.orhanobut.logger.Logger;
 
 /**
@@ -16,12 +17,12 @@ import com.orhanobut.logger.Logger;
  */
 
 public class StaffShowsFragment extends BaseFragment {
-    private String slug;
+    private Staff staff;
 
-    public static Fragment newInstance(String slug) {
+    public static Fragment newInstance(Staff staff) {
         StaffShowsFragment fragment = new StaffShowsFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("slug",slug);
+        bundle.putParcelable("staff", staff);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -29,7 +30,7 @@ public class StaffShowsFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_staff_shows,container,false);
+        View view = inflater.inflate(R.layout.fragment_staff_shows, container, false);
 
         initView();
         return view;
@@ -37,8 +38,8 @@ public class StaffShowsFragment extends BaseFragment {
 
     @Override
     protected void initView() {
-        slug = getArguments().getString("slug");
-        Logger.d("StaffID:"+slug);
+        staff = getArguments().getParcelable("staff");
+        Logger.d("staff:" + staff);
     }
 
     @Override

@@ -186,8 +186,8 @@ public interface MoCloudService {
     /**
      * 电影团队 from Trakt
      */
-    @GET("movies/{id}/people")
-    Observable<People> getMovieTeam(@Path("id") String movieId);
+    @GET("movies/{id}/people?extended=full")
+    Observable<PeopleCredit> getMovieTeam(@Path("id") String movieId);
 
     /**
      * 电影团队 from TMDB
@@ -213,17 +213,17 @@ public interface MoCloudService {
     @GET("people/{id}?extended=full")
     Observable<Person> getStaff(@Path("id") String id);
 
-    @GET("people/{id}/movies")
-    Observable<PeopleCredit> getStaffMovieCredits(@Path("id")String traktId);
+    @GET("people/{id}/movies?extended=full")
+    Observable<PeopleCredit> getStaffMovieCredits(@Path("id")String slug);
+
+    @GET("people/{id}/shows?extended=full")
+    Observable getStaffShowsCredits(@Path("id")String traktId);
 
 //    @GET("https://api.themoviedb.org/3/person/{tmdbID}/movie_credits")
 //    Observable<TmdbStaffMovieCredits> getStaffMovieCredits(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
 
     @GET("https://api.themoviedb.org/3/person/{tmdbID}/images")
     Observable<StaffImages> getStaffImages(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
-
-    @GET("people/{id}/shows")
-    Observable getStaffShowsCredits(@Path("id")String traktId);
 
 //******************************************评 论*******************************************
 
