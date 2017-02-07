@@ -48,8 +48,9 @@
                         android:id="@+id/tv_movie_title"
                         style="@style/detail_content"
                         android:ellipsize="end"
+                        android:gravity="center"
                         android:maxLines="2"
-                        tools:text="TRON: Legacy" />
+                        tools:text="BATMAN" />
 
                     <TextView
                         style="@style/detail_title"
@@ -238,13 +239,11 @@
 
             <TextView
                 style="@style/detail_title"
-                android:layout_alignParentLeft="true"
                 android:text="@string/overview" />
 
             <TextView
                 android:id="@+id/tv_overview"
                 style="@style/detail_content"
-                android:gravity="left"
                 tools:text="Sam Flynn, the tech-savvy and daring son of Kevin Flynn, investigates his father's disappearance and is pulled into The Grid. With the help of a mysterious program named Quorra, Sam quests to stop evil dictator Clu from crossing into the real world." />
 
             <TextView

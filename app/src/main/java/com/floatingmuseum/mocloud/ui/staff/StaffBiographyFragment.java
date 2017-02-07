@@ -26,24 +26,24 @@ public class StaffBiographyFragment extends BaseFragment {
 
     @BindView(R.id.tv_birthday)
     TextView tvBirthday;
-    @BindView(R.id.ll_birthday)
-    LinearLayout llBirthday;
     @BindView(R.id.tv_deathday)
     TextView tvDeathday;
-    @BindView(R.id.ll_deathday)
-    LinearLayout llDeathday;
     @BindView(R.id.tv_birthplace)
     TextView tvBirthplace;
-    @BindView(R.id.ll_birthplace)
-    LinearLayout llBirthplace;
     @BindView(R.id.tv_homepage)
     TextView tvHomepage;
-    @BindView(R.id.ll_homepage)
-    LinearLayout llHomepage;
     @BindView(R.id.tv_biography)
     TextView tvBiography;
-    @BindView(R.id.ll_biography)
-    LinearLayout llBiography;
+    @BindView(R.id.tv_birthday_title)
+    TextView tvBirthdayTitle;
+    @BindView(R.id.tv_deathday_title)
+    TextView tvDeathdayTitle;
+    @BindView(R.id.tv_birthplace_title)
+    TextView tvBirthplaceTitle;
+    @BindView(R.id.tv_homepage_title)
+    TextView tvHomepageTitle;
+    @BindView(R.id.tv_biography_title)
+    TextView tvBiographyTitle;
 
     private Staff staff;
     private StaffBiographyPresenter presenter;
@@ -71,18 +71,19 @@ public class StaffBiographyFragment extends BaseFragment {
     protected void initView() {
         Person person = staff.getPerson();
         Logger.d("Birthday:" + person.getBirthday() + "...DeathDay:" + person.getDeath() + "...BirthPlace:" + person.getBirthplace() + "...HomePage:" + person.getHomepage() + "...Bio:" + person.getBiography());
-        initText(person.getBirthday(), tvBirthday, llBirthday);
-        initText(person.getDeath(), tvDeathday, llDeathday);
-        initText(person.getBirthplace(), tvBirthplace, llBirthplace);
-        initText(person.getHomepage(), tvHomepage, llHomepage);
-        initText(person.getBiography(), tvBiography, llBiography);
+        initText(person.getBirthday(), tvBirthday, tvBirthdayTitle);
+        initText(person.getDeath(), tvDeathday, tvDeathdayTitle);
+        initText(person.getBirthplace(), tvBirthplace, tvBirthplaceTitle);
+        initText(person.getHomepage(), tvHomepage, tvHomepageTitle);
+        initText(person.getBiography(), tvBiography, tvBiographyTitle);
     }
 
-    private void initText(String text, TextView textView, LinearLayout linearLayout) {
+    private void initText(String text, TextView textView, TextView textViewTitle) {
         if (text != null && text.length() > 0) {
             textView.setText(text);
         } else {
-            linearLayout.setVisibility(View.GONE);
+            textView.setVisibility(View.GONE);
+            textViewTitle.setVisibility(View.GONE);
         }
     }
 

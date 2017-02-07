@@ -10,108 +10,59 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="3dp">
 
-        <LinearLayout
-            android:id="@+id/ll_birthday"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_birthday_title"
+            style="@style/detail_title"
+            android:text="BirthDay:" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="BirthDay:"
-                android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tv_birthday"
+            style="@style/detail_content"
+            tools:text="1990-2-1" />
 
-            <TextView
-                android:id="@+id/tv_birthday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                tools:text="1990-2-1" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_deathday_title"
+            style="@style/detail_title"
+            android:text="DeathDay:" />
 
-        <LinearLayout
-            android:id="@+id/ll_deathday"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_deathday"
+            style="@style/detail_content"
+            tools:text="2011-1-3" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="DeathDay:"
-                android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tv_birthplace_title"
+            style="@style/detail_title"
+            android:text="Birthplace:" />
 
-            <TextView
-                android:id="@+id/tv_deathday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                tools:text="2011-1-3" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_birthplace"
+            style="@style/detail_content"
+            tools:text="San Fernando Valley, California, USA" />
 
-        <LinearLayout
-            android:id="@+id/ll_birthplace"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_homepage_title"
+            style="@style/detail_title"
+            android:text="Homepage:" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Birthplace:"
-                android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tv_homepage"
+            style="@style/detail_content"
+            android:autoLink="web"
+            tools:text="http://www.bryancranston.com/" />
 
-            <TextView
-                android:id="@+id/tv_birthplace"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                tools:text="San Fernando Valley, California, USA" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_biography_title"
+            style="@style/detail_title"
+            android:text="Biography:" />
 
-        <LinearLayout
-            android:id="@+id/ll_homepage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Homepage:"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tv_homepage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                tools:text="http://www.bryancranston.com/" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_biography"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Biography:"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tv_biography"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                tools:text="Bryan Lee Cranston (born March 7, 1956) is an American actor, voice actor, writer and director.He is perhaps best known for his roles as Hal, the father in the Fox situation comedy \Malcolm in the Middle\, and as Walter White in the AMC drama series Breaking Bad, for which he has won three consecutive Outstanding Lead Actor in a Drama Series Emmy Awards. Other notable roles include Dr. Tim Whatley on Seinfeld, Doug Heffernan's neighbor in The King of Queens, Astronaut Buzz Aldrin in From the Earth to the Moon, and Ted Mosby's boss on How I Met Your Mother. Description above from the Wikipedia article Bryan Cranston, licensed under CC-BY-SA, full list of contributors on Wikipedia." />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_biography"
+            style="@style/detail_content"
+            tools:text="Bryan Lee Cranston (born March 7, 1956) is an American actor, voice actor, writer and director.He is perhaps best known for his roles as Hal, the father in the Fox situation comedy \Malcolm in the Middle\, and as Walter White in the AMC drama series Breaking Bad, for which he has won three consecutive Outstanding Lead Actor in a Drama Series Emmy Awards. Other notable roles include Dr. Tim Whatley on Seinfeld, Doug Heffernan's neighbor in The King of Queens, Astronaut Buzz Aldrin in From the Earth to the Moon, and Ted Mosby's boss on How I Met Your Mother. Description above from the Wikipedia article Bryan Cranston, licensed under CC-BY-SA, full list of contributors on Wikipedia." />
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
