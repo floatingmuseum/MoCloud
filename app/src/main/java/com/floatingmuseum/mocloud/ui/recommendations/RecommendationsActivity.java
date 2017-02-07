@@ -108,20 +108,8 @@ public class RecommendationsActivity extends BaseActivity implements SwipeRefres
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Logger.d("SimpleOnItemClick:" + data.get(position).getTitle() + "...position:" + position + "...size:" + data.size());
                 Movie movie = data.get(position);
-//                TmdbMovieDetail movieDetail = new TmdbMovieDetail();
-//                movieDetail.setId(movie.getIds().getTmdb());
-//                movieDetail.setImdb_id(movie.getIds().getImdb());
-//                movieDetail.setTitle(movie.getTitle());
-//                movieDetail.setRelease_date(movie.getReleased());
-//                movieDetail.setOriginal_language(movie.getLanguage());
-//                movieDetail.setRuntime(movie.getRuntime());
-//                movieDetail.setOverview(movie.getOverview());
-//                movieDetail.setTraktItem(true);
-//                movieDetail.setTraktRatings(movie.getRating());
-//                movieDetail.setTraktVotes(movie.getVotes());
-//                movieDetail.setImage(movie.getImage());
                 Intent intent = new Intent(RecommendationsActivity.this, MovieDetailActivity.class);
-//                intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,movieDetail);
+                intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,movie);
                 startActivity(intent);
             }
         });

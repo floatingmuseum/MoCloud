@@ -133,6 +133,6 @@ public class LoginActivity extends BaseActivity{
 
     @Override
     protected void onError(Exception e) {
-        // TODO: 2017/2/7 请求失败的处理 
+        // TODO: 2017/2/7 请求失败的处理
     }
 }
