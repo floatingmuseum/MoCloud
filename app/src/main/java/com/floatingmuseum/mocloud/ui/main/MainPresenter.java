@@ -31,7 +31,7 @@ public class MainPresenter extends Presenter implements DataCallback<UserSetting
     }
 
     public void syncUserData() {
-        repository.getLastActivities();
+//        repository.getLastActivities();
     }
 
     @Override

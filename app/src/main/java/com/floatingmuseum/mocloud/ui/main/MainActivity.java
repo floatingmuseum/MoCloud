@@ -108,7 +108,8 @@ public class MainActivity extends BaseActivity
             //请求用户最新信息
             //request user settings every time when app start,if login is true.
             mainPresenter.getUserSettings();
-            syncState.setVisible(true);
+            // TODO: 2017/2/7 空指针 
+//            syncState.setVisible(true);
             mainPresenter.syncUserData();
         }
 
