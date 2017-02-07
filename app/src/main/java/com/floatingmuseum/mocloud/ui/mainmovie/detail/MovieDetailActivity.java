@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
 import com.floatingmuseum.mocloud.utils.NumberFormatUtil;
@@ -93,8 +95,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     @BindView(R.id.tv_comments_more)
     TextView tv_comments_more;
 
-    //    private TmdbMovieDetail movie;
-    private Movie movie_object;
+    private Movie movie;
     private MovieDetailPresenter presenter;
     private CheckBox is_spoiler;
     private EditText comment_box;
@@ -112,26 +113,26 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
 
-        movie_object = getIntent().getParcelableExtra(MOVIE_OBJECT);
+        movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
         presenter = new MovieDetailPresenter(this);
 //        Logger.d("电影名onCreate:" + movie.getTitle() + "..." + movie.getId());
-        presenter.getData(movie_object);
+        presenter.getData(movie);
 //        initView();
         initView();
     }
 
     @Override
     protected void initView() {
-        actionBar.setTitle(movie_object.getTitle());
-        tv_movie_title.setText(movie_object.getTitle());
-        tv_released.setText(movie_object.getReleased());
-        tv_runtime.setText(movie_object.getRuntime() + " mins");
-        tv_language.setText(movie_object.getLanguage());
-        tv_overview.setText(movie_object.getOverview());
-        tv_rating.setText(NumberFormatUtil.doubleFormatToString(movie_object.getRating(), false, 2) + "/" + movie_object.getVotes() + "votes");
-        tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie_object.getRating(), false, 2));
-        tvTraktRatingCount.setText(movie_object.getVotes() + "votes");
-        ImageLoader.loadPoster(this, iv_poster, movie_object, R.drawable.default_movie_poster);
+        actionBar.setTitle(movie.getTitle());
+        tv_movie_title.setText(movie.getTitle());
+        tv_released.setText(movie.getReleased());
+        tv_runtime.setText(movie.getRuntime() + " mins");
+        tv_language.setText(movie.getLanguage());
+        tv_overview.setText(movie.getOverview());
+        tv_rating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2) + "/" + movie.getVotes() + "votes");
+        tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2));
+        tvTraktRatingCount.setText(movie.getVotes() + "votes");
+        ImageLoader.loadPoster(this, iv_poster, movie, R.drawable.default_movie_poster);
     }
 
 //    @Override
@@ -217,9 +218,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             tv_comments_more.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Intent intent = new Intent(MovieDetailActivity.this, CommentsActivity.class);
-//                    intent.putExtra(CommentsActivity.MOVIE_OBJECT, movie);
-//                    startActivity(intent);
+                    Intent intent = new Intent(MovieDetailActivity.this, CommentsActivity.class);
+                    intent.putExtra(CommentsActivity.MOVIE_OBJECT, movie);
+                    startActivity(intent);
                 }
             });
         } else {
@@ -278,7 +279,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         Comment comment = new Comment();
         comment.setSpoiler(is_spoiler.isChecked());
         comment.setComment(replyContent);
-        presenter.sendComment(comment, movie_object.getIds().getSlug());
+        presenter.sendComment(comment, movie.getIds().getSlug());
     }
 
     public void onSendCommentSuccess(Comment comment) {
@@ -304,7 +305,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     }
 
     public void onOtherRatingsSuccess(OmdbInfo omdbInfo) {
-        Logger.d("ImdbRating:" + omdbInfo.getImdbRating() + "..." + omdbInfo.getImdbVotes()+"...tomatoesRating:"+omdbInfo.getTomatoUserRating()+"..."+omdbInfo.getTomatoUserReviews());
+        Logger.d("ImdbRating:" + omdbInfo.getImdbRating() + "..." + omdbInfo.getImdbVotes() + "...tomatoesRating:" + omdbInfo.getTomatoUserRating() + "..." + omdbInfo.getTomatoUserReviews());
         String imdbRating = omdbInfo.getImdbRating();
         tvImdbRating.setText(imdbRating == null ? "N/A" : imdbRating);
         String imdbVotes = omdbInfo.getImdbVotes();
@@ -314,11 +315,11 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
         String tomatoUserRating = omdbInfo.getTomatoUserRating();
         double tomatoRating = Double.valueOf(tomatoUserRating);
-        if (tomatoRating<3.5){
+        if (tomatoRating < 3.5) {
             Glide.with(this).load(R.drawable.popcorn_bad).into(ivTomatoPopcornState);
         }
         tvTomatoRating.setText(tomatoUserRating);
-        tvTomatoRatingCount.setText(omdbInfo.getTomatoUserReviews()+"votes");
+        tvTomatoRatingCount.setText(omdbInfo.getTomatoUserReviews() + "votes");
         llTomatoRating.setVisibility(View.VISIBLE);
     }
 

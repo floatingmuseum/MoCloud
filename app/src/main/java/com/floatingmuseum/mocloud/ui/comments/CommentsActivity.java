@@ -58,7 +58,6 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     public static final String SORT_BY_REPLIES = "replies";
 
     private CommentsPresenter presenter;
-//    private TmdbMovieDetail movie;
     private Movie movie;
     private List<Comment> commentsData;
     private BaseCommentsItemAdapter adapter;
@@ -180,7 +179,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         ToastUtil.showToast(R.string.comment_success);
         commentsData.add(0, comment);
         adapter.notifyItemInserted(0);
-        resetCommentBox(commentBox,isSpoiler);
+        resetCommentBox(commentBox, isSpoiler);
 //        commentBox.setText("");
 //        isSpoiler.setChecked(false);
 //        KeyboardUtil.hideSoftInput(this);
@@ -313,7 +312,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
 
     @Override
     public void onRefresh() {
-//        presenter.start(currentSortCondition, movie.getImdb_id(), shouldClean);
+        presenter.start(currentSortCondition, movie.getIds().getSlug(), shouldClean);
     }
 
     @Override
