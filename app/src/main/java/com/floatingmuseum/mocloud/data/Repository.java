@@ -13,6 +13,7 @@ import com.floatingmuseum.mocloud.data.callback.UserDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
+import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
@@ -830,6 +831,28 @@ public class Repository {
                     @Override
                     public void onNext(Object o) {
                         callback.onHideMovieSuccess();
+                    }
+                });
+    }
+
+    public void getLastActivities(){
+        service.getLastActivities()
+                .onErrorResumeNext(refreshTokenAndRetry(service.getLastActivities()))
+                .compose(RxUtil.<LastActivities>threadSwitch())
+                .subscribe(new Observer<LastActivities>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(LastActivities lastActivities) {
+
                     }
                 });
     }

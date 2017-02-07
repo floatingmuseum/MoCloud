@@ -3,6 +3,7 @@ package com.floatingmuseum.mocloud.data.net;
 
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
+import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.People;
@@ -77,8 +78,50 @@ public interface MoCloudService {
     @GET("users/{id}/following?extended=full")
     Observable<List<Follower>> getUserFollowing(@Path("id")String slug);
 
+    //用户统计数据
     @GET("users/{id}/stats")
     Observable<Stats> getUserStats(@Path("id")String slug);
+
+    //用户最新变动
+    @GET("sync/last_activities")
+    Observable<LastActivities> getLastActivities();
+
+    @GET("sync/collection/movies")
+    Observable getMoviesCollections();
+
+    @GET("sync/collection/shows")
+    Observable getShowsCollections();
+
+    @POST("sync/collection")
+    Observable addToCollections();
+
+    @POST("sync/collection/remove")
+    Observable removeFromCollections();
+
+    @GET("sync/watched/movies")
+    Observable getMoviesWatched();
+
+    @GET("sync/watched/shows")
+    Observable getShowsWatched();
+
+    @GET("sync/watchlist/{type}")
+    Observable getWatchlists(@Path("type")String type);
+
+    @POST("sync/watchlist")
+    Observable addToWatchlist();
+
+    @POST("sync/watchlist/remove")
+    Observable removeFromWatchlist();
+
+    @GET("sync/ratings/{type}")
+    Observable getRatings(@Path("type")String type);
+
+    @POST("sync/ratings")
+    Observable addRating();
+
+    @POST("sync/ratings/remove")
+    Observable removeRating();
+
 //*******************************************电  影*******************************************
     /**
      * 电影趋势

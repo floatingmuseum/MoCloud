@@ -63,7 +63,8 @@ public class MainActivity extends BaseActivity
     MainPresenter mainPresenter;
 
     private boolean isLogin;
-//    private ImageView iv_avatar;
+    private MenuItem syncState;
+    //    private ImageView iv_avatar;
 
     @Override
     protected int currentLayoutId() {
@@ -107,6 +108,8 @@ public class MainActivity extends BaseActivity
             //请求用户最新信息
             //request user settings every time when app start,if login is true.
             mainPresenter.getUserSettings();
+            syncState.setVisible(true);
+            mainPresenter.syncUserData();
         }
 
         iv_avatar.setOnClickListener(new View.OnClickListener() {
@@ -187,6 +190,7 @@ public class MainActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        syncState = menu.findItem(R.id.sync_state);
         return true;
     }
 

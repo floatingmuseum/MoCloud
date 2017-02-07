@@ -39,6 +39,7 @@
     <string name="not_login">Please login first.</string>
     <string name="under_construction">This is under construction.</string>
     <string name="staff_role">Role</string>
+    <string name="sync_state">Syncing data...</string>
 
     <string-array name="tab_names">
         <item>Trending</item>

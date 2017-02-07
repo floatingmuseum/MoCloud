@@ -19,17 +19,19 @@ import rx.Subscription;
 public class MainPresenter extends Presenter implements DataCallback<UserSettings> {
 
     MainActivity mainActivity;
-//    Repository repository;
 
 
     public MainPresenter(@NonNull MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-//        this.repository = repository;
     }
 
     public void getUserSettings() {
         Subscription userSettingsSubscription = repository.getUserSettings(this);
         compositeSubscription.add(userSettingsSubscription);
+    }
+
+    public void syncUserData() {
+        repository.getLastActivities();
     }
 
     @Override
