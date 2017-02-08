@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.bumptech.glide.BitmapTypeRequest;
+import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -30,6 +32,7 @@ import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.utils.ColorUtil;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
@@ -41,6 +44,7 @@ import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -157,7 +161,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     @Override
     protected void initView() {
-        initColors();
+        getBitmapForColors();
         actionBar.setTitle(movie.getTitle());
         tvMovieTitle.setText(movie.getTitle());
         tvReleased.setText(movie.getReleased());
@@ -170,71 +174,103 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         ImageLoader.loadPoster(this, ivPoster, movie, R.drawable.default_movie_poster);
     }
 
-    private void initColors() {
-        Glide.with(this)
-                .load(movie.getImage().getCacheFile())
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
+    private void getBitmapForColors() {
+        TmdbMovieImage image = movie.getImage();
+        Logger.d("MovieName:" + movie.getTitle() + "..." + image);
+        if (image != null) {
+            if (image.isHasCache()) {
+                File file = image.getCacheFile();
+                Glide.with(this).load(file).asBitmap().into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
-                            @Override
-                            public void onGenerated(Palette palette) {
-                                Palette.Swatch lightMuteSwatch = palette.getLightMutedSwatch();
-                                Palette.Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
-
-                                Palette.Swatch muteSwatch = palette.getMutedSwatch();
-                                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-
-                                if (lightMuteSwatch != null && muteSwatch != null) {
-                                    commentItemSwatch = lightMuteSwatch;
-                                    detailSwatch = muteSwatch;
-                                } else if (darkVibrantSwatch != null && vibrantSwatch != null) {
-                                    commentItemSwatch = darkVibrantSwatch;
-                                    detailSwatch = vibrantSwatch;
-                                }
-
-                                if (enableColorful()) {
-                                    if (Build.VERSION.SDK_INT >= 21) {
-                                        Window window = getWindow();
-                                        window.setStatusBarColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.4));
-                                        window.setNavigationBarColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.4));
-                                    }
-
-                                    toolbar.setBackgroundColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.2));
-                                    llMovieContainer.setBackgroundColor(detailSwatch.getRgb());
-
-                                    int bodyTextColor = detailSwatch.getBodyTextColor();
-                                    detailSwatch.getTitleTextColor();
-                                    tvMovieTitle.setTextColor(bodyTextColor);
-                                    tvReleased.setTextColor(bodyTextColor);
-                                    tvRuntime.setTextColor(bodyTextColor);
-                                    tvLanguage.setTextColor(bodyTextColor);
-                                    tvOverview.setTextColor(bodyTextColor);
-                                    tvRating.setTextColor(bodyTextColor);
-
-                                    tvTomatoRating.setTextColor(bodyTextColor);
-                                    tvTomatoRatingCount.setTextColor(bodyTextColor);
-                                    tvTraktRating.setTextColor(bodyTextColor);
-                                    tvTraktRatingCount.setTextColor(bodyTextColor);
-                                    tvImdbRating.setTextColor(bodyTextColor);
-                                    tvImdbRatingCount.setTextColor(bodyTextColor);
-                                    tvOverview.setTextColor(bodyTextColor);
-
-                                    int titleTextColor = detailSwatch.getTitleTextColor();
-                                    tvMovieTitleText.setTextColor(titleTextColor);
-                                    tvReleasedTitleText.setTextColor(titleTextColor);
-                                    tvRuntimeTitleText.setTextColor(titleTextColor);
-                                    tvLanguageTitleText.setTextColor(titleTextColor);
-                                    tvRatingTitleText.setTextColor(titleTextColor);
-                                    tvOverviewTitle.setTextColor(titleTextColor);
-                                    tvCrewTitle.setTextColor(titleTextColor);
-                                    tvCommentsTitle.setTextColor(titleTextColor);
-                                }
-                            }
-                        });
+                        initColors(resource);
                     }
                 });
+            } else if (image.isHasPoster()) {
+                String tmdbPosterUrl = StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path());
+                Glide.with(this).load(tmdbPosterUrl).asBitmap().into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        initColors(resource);
+                    }
+                });
+            }
+        }
+    }
+
+    private void initColors(Bitmap bitmap) {
+        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                Palette.Swatch mutedSwatch = palette.getMutedSwatch();
+                Palette.Swatch lightMutedSwatch = palette.getLightMutedSwatch();
+                Palette.Swatch darkMutedSwatch = palette.getDarkMutedSwatch();
+
+                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+                Palette.Swatch lightVibrantSwatch = palette.getLightVibrantSwatch();
+                Palette.Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
+
+                Logger.d("PaletteTest...mutedSwatch:" + (mutedSwatch != null) + "...lightMutedSwatch:" + (lightMutedSwatch != null) + "...darkMutedSwatch:" + (darkMutedSwatch != null) + "...vibrantSwatch:" + (vibrantSwatch != null) + "...lightVibrantSwatch:" + (lightVibrantSwatch != null) + "...darkVibrantSwatch:" + (darkVibrantSwatch != null));
+
+                int dominantColor = palette.getDominantColor(-1);
+                int mutedColor = palette.getMutedColor(-1);
+                int lightMutedColor = palette.getLightMutedColor(-1);
+                int darkMutedColor = palette.getDarkMutedColor(-1);
+                int vibrantColor = palette.getVibrantColor(-1);
+                int lightVibrantColor = palette.getLightVibrantColor(-1);
+                int darkVibrantColor = palette.getDarkVibrantColor(-1);
+
+                Logger.d("PaletteTest...dominantColor:" + dominantColor + "...mutedColor:" + mutedColor + "...lightMutedColor:" + lightMutedColor + "...darkMutedColor:" + darkMutedColor + "...vibrantColor:" + vibrantColor + "...lightVibrantColor:" + lightVibrantColor + "...darkVibrantColor:" + darkVibrantColor);
+                if (lightMutedSwatch != null && mutedSwatch != null) {
+                    Logger.d("PaletteTest...方案1");
+                    commentItemSwatch = lightMutedSwatch;
+                    detailSwatch = mutedSwatch;
+                } else if (darkVibrantSwatch != null && vibrantSwatch != null) {
+                    Logger.d("PaletteTest...方案2");
+                    commentItemSwatch = darkVibrantSwatch;
+                    detailSwatch = vibrantSwatch;
+                }
+
+                if (enableColorful()) {
+                    Logger.d("PaletteTest...实施方案");
+                    if (Build.VERSION.SDK_INT >= 21) {
+                        Window window = getWindow();
+                        window.setStatusBarColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.4));
+                        window.setNavigationBarColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.4));
+                    }
+
+                    toolbar.setBackgroundColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.2));
+                    llMovieContainer.setBackgroundColor(detailSwatch.getRgb());
+
+                    int bodyTextColor = detailSwatch.getBodyTextColor();
+                    detailSwatch.getTitleTextColor();
+                    tvMovieTitle.setTextColor(bodyTextColor);
+                    tvReleased.setTextColor(bodyTextColor);
+                    tvRuntime.setTextColor(bodyTextColor);
+                    tvLanguage.setTextColor(bodyTextColor);
+                    tvOverview.setTextColor(bodyTextColor);
+                    tvRating.setTextColor(bodyTextColor);
+
+                    tvTomatoRating.setTextColor(bodyTextColor);
+                    tvTomatoRatingCount.setTextColor(bodyTextColor);
+                    tvTraktRating.setTextColor(bodyTextColor);
+                    tvTraktRatingCount.setTextColor(bodyTextColor);
+                    tvImdbRating.setTextColor(bodyTextColor);
+                    tvImdbRatingCount.setTextColor(bodyTextColor);
+                    tvOverview.setTextColor(bodyTextColor);
+
+                    int titleTextColor = detailSwatch.getTitleTextColor();
+                    tvMovieTitleText.setTextColor(titleTextColor);
+                    tvReleasedTitleText.setTextColor(titleTextColor);
+                    tvRuntimeTitleText.setTextColor(titleTextColor);
+                    tvLanguageTitleText.setTextColor(titleTextColor);
+                    tvRatingTitleText.setTextColor(titleTextColor);
+                    tvOverviewTitle.setTextColor(titleTextColor);
+                    tvCrewTitle.setTextColor(titleTextColor);
+                    tvCommentsTitle.setTextColor(titleTextColor);
+                }
+            }
+        });
     }
 
     public void onMovieTeamSuccess(MovieTeam movieTeam) {
