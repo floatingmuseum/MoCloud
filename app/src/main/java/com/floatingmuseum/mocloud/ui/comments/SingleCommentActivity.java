@@ -98,7 +98,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         rvReplies.setLayoutManager(manager);
         CardView headerView = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, rvReplies, false);
-        initCommentItem(this, headerView, mainCommentContent, true);
+        initCommentItem(this, headerView, mainCommentContent, null, true);
 //        initHeaderView(headerView);
 
         repliesList = new ArrayList<>();

@@ -16,6 +16,7 @@
             android:background="@color/comment_title_grey"
             android:orientation="horizontal">
 
+
             <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -169,6 +170,7 @@
             android:layout_height="wrap_content"
             android:background="@color/comment_content_grey"
             android:padding="6dp"
+            android:textIsSelectable="true"
             tools:text="Everyone keeps suggesting there is a paradox concerning the 5D future humans and their ability to save humanity in the past. It's really not a paradox at all. Everyone assumes humanity survived to ascend to the 5th dimension but how could humanity exist in the future if not for the actions of Cooper.. who was guided by future humans (begin endless loop).\n\nDid anyone ever consider the other important character in the movie? Amelia Brand carried on with the rest of her mission (thanks to Cooper). I postulate that Brand used the human seeds as intended and set up a colony. A colony that would thrive and eventually evolve beyond human. Thus Earth is of little importance, and may have indeed died. These colonists, and the generations that followed, would have been told the story of a great man (Cooper) who saved them from extinction. With the ability to manipulate space-time, they would pay homage to their hero God by helping him in the past so he may fulfill the mission most important to him, to once again see his daughter. Plan B worked beautifully. But the 5d humans, having the power to bend space-time, decided there's no reason why Plan A had to fail." />
 
         <TextView
@@ -180,5 +182,6 @@
             android:padding="6dp"
             android:textColor="@color/text_updatetime"
             tools:text="---updated at 2016-10-01 07:22:21" />
+
     </LinearLayout>
 </android.support.v7.widget.CardView>

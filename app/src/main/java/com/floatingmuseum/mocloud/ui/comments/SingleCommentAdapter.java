@@ -31,10 +31,10 @@ public class SingleCommentAdapter extends BaseQuickAdapter<Comment,BaseViewHolde
 
     @Override
     protected void convert(BaseViewHolder baseViewHolder, Comment comment) {
-        if (comment.isReview()) {
-            baseViewHolder.setBackgroundColor(R.id.comment_title, ResUtil.getColor(R.color.comment_review_title_grey, null));
-            baseViewHolder.setBackgroundColor(R.id.tv_comment, ResUtil.getColor(R.color.comment_review_content_grey, null));
-        }
+//        if (comment.isReview()) {
+//            baseViewHolder.setBackgroundColor(R.id.comment_title, ResUtil.getColor(R.color.comment_review_title_grey, null));
+//            baseViewHolder.setBackgroundColor(R.id.tv_comment, ResUtil.getColor(R.color.comment_review_content_grey, null));
+//        }
 
         baseViewHolder.setText(R.id.tv_updatetime, TimeUtil.formatGmtTime(comment.getUpdated_at()))
                 .setText(R.id.tv_comments_replies, "" + comment.getReplies())

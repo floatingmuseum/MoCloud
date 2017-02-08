@@ -1,10 +1,14 @@
 package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,6 +17,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
@@ -23,6 +29,7 @@ import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
+import com.floatingmuseum.mocloud.utils.ColorUtil;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
 import com.floatingmuseum.mocloud.utils.NumberFormatUtil;
@@ -101,6 +108,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     private EditText comment_box;
     private LinearLayout ll_comments_reply;
     private Staff staff;
+    private Palette.Swatch detailSwatch;
+    private Palette.Swatch commentItemSwatch;
 
 
     @Override
@@ -117,8 +126,92 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         presenter = new MovieDetailPresenter(this);
 //        Logger.d("电影名onCreate:" + movie.getTitle() + "..." + movie.getId());
         presenter.getData(movie);
-//        initView();
+        initColors();
         initView();
+    }
+
+    private void initColors() {
+        final LinearLayout llMovie = (LinearLayout) findViewById(R.id.ll_movie_container);
+        final TextView tvMovieTitleText = (TextView) findViewById(R.id.tv_movie_title_text);
+        final TextView tvReleasedTitleText = (TextView) findViewById(R.id.tv_released_title_text);
+        final TextView tvRuntimeTitleText = (TextView) findViewById(R.id.tv_runtime_title_text);
+        final TextView tvLanguageTitleText = (TextView) findViewById(R.id.tv_language_title_text);
+        final TextView tvRatingTitleText = (TextView) findViewById(R.id.tv_rating_title_text);
+        final TextView tvOverviewTitle = (TextView) findViewById(R.id.tv_overview_title);
+        final TextView tvCrewTitle = (TextView) findViewById(R.id.tv_crew_title);
+        final TextView tvCommentsTitle = (TextView) findViewById(R.id.tv_comments_title);
+
+        Glide.with(this)
+                .load(movie.getImage().getCacheFile())
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                            @Override
+                            public void onGenerated(Palette palette) {
+                                Palette.Swatch lightMuteSwatch = palette.getLightMutedSwatch();
+                                Palette.Swatch lightVibrantSwatch = palette.getLightVibrantSwatch();
+
+                                Palette.Swatch muteSwatch = palette.getMutedSwatch();
+                                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+
+                                Palette.Swatch darkMuteSwatch = palette.getDarkMutedSwatch();
+                                Palette.Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
+
+                                Logger.d("Palette...muteSwatch:" + (muteSwatch != null) + "...vibrantSwatch:" + (vibrantSwatch != null));
+                                Logger.d("Palette...lightMuteSwatch:" + (lightMuteSwatch != null) + "...lightVibrantSwatch:" + (lightVibrantSwatch != null));
+                                Logger.d("Palette...darkMuteSwatch:" + (darkMuteSwatch != null) + "...darkVibrantSwatch:" + (darkVibrantSwatch != null));
+
+                                if (lightMuteSwatch != null && muteSwatch != null) {
+                                    commentItemSwatch = lightMuteSwatch;
+                                    detailSwatch = muteSwatch;
+                                } else if (darkVibrantSwatch != null && vibrantSwatch != null) {
+                                    commentItemSwatch = darkVibrantSwatch;
+                                    detailSwatch = vibrantSwatch;
+                                }
+
+                                if (enableColorful()) {
+                                    if (android.os.Build.VERSION.SDK_INT >= 21) {
+                                        Window window = getWindow();
+                                        window.setStatusBarColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.4));
+                                        window.setNavigationBarColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.4));
+                                    }
+
+                                    toolbar.setBackgroundColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.2));
+                                    llMovie.setBackgroundColor(detailSwatch.getRgb());
+
+                                    int bodyTextColor = detailSwatch.getBodyTextColor();
+                                    detailSwatch.getTitleTextColor();
+                                    tv_movie_title.setTextColor(bodyTextColor);
+                                    tv_released.setTextColor(bodyTextColor);
+                                    tv_runtime.setTextColor(bodyTextColor);
+                                    tv_language.setTextColor(bodyTextColor);
+                                    tv_overview.setTextColor(bodyTextColor);
+                                    tv_rating.setTextColor(bodyTextColor);
+
+                                    tvTomatoRating.setTextColor(bodyTextColor);
+                                    tvTomatoRatingCount.setTextColor(bodyTextColor);
+                                    tvTraktRating.setTextColor(bodyTextColor);
+                                    tvTraktRatingCount.setTextColor(bodyTextColor);
+                                    tvImdbRating.setTextColor(bodyTextColor);
+                                    tvImdbRatingCount.setTextColor(bodyTextColor);
+                                    tv_overview.setTextColor(bodyTextColor);
+
+                                    int titleTextColor = detailSwatch.getTitleTextColor();
+                                    tvMovieTitleText.setTextColor(titleTextColor);
+                                    tvReleasedTitleText.setTextColor(titleTextColor);
+                                    tvRuntimeTitleText.setTextColor(titleTextColor);
+                                    tvLanguageTitleText.setTextColor(titleTextColor);
+                                    tvRatingTitleText.setTextColor(titleTextColor);
+                                    tvOverviewTitle.setTextColor(titleTextColor);
+                                    tvCrewTitle.setTextColor(titleTextColor);
+                                    tvCommentsTitle.setTextColor(titleTextColor);
+                                }
+                            }
+                        });
+                    }
+                });
     }
 
     @Override
@@ -134,42 +227,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tvTraktRatingCount.setText(movie.getVotes() + "votes");
         ImageLoader.loadPoster(this, iv_poster, movie, R.drawable.default_movie_poster);
     }
-
-//    @Override
-//    protected void initView() {
-//        // TODO: 2017/1/9 Sync watched,collocted,rating,history   watching now user,related movies
-//        actionBar.setTitle(movie.getTitle());
-//        tv_movie_title.setText(movie.getTitle());
-//        tv_released.setText(movie.getRelease_date());
-//        if (movie.isFromStaffWorks()) {
-//            ImageLoader.load(this, StringUtil.buildPosterUrl(movie.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
-//            return;
-//        }
-//        tv_runtime.setText(movie.getRuntime() + " mins");
-//        tv_language.setText(movie.getOriginal_language());
-//        tv_overview.setText(movie.getOverview());
-//        if (movie.isTraktItem()) {
-//            tv_rating.setText(NumberFormatUtil.doubleFormatToString(movie.getTraktRatings(), false, 2) + "/" + movie.getTraktVotes() + "votes");
-//            tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie.getTraktRatings(), false, 2));
-//            tvTraktRatingCount.setText(movie.getTraktVotes() + "votes");
-//            ImageLoader.loadFromTmdbMovieImage(this, movie.getImage(), iv_poster, R.drawable.default_movie_poster);
-//            return;
-//        }
-//        ImageLoader.load(this, StringUtil.buildPosterUrl(movie.getPoster_path()), iv_poster, R.drawable.default_movie_poster);
-//        tvTmdbRating.setText(String.valueOf(movie.getVote_average()));
-//        tvTmdbRatingCount.setText(movie.getVote_count() + "votes");
-//    }
-
-//    public void onBaseDataSuccess(TmdbMovieDetail movie) {
-//        Logger.d("数据获取成功...详情");
-//        this.movie = movie;
-//        // TODO: 2017/1/3  预算，收益，电影类型等可使用
-//        tv_runtime.setText(movie.getRuntime() + " mins");
-//        tv_language.setText(movie.getOriginal_language());
-//        tv_overview.setText(movie.getOverview());
-//        tvTmdbRating.setText(String.valueOf(movie.getVote_average()));
-//        tvTmdbRatingCount.setText(movie.getVote_count() + "votes");
-//    }
 
     public void onMovieTeamSuccess(MovieTeam movieTeam) {
         List<Staff> detailShowList = movieTeam.getDetailShowList();
@@ -188,6 +245,10 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             ImageLoader.loadFromTmdbPersonImage(this, director.getTmdbPersonImage(), iv_staff_headshot, R.drawable.default_movie_poster);
             tv_crew_job.setText(director.getJob());
             tv_crew_realname.setText(director.getPerson().getName());
+            if (enableColorful()) {
+                tv_crew_job.setTextColor(detailSwatch.getBodyTextColor());
+                tv_crew_realname.setTextColor(detailSwatch.getBodyTextColor());
+            }
             ll_crew.addView(director_item);
         }
 
@@ -204,7 +265,21 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             tv_crew_job.setText("Actor");
             tv_crew_realname.setText(cast.getPerson().getName());
             tv_crew_character.setText(cast.getCharacter());
+            if (enableColorful()) {
+                tv_crew_job.setTextColor(detailSwatch.getBodyTextColor());
+                tv_crew_realname.setTextColor(detailSwatch.getBodyTextColor());
+                tv_crew_character.setTextColor(detailSwatch.getBodyTextColor());
+            }
             ll_crew.addView(actor_item);
+        }
+    }
+
+
+    private boolean enableColorful() {
+        if (commentItemSwatch != null && detailSwatch != null) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -233,6 +308,12 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                 }
             });
         }
+
+        if (enableColorful()) {
+            tv_comments_more.setTextColor(detailSwatch.getTitleTextColor());
+            tv_no_more_comments.setTextColor(detailSwatch.getTitleTextColor());
+        }
+
         for (int i = 0; i < showSize; i++) {
             final Comment comment = comments.get(i);
             CardView comment_item = buildCommentItem(comment);
@@ -242,7 +323,11 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     private CardView buildCommentItem(final Comment comment) {
         CardView comment_item = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, commentContainer, false);
-        initCommentItem(this, comment_item, comment, false);
+        if (enableColorful()) {
+            initCommentItem(this, comment_item, comment, commentItemSwatch, false);
+        } else {
+            initCommentItem(this, comment_item, comment, null, false);
+        }
         return comment_item;
     }
 

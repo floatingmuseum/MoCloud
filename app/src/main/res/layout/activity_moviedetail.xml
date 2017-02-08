@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/ll_movie_container"
     android:orientation="vertical">
 
     <include layout="@layout/layout_appbar" />
@@ -21,6 +22,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/ll_movie_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -41,6 +43,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tv_movie_title_text"
                         style="@style/detail_title"
                         android:text="@string/movie_title" />
 
@@ -53,6 +56,7 @@
                         tools:text="BATMAN" />
 
                     <TextView
+                        android:id="@+id/tv_released_title_text"
                         style="@style/detail_title"
                         android:text="@string/released" />
 
@@ -63,6 +67,7 @@
 
 
                     <TextView
+                        android:id="@+id/tv_runtime_title_text"
                         style="@style/detail_title"
                         android:text="@string/run_time" />
 
@@ -73,6 +78,7 @@
 
 
                     <TextView
+                        android:id="@+id/tv_language_title_text"
                         style="@style/detail_title"
                         android:text="@string/language" />
 
@@ -82,6 +88,7 @@
                         tools:text="English" />
 
                     <TextView
+                        android:id="@+id/tv_rating_title_text"
                         style="@style/detail_title"
                         android:text="@string/rating" />
 
@@ -238,6 +245,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_overview_title"
                 style="@style/detail_title"
                 android:text="@string/overview" />
 
@@ -247,6 +255,7 @@
                 tools:text="Sam Flynn, the tech-savvy and daring son of Kevin Flynn, investigates his father's disappearance and is pulled into The Grid. With the help of a mysterious program named Quorra, Sam quests to stop evil dictator Clu from crossing into the real world." />
 
             <TextView
+                android:id="@+id/tv_crew_title"
                 style="@style/detail_title"
                 android:text="@string/crew" />
 
@@ -258,6 +267,7 @@
                 android:weightSum="4" />
 
             <TextView
+                android:id="@+id/tv_comments_title"
                 style="@style/detail_title"
                 android:text="@string/comments" />
 
