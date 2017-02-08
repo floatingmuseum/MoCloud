@@ -88,7 +88,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     protected void initView() {
         // TODO: 2017/1/9 build sort comments list by newest,oldest,likes,replies
         commentsData = new ArrayList<>();
-        adapter = new BaseCommentsItemAdapter(commentsData);
+        adapter = new BaseCommentsItemAdapter(commentsData,null);
         rv_comments.setHasFixedSize(true);
         manager = new LinearLayoutManager(this);
         srl_comments.setOnRefreshListener(this);

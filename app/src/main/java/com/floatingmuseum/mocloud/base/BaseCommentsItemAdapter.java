@@ -9,6 +9,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.User;
+import com.floatingmuseum.mocloud.utils.ColorUtil;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.MoCloudUtil;
 import com.floatingmuseum.mocloud.utils.ResUtil;
@@ -21,17 +22,20 @@ import java.util.List;
  * Created by Floatingmuseum on 2017/1/11.
  */
 
-public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment,BaseViewHolder> {
+public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment, BaseViewHolder> {
 
     private String commentOwner;
+    private int[] colors;
 
-    public BaseCommentsItemAdapter(List<Comment> commentsData) {
+    public BaseCommentsItemAdapter(List<Comment> commentsData, int[] colors) {
         super(R.layout.comment_item, commentsData);
+        this.colors = colors;
     }
 
-    public BaseCommentsItemAdapter(List<Comment> commentsData, String commentOwner) {
+    public BaseCommentsItemAdapter(List<Comment> commentsData, String commentOwner, int[] colors) {
         super(R.layout.comment_item, commentsData);
         this.commentOwner = commentOwner;
+        this.colors = colors;
     }
 
     @Override
@@ -55,6 +59,7 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment,BaseViewHo
         ImageView iv_userhead = baseViewHolder.getView(R.id.iv_userhead);
         ImageLoader.loadDontAnimate(mContext, MoCloudUtil.getUserAvatar(user), iv_userhead, R.drawable.default_userhead);
         TextView tvUsername = baseViewHolder.getView(R.id.tv_username);
+        initColors(baseViewHolder);
         if (commentOwner == null) {
             return;
         }
@@ -64,7 +69,24 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment,BaseViewHo
             tvUsername.setTextColor(ResUtil.getColor(R.color.comment_owner, null));
         } else {
             tvUsername.setTypeface(Typeface.DEFAULT);
-            tvUsername.setTextColor(ResUtil.getColor(R.color.comment_user, null));
+            if (colors != null) {
+                tvUsername.setTextColor(colors[5]);
+            } else {
+                tvUsername.setTextColor(ResUtil.getColor(R.color.comment_user, null));
+            }
+        }
+    }
+
+    private void initColors(BaseViewHolder holder) {
+        if (colors != null) {
+            holder.setBackgroundColor(R.id.comment_title, ColorUtil.darkerColor(colors[4], 0.1))
+                    .setBackgroundColor(R.id.tv_comment, ColorUtil.darkerColor(colors[4], 0.2))
+                    .setBackgroundColor(R.id.tv_updatetime, ColorUtil.darkerColor(colors[4], 0.2))
+                    .setTextColor(R.id.tv_createtime, colors[5])
+                    .setTextColor(R.id.tv_updatetime, colors[5])
+                    .setTextColor(R.id.tv_comments_replies, colors[5])
+                    .setTextColor(R.id.tv_comment_likes, colors[5])
+                    .setTextColor(R.id.tv_comment, colors[6]);
         }
     }
 }

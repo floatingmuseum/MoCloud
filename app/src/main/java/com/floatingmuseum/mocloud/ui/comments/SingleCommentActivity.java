@@ -61,6 +61,8 @@ public class SingleCommentActivity extends BaseCommentsActivity {
 
     @BindView(R.id.rl_comment_container)
     RelativeLayout rlCommentContainer;
+    @BindView(R.id.ll_comments)
+    LinearLayout llComments;
     @BindView(R.id.rv_replies)
     RecyclerView rvReplies;
     @BindView(R.id.comment_box)
@@ -120,10 +122,9 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         } else {
             initCommentItem(this, headerView, mainCommentContent, null, null, true);
         }
-        initHeaderView(headerView);
 
         repliesList = new ArrayList<>();
-        adapter = new BaseCommentsItemAdapter(repliesList, username);
+        adapter = new BaseCommentsItemAdapter(repliesList, username, colors);
         adapter.addHeaderView(headerView);
 
         rvReplies.setAdapter(adapter);
@@ -171,9 +172,8 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         }
         toolbar.setBackgroundColor(ColorUtil.darkerColor(colors[0], 0.2));
         rlCommentContainer.setBackgroundColor(colors[0]);
-    }
-
-    private void initHeaderView(CardView headerView) {
+        llComments.setBackgroundColor(ColorUtil.darkerColor(colors[0], 0.1));
+        commentBox.setTextColor(colors[2]);
     }
 
     private void initCommentReplyBox(User user) {

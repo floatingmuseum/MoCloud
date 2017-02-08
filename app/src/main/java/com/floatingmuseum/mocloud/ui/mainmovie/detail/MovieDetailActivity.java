@@ -324,9 +324,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
         for (int i = 0; i < showSize; i++) {
             Comment comment = comments.get(i);
-            Logger.d("commentItem:"+1);
+            Logger.d("commentItem:" + 1);
             CardView commentItem = buildCommentItem(comment);
-            Logger.d("commentItem:2"+commentItem);
+            Logger.d("commentItem:2" + commentItem);
             commentContainer.addView(commentItem);
         }
     }
@@ -356,6 +356,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
         if (enableColorful()) {
             llCommentsReply.setBackgroundColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.1));
+            commentBox.setTextColor(detailSwatch.getBodyTextColor());
         }
 
         ivReply.setOnClickListener(new View.OnClickListener() {
