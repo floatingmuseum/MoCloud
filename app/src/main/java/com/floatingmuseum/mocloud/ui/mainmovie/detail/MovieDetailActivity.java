@@ -2,10 +2,12 @@ package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -101,6 +103,30 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     TextView tvNoMoreComments;
     @BindView(R.id.tv_comments_more)
     TextView tvCommentsMore;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.appBarLayout)
+    AppBarLayout appBarLayout;
+    @BindView(R.id.tv_movie_title_text)
+    TextView tvMovieTitleText;
+    @BindView(R.id.tv_released_title_text)
+    TextView tvReleasedTitleText;
+    @BindView(R.id.tv_runtime_title_text)
+    TextView tvRuntimeTitleText;
+    @BindView(R.id.tv_language_title_text)
+    TextView tvLanguageTitleText;
+    @BindView(R.id.tv_rating_title_text)
+    TextView tvRatingTitleText;
+    @BindView(R.id.ll_movie_header)
+    LinearLayout llMovieHeader;
+    @BindView(R.id.tv_overview_title)
+    TextView tvOverviewTitle;
+    @BindView(R.id.tv_crew_title)
+    TextView tvCrewTitle;
+    @BindView(R.id.tv_comments_title)
+    TextView tvCommentsTitle;
+    @BindView(R.id.ll_movie_container)
+    LinearLayout llMovieContainer;
 
     private Movie movie;
     private MovieDetailPresenter presenter;
@@ -126,21 +152,25 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         presenter = new MovieDetailPresenter(this);
 //        Logger.d("电影名onCreate:" + movie.getTitle() + "..." + movie.getId());
         presenter.getData(movie);
-        initColors();
         initView();
     }
 
-    private void initColors() {
-        final LinearLayout llMovie = (LinearLayout) findViewById(R.id.ll_movie_container);
-        final TextView tvMovieTitleText = (TextView) findViewById(R.id.tv_movie_title_text);
-        final TextView tvReleasedTitleText = (TextView) findViewById(R.id.tv_released_title_text);
-        final TextView tvRuntimeTitleText = (TextView) findViewById(R.id.tv_runtime_title_text);
-        final TextView tvLanguageTitleText = (TextView) findViewById(R.id.tv_language_title_text);
-        final TextView tvRatingTitleText = (TextView) findViewById(R.id.tv_rating_title_text);
-        final TextView tvOverviewTitle = (TextView) findViewById(R.id.tv_overview_title);
-        final TextView tvCrewTitle = (TextView) findViewById(R.id.tv_crew_title);
-        final TextView tvCommentsTitle = (TextView) findViewById(R.id.tv_comments_title);
+    @Override
+    protected void initView() {
+        initColors();
+        actionBar.setTitle(movie.getTitle());
+        tvMovieTitle.setText(movie.getTitle());
+        tvReleased.setText(movie.getReleased());
+        tvRuntime.setText(movie.getRuntime() + " mins");
+        tvLanguage.setText(movie.getLanguage());
+        tvOverview.setText(movie.getOverview());
+        tvRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2) + "/" + movie.getVotes() + "votes");
+        tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2));
+        tvTraktRatingCount.setText(movie.getVotes() + "votes");
+        ImageLoader.loadPoster(this, ivPoster, movie, R.drawable.default_movie_poster);
+    }
 
+    private void initColors() {
         Glide.with(this)
                 .load(movie.getImage().getCacheFile())
                 .asBitmap()
@@ -151,17 +181,10 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                             @Override
                             public void onGenerated(Palette palette) {
                                 Palette.Swatch lightMuteSwatch = palette.getLightMutedSwatch();
-                                Palette.Swatch lightVibrantSwatch = palette.getLightVibrantSwatch();
+                                Palette.Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
 
                                 Palette.Swatch muteSwatch = palette.getMutedSwatch();
                                 Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-
-                                Palette.Swatch darkMuteSwatch = palette.getDarkMutedSwatch();
-                                Palette.Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
-
-                                Logger.d("Palette...muteSwatch:" + (muteSwatch != null) + "...vibrantSwatch:" + (vibrantSwatch != null));
-                                Logger.d("Palette...lightMuteSwatch:" + (lightMuteSwatch != null) + "...lightVibrantSwatch:" + (lightVibrantSwatch != null));
-                                Logger.d("Palette...darkMuteSwatch:" + (darkMuteSwatch != null) + "...darkVibrantSwatch:" + (darkVibrantSwatch != null));
 
                                 if (lightMuteSwatch != null && muteSwatch != null) {
                                     commentItemSwatch = lightMuteSwatch;
@@ -172,14 +195,14 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                                 }
 
                                 if (enableColorful()) {
-                                    if (android.os.Build.VERSION.SDK_INT >= 21) {
+                                    if (Build.VERSION.SDK_INT >= 21) {
                                         Window window = getWindow();
                                         window.setStatusBarColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.4));
                                         window.setNavigationBarColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.4));
                                     }
 
                                     toolbar.setBackgroundColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.2));
-                                    llMovie.setBackgroundColor(detailSwatch.getRgb());
+                                    llMovieContainer.setBackgroundColor(detailSwatch.getRgb());
 
                                     int bodyTextColor = detailSwatch.getBodyTextColor();
                                     detailSwatch.getTitleTextColor();
@@ -212,20 +235,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                         });
                     }
                 });
-    }
-
-    @Override
-    protected void initView() {
-        actionBar.setTitle(movie.getTitle());
-        tvMovieTitle.setText(movie.getTitle());
-        tvReleased.setText(movie.getReleased());
-        tvRuntime.setText(movie.getRuntime() + " mins");
-        tvLanguage.setText(movie.getLanguage());
-        tvOverview.setText(movie.getOverview());
-        tvRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2) + "/" + movie.getVotes() + "votes");
-        tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2));
-        tvTraktRatingCount.setText(movie.getVotes() + "votes");
-        ImageLoader.loadPoster(this, ivPoster, movie, R.drawable.default_movie_poster);
     }
 
     public void onMovieTeamSuccess(MovieTeam movieTeam) {
@@ -285,7 +294,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     public void onCommentsSuccess(final List<Comment> comments) {
         // TODO: 2017/1/9 Sync likes,添加回复当回复数不足3个时
-        Logger.d("数据获取成功...评论");
 
         int showSize = comments.size() > 3 ? 3 : comments.size();
         if (comments.size() > 3) {
@@ -315,18 +323,20 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         }
 
         for (int i = 0; i < showSize; i++) {
-            final Comment comment = comments.get(i);
-            CardView comment_item = buildCommentItem(comment);
-            commentContainer.addView(comment_item);
+            Comment comment = comments.get(i);
+            Logger.d("commentItem:"+1);
+            CardView commentItem = buildCommentItem(comment);
+            Logger.d("commentItem:2"+commentItem);
+            commentContainer.addView(commentItem);
         }
     }
 
     private CardView buildCommentItem(final Comment comment) {
         CardView comment_item = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, commentContainer, false);
         if (enableColorful()) {
-            initCommentItem(this, comment_item, comment, commentItemSwatch, false);
+            initCommentItem(this, comment_item, comment, detailSwatch, commentItemSwatch, false);
         } else {
-            initCommentItem(this, comment_item, comment, null, false);
+            initCommentItem(this, comment_item, comment, null, null, false);
         }
         return comment_item;
     }
@@ -336,7 +346,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             ToastUtil.showToast(R.string.not_login);
             return;
         }
-        Logger.d("tv_no_more_comments...");
         llCommentsReply = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.comment_layout, commentContainer, false);
         isSpoiler = (CheckBox) llCommentsReply.findViewById(R.id.is_spoiler);
         commentBox = (EditText) llCommentsReply.findViewById(R.id.comment_box);

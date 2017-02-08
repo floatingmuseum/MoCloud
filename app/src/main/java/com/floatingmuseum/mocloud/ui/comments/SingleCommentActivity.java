@@ -3,18 +3,22 @@ package com.floatingmuseum.mocloud.ui.comments;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -29,6 +33,7 @@ import com.floatingmuseum.mocloud.data.entity.Image;
 import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
+import com.floatingmuseum.mocloud.utils.ColorUtil;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
 import com.floatingmuseum.mocloud.utils.MoCloudUtil;
@@ -54,6 +59,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SingleCommentActivity extends BaseCommentsActivity {
 
+    @BindView(R.id.rl_comment_container)
+    RelativeLayout rlCommentContainer;
     @BindView(R.id.rv_replies)
     RecyclerView rvReplies;
     @BindView(R.id.comment_box)
@@ -64,6 +71,8 @@ public class SingleCommentActivity extends BaseCommentsActivity {
     CheckBox isSpoiler;
 
     public static final String MAIN_COMMENT = "main_comment";
+    public static final String COLORS = "colors";
+
     private Comment mainCommentContent;
     private SingleCommentPresenter presenter;
     private List<Comment> repliesList;
@@ -72,6 +81,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
     private int replies;
     //    private TextView tvCommentReplies;
     private String username;
+    private int[] colors;
 
     @Override
     protected int currentLayoutId() {
@@ -85,7 +95,12 @@ public class SingleCommentActivity extends BaseCommentsActivity {
 
         presenter = new SingleCommentPresenter(this);
         mainCommentContent = getIntent().getParcelableExtra(MAIN_COMMENT);
+        colors = getIntent().getIntArrayExtra(COLORS);
+        Logger.d("Colors:" + colors);
         initView();
+        if (colors != null) {
+            initColors();
+        }
         presenter.getData(mainCommentContent.getId());
     }
 
@@ -98,8 +113,14 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         rvReplies.setLayoutManager(manager);
         CardView headerView = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, rvReplies, false);
-        initCommentItem(this, headerView, mainCommentContent, null, true);
-//        initHeaderView(headerView);
+
+        if (colors != null) {
+            Palette.Swatch commentItemSwatch = new Palette.Swatch(colors[4], colors[7]);
+            initCommentItem(this, headerView, mainCommentContent, null, commentItemSwatch, true);
+        } else {
+            initCommentItem(this, headerView, mainCommentContent, null, null, true);
+        }
+        initHeaderView(headerView);
 
         repliesList = new ArrayList<>();
         adapter = new BaseCommentsItemAdapter(repliesList, username);
@@ -143,42 +164,24 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         });
     }
 
+    private void initColors() {
+        if (Build.VERSION.SDK_INT >= 21) {
+            Window window = getWindow();
+            window.setStatusBarColor(ColorUtil.darkerColor(colors[0], 0.4));
+        }
+        toolbar.setBackgroundColor(ColorUtil.darkerColor(colors[0], 0.2));
+        rlCommentContainer.setBackgroundColor(colors[0]);
+    }
+
+    private void initHeaderView(CardView headerView) {
+    }
+
     private void initCommentReplyBox(User user) {
         String username = MoCloudUtil.getUsername(user);
         String replySomeOne = "@" + username + " ";
         commentBox.setText(replySomeOne);
         commentBox.setSelection(replySomeOne.length());
         KeyboardUtil.showSoftInput(commentBox);
-    }
-
-    private void initHeaderView(View headerView) {
-//        CircleImageView ivUserhead = (CircleImageView) headerView.findViewById(R.id.iv_userhead);
-//        TextView tvUsername = (TextView) headerView.findViewById(R.id.tv_username);
-//        TextView tvCreateTime = (TextView) headerView.findViewById(R.id.tv_createtime);
-//        TextView tvUpdateTime = (TextView) headerView.findViewById(R.id.tv_updatetime);
-//        ImageView ivCommentLikes = (ImageView) headerView.findViewById(R.id.iv_comment_likes);
-//        TextView tvCommentLikes = (TextView) headerView.findViewById(R.id.tv_comment_likes);
-//        tvCommentReplies = (TextView) headerView.findViewById(R.id.tv_comments_replies);
-//        TextView tvComment = (TextView) headerView.findViewById(R.id.tv_comment);
-//
-//        tvUsername.setText(username);
-//        tvUsername.setTextColor(ResUtil.getColor(R.color.comment_owner,null));
-//        tvUsername.setTypeface(null, Typeface.BOLD);
-//        tvCreateTime.setText(TimeUtil.formatGmtTime(mainCommentContent.getCreated_at()));
-//        tvUpdateTime.setText(TimeUtil.formatGmtTime(mainCommentContent.getUpdated_at()));
-//        tvCommentLikes.setText(String.valueOf(likes));
-//        tvCommentReplies.setText(String.valueOf(replies));
-//        tvComment.setText(mainCommentContent.getComment());
-//        Image image = mainCommentContent.getUser().getImages();
-//        if (image != null && image.getAvatar() != null) {
-//            ImageLoader.loadDontAnimate(this, image.getAvatar().getFull(), ivUserhead, R.drawable.default_userhead);
-//        }
-//        ivUserhead.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openUserActivity(SingleCommentActivity.this, mainCommentContent.getUser());
-//            }
-//        });
     }
 
     private void openKeyBoard(String replySomeOne) {

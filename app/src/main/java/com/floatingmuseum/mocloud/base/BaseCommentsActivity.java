@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.graphics.Palette;
@@ -34,7 +35,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
 
     protected TextView tvCommentReplies;
 
-    protected void initCommentItem(final Context context, CardView commentItem, final Comment comment, Palette.Swatch lightMute, boolean isSingleCommentActivity) {
+    protected void initCommentItem(final Context context, final CardView commentItem, final Comment comment, final Palette.Swatch backgroundSwatch, final Palette.Swatch commentItemSwatch, boolean isSingleCommentActivity) {
         CircleImageView ivUserhead = (CircleImageView) commentItem.findViewById(R.id.iv_userhead);
         TextView tvUsername = (TextView) commentItem.findViewById(R.id.tv_username);
         TextView tvCreatetime = (TextView) commentItem.findViewById(R.id.tv_createtime);
@@ -49,18 +50,18 @@ public abstract class BaseCommentsActivity extends BaseActivity {
 
         LinearLayout commentTitle = (LinearLayout) commentItem.findViewById(R.id.comment_title);
 
-        if (lightMute != null) {
-            commentTitle.setBackgroundColor(ColorUtil.darkerColor(lightMute.getRgb(), 0.1));
-            tvComment.setBackgroundColor(ColorUtil.darkerColor(lightMute.getRgb(), 0.2));
-            tvUpdatetime.setBackgroundColor(ColorUtil.darkerColor(lightMute.getRgb(), 0.2));
+        if (commentItemSwatch != null) {
+            commentTitle.setBackgroundColor(ColorUtil.darkerColor(commentItemSwatch.getRgb(), 0.1));
+            tvComment.setBackgroundColor(ColorUtil.darkerColor(commentItemSwatch.getRgb(), 0.2));
+            tvUpdatetime.setBackgroundColor(ColorUtil.darkerColor(commentItemSwatch.getRgb(), 0.2));
 
-            tvUsername.setTextColor(lightMute.getTitleTextColor());
-            tvCreatetime.setTextColor(lightMute.getTitleTextColor());
-            tvUpdatetime.setTextColor(lightMute.getTitleTextColor());
-            tvCommentsLikes.setTextColor(lightMute.getTitleTextColor());
-            tvCommentReplies.setTextColor(lightMute.getTitleTextColor());
+            tvUsername.setTextColor(commentItemSwatch.getTitleTextColor());
+            tvCreatetime.setTextColor(commentItemSwatch.getTitleTextColor());
+            tvUpdatetime.setTextColor(commentItemSwatch.getTitleTextColor());
+            tvCommentsLikes.setTextColor(commentItemSwatch.getTitleTextColor());
+            tvCommentReplies.setTextColor(commentItemSwatch.getTitleTextColor());
 
-            tvComment.setTextColor(lightMute.getBodyTextColor());
+            tvComment.setTextColor(commentItemSwatch.getBodyTextColor());
         }
 
         String avatarUrl = MoCloudUtil.getUserAvatar(comment.getUser());
@@ -103,6 +104,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
                 openUserActivity(context, comment.getUser());
             }
         });
+        Logger.d("initCommentItem4");
 
         if (isSingleCommentActivity) {
             tvUsername.setTextColor(ResUtil.getColor(R.color.comment_owner, null));
@@ -110,12 +112,27 @@ public abstract class BaseCommentsActivity extends BaseActivity {
             return;
         }
 
+        tvComment.setTextIsSelectable(false);//点击事件冲突，想复制文字的话去详情里面复制吧
         tvComment.setMaxLines(5);
         tvComment.setEllipsize(TextUtils.TruncateAt.END);
         commentItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, SingleCommentActivity.class);
+                if (commentItemSwatch != null) {
+                    int[] colors = new int[8];
+                    colors[0] = backgroundSwatch.getRgb();
+                    colors[1] = backgroundSwatch.getTitleTextColor();
+                    colors[2] = backgroundSwatch.getBodyTextColor();
+                    colors[3] = backgroundSwatch.getPopulation();
+                    colors[4] = commentItemSwatch.getRgb();
+                    colors[5] = commentItemSwatch.getTitleTextColor();
+                    colors[6] = commentItemSwatch.getBodyTextColor();
+                    colors[7] = commentItemSwatch.getPopulation();
+
+                    intent.putExtra(SingleCommentActivity.COLORS, colors);
+                }
+
                 intent.putExtra(SingleCommentActivity.MAIN_COMMENT, comment);
                 startActivity(intent);
             }
