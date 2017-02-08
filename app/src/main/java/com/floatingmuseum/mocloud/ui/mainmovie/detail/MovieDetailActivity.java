@@ -80,33 +80,33 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     LinearLayout llRatings;
 
     @BindView(R.id.poster)
-    RatioImageView iv_poster;
+    RatioImageView ivPoster;
     @BindView(R.id.tv_movie_title)
-    TextView tv_movie_title;
+    TextView tvMovieTitle;
     @BindView(R.id.tv_released)
-    TextView tv_released;
+    TextView tvReleased;
     @BindView(R.id.tv_runtime)
-    TextView tv_runtime;
+    TextView tvRuntime;
     @BindView(R.id.tv_language)
-    TextView tv_language;
+    TextView tvLanguage;
     @BindView(R.id.tv_rating)
-    TextView tv_rating;
+    TextView tvRating;
     @BindView(R.id.tv_overview)
-    TextView tv_overview;
+    TextView tvOverview;
     @BindView(R.id.ll_crew)
-    LinearLayout ll_crew;
+    LinearLayout llCrew;
     @BindView(R.id.ll_comments)
     LinearLayout commentContainer;
     @BindView(R.id.tv_no_more_comments)
-    TextView tv_no_more_comments;
+    TextView tvNoMoreComments;
     @BindView(R.id.tv_comments_more)
-    TextView tv_comments_more;
+    TextView tvCommentsMore;
 
     private Movie movie;
     private MovieDetailPresenter presenter;
-    private CheckBox is_spoiler;
-    private EditText comment_box;
-    private LinearLayout ll_comments_reply;
+    private CheckBox isSpoiler;
+    private EditText commentBox;
+    private LinearLayout llCommentsReply;
     private Staff staff;
     private Palette.Swatch detailSwatch;
     private Palette.Swatch commentItemSwatch;
@@ -183,12 +183,12 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
                                     int bodyTextColor = detailSwatch.getBodyTextColor();
                                     detailSwatch.getTitleTextColor();
-                                    tv_movie_title.setTextColor(bodyTextColor);
-                                    tv_released.setTextColor(bodyTextColor);
-                                    tv_runtime.setTextColor(bodyTextColor);
-                                    tv_language.setTextColor(bodyTextColor);
-                                    tv_overview.setTextColor(bodyTextColor);
-                                    tv_rating.setTextColor(bodyTextColor);
+                                    tvMovieTitle.setTextColor(bodyTextColor);
+                                    tvReleased.setTextColor(bodyTextColor);
+                                    tvRuntime.setTextColor(bodyTextColor);
+                                    tvLanguage.setTextColor(bodyTextColor);
+                                    tvOverview.setTextColor(bodyTextColor);
+                                    tvRating.setTextColor(bodyTextColor);
 
                                     tvTomatoRating.setTextColor(bodyTextColor);
                                     tvTomatoRatingCount.setTextColor(bodyTextColor);
@@ -196,7 +196,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                                     tvTraktRatingCount.setTextColor(bodyTextColor);
                                     tvImdbRating.setTextColor(bodyTextColor);
                                     tvImdbRatingCount.setTextColor(bodyTextColor);
-                                    tv_overview.setTextColor(bodyTextColor);
+                                    tvOverview.setTextColor(bodyTextColor);
 
                                     int titleTextColor = detailSwatch.getTitleTextColor();
                                     tvMovieTitleText.setTextColor(titleTextColor);
@@ -217,15 +217,15 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     @Override
     protected void initView() {
         actionBar.setTitle(movie.getTitle());
-        tv_movie_title.setText(movie.getTitle());
-        tv_released.setText(movie.getReleased());
-        tv_runtime.setText(movie.getRuntime() + " mins");
-        tv_language.setText(movie.getLanguage());
-        tv_overview.setText(movie.getOverview());
-        tv_rating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2) + "/" + movie.getVotes() + "votes");
+        tvMovieTitle.setText(movie.getTitle());
+        tvReleased.setText(movie.getReleased());
+        tvRuntime.setText(movie.getRuntime() + " mins");
+        tvLanguage.setText(movie.getLanguage());
+        tvOverview.setText(movie.getOverview());
+        tvRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2) + "/" + movie.getVotes() + "votes");
         tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2));
         tvTraktRatingCount.setText(movie.getVotes() + "votes");
-        ImageLoader.loadPoster(this, iv_poster, movie, R.drawable.default_movie_poster);
+        ImageLoader.loadPoster(this, ivPoster, movie, R.drawable.default_movie_poster);
     }
 
     public void onMovieTeamSuccess(MovieTeam movieTeam) {
@@ -236,7 +236,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
         if (detailShowList.get(0).getJob() != null) {
             Staff director = detailShowList.get(0);
-            LinearLayout director_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_staff, ll_crew, false);
+            LinearLayout director_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_staff, llCrew, false);
             setStaffClickListener(director_item, director);
             RatioImageView iv_staff_headshot = (RatioImageView) director_item.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) director_item.findViewById(R.id.tv_crew_job);
@@ -249,13 +249,13 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                 tv_crew_job.setTextColor(detailSwatch.getBodyTextColor());
                 tv_crew_realname.setTextColor(detailSwatch.getBodyTextColor());
             }
-            ll_crew.addView(director_item);
+            llCrew.addView(director_item);
         }
 
         int x = detailShowList.get(0).getJob() != null ? 1 : 0;
         for (int i = x; i < detailShowList.size(); i++) {
             Staff cast = detailShowList.get(i);
-            LinearLayout actor_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_staff, ll_crew, false);
+            LinearLayout actor_item = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_staff, llCrew, false);
             setStaffClickListener(actor_item, cast);
             RatioImageView iv_staff_headshot = (RatioImageView) actor_item.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) actor_item.findViewById(R.id.tv_crew_job);
@@ -270,7 +270,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                 tv_crew_realname.setTextColor(detailSwatch.getBodyTextColor());
                 tv_crew_character.setTextColor(detailSwatch.getBodyTextColor());
             }
-            ll_crew.addView(actor_item);
+            llCrew.addView(actor_item);
         }
     }
 
@@ -289,8 +289,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
         int showSize = comments.size() > 3 ? 3 : comments.size();
         if (comments.size() > 3) {
-            tv_comments_more.setVisibility(View.VISIBLE);
-            tv_comments_more.setOnClickListener(new View.OnClickListener() {
+            tvCommentsMore.setVisibility(View.VISIBLE);
+            tvCommentsMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MovieDetailActivity.this, CommentsActivity.class);
@@ -299,8 +299,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                 }
             });
         } else {
-            tv_no_more_comments.setVisibility(View.VISIBLE);
-            tv_no_more_comments.setOnClickListener(new View.OnClickListener() {
+            tvNoMoreComments.setVisibility(View.VISIBLE);
+            tvNoMoreComments.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Logger.d("tv_no_more_comments...点击");
@@ -310,8 +310,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         }
 
         if (enableColorful()) {
-            tv_comments_more.setTextColor(detailSwatch.getTitleTextColor());
-            tv_no_more_comments.setTextColor(detailSwatch.getTitleTextColor());
+            tvCommentsMore.setTextColor(detailSwatch.getTitleTextColor());
+            tvNoMoreComments.setTextColor(detailSwatch.getTitleTextColor());
         }
 
         for (int i = 0; i < showSize; i++) {
@@ -337,32 +337,36 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             return;
         }
         Logger.d("tv_no_more_comments...");
-        ll_comments_reply = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.comment_layout, commentContainer, false);
-        is_spoiler = (CheckBox) ll_comments_reply.findViewById(R.id.is_spoiler);
-        comment_box = (EditText) ll_comments_reply.findViewById(R.id.comment_box);
-        ImageView iv_reply = (ImageView) ll_comments_reply.findViewById(R.id.iv_reply);
-        movieDetailContainer.addView(ll_comments_reply);
-        tv_no_more_comments.setVisibility(View.GONE);
+        llCommentsReply = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.comment_layout, commentContainer, false);
+        isSpoiler = (CheckBox) llCommentsReply.findViewById(R.id.is_spoiler);
+        commentBox = (EditText) llCommentsReply.findViewById(R.id.comment_box);
+        ImageView ivReply = (ImageView) llCommentsReply.findViewById(R.id.iv_reply);
+        movieDetailContainer.addView(llCommentsReply);
+        tvNoMoreComments.setVisibility(View.GONE);
         svMovieDetail.fullScroll(View.FOCUS_DOWN);
 
-        iv_reply.setOnClickListener(new View.OnClickListener() {
+        if (enableColorful()) {
+            llCommentsReply.setBackgroundColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.1));
+        }
+
+        ivReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendComment();
             }
         });
-        KeyboardUtil.showSoftInput(comment_box);
+        KeyboardUtil.showSoftInput(commentBox);
     }
 
     private void sendComment() {
-        String replyContent = comment_box.getText().toString();
-        Logger.d("回复内容:" + replyContent + "...isSpoiler" + is_spoiler.isChecked());
+        String replyContent = commentBox.getText().toString();
+        Logger.d("回复内容:" + replyContent + "...isSpoiler" + isSpoiler.isChecked());
         if (!StringUtil.checkReplyContent(replyContent)) {
             ToastUtil.showToast(R.string.comment_tip1);
             return;
         }
         Comment comment = new Comment();
-        comment.setSpoiler(is_spoiler.isChecked());
+        comment.setSpoiler(isSpoiler.isChecked());
         comment.setComment(replyContent);
         presenter.sendComment(comment, movie.getIds().getSlug());
     }
@@ -370,13 +374,13 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     public void onSendCommentSuccess(Comment comment) {
         CardView comment_item = buildCommentItem(comment);
         ToastUtil.showToast(R.string.comment_success);
-        resetCommentBox(comment_box, is_spoiler);
+        resetCommentBox(commentBox, isSpoiler);
 //        KeyboardUtil.hideSoftInput(this);
 //        comment_box.setText("");
 //        is_spoiler.setChecked(false);
         if (commentContainer.getChildCount() == 3) {
-            tv_comments_more.setVisibility(View.VISIBLE);
-            ll_comments_reply.setVisibility(View.GONE);
+            tvCommentsMore.setVisibility(View.VISIBLE);
+            llCommentsReply.setVisibility(View.GONE);
             return;
         }
         commentContainer.addView(comment_item);
@@ -384,7 +388,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     public void onTraktRatingsSuccess(Ratings ratings) {
         Logger.d("TraktRating:" + ratings.getRating() + "..." + ratings.getVotes());
-        tv_rating.setText(NumberFormatUtil.doubleFormatToString(ratings.getRating(), false, 2) + "/" + ratings.getVotes() + "votes");
+        tvRating.setText(NumberFormatUtil.doubleFormatToString(ratings.getRating(), false, 2) + "/" + ratings.getVotes() + "votes");
         tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(ratings.getRating(), false, 2));
         tvTraktRatingCount.setText(ratings.getVotes() + "votes");
     }
