@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -46,6 +47,7 @@ import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -203,15 +205,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-                Palette.Swatch mutedSwatch = palette.getMutedSwatch();
-                Palette.Swatch lightMutedSwatch = palette.getLightMutedSwatch();
-                Palette.Swatch darkMutedSwatch = palette.getDarkMutedSwatch();
-
-                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-                Palette.Swatch lightVibrantSwatch = palette.getLightVibrantSwatch();
-                Palette.Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
-
-                Logger.d("PaletteTest...mutedSwatch:" + (mutedSwatch != null) + "...lightMutedSwatch:" + (lightMutedSwatch != null) + "...darkMutedSwatch:" + (darkMutedSwatch != null) + "...vibrantSwatch:" + (vibrantSwatch != null) + "...lightVibrantSwatch:" + (lightVibrantSwatch != null) + "...darkVibrantSwatch:" + (darkVibrantSwatch != null));
 
                 int dominantColor = palette.getDominantColor(-1);
                 int mutedColor = palette.getMutedColor(-1);
@@ -222,14 +215,11 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                 int darkVibrantColor = palette.getDarkVibrantColor(-1);
 
                 Logger.d("PaletteTest...dominantColor:" + dominantColor + "...mutedColor:" + mutedColor + "...lightMutedColor:" + lightMutedColor + "...darkMutedColor:" + darkMutedColor + "...vibrantColor:" + vibrantColor + "...lightVibrantColor:" + lightVibrantColor + "...darkVibrantColor:" + darkVibrantColor);
-                if (lightMutedSwatch != null && mutedSwatch != null) {
-                    Logger.d("PaletteTest...方案1...rgb:" + lightMutedSwatch.getRgb() + "...population:" + lightMutedSwatch.getPopulation());
-                    mainSwatch = lightMutedSwatch;
-                    itemSwatch = mutedSwatch;
-                } else if (darkVibrantSwatch != null && vibrantSwatch != null) {
-                    Logger.d("PaletteTest...方案2...rgb:" + vibrantSwatch.getRgb() + "...population:" + vibrantSwatch.getPopulation());
-                    mainSwatch = darkVibrantSwatch;
-                    itemSwatch = vibrantSwatch;
+
+                ArrayList<Palette.Swatch> swatches = ColorUtil.buildSwatchs(palette);
+                if (swatches.size() == 2) {
+                    mainSwatch = swatches.get(0);
+                    itemSwatch = swatches.get(1);
                 }
 
                 if (enableColorful()) {
