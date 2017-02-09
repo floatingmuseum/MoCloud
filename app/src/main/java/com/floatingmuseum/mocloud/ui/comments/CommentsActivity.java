@@ -130,6 +130,10 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
                 Logger.d("条目被点击");
                 Intent intent = new Intent(CommentsActivity.this, SingleCommentActivity.class);
                 intent.putExtra(SingleCommentActivity.MAIN_COMMENT, commentsData.get(position));
+                if (mainColors != null && itemColors != null) {
+                    intent.putExtra(MAIN_COLORS, mainColors);
+                    intent.putExtra(ITEM_COLORS, itemColors);
+                }
                 startActivity(intent);
             }
 

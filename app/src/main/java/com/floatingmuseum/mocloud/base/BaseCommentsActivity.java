@@ -135,6 +135,10 @@ public abstract class BaseCommentsActivity extends BaseActivity {
         });
     }
 
+//    protected boolean enableColors(){
+//
+//    }
+
     protected Colors buildColors(Palette.Swatch swatch) {
         Colors colors = new Colors();
         colors.setRgb(swatch.getRgb());
