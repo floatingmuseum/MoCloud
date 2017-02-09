@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.ui.comments.SingleCommentActivity;
 import com.floatingmuseum.mocloud.utils.ColorUtil;
@@ -32,10 +33,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 public abstract class BaseCommentsActivity extends BaseActivity {
-
+    public static final String MAIN_COMMENT = "main_comment";
+    public static final String MAIN_COLORS = "main_colors";
+    public static final String ITEM_COLORS = "item_colors";
     protected TextView tvCommentReplies;
 
-    protected void initCommentItem(final Context context, final CardView commentItem, final Comment comment, final Palette.Swatch backgroundSwatch, final Palette.Swatch commentItemSwatch, boolean isSingleCommentActivity) {
+    protected void initCommentItem(final Context context, final CardView commentItem, final Comment comment, final Palette.Swatch mainSwatch, final Palette.Swatch itemSwatch, boolean isSingleCommentActivity) {
         CircleImageView ivUserhead = (CircleImageView) commentItem.findViewById(R.id.iv_userhead);
         TextView tvUsername = (TextView) commentItem.findViewById(R.id.tv_username);
         TextView tvCreatetime = (TextView) commentItem.findViewById(R.id.tv_createtime);
@@ -50,18 +53,18 @@ public abstract class BaseCommentsActivity extends BaseActivity {
 
         LinearLayout commentTitle = (LinearLayout) commentItem.findViewById(R.id.comment_title);
 
-        if (commentItemSwatch != null) {
-            commentTitle.setBackgroundColor(ColorUtil.darkerColor(commentItemSwatch.getRgb(), 0.1));
-            tvComment.setBackgroundColor(ColorUtil.darkerColor(commentItemSwatch.getRgb(), 0.2));
-            tvUpdatetime.setBackgroundColor(ColorUtil.darkerColor(commentItemSwatch.getRgb(), 0.2));
+        if (itemSwatch != null) {
+            commentTitle.setBackgroundColor(ColorUtil.darkerColor(itemSwatch.getRgb(), 0.1));
+            tvComment.setBackgroundColor(ColorUtil.darkerColor(itemSwatch.getRgb(), 0.2));
+            tvUpdatetime.setBackgroundColor(ColorUtil.darkerColor(itemSwatch.getRgb(), 0.2));
 
-            tvUsername.setTextColor(commentItemSwatch.getTitleTextColor());
-            tvCreatetime.setTextColor(commentItemSwatch.getTitleTextColor());
-            tvUpdatetime.setTextColor(commentItemSwatch.getTitleTextColor());
-            tvCommentsLikes.setTextColor(commentItemSwatch.getTitleTextColor());
-            tvCommentReplies.setTextColor(commentItemSwatch.getTitleTextColor());
+            tvUsername.setTextColor(itemSwatch.getTitleTextColor());
+            tvCreatetime.setTextColor(itemSwatch.getTitleTextColor());
+            tvUpdatetime.setTextColor(itemSwatch.getTitleTextColor());
+            tvCommentsLikes.setTextColor(itemSwatch.getTitleTextColor());
+            tvCommentReplies.setTextColor(itemSwatch.getTitleTextColor());
 
-            tvComment.setTextColor(commentItemSwatch.getBodyTextColor());
+            tvComment.setTextColor(itemSwatch.getBodyTextColor());
         }
 
         String avatarUrl = MoCloudUtil.getUserAvatar(comment.getUser());
@@ -119,24 +122,27 @@ public abstract class BaseCommentsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, SingleCommentActivity.class);
-                if (commentItemSwatch != null) {
-                    int[] colors = new int[8];
-                    colors[0] = backgroundSwatch.getRgb();
-                    colors[1] = backgroundSwatch.getTitleTextColor();
-                    colors[2] = backgroundSwatch.getBodyTextColor();
-                    colors[3] = backgroundSwatch.getPopulation();
-                    colors[4] = commentItemSwatch.getRgb();
-                    colors[5] = commentItemSwatch.getTitleTextColor();
-                    colors[6] = commentItemSwatch.getBodyTextColor();
-                    colors[7] = commentItemSwatch.getPopulation();
-
-                    intent.putExtra(SingleCommentActivity.COLORS, colors);
+                if (itemSwatch != null) {
+                    Colors mainColors = buildColors(mainSwatch);
+                    Colors itemColors = buildColors(itemSwatch);
+                    intent.putExtra(MAIN_COLORS, mainColors);
+                    intent.putExtra(ITEM_COLORS, itemColors);
                 }
 
                 intent.putExtra(SingleCommentActivity.MAIN_COMMENT, comment);
                 startActivity(intent);
             }
         });
+    }
+
+    protected Colors buildColors(Palette.Swatch swatch) {
+        Colors colors = new Colors();
+        colors.setRgb(swatch.getRgb());
+        colors.setHsl(swatch.getHsl());
+        colors.setPopulation(swatch.getPopulation());
+        colors.setTitleTextColor(swatch.getBodyTextColor());
+        colors.setBodyTextColor(swatch.getTitleTextColor());
+        return colors;
     }
 
     protected void resetCommentBox(EditText commentBox, CheckBox isSpoiler) {

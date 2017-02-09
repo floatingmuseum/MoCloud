@@ -28,6 +28,7 @@ import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseCommentsItemAdapter;
 import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Image;
 import com.floatingmuseum.mocloud.data.entity.Reply;
@@ -72,8 +73,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
     @BindView(R.id.isSpoiler)
     CheckBox isSpoiler;
 
-    public static final String MAIN_COMMENT = "main_comment";
-    public static final String COLORS = "colors";
+
 
     private Comment mainCommentContent;
     private SingleCommentPresenter presenter;
@@ -83,7 +83,9 @@ public class SingleCommentActivity extends BaseCommentsActivity {
     private int replies;
     //    private TextView tvCommentReplies;
     private String username;
-    private int[] colors;
+    private Colors mainColors;
+    private Colors itemColors;
+
 
     @Override
     protected int currentLayoutId() {
@@ -97,10 +99,11 @@ public class SingleCommentActivity extends BaseCommentsActivity {
 
         presenter = new SingleCommentPresenter(this);
         mainCommentContent = getIntent().getParcelableExtra(MAIN_COMMENT);
-        colors = getIntent().getIntArrayExtra(COLORS);
-        Logger.d("Colors:" + colors);
+        mainColors = getIntent().getParcelableExtra(MAIN_COLORS);
+        itemColors = getIntent().getParcelableExtra(ITEM_COLORS);
+        Logger.d("Colors:" + mainColors);
         initView();
-        if (colors != null) {
+        if (mainColors != null && itemColors != null) {
             initColors();
         }
         presenter.getData(mainCommentContent.getId());
@@ -116,15 +119,15 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         rvReplies.setLayoutManager(manager);
         CardView headerView = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, rvReplies, false);
 
-        if (colors != null) {
-            Palette.Swatch commentItemSwatch = new Palette.Swatch(colors[4], colors[7]);
+        if (mainColors != null && itemColors != null) {
+            Palette.Swatch commentItemSwatch = new Palette.Swatch(itemColors.getRgb(), itemColors.getPopulation());
             initCommentItem(this, headerView, mainCommentContent, null, commentItemSwatch, true);
         } else {
             initCommentItem(this, headerView, mainCommentContent, null, null, true);
         }
 
         repliesList = new ArrayList<>();
-        adapter = new BaseCommentsItemAdapter(repliesList, username, colors);
+        adapter = new BaseCommentsItemAdapter(repliesList, username, itemColors);
         adapter.addHeaderView(headerView);
 
         rvReplies.setAdapter(adapter);
@@ -168,12 +171,12 @@ public class SingleCommentActivity extends BaseCommentsActivity {
     private void initColors() {
         if (Build.VERSION.SDK_INT >= 21) {
             Window window = getWindow();
-            window.setStatusBarColor(ColorUtil.darkerColor(colors[0], 0.4));
+            window.setStatusBarColor(ColorUtil.darkerColor(mainColors.getRgb(), 0.4));
         }
-        toolbar.setBackgroundColor(ColorUtil.darkerColor(colors[0], 0.2));
-        rlCommentContainer.setBackgroundColor(colors[0]);
-        llComments.setBackgroundColor(ColorUtil.darkerColor(colors[0], 0.1));
-        commentBox.setTextColor(colors[2]);
+        toolbar.setBackgroundColor(ColorUtil.darkerColor(mainColors.getRgb(), 0.2));
+        rlCommentContainer.setBackgroundColor(mainColors.getRgb());
+        llComments.setBackgroundColor(ColorUtil.darkerColor(mainColors.getRgb(), 0.1));
+        commentBox.setTextColor(mainColors.getBodyTextColor());
     }
 
     private void initCommentReplyBox(User user) {

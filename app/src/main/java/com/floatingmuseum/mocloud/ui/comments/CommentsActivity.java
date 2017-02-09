@@ -1,6 +1,7 @@
 package com.floatingmuseum.mocloud.ui.comments;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,17 +10,21 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseCommentsItemAdapter;
+import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.utils.ColorUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
@@ -41,15 +46,17 @@ import butterknife.ButterKnife;
 public class CommentsActivity extends BaseCommentsActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.rv_comments)
-    RecyclerView rv_comments;
+    RecyclerView rvComments;
     @BindView(R.id.srl_comments)
-    SwipeRefreshLayout srl_comments;
+    SwipeRefreshLayout srlComments;
     @BindView(R.id.isSpoiler)
     CheckBox isSpoiler;
     @BindView(R.id.comment_box)
     EditText commentBox;
     @BindView(R.id.iv_reply)
     ImageView ivReply;
+    @BindView(R.id.ll_comments)
+    LinearLayout llComments;
 
     public static final String MOVIE_OBJECT = "movie_object";
     public static final String SORT_BY_NEWEST = "newest";
@@ -59,6 +66,8 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
 
     private CommentsPresenter presenter;
     private Movie movie;
+    private Colors mainColors;
+    private Colors itemColors;
     private List<Comment> commentsData;
     private BaseCommentsItemAdapter adapter;
     private LinearLayoutManager manager;
@@ -79,30 +88,35 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         ButterKnife.bind(this);
 
         movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
+        mainColors = getIntent().getParcelableExtra(MAIN_COLORS);
+        itemColors = getIntent().getParcelableExtra(ITEM_COLORS);
         actionBar.setTitle(movie.getTitle());
         presenter = new CommentsPresenter(this);
         currentSortCondition = SPUtil.getString(SPUtil.KEY_COMMENTS_SORT_CONDITION, SORT_BY_NEWEST);
         initView();
+        if (mainColors != null && itemColors != null) {
+            initColors();
+        }
     }
 
     protected void initView() {
         // TODO: 2017/1/9 build sort comments list by newest,oldest,likes,replies
         commentsData = new ArrayList<>();
-        adapter = new BaseCommentsItemAdapter(commentsData,null);
-        rv_comments.setHasFixedSize(true);
+        adapter = new BaseCommentsItemAdapter(commentsData, itemColors);
+        rvComments.setHasFixedSize(true);
         manager = new LinearLayoutManager(this);
-        srl_comments.setOnRefreshListener(this);
-        rv_comments.setLayoutManager(manager);
-        rv_comments.setAdapter(adapter);
+        srlComments.setOnRefreshListener(this);
+        rvComments.setLayoutManager(manager);
+        rvComments.setAdapter(adapter);
 
-        srl_comments.post(new Runnable() {
+        srlComments.post(new Runnable() {
             @Override
             public void run() {
                 triggerRefreshRequest();
             }
         });
 
-        rv_comments.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        rvComments.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -110,7 +124,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
             }
         });
 
-        rv_comments.addOnItemTouchListener(new OnItemClickListener() {
+        rvComments.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Logger.d("条目被点击");
@@ -139,6 +153,17 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
                 sendComment();
             }
         });
+    }
+
+    private void initColors() {
+        if (Build.VERSION.SDK_INT >= 21) {
+            Window window = getWindow();
+            window.setStatusBarColor(ColorUtil.darkerColor(mainColors.getRgb(), 0.4));
+        }
+        toolbar.setBackgroundColor(ColorUtil.darkerColor(mainColors.getRgb(), 0.2));
+        srlComments.setBackgroundColor(mainColors.getRgb());
+        llComments.setBackgroundColor(ColorUtil.darkerColor(mainColors.getRgb(), 0.1));
+        commentBox.setTextColor(mainColors.getBodyTextColor());
     }
 
     private void sendComment() {
@@ -302,12 +327,12 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     }
 
     private void triggerRefreshRequest() {
-        srl_comments.setRefreshing(true);
+        srlComments.setRefreshing(true);
         onRefresh();
     }
 
     public void stopRefresh() {
-        stopRefresh(srl_comments);
+        stopRefresh(srlComments);
     }
 
     @Override

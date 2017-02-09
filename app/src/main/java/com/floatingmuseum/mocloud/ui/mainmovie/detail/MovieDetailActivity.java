@@ -26,6 +26,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
+import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
@@ -138,8 +139,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     private EditText commentBox;
     private LinearLayout llCommentsReply;
     private Staff staff;
-    private Palette.Swatch detailSwatch;
-    private Palette.Swatch commentItemSwatch;
+    private Palette.Swatch itemSwatch;
+    private Palette.Swatch mainSwatch;
 
 
     @Override
@@ -222,28 +223,28 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
                 Logger.d("PaletteTest...dominantColor:" + dominantColor + "...mutedColor:" + mutedColor + "...lightMutedColor:" + lightMutedColor + "...darkMutedColor:" + darkMutedColor + "...vibrantColor:" + vibrantColor + "...lightVibrantColor:" + lightVibrantColor + "...darkVibrantColor:" + darkVibrantColor);
                 if (lightMutedSwatch != null && mutedSwatch != null) {
-                    Logger.d("PaletteTest...方案1");
-                    commentItemSwatch = lightMutedSwatch;
-                    detailSwatch = mutedSwatch;
+                    Logger.d("PaletteTest...方案1...rgb:" + lightMutedSwatch.getRgb() + "...population:" + lightMutedSwatch.getPopulation());
+                    mainSwatch = lightMutedSwatch;
+                    itemSwatch = mutedSwatch;
                 } else if (darkVibrantSwatch != null && vibrantSwatch != null) {
-                    Logger.d("PaletteTest...方案2");
-                    commentItemSwatch = darkVibrantSwatch;
-                    detailSwatch = vibrantSwatch;
+                    Logger.d("PaletteTest...方案2...rgb:" + vibrantSwatch.getRgb() + "...population:" + vibrantSwatch.getPopulation());
+                    mainSwatch = darkVibrantSwatch;
+                    itemSwatch = vibrantSwatch;
                 }
 
                 if (enableColorful()) {
                     Logger.d("PaletteTest...实施方案");
                     if (Build.VERSION.SDK_INT >= 21) {
                         Window window = getWindow();
-                        window.setStatusBarColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.4));
-                        window.setNavigationBarColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.4));
+                        window.setStatusBarColor(ColorUtil.darkerColor(itemSwatch.getRgb(), 0.4));
+                        window.setNavigationBarColor(ColorUtil.darkerColor(itemSwatch.getRgb(), 0.4));
                     }
 
-                    toolbar.setBackgroundColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.2));
-                    llMovieContainer.setBackgroundColor(detailSwatch.getRgb());
+                    toolbar.setBackgroundColor(ColorUtil.darkerColor(itemSwatch.getRgb(), 0.2));
+                    llMovieContainer.setBackgroundColor(itemSwatch.getRgb());
 
-                    int bodyTextColor = detailSwatch.getBodyTextColor();
-                    detailSwatch.getTitleTextColor();
+                    int bodyTextColor = itemSwatch.getBodyTextColor();
+                    itemSwatch.getTitleTextColor();
                     tvMovieTitle.setTextColor(bodyTextColor);
                     tvReleased.setTextColor(bodyTextColor);
                     tvRuntime.setTextColor(bodyTextColor);
@@ -259,7 +260,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     tvImdbRatingCount.setTextColor(bodyTextColor);
                     tvOverview.setTextColor(bodyTextColor);
 
-                    int titleTextColor = detailSwatch.getTitleTextColor();
+                    int titleTextColor = itemSwatch.getTitleTextColor();
                     tvMovieTitleText.setTextColor(titleTextColor);
                     tvReleasedTitleText.setTextColor(titleTextColor);
                     tvRuntimeTitleText.setTextColor(titleTextColor);
@@ -291,8 +292,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             tv_crew_job.setText(director.getJob());
             tv_crew_realname.setText(director.getPerson().getName());
             if (enableColorful()) {
-                tv_crew_job.setTextColor(detailSwatch.getBodyTextColor());
-                tv_crew_realname.setTextColor(detailSwatch.getBodyTextColor());
+                tv_crew_job.setTextColor(itemSwatch.getBodyTextColor());
+                tv_crew_realname.setTextColor(itemSwatch.getBodyTextColor());
             }
             llCrew.addView(director_item);
         }
@@ -311,9 +312,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             tv_crew_realname.setText(cast.getPerson().getName());
             tv_crew_character.setText(cast.getCharacter());
             if (enableColorful()) {
-                tv_crew_job.setTextColor(detailSwatch.getBodyTextColor());
-                tv_crew_realname.setTextColor(detailSwatch.getBodyTextColor());
-                tv_crew_character.setTextColor(detailSwatch.getBodyTextColor());
+                tv_crew_job.setTextColor(itemSwatch.getBodyTextColor());
+                tv_crew_realname.setTextColor(itemSwatch.getBodyTextColor());
+                tv_crew_character.setTextColor(itemSwatch.getBodyTextColor());
             }
             llCrew.addView(actor_item);
         }
@@ -321,7 +322,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
 
     private boolean enableColorful() {
-        if (commentItemSwatch != null && detailSwatch != null) {
+        if (mainSwatch != null && itemSwatch != null) {
             return true;
         } else {
             return false;
@@ -339,6 +340,13 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                 public void onClick(View v) {
                     Intent intent = new Intent(MovieDetailActivity.this, CommentsActivity.class);
                     intent.putExtra(CommentsActivity.MOVIE_OBJECT, movie);
+                    if (enableColorful()) {
+                        Colors mainColors = buildColors(mainSwatch);
+                        Colors itemColors = buildColors(itemSwatch);
+                        intent.putExtra(MAIN_COLORS, mainColors);
+                        intent.putExtra(ITEM_COLORS, itemColors);
+                    }
+
                     startActivity(intent);
                 }
             });
@@ -354,8 +362,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         }
 
         if (enableColorful()) {
-            tvCommentsMore.setTextColor(detailSwatch.getTitleTextColor());
-            tvNoMoreComments.setTextColor(detailSwatch.getTitleTextColor());
+            tvCommentsMore.setTextColor(itemSwatch.getTitleTextColor());
+            tvNoMoreComments.setTextColor(itemSwatch.getTitleTextColor());
         }
 
         for (int i = 0; i < showSize; i++) {
@@ -370,7 +378,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     private CardView buildCommentItem(final Comment comment) {
         CardView comment_item = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, commentContainer, false);
         if (enableColorful()) {
-            initCommentItem(this, comment_item, comment, detailSwatch, commentItemSwatch, false);
+            initCommentItem(this, comment_item, comment, itemSwatch, mainSwatch, false);
         } else {
             initCommentItem(this, comment_item, comment, null, null, false);
         }
@@ -391,8 +399,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         svMovieDetail.fullScroll(View.FOCUS_DOWN);
 
         if (enableColorful()) {
-            llCommentsReply.setBackgroundColor(ColorUtil.darkerColor(detailSwatch.getRgb(), 0.1));
-            commentBox.setTextColor(detailSwatch.getBodyTextColor());
+            llCommentsReply.setBackgroundColor(ColorUtil.darkerColor(itemSwatch.getRgb(), 0.1));
+            commentBox.setTextColor(itemSwatch.getBodyTextColor());
         }
 
         ivReply.setOnClickListener(new View.OnClickListener() {
