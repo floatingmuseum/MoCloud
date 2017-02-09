@@ -144,8 +144,8 @@ public abstract class BaseCommentsActivity extends BaseActivity {
         colors.setRgb(swatch.getRgb());
         colors.setHsl(swatch.getHsl());
         colors.setPopulation(swatch.getPopulation());
-        colors.setTitleTextColor(swatch.getBodyTextColor());
-        colors.setBodyTextColor(swatch.getTitleTextColor());
+        colors.setTitleTextColor(swatch.getTitleTextColor());
+        colors.setBodyTextColor(swatch.getBodyTextColor());
         return colors;
     }
 

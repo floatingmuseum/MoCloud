@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -51,6 +52,8 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     SwipeRefreshLayout srlComments;
     @BindView(R.id.isSpoiler)
     CheckBox isSpoiler;
+    @BindView(R.id.tv_spoiler)
+    TextView tvSpoiler;
     @BindView(R.id.comment_box)
     EditText commentBox;
     @BindView(R.id.iv_reply)
@@ -167,7 +170,9 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         toolbar.setBackgroundColor(ColorUtil.darkerColor(mainColors.getRgb(), 0.2));
         srlComments.setBackgroundColor(mainColors.getRgb());
         llComments.setBackgroundColor(ColorUtil.darkerColor(mainColors.getRgb(), 0.1));
+        tvSpoiler.setTextColor(mainColors.getTitleTextColor());
         commentBox.setTextColor(mainColors.getBodyTextColor());
+        commentBox.setHintTextColor(mainColors.getTitleTextColor());
     }
 
     private void sendComment() {

@@ -72,7 +72,8 @@ public class SingleCommentActivity extends BaseCommentsActivity {
     ImageView ivReply;
     @BindView(R.id.isSpoiler)
     CheckBox isSpoiler;
-
+    @BindView(R.id.tv_spoiler)
+    TextView tvSpoiler;
 
 
     private Comment mainCommentContent;
@@ -176,7 +177,9 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         toolbar.setBackgroundColor(ColorUtil.darkerColor(mainColors.getRgb(), 0.2));
         rlCommentContainer.setBackgroundColor(mainColors.getRgb());
         llComments.setBackgroundColor(ColorUtil.darkerColor(mainColors.getRgb(), 0.1));
+        tvSpoiler.setTextColor(mainColors.getTitleTextColor());
         commentBox.setTextColor(mainColors.getBodyTextColor());
+        commentBox.setHintTextColor(mainColors.getTitleTextColor());
     }
 
     private void initCommentReplyBox(User user) {
