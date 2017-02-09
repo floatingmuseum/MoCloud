@@ -120,7 +120,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-//                loadMoreComments(manager, adapter, currentSortCondition, movie.getImdb_id(), presenter, srl_comments);
+                loadMoreComments(manager, adapter, currentSortCondition, movie.getIds().getSlug(), presenter, srlComments);
             }
         });
 
