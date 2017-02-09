@@ -2,7 +2,6 @@ package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -19,8 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.bumptech.glide.BitmapTypeRequest;
-import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -98,8 +95,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     TextView tvRuntime;
     @BindView(R.id.tv_language)
     TextView tvLanguage;
-    @BindView(R.id.tv_rating)
-    TextView tvRating;
     @BindView(R.id.tv_overview)
     TextView tvOverview;
     @BindView(R.id.ll_crew)
@@ -122,8 +117,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     TextView tvRuntimeTitleText;
     @BindView(R.id.tv_language_title_text)
     TextView tvLanguageTitleText;
-    @BindView(R.id.tv_rating_title_text)
-    TextView tvRatingTitleText;
+
     @BindView(R.id.ll_movie_header)
     LinearLayout llMovieHeader;
     @BindView(R.id.tv_overview_title)
@@ -134,6 +128,14 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     TextView tvCommentsTitle;
     @BindView(R.id.ll_movie_container)
     LinearLayout llMovieContainer;
+    @BindView(R.id.tv_certification_title_text)
+    TextView tvCertificationTitleText;
+    @BindView(R.id.tv_certification)
+    TextView tvCertification;
+    @BindView(R.id.tv_genres_title_text)
+    TextView tvGenresTitleText;
+    @BindView(R.id.tv_genres)
+    TextView tvGenres;
 
     private Movie movie;
     private MovieDetailPresenter presenter;
@@ -165,16 +167,37 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     @Override
     protected void initView() {
         getBitmapForColors();
+        ImageLoader.loadPoster(this, ivPoster, movie, R.drawable.default_movie_poster);
         actionBar.setTitle(movie.getTitle());
         tvMovieTitle.setText(movie.getTitle());
         tvReleased.setText(movie.getReleased());
         tvRuntime.setText(movie.getRuntime() + " mins");
         tvLanguage.setText(movie.getLanguage());
         tvOverview.setText(movie.getOverview());
-        tvRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2) + "/" + movie.getVotes() + "votes");
+        if (movie.getCertification() != null && movie.getCertification().length() > 0) {
+            tvCertificationTitleText.setVisibility(View.VISIBLE);
+            tvCertification.setVisibility(View.VISIBLE);
+            tvCertification.setText(movie.getCertification());
+        } else {
+            List<String> genres = movie.getGenres();
+            if (genres != null && genres.size() > 0) {
+                StringBuffer sbGenre = new StringBuffer();
+                for (int i = 0; i < genres.size(); i++) {
+                    if (i == (genres.size() - 1)) {
+                        sbGenre.append(genres.get(i));
+                    } else {
+                        sbGenre.append(genres.get(i) + ",");
+                    }
+                }
+                tvGenresTitleText.setVisibility(View.VISIBLE);
+                tvGenres.setVisibility(View.VISIBLE);
+                tvGenres.setText(sbGenre);
+            }
+        }
+//        tvRating.setText(movie.getCertification());
+//        tvRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2) + "/" + movie.getVotes() + "votes");
         tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2));
         tvTraktRatingCount.setText(movie.getVotes() + "votes");
-        ImageLoader.loadPoster(this, ivPoster, movie, R.drawable.default_movie_poster);
     }
 
     private void getBitmapForColors() {
@@ -239,9 +262,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     tvReleased.setTextColor(bodyTextColor);
                     tvRuntime.setTextColor(bodyTextColor);
                     tvLanguage.setTextColor(bodyTextColor);
+                    tvGenres.setTextColor(bodyTextColor);
+                    tvCertification.setTextColor(bodyTextColor);
                     tvOverview.setTextColor(bodyTextColor);
-                    tvRating.setTextColor(bodyTextColor);
-
                     tvTomatoRating.setTextColor(bodyTextColor);
                     tvTomatoRatingCount.setTextColor(bodyTextColor);
                     tvTraktRating.setTextColor(bodyTextColor);
@@ -255,7 +278,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     tvReleasedTitleText.setTextColor(titleTextColor);
                     tvRuntimeTitleText.setTextColor(titleTextColor);
                     tvLanguageTitleText.setTextColor(titleTextColor);
-                    tvRatingTitleText.setTextColor(titleTextColor);
+//                    tvRatingTitleText.setTextColor(titleTextColor);
+                    tvGenresTitleText.setTextColor(titleTextColor);
+                    tvCertificationTitleText.setTextColor(titleTextColor);
                     tvOverviewTitle.setTextColor(titleTextColor);
                     tvCrewTitle.setTextColor(titleTextColor);
                     tvCommentsTitle.setTextColor(titleTextColor);
@@ -434,7 +459,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     public void onTraktRatingsSuccess(Ratings ratings) {
         Logger.d("TraktRating:" + ratings.getRating() + "..." + ratings.getVotes());
-        tvRating.setText(NumberFormatUtil.doubleFormatToString(ratings.getRating(), false, 2) + "/" + ratings.getVotes() + "votes");
+//        tvRating.setText(NumberFormatUtil.doubleFormatToString(ratings.getRating(), false, 2) + "/" + ratings.getVotes() + "votes");
         tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(ratings.getRating(), false, 2));
         tvTraktRatingCount.setText(ratings.getVotes() + "votes");
     }

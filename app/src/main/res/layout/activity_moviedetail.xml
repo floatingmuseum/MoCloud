@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:mocloud="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_movie_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/ll_movie_container"
     android:orientation="vertical">
 
     <include layout="@layout/layout_appbar" />
@@ -88,14 +88,31 @@
                         tools:text="English" />
 
                     <TextView
-                        android:id="@+id/tv_rating_title_text"
+                        android:id="@+id/tv_certification_title_text"
                         style="@style/detail_title"
-                        android:text="@string/rating" />
+                        android:text="@string/certification"
+                        android:visibility="gone" />
 
                     <TextView
-                        android:id="@+id/tv_rating"
+                        android:id="@+id/tv_certification"
                         style="@style/detail_content"
-                        tools:text="6.5" />
+                        android:visibility="gone"
+                        tools:text="PG-13" />
+
+                    <TextView
+                        android:id="@+id/tv_genres_title_text"
+                        style="@style/detail_title"
+                        android:text="@string/genres"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_genres"
+                        style="@style/detail_content"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:visibility="gone"
+                        tools:text="adventure,animation,family" />
                 </LinearLayout>
 
             </LinearLayout>
