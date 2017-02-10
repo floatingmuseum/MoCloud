@@ -1,10 +1,12 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import io.realm.RealmObject;
+
 /**
  * Created by Floatingmuseum on 2017/2/7.
  */
 
-public class LastActivities {
+public class LastActivities{
 
     private String all;
     private Movies movies;

@@ -11,6 +11,10 @@ import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.github.moduth.blockcanary.BlockCanary;
 import com.squareup.leakcanary.LeakCanary;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmList;
+
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
@@ -26,6 +30,11 @@ public class MoCloud extends Application implements ThemeUtils.switchColor{
         ImageCacheManager.init(this);
 //        LeakCanary.install(this);
         BlockCanary.install(this,new AppBlockCanaryContext()).start();
+        initRealm();
+    }
+
+    private void initRealm() {
+        Realm.init(this);
     }
 
     @Override
