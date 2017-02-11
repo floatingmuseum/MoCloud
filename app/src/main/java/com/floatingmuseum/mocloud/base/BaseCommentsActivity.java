@@ -110,7 +110,6 @@ public abstract class BaseCommentsActivity extends BaseActivity {
         Logger.d("initCommentItem4");
 
         if (isSingleCommentActivity) {
-            tvUsername.setTextColor(ResUtil.getColor(R.color.comment_owner, null));
             tvUsername.setTypeface(null, Typeface.BOLD);
             return;
         }

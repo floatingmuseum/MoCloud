@@ -67,14 +67,8 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment, BaseViewH
 
         if (username.equals(commentOwner)) {
             tvUsername.setTypeface(tvUsername.getTypeface(), Typeface.BOLD);
-            tvUsername.setTextColor(ResUtil.getColor(R.color.comment_owner, null));
         } else {
             tvUsername.setTypeface(Typeface.DEFAULT);
-            if (itemColors != null) {
-                tvUsername.setTextColor(itemColors.getTitleTextColor());
-            } else {
-                tvUsername.setTextColor(ResUtil.getColor(R.color.comment_user, null));
-            }
         }
     }
 
@@ -83,6 +77,7 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment, BaseViewH
             holder.setBackgroundColor(R.id.comment_title, ColorUtil.darkerColor(itemColors.getRgb(), 0.1))
                     .setBackgroundColor(R.id.tv_comment, ColorUtil.darkerColor(itemColors.getRgb(), 0.2))
                     .setBackgroundColor(R.id.tv_updatetime, ColorUtil.darkerColor(itemColors.getRgb(), 0.2))
+                    .setTextColor(R.id.tv_username,itemColors.getTitleTextColor())
                     .setTextColor(R.id.tv_createtime, itemColors.getTitleTextColor())
                     .setTextColor(R.id.tv_updatetime, itemColors.getTitleTextColor())
                     .setTextColor(R.id.tv_comments_replies, itemColors.getTitleTextColor())
