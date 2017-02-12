@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.data.entity.Ids;
 import com.floatingmuseum.mocloud.data.entity.Image;
+import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
@@ -18,8 +19,12 @@ import com.floatingmuseum.mocloud.data.entity.UserSettings;
  */
 public class SPUtil {
 
-    public static final String SP_USER_SETTINGS = "UserSettings";
+    public static final String SP_USER_SETTINGS = "userSettings";
+    public static final String SP_USER_LASTACTIVITIES = "userLastActivities";
 
+    /**
+     * 不可以修改Key
+     */
     public static final String KEY_ACCESS_TOKEN = "access_token";
     public static final String KEY_REFRESH_TOKEN = "refresh_token";
     public static final String KEY_IS_LOGIN = "isLogin";
@@ -142,6 +147,38 @@ public class SPUtil {
         MoCloud.context.getSharedPreferences(spFileName, Context.MODE_PRIVATE)
                 .edit()
                 .putFloat(key, value)
+                .apply();
+    }
+
+    public static void saveUserLastActivities(LastActivities lastActivities){
+        SharedPreferences preferences = MoCloud.context.getSharedPreferences(SP_USER_LASTACTIVITIES, Context.MODE_PRIVATE);
+        preferences.edit()
+                .putString("all",lastActivities.getAll())
+                .putString("movies_watched_at",lastActivities.getMovies().getWatched_at())
+                .putString("movies_collected_at",lastActivities.getMovies().getCollected_at())
+                .putString("movies_rated_at",lastActivities.getMovies().getRated_at())
+                .putString("movies_watchlisted_at",lastActivities.getMovies().getWatchlisted_at())
+                .putString("movies_commented_at",lastActivities.getMovies().getCommented_at())
+                .putString("movies_paused_at",lastActivities.getMovies().getPaused_at())
+                .putString("movies_hidden_at",lastActivities.getMovies().getHidden_at())
+                .putString("episodes_watched_at",lastActivities.getEpisodes().getWatched_at())
+                .putString("episodes_collected_at",lastActivities.getEpisodes().getCollected_at())
+                .putString("episodes_rated_at",lastActivities.getEpisodes().getRated_at())
+                .putString("episodes_watchlisted_at",lastActivities.getEpisodes().getWatchlisted_at())
+                .putString("episodes_commented_at",lastActivities.getEpisodes().getCommented_at())
+                .putString("episodes_paused_at",lastActivities.getEpisodes().getPaused_at())
+                .putString("shows_rated_at",lastActivities.getShows().getRated_at())
+                .putString("shows_watchlisted_at",lastActivities.getShows().getWatchlisted_at())
+                .putString("shows_commented_at",lastActivities.getShows().getCommented_at())
+                .putString("shows_hidden_at",lastActivities.getShows().getHidden_at())
+                .putString("seasons_rated_at",lastActivities.getSeasons().getRated_at())
+                .putString("seasons_watchlisted_at",lastActivities.getSeasons().getWatchlisted_at())
+                .putString("seasons_commented_at",lastActivities.getSeasons().getCommented_at())
+                .putString("seasons_hidden_at",lastActivities.getSeasons().getHidden_at())
+                .putString("comments_liked_at",lastActivities.getComments().getLiked_at())
+                .putString("lists_liked_at",lastActivities.getLists().getLiked_at())
+                .putString("lists_updated_at",lastActivities.getLists().getUpdated_at())
+                .putString("lists_commented_at",lastActivities.getLists().getCommented_at())
                 .apply();
     }
 
