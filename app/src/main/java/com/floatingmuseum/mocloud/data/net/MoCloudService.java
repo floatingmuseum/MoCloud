@@ -82,6 +82,8 @@ public interface MoCloudService {
     @GET("users/{id}/stats")
     Observable<Stats> getUserStats(@Path("id")String slug);
 
+    //******************************************* Sync *******************************************
+
     //用户最新变动
     @GET("sync/last_activities")
     Observable<LastActivities> getLastActivities();
