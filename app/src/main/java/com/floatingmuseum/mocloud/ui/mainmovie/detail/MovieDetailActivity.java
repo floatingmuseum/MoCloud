@@ -166,8 +166,14 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     @Override
     protected void initView() {
-        getBitmapForColors();
-        ImageLoader.loadPoster(this, ivPoster, movie, R.drawable.default_movie_poster);
+//        ImageLoader.load(this, movie.getImage().getBitmap(), ivPoster, R.drawable.default_movie_poster);
+        Bitmap bitmap = movie.getImage().getBitmap();
+        initColors(bitmap);
+        if (bitmap != null) {
+            ivPoster.setImageBitmap(movie.getImage().getBitmap());
+        } else {
+            ivPoster.setImageResource(R.drawable.default_movie_poster);
+        }
         actionBar.setTitle(movie.getTitle());
         tvMovieTitle.setText(movie.getTitle());
         tvReleased.setText(movie.getReleased());
@@ -200,35 +206,14 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tvTraktRatingCount.setText(movie.getVotes() + "votes");
     }
 
-    private void getBitmapForColors() {
-        TmdbMovieImage image = movie.getImage();
-        Logger.d("MovieName:" + movie.getTitle() + "..." + image);
-        if (image != null) {
-            if (image.isHasCache()) {
-                File file = image.getCacheFile();
-                Glide.with(this).load(file).asBitmap().into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        initColors(resource);
-                    }
-                });
-            } else if (image.isHasPoster()) {
-                String tmdbPosterUrl = StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path());
-                Glide.with(this).load(tmdbPosterUrl).asBitmap().into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        initColors(resource);
-                    }
-                });
-            }
-        }
-    }
-
     private void initColors(Bitmap bitmap) {
+        Logger.d("initColors...bitmap:" + bitmap);
+        if (bitmap == null) {
+            return;
+        }
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-
                 int dominantColor = palette.getDominantColor(-1);
                 int mutedColor = palette.getMutedColor(-1);
                 int lightMutedColor = palette.getLightMutedColor(-1);
@@ -479,7 +464,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             Glide.with(this).load(R.drawable.popcorn_bad).into(ivTomatoPopcornState);
         }
         tvTomatoRating.setText(tomatoUserRating);
-        // TODO: 2017/2/13 西红柿的userReview应该不是rating count 
+        // TODO: 2017/2/13 西红柿的userReview应该不是rating count
         tvTomatoRatingCount.setText(omdbInfo.getTomatoUserReviews() + "votes");
         llTomatoRating.setVisibility(View.VISIBLE);
     }

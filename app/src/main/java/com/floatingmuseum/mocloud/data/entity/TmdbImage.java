@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -15,6 +16,7 @@ public class TmdbImage implements Parcelable {
     private boolean hasPoster;
     private boolean hasAvatar;
     private File cacheFile;
+    private Bitmap bitmap;
 
     public int getId() {
         return id;
@@ -56,6 +58,13 @@ public class TmdbImage implements Parcelable {
         this.cacheFile = cacheFile;
     }
 
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
 
     @Override
     public int describeContents() {
@@ -69,6 +78,7 @@ public class TmdbImage implements Parcelable {
         dest.writeByte(this.hasPoster ? (byte) 1 : (byte) 0);
         dest.writeByte(this.hasAvatar ? (byte) 1 : (byte) 0);
         dest.writeSerializable(this.cacheFile);
+        dest.writeParcelable(this.bitmap, flags);
     }
 
     public TmdbImage() {
@@ -80,6 +90,7 @@ public class TmdbImage implements Parcelable {
         this.hasPoster = in.readByte() != 0;
         this.hasAvatar = in.readByte() != 0;
         this.cacheFile = (File) in.readSerializable();
+        this.bitmap = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
     public static final Creator<TmdbImage> CREATOR = new Creator<TmdbImage>() {
