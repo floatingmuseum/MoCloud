@@ -479,6 +479,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             Glide.with(this).load(R.drawable.popcorn_bad).into(ivTomatoPopcornState);
         }
         tvTomatoRating.setText(tomatoUserRating);
+        // TODO: 2017/2/13 西红柿的userReview应该不是rating count 
         tvTomatoRatingCount.setText(omdbInfo.getTomatoUserReviews() + "votes");
         llTomatoRating.setVisibility(View.VISIBLE);
     }

@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.ui.staff;
 
+import android.content.ClipData;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -60,6 +61,7 @@ public class StaffDetailActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         staff = getIntent().getParcelableExtra(STAFF_OBJECT);
+
         initView();
 //        presenter = new StaffDetailPresenter(this);
 //        presenter.getStaffImages(staffId);

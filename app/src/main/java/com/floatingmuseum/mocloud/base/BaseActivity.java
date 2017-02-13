@@ -2,6 +2,8 @@ package com.floatingmuseum.mocloud.base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.ImageFormat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -16,6 +18,7 @@ import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbPersonImage;
 import com.floatingmuseum.mocloud.data.entity.User;
@@ -92,7 +95,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(BaseActivity.this, StaffDetailActivity.class);
-                intent.putExtra(StaffDetailActivity.STAFF_OBJECT,staff);
+                intent.putExtra(StaffDetailActivity.STAFF_OBJECT, staff);
                 startActivity(intent);
             }
         });

@@ -36,8 +36,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="2"
-                app:image_ratio="1.42"
                 android:src="@drawable/default_movie_poster"
+                app:image_ratio="1.42"
                 tools:src="@drawable/default_movie_poster" />
 
             <LinearLayout
@@ -55,7 +55,8 @@
                     android:id="@+id/tv_art_title"
                     style="@style/detail_content"
                     android:ellipsize="end"
-                    android:lines="1"
+                    android:gravity="center"
+                    android:maxLines="2"
                     tools:text="Man vs animalssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss" />
 
                 <TextView
