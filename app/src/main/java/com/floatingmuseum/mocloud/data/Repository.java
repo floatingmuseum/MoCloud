@@ -439,6 +439,7 @@ public class Repository {
                          * 而且只是演员本没有，其他演员仍然有TmdbPersonImage。
                          * 所以之后再set一次staffs到MovieTeam中
                          */
+                        // TODO: 2017/2/13 这里staffs不是按顺序组成集合的，本该在第一位的导演有时会排到后面 
                         team.setDetailShowList(staffs);
                         callback.onMovieTeamSuccess(team);
                         downloadPersonImage(staffs, ImageCacheManager.TYPE_AVATAR);

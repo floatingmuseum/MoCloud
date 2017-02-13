@@ -276,11 +276,20 @@
                 style="@style/detail_title"
                 android:text="@string/crew" />
 
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/avl_crew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                mocloud:indicatorColor="@color/blur_bg"
+                mocloud:indicatorName="BallPulseIndicator" />
+
             <LinearLayout
                 android:id="@+id/ll_crew"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:weightSum="4" />
 
             <TextView
@@ -288,11 +297,20 @@
                 style="@style/detail_title"
                 android:text="@string/comments" />
 
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/avl_comments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                mocloud:indicatorColor="@color/blur_bg"
+                mocloud:indicatorName="BallPulseIndicator" />
+
             <LinearLayout
                 android:id="@+id/ll_comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:orientation="vertical"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_no_more_comments"

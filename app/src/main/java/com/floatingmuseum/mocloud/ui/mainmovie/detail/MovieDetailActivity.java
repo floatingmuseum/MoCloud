@@ -2,12 +2,18 @@ package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -19,8 +25,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
@@ -31,7 +35,6 @@ import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Staff;
-import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.utils.ColorUtil;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
@@ -42,8 +45,8 @@ import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
+import com.wang.avi.AVLoadingIndicatorView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,6 +139,10 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     TextView tvGenresTitleText;
     @BindView(R.id.tv_genres)
     TextView tvGenres;
+    @BindView(R.id.avl_crew)
+    AVLoadingIndicatorView avlCrew;
+    @BindView(R.id.avl_comments)
+    AVLoadingIndicatorView avlComments;
 
     private Movie movie;
     private MovieDetailPresenter presenter;
@@ -166,6 +173,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     @Override
     protected void initView() {
+        avlComments.smoothToShow();
+        avlCrew.smoothToShow();
 //        ImageLoader.load(this, movie.getImage().getBitmap(), ivPoster, R.drawable.default_movie_poster);
         Bitmap bitmap = movie.getImage().getBitmap();
         initColors(bitmap);
@@ -269,6 +278,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     tvOverviewTitle.setTextColor(titleTextColor);
                     tvCrewTitle.setTextColor(titleTextColor);
                     tvCommentsTitle.setTextColor(titleTextColor);
+
+                    avlCrew.setIndicatorColor(itemSwatch.getRgb());
+                    avlComments.setIndicatorColor(itemSwatch.getRgb());
                 }
             }
         });
@@ -279,6 +291,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         if (detailShowList == null || detailShowList.size() == 0) {
             return;
         }
+        avlCrew.setVisibility(View.GONE);
+        llCrew.setVisibility(View.VISIBLE);
 
         if (detailShowList.get(0).getJob() != null) {
             Staff director = detailShowList.get(0);
@@ -330,7 +344,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     public void onCommentsSuccess(final List<Comment> comments) {
         // TODO: 2017/1/9 Sync likes,添加回复当回复数不足3个时
-
+        avlComments.setVisibility(View.GONE);
+        commentContainer.setVisibility(View.VISIBLE);
         int showSize = comments.size() > 3 ? 3 : comments.size();
         if (comments.size() > 3) {
             tvCommentsMore.setVisibility(View.VISIBLE);
