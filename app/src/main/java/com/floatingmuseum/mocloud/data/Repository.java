@@ -112,7 +112,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
                         Logger.d("getMovieTrendingData...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
-                        downloadImage(movies, null, ImageCacheManager.TYPE_POSTER);
+                        downloadMovieImage(movies, null, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
@@ -155,7 +155,7 @@ public class Repository {
                     @Override
                     public void onNext(List<Movie> movies) {
                         callback.onBaseDataSuccess(movies);
-                        downloadImage(null, movies, ImageCacheManager.TYPE_POSTER);
+                        downloadMovieImage(null, movies, ImageCacheManager.TYPE_POSTER);
                     }
                 });
 
@@ -185,7 +185,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
                         Logger.d("getMoviePlayedData...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
-                        downloadImage(movies, null, ImageCacheManager.TYPE_POSTER);
+                        downloadMovieImage(movies, null, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
@@ -214,7 +214,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
                         Logger.d("getMovieWatchedData...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
-                        downloadImage(movies, null, ImageCacheManager.TYPE_POSTER);
+                        downloadMovieImage(movies, null, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
@@ -243,7 +243,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
                         Logger.d("getMovieCollectedData...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
-                        downloadImage(movies, null, ImageCacheManager.TYPE_POSTER);
+                        downloadMovieImage(movies, null, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
@@ -295,7 +295,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
                         Logger.d("getMovieBoxOfficeData...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
-                        downloadImage(movies, null, ImageCacheManager.TYPE_POSTER);
+                        downloadMovieImage(movies, null, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
@@ -399,33 +399,51 @@ public class Repository {
                     @Override
                     public Observable<TmdbPersonImage> call(Staff staff) {
                         return getTmdbStaffImageObservable(staff);
-//                        return service.getPersonImagesFromTmdb(staff.getPerson().getIds().getTmdb(),BuildConfig.TmdbApiKey).subscribeOn(Schedulers.io());
                     }
-                })
-                .compose(RxUtil.<TmdbPersonImage>threadSwitch())
-                .subscribe(new Observer<TmdbPersonImage>() {
+                }).map(new Func1<TmdbPersonImage, Staff>() {
+                    @Override
+                    public Staff call(TmdbPersonImage tmdbPersonImage) {
+                        Logger.d("tmdbPersonImage:" + tmdbPersonImage);
+                        List<Staff> detailShowList = team.getDetailShowList();
+                        Logger.d("tmdbPersonImage:" + tmdbPersonImage + "...id" + tmdbPersonImage.getId() + "...list:" + detailShowList.size());
+                        for (Staff staff : detailShowList) {
+                            if (staff.getPerson().getIds().getTmdb() == tmdbPersonImage.getId()) {
+                                Logger.d("tmdbPersonImage:" + staff.getPerson().getName());
+                                if (getImageUrl(staff.getTmdbPersonImage()) != null) {
+                                    tmdbPersonImage.setHasAvatar(true);
+                                }
+                                staff.setTmdbPersonImage(tmdbPersonImage);
+                                return staff;
+                            }
+                        }
+                        return null;
+                    }
+                }).toList()
+                .compose(RxUtil.<List<Staff>>threadSwitch())
+                .subscribe(new Observer<List<Staff>>() {
                     @Override
                     public void onCompleted() {
-                        callback.onMovieTeamSuccess(team);
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Logger.d("getMovieTeam...onError");
                         e.printStackTrace();
                         callback.onError(e);
                     }
 
                     @Override
-                    public void onNext(TmdbPersonImage personImage) {
-                        List<Staff> detailShowList = team.getDetailShowList();
-                        for (Staff staff : detailShowList) {
-                            if (staff.getPerson().getIds().getTmdb() == personImage.getId()) {
-                                staff.setTmdbPersonImage(personImage);
-                                String imageUrl = getImageUrl(staff.getTmdbPersonImage());
-                                downloadImage(staff.getTmdbPersonImage(), imageUrl, ImageCacheManager.TYPE_AVATAR);
-                            }
-                        }
-//                        callback.onPeopleSuccess(tmdbPeople);
+                    public void onNext(List<Staff> staffs) {
+                        /**
+                         * 这里按理说上面的对staff的操作可以直接影响MovieTeam里的staff对象，大多数结果也的确如此
+                         * 但是电影Live by night中，导演和主演都是本阿弗莱克。结果导演本有TmdbPersonImage，演员本就没有TmdbPersonImage。
+                         * 而且只是演员本没有，其他演员仍然有TmdbPersonImage。
+                         * 所以之后再set一次staffs到MovieTeam中
+                         */
+                        team.setDetailShowList(staffs);
+                        callback.onMovieTeamSuccess(team);
+                        downloadPersonImage(staffs, ImageCacheManager.TYPE_AVATAR);
                     }
                 });
     }
@@ -912,13 +930,6 @@ public class Repository {
             @Override
             public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
                 return getTmdbMovieImage(baseMovie.getMovie().getIds().getTmdb());
-//                int tmdbID = baseMovie.getMovie().getIds().getTmdb();
-//                Logger.d("Tmdb:" + tmdbID);
-//                File file = ImageCacheManager.hasCacheImage(tmdbID, ImageCacheManager.TYPE_POSTER);
-//                if (file != null) {
-//                    return ImageCacheManager.localPosterImage(tmdbID, file);
-//                }
-//                return service.getTmdbImages(baseMovie.getMovie().getIds().getTmdb(), BuildConfig.TmdbApiKey);
             }
         }).onErrorReturn(new Func1<Throwable, TmdbMovieImage>() {
             @Override
@@ -1002,37 +1013,31 @@ public class Repository {
                 });
     }
 
-    private void mergeMovieAndImage(MovieImage image, List<Movie> movies) {
-        for (Movie movie : movies) {
-            if (movie.getIds().getImdb().equals(image.getImdb_id())) {
-                movie.setImages(image);
-            }
-        }
-    }
-
-    private void mergeBaseMovieAndImage(MovieImage image, List<BaseMovie> movies) {
-        for (BaseMovie movie : movies) {
-            if (movie.getMovie().getIds().getImdb().equals(image.getImdb_id())) {
-                movie.getMovie().setImages(image);
-            }
-        }
-    }
-
+    /**
+     * 获取人物海报url
+     */
     private String getImageUrl(TmdbPersonImage tmdbPeopleImage) {
-        List<TmdbPersonImage.Profiles> profiles = tmdbPeopleImage.getProfiles();
-        if (profiles != null && profiles.size() > 0) {
-            TmdbPersonImage.Profiles profile = profiles.get(0);
-            if (profile != null && profile.getFile_path() != null && profile.getFile_path().length() > 0) {
-                return profile.getFile_path();
+        if (tmdbPeopleImage != null) {
+            List<TmdbPersonImage.Profiles> profiles = tmdbPeopleImage.getProfiles();
+            if (profiles != null && profiles.size() > 0) {
+                TmdbPersonImage.Profiles profile = profiles.get(0);
+                if (profile != null && profile.getFile_path() != null && profile.getFile_path().length() > 0) {
+                    return profile.getFile_path();
+                }
             }
         }
         return null;
     }
 
+    /**
+     * 获取电影海报url
+     */
     private String getImageUrl(TmdbMovieImage tmdbMovieImage) {
-        List<TmdbMovieImage.Posters> posters = tmdbMovieImage.getPosters();
-        if (posters != null && posters.size() != 0) {
-            return posters.get(0).getFile_path();
+        if (tmdbMovieImage != null) {
+            List<TmdbMovieImage.Posters> posters = tmdbMovieImage.getPosters();
+            if (posters != null && posters.size() != 0) {
+                return posters.get(0).getFile_path();
+            }
         }
         return null;
     }
@@ -1040,7 +1045,7 @@ public class Repository {
     private BaseMovie mergeMovieAndImage1(TmdbMovieImage image, List<BaseMovie> movies) {
         for (BaseMovie movie : movies) {
             if (movie.getMovie().getIds().getTmdb() == image.getId()) {
-                getMergedMovie(movie.getMovie(),image);
+                getMergedMovie(movie.getMovie(), image);
                 return movie;
             }
         }
@@ -1050,7 +1055,7 @@ public class Repository {
     private Movie mergeMovieAndImage2(TmdbMovieImage image, List<Movie> movies) {
         for (Movie movie : movies) {
             if (movie.getIds().getTmdb() == image.getId()) {
-                return getMergedMovie(movie,image);
+                return getMergedMovie(movie, image);
             }
         }
         return null;
@@ -1065,6 +1070,9 @@ public class Repository {
         return movie;
     }
 
+    /**
+     * 获取图片bitmap
+     */
     private Bitmap getBitmap(TmdbMovieImage image) {
         Bitmap bitmap = null;
         try {
@@ -1085,7 +1093,7 @@ public class Repository {
         }
     }
 
-    private void downloadImage(List<BaseMovie> baseMovies, List<Movie> movies, final int imageType) {
+    private void downloadMovieImage(List<BaseMovie> baseMovies, List<Movie> movies, final int imageType) {
         if (baseMovies != null) {
             for (BaseMovie baseMovie : baseMovies) {
                 TmdbMovieImage movieImage = baseMovie.getMovie().getImage();
@@ -1099,14 +1107,19 @@ public class Repository {
         }
     }
 
+    private void downloadPersonImage(List<Staff> staffs, final int imageType) {
+        if (staffs != null) {
+            for (Staff staff : staffs) {
+                TmdbPersonImage personImage = staff.getTmdbPersonImage();
+                downloadImage(personImage, getImageUrl(personImage), imageType);
+            }
+        }
+    }
+
     private void downloadImage(TmdbImage image, String imageUrl, final int imageType) {
         //imageUrl等于null表示图片已缓存在本地，不需要下载
         if (imageUrl == null) {
             return;
-        }
-        Logger.d("downLoadImage:hasAvatar:" + image.isHasAvatar());
-        if (imageType == ImageCacheManager.TYPE_AVATAR) {
-            image.setHasAvatar(true);
         }
 
         if (!PermissionsUtil.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
