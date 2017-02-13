@@ -403,12 +403,9 @@ public class Repository {
                 }).map(new Func1<TmdbPersonImage, Staff>() {
                     @Override
                     public Staff call(TmdbPersonImage tmdbPersonImage) {
-                        Logger.d("tmdbPersonImage:" + tmdbPersonImage);
                         List<Staff> detailShowList = team.getDetailShowList();
-                        Logger.d("tmdbPersonImage:" + tmdbPersonImage + "...id" + tmdbPersonImage.getId() + "...list:" + detailShowList.size());
                         for (Staff staff : detailShowList) {
                             if (staff.getPerson().getIds().getTmdb() == tmdbPersonImage.getId()) {
-                                Logger.d("tmdbPersonImage:" + staff.getPerson().getName());
                                 if (getImageUrl(staff.getTmdbPersonImage()) != null) {
                                     tmdbPersonImage.setHasAvatar(true);
                                 }
@@ -435,6 +432,7 @@ public class Repository {
 
                     @Override
                     public void onNext(List<Staff> staffs) {
+                        // TODO: 2017/2/13 confused here.
                         /**
                          * 这里按理说上面的对staff的操作可以直接影响MovieTeam里的staff对象，大多数结果也的确如此
                          * 但是电影Live by night中，导演和主演都是本阿弗莱克。结果导演本有TmdbPersonImage，演员本就没有TmdbPersonImage。

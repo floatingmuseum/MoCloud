@@ -86,6 +86,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
     private String username;
     private Colors mainColors;
     private Colors itemColors;
+    private String movieTitle;
 
 
     @Override
@@ -99,6 +100,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         ButterKnife.bind(this);
 
         presenter = new SingleCommentPresenter(this);
+        movieTitle = getIntent().getStringExtra(MOVIE_TITLE);
         mainCommentContent = getIntent().getParcelableExtra(MAIN_COMMENT);
         mainColors = getIntent().getParcelableExtra(MAIN_COLORS);
         itemColors = getIntent().getParcelableExtra(ITEM_COLORS);
@@ -112,6 +114,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
 
     @Override
     protected void initView() {
+        actionBar.setTitle(movieTitle);
         likes = mainCommentContent.getLikes();
         replies = mainCommentContent.getReplies();
         username = MoCloudUtil.getUsername(mainCommentContent.getUser());
@@ -122,9 +125,9 @@ public class SingleCommentActivity extends BaseCommentsActivity {
 
         if (mainColors != null && itemColors != null) {
             Palette.Swatch commentItemSwatch = new Palette.Swatch(itemColors.getRgb(), itemColors.getPopulation());
-            initCommentItem(this, headerView, mainCommentContent, null, commentItemSwatch, true);
+            initCommentItem(this, headerView, mainCommentContent, null, commentItemSwatch, null, true);
         } else {
-            initCommentItem(this, headerView, mainCommentContent, null, null, true);
+            initCommentItem(this, headerView, mainCommentContent, null, null, null, true);
         }
 
         repliesList = new ArrayList<>();

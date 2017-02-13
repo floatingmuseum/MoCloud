@@ -377,9 +377,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     private CardView buildCommentItem(final Comment comment) {
         CardView comment_item = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, commentContainer, false);
         if (enableColorful()) {
-            initCommentItem(this, comment_item, comment, mainSwatch, itemSwatch, false);
+            initCommentItem(this, comment_item, comment, mainSwatch, itemSwatch, movie.getTitle(), false);
         } else {
-            initCommentItem(this, comment_item, comment, null, null, false);
+            initCommentItem(this, comment_item, comment, null, null, movie.getTitle(), false);
         }
         return comment_item;
     }

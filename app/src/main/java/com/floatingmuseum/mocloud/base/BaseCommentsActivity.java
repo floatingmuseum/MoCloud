@@ -33,12 +33,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 public abstract class BaseCommentsActivity extends BaseActivity {
+    public static final String MOVIE_TITLE = "movie_title";
     public static final String MAIN_COMMENT = "main_comment";
     public static final String MAIN_COLORS = "main_colors";
     public static final String ITEM_COLORS = "item_colors";
     protected TextView tvCommentReplies;
 
-    protected void initCommentItem(final Context context, final CardView commentItem, final Comment comment, final Palette.Swatch mainSwatch, final Palette.Swatch itemSwatch, boolean isSingleCommentActivity) {
+    protected void initCommentItem(final Context context, final CardView commentItem, final Comment comment, final Palette.Swatch mainSwatch, final Palette.Swatch itemSwatch, final String movieTtile, boolean isSingleCommentActivity) {
         CircleImageView ivUserhead = (CircleImageView) commentItem.findViewById(R.id.iv_userhead);
         TextView tvUsername = (TextView) commentItem.findViewById(R.id.tv_username);
         TextView tvCreatetime = (TextView) commentItem.findViewById(R.id.tv_createtime);
@@ -127,7 +128,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
                     intent.putExtra(MAIN_COLORS, mainColors);
                     intent.putExtra(ITEM_COLORS, itemColors);
                 }
-
+                intent.putExtra(MOVIE_TITLE, movieTtile);
                 intent.putExtra(SingleCommentActivity.MAIN_COMMENT, comment);
                 startActivity(intent);
             }
