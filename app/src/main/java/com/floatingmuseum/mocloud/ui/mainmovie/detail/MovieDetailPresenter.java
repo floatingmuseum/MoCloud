@@ -30,6 +30,7 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     }
 
     public void getData(Movie movie) {
+        repository.test();
         compositeSubscription.add(repository.getMovieTeam(movie.getIds().getSlug(), this));
         compositeSubscription.add(repository.getMovieComments(movie.getIds().getSlug(), CommentsActivity.SORT_BY_LIKES, limit, page, this, null));
         compositeSubscription.add(repository.getMovieOtherRatings(movie.getIds().getImdb(), this));
