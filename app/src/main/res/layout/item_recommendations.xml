@@ -2,8 +2,8 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/card_style"
     android:id="@+id/cardview"
+    style="@style/card_style"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        >
-        <!--android:padding="1dp"-->
+        android:padding="1dp">
+
         <com.floatingmuseum.mocloud.widgets.RatioImageView
             android:id="@+id/iv_poster"
             android:layout_width="0dp"
@@ -37,8 +37,8 @@
             <TextView
                 android:id="@+id/tv_movie_title"
                 style="@style/detail_content"
-                android:gravity="center"
                 android:ellipsize="end"
+                android:gravity="center"
                 android:maxLines="2"
                 tools:text="TRON: Legacy" />
 
