@@ -390,17 +390,22 @@ public class Repository {
                         team = DataMachine.mixingStaffsWorks(credit);
                         return team;
                     }
-                }).flatMap(new Func1<MovieTeam, Observable<Staff>>() {
+                })
+                .flatMap(new Func1<MovieTeam, Observable<Staff>>() {
                     @Override
                     public Observable<Staff> call(MovieTeam movieTeam) {
+                        for (Staff staff : movieTeam.getDetailShowList()) {
+                        }
                         return Observable.from(movieTeam.getDetailShowList());
                     }
-                }).flatMap(new Func1<Staff, Observable<TmdbPersonImage>>() {
+                })
+                .flatMap(new Func1<Staff, Observable<TmdbPersonImage>>() {
                     @Override
                     public Observable<TmdbPersonImage> call(Staff staff) {
                         return getTmdbStaffImageObservable(staff);
                     }
-                }).map(new Func1<TmdbPersonImage, Staff>() {
+                })
+                .map(new Func1<TmdbPersonImage, Staff>() {
                     @Override
                     public Staff call(TmdbPersonImage tmdbPersonImage) {
                         List<Staff> detailShowList = team.getDetailShowList();
@@ -415,7 +420,28 @@ public class Repository {
                         }
                         return null;
                     }
-                }).toList()
+                })
+                .toList()
+                .map(new Func1<List<Staff>, List<Staff>>() {
+                    @Override
+                    public List<Staff> call(List<Staff> staffs) {
+                        //因为上面getTmdbStaffImageObservable方法中4个人物获取图片的线程是同时运行的，所以返回的数据可能与之前的顺序不同，需要将导演放到第一位(如果有导演的话)
+                        Staff director = null;
+                        for (Staff staff : staffs) {
+                            if ("Director".equals(staff.getJob())) {
+                                director = staff;
+                            }
+                        }
+
+                        if (director != null) {
+                            if (staffs.indexOf(director) != 0) {
+                                staffs.remove(director);
+                                staffs.add(0, director);
+                            }
+                        }
+                        return staffs;
+                    }
+                })
                 .compose(RxUtil.<List<Staff>>threadSwitch())
                 .subscribe(new Observer<List<Staff>>() {
                     @Override
@@ -439,7 +465,6 @@ public class Repository {
                          * 而且只是演员本没有，其他演员仍然有TmdbPersonImage。
                          * 所以之后再set一次staffs到MovieTeam中
                          */
-                        // TODO: 2017/2/13 这里staffs不是按顺序组成集合的，本该在第一位的导演有时会排到后面 
                         team.setDetailShowList(staffs);
                         callback.onMovieTeamSuccess(team);
                         downloadPersonImage(staffs, ImageCacheManager.TYPE_AVATAR);
