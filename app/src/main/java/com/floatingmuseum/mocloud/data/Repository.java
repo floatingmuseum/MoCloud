@@ -125,21 +125,24 @@ public class Repository {
         service.getMoviePopular(pageNum, limit)
                 .flatMap(new Func1<List<Movie>, Observable<Movie>>() {
                     @Override
-                    public Observable<Movie> call(List<Movie> movieDatas) {
-                        movies.addAll(movieDatas);
+                    public Observable<Movie> call(List<Movie> movieData) {
+                        movies.addAll(movieData);
                         return Observable.from(movies);
                     }
-                }).flatMap(new Func1<Movie, Observable<TmdbMovieImage>>() {
-            @Override
-            public Observable<TmdbMovieImage> call(Movie movie) {
-                return getTmdbMovieImageObservable(movie);
-            }
-        }).map(new Func1<TmdbMovieImage, Movie>() {
-            @Override
-            public Movie call(TmdbMovieImage tmdbMovieImage) {
-                return mergeMovieAndImage2(tmdbMovieImage, movies);
-            }
-        }).toList()
+                })
+                .flatMap(new Func1<Movie, Observable<TmdbMovieImage>>() {
+                    @Override
+                    public Observable<TmdbMovieImage> call(Movie movie) {
+                        return getTmdbMovieImageObservable(movie);
+                    }
+                })
+                .map(new Func1<TmdbMovieImage, Movie>() {
+                    @Override
+                    public Movie call(TmdbMovieImage tmdbMovieImage) {
+                        return mergeMovieAndImage2(tmdbMovieImage, movies);
+                    }
+                })
+                .toList()
                 .compose(RxUtil.<List<Movie>>threadSwitch())
                 .subscribe(new Observer<List<Movie>>() {
                     @Override
@@ -313,17 +316,20 @@ public class Repository {
                         movies.addAll(baseMovies);
                         return Observable.from(movies);
                     }
-                }).flatMap(new Func1<BaseMovie, Observable<TmdbMovieImage>>() {
-                    @Override
-                    public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
-                        return getTmdbMovieImageObservable(baseMovie.getMovie()).subscribeOn(Schedulers.io());
-                    }
-                }).map(new Func1<TmdbMovieImage, BaseMovie>() {
-                    @Override
-                    public BaseMovie call(TmdbMovieImage tmdbMovieImage) {
-                        return mergeMovieAndImage1(tmdbMovieImage, movies);
-                    }
-                }).toList();
+                })
+                        .flatMap(new Func1<BaseMovie, Observable<TmdbMovieImage>>() {
+                            @Override
+                            public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
+                                return getTmdbMovieImageObservable(baseMovie.getMovie()).subscribeOn(Schedulers.io());
+                            }
+                        })
+                        .map(new Func1<TmdbMovieImage, BaseMovie>() {
+                            @Override
+                            public BaseMovie call(TmdbMovieImage tmdbMovieImage) {
+                                return mergeMovieAndImage1(tmdbMovieImage, movies);
+                            }
+                        })
+                        .toList();
             }
         };
     }
@@ -394,8 +400,6 @@ public class Repository {
                 .flatMap(new Func1<MovieTeam, Observable<Staff>>() {
                     @Override
                     public Observable<Staff> call(MovieTeam movieTeam) {
-                        for (Staff staff : movieTeam.getDetailShowList()) {
-                        }
                         return Observable.from(movieTeam.getDetailShowList());
                     }
                 })
@@ -600,7 +604,8 @@ public class Repository {
                 comment.setMovie(movie);
                 return service.sendComment(comment);
             }
-        }).onErrorResumeNext(refreshTokenAndRetry(service.sendComment(comment)))
+        })
+                .onErrorResumeNext(refreshTokenAndRetry(service.sendComment(comment)))
                 .compose(RxUtil.<Comment>threadSwitch())
                 .subscribe(new Observer<Comment>() {
                     @Override
@@ -871,8 +876,51 @@ public class Repository {
      * 获取电影推荐
      */
     public Subscription getRecommendations(final RecommendationsCallback callback) {
+//        return service.getRecommendations()
+//                .onErrorResumeNext(refreshTokenAndRetry(service.getRecommendations()))
+//                .compose(RxUtil.<List<Movie>>threadSwitch())
+//                .subscribe(new Observer<List<Movie>>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Logger.d("getRecommendations.onError");
+//                        e.printStackTrace();
+//                        onError(e);
+//                    }
+//
+//                    @Override
+//                    public void onNext(List<Movie> movies) {
+//                        getTmdbImagesByMovie(movies, callback);
+//                    }
+//                });
+
+        final List<Movie> movies = new ArrayList<>();
         return service.getRecommendations()
                 .onErrorResumeNext(refreshTokenAndRetry(service.getRecommendations()))
+                .flatMap(new Func1<List<Movie>, Observable<Movie>>() {
+                    @Override
+                    public Observable<Movie> call(List<Movie> movieData) {
+                        movies.addAll(movieData);
+                        return Observable.from(movies);
+                    }
+                })
+                .flatMap(new Func1<Movie, Observable<TmdbMovieImage>>() {
+                    @Override
+                    public Observable<TmdbMovieImage> call(Movie movie) {
+                        return getTmdbMovieImageObservable(movie);
+                    }
+                })
+                .map(new Func1<TmdbMovieImage, Movie>() {
+                    @Override
+                    public Movie call(TmdbMovieImage tmdbMovieImage) {
+                        return mergeMovieAndImage2(tmdbMovieImage, movies);
+                    }
+                })
+                .toList()
                 .compose(RxUtil.<List<Movie>>threadSwitch())
                 .subscribe(new Observer<List<Movie>>() {
                     @Override
@@ -882,14 +930,13 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
-                        Logger.d("getRecommendations.onError");
-                        e.printStackTrace();
-                        onError(e);
+
                     }
 
                     @Override
                     public void onNext(List<Movie> movies) {
-                        getTmdbImagesByMovie(movies, callback);
+                        callback.onBaseDataSuccess(movies);
+                        downloadMovieImage(null, movies, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }

@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="1dp">
-
+        >
+        <!--android:padding="1dp"-->
         <com.floatingmuseum.mocloud.widgets.RatioImageView
             android:id="@+id/iv_poster"
             android:layout_width="0dp"
@@ -30,6 +30,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_movie_title_text"
                 style="@style/detail_title"
                 android:text="@string/movie_title" />
 
@@ -42,40 +43,44 @@
                 tools:text="TRON: Legacy" />
 
             <TextView
+                android:id="@+id/tv_movie_released_text"
                 style="@style/detail_title"
                 android:text="@string/released" />
 
             <TextView
-                android:id="@+id/tv_released"
+                android:id="@+id/tv_movie_released"
                 style="@style/detail_content"
                 tools:text="December 10, 2010" />
 
 
             <TextView
+                android:id="@+id/tv_movie_runtime_text"
                 style="@style/detail_title"
                 android:text="@string/run_time" />
 
             <TextView
-                android:id="@+id/tv_runtime"
+                android:id="@+id/tv_movie_runtime"
                 style="@style/detail_content"
                 tools:text="125 mins" />
 
 
             <TextView
+                android:id="@+id/tv_movie_language_text"
                 style="@style/detail_title"
                 android:text="@string/language" />
 
             <TextView
-                android:id="@+id/tv_language"
+                android:id="@+id/tv_movie_language"
                 style="@style/detail_content"
                 tools:text="English" />
 
             <TextView
+                android:id="@+id/tv_movie_rating_text"
                 style="@style/detail_title"
                 android:text="@string/rating" />
 
             <TextView
-                android:id="@+id/tv_rating"
+                android:id="@+id/tv_movie_rating"
                 style="@style/detail_content"
                 tools:text="6.5" />
         </LinearLayout>
