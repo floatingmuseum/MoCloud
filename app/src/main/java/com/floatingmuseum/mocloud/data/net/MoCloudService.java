@@ -4,14 +4,15 @@ package com.floatingmuseum.mocloud.data.net;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
+import com.floatingmuseum.mocloud.data.entity.MovieCollectionItem;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
+import com.floatingmuseum.mocloud.data.entity.MovieRatingItem;
+import com.floatingmuseum.mocloud.data.entity.MovieWatchedItem;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
-import com.floatingmuseum.mocloud.data.entity.People;
 import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Person;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.StaffImages;
 import com.floatingmuseum.mocloud.data.entity.Stats;
@@ -89,7 +90,7 @@ public interface MoCloudService {
     Observable<LastActivities> getLastActivities();
 
     @GET("sync/collection/movies")
-    Observable getMoviesCollections();
+    Observable<List<MovieCollectionItem>> getMoviesCollections();
 
     @GET("sync/collection/shows")
     Observable getShowsCollections();
@@ -101,13 +102,13 @@ public interface MoCloudService {
     Observable removeFromCollections();
 
     @GET("sync/watched/movies")
-    Observable getMoviesWatched();
+    Observable<List<MovieWatchedItem>> getMoviesWatched();
 
     @GET("sync/watched/shows")
     Observable getShowsWatched();
 
     @GET("sync/watchlist/{type}")
-    Observable getWatchlists(@Path("type")String type);
+    Observable<List<MovieWatchedItem>> getWatchlists(@Path("type")String type);
 
     @POST("sync/watchlist")
     Observable addToWatchlist();
@@ -116,7 +117,7 @@ public interface MoCloudService {
     Observable removeFromWatchlist();
 
     @GET("sync/ratings/{type}")
-    Observable getRatings(@Path("type")String type);
+    Observable<List<MovieRatingItem>> getRatings(@Path("type")String type);
 
     @POST("sync/ratings")
     Observable addRating();

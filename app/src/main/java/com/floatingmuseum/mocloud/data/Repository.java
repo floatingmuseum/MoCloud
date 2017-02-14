@@ -19,7 +19,6 @@ import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
@@ -54,9 +53,6 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -876,27 +872,6 @@ public class Repository {
      * 获取电影推荐
      */
     public Subscription getRecommendations(final RecommendationsCallback callback) {
-//        return service.getRecommendations()
-//                .onErrorResumeNext(refreshTokenAndRetry(service.getRecommendations()))
-//                .compose(RxUtil.<List<Movie>>threadSwitch())
-//                .subscribe(new Observer<List<Movie>>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Logger.d("getRecommendations.onError");
-//                        e.printStackTrace();
-//                        onError(e);
-//                    }
-//
-//                    @Override
-//                    public void onNext(List<Movie> movies) {
-//                        getTmdbImagesByMovie(movies, callback);
-//                    }
-//                });
 
         final List<Movie> movies = new ArrayList<>();
         return service.getRecommendations()
@@ -930,7 +905,8 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
+                        callback.onError(e);
                     }
 
                     @Override
