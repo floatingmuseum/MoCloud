@@ -7,8 +7,8 @@
     <include layout="@layout/layout_appbar" />
 
     <!--<include-->
-        <!--android:id="@+id/main_comment"-->
-        <!--layout="@layout/comment_item" />-->
+    <!--android:id="@+id/main_comment"-->
+    <!--layout="@layout/comment_item" />-->
 
     <RelativeLayout
         android:id="@+id/rl_comment_container"
@@ -19,7 +19,8 @@
             android:id="@+id/rv_replies"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/ll_comments" />
+            android:layout_above="@+id/ll_comments"
+            android:padding="3dp" />
 
         <include layout="@layout/comment_layout" />
     </RelativeLayout>

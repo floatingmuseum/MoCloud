@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.SyncManager;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.utils.SPUtil;
@@ -32,6 +33,7 @@ public class LoginPresenter extends Presenter implements DataCallback<TraktToken
         Logger.d("expires_in:"+traktToken.getExpires_in());
         SPUtil.saveToken(traktToken);
         loginActivity.requestTokenSuccess();
+        SyncManager.startSync();
     }
 
     @Override
