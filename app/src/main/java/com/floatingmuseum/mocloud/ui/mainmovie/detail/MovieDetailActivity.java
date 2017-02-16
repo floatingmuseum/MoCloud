@@ -47,6 +47,10 @@ import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
 import com.wang.avi.AVLoadingIndicatorView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -493,5 +497,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     protected void onDestroy() {
         super.onDestroy();
         presenter.unSubscription();
+        EventBus.getDefault().unregister(this);
     }
 }

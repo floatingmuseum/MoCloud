@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.ui.login;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.SyncService;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -89,6 +91,8 @@ public class LoginActivity extends BaseActivity {
     public void requestTokenSuccess() {
 //        loading_token_request.smoothToHide();
         ToastUtil.showToast("Login success");
+        Intent intent = new Intent(this, SyncService.class);
+        startService(intent);
 //        setResult(LoginActivity.LOGIN_SUCCESS_CODE);
 //        finish();
     }

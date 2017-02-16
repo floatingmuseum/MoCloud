@@ -13,6 +13,7 @@ import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.callback.CommentsCallback;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.callback.RecommendationsCallback;
+import com.floatingmuseum.mocloud.data.callback.SyncCallback;
 import com.floatingmuseum.mocloud.data.callback.UserDetailCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
@@ -20,6 +21,7 @@ import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
+import com.floatingmuseum.mocloud.data.entity.MovieWatchedItem;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Reply;
@@ -946,7 +948,7 @@ public class Repository {
     /**
      * 获取用户最后动态时间
      */
-    public void getLastActivities() {
+    public void getLastActivities(SyncCallback callback) {
         service.getLastActivities()
                 .onErrorResumeNext(refreshTokenAndRetry(service.getLastActivities()))
                 .compose(RxUtil.<LastActivities>threadSwitch())
@@ -967,6 +969,30 @@ public class Repository {
                     }
                 });
     }
+
+    public void syncMovieHistory(final SyncCallback callback){
+        service.syncMovieHistory()
+                .onErrorResumeNext(refreshTokenAndRetry(service.syncMovieHistory()))
+                .compose(RxUtil.<List<MovieWatchedItem>>threadSwitch())
+                .subscribe(new Observer<List<MovieWatchedItem>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(List<MovieWatchedItem> movieWatchedItems) {
+                        callback.onSyncMovieHistorySucceed(movieWatchedItems);
+                    }
+                });
+    }
+
+
 
     /*******************************************************************
      * 图片处理

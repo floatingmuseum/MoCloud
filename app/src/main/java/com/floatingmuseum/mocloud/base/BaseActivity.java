@@ -2,8 +2,6 @@ package com.floatingmuseum.mocloud.base;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.ImageFormat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -18,7 +16,6 @@ import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.R;
-import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbPersonImage;
 import com.floatingmuseum.mocloud.data.entity.User;
@@ -27,6 +24,7 @@ import com.floatingmuseum.mocloud.ui.staff.StaffDetailActivity;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.StringUtil;
+import com.floatingmuseum.mocloud.data.bus.EventBusManager;
 
 import java.io.File;
 
@@ -140,4 +138,10 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     }
 
     protected abstract void onError(Exception e);
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBusManager.unRegister(this);
+    }
 }

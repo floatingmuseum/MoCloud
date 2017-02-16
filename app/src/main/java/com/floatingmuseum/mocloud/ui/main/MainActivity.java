@@ -24,6 +24,8 @@ import android.widget.TextView;
 import com.floatingmuseum.mocloud.MainMovieAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
+import com.floatingmuseum.mocloud.data.SyncService;
+import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.ui.about.AboutActivity;
@@ -38,6 +40,10 @@ import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Arrays;
 import java.util.List;
@@ -79,6 +85,8 @@ public class MainActivity extends BaseActivity
         mainPresenter = new MainPresenter(this);
         isLogin = SPUtil.isLogin();
         initView();
+//        Intent intent = new Intent(this, SyncService.class);
+//        startService(intent);
     }
 
     protected void initView() {

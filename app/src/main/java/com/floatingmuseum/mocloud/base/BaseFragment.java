@@ -3,6 +3,8 @@ package com.floatingmuseum.mocloud.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,8 +12,8 @@ import android.support.v7.widget.GridLayoutManager;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
+import com.floatingmuseum.mocloud.data.bus.EventBusManager;
 import com.orhanobut.logger.Logger;
 
 
@@ -29,6 +31,11 @@ abstract public class BaseFragment extends Fragment {
     protected boolean isVisibleToUser = false;
 
     abstract protected void initView();
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -51,7 +58,7 @@ abstract public class BaseFragment extends Fragment {
 //            }
 //        }
 //        Logger.d("最后可见item:"+lastItemPosition+"...总条目数:"+adapter.getItemCount());
-        if ((lastItemPosition+3)==adapter.getItemCount() && !srl.isRefreshing()){
+        if ((lastItemPosition + 3) == adapter.getItemCount() && !srl.isRefreshing()) {
             srl.setRefreshing(true);
 //            Logger.d("刷新...BaseFragment..."+srl);
             presenter.start(false);
@@ -71,32 +78,32 @@ abstract public class BaseFragment extends Fragment {
 //            }
 //        }
 //        Logger.d("最后可见item:"+lastItemPosition+"...总条目数:"+adapter.getItemCount());
-        if ((lastItemPosition+3)==adapter.getItemCount() && !srl.isRefreshing()){
+        if ((lastItemPosition + 3) == adapter.getItemCount() && !srl.isRefreshing()) {
             srl.setRefreshing(true);
 //            Logger.d("刷新...BaseFragment..."+srl);
             presenter.start(false);
         }
     }
 
-    protected void stopRefresh(SwipeRefreshLayout srl){
+    protected void stopRefresh(SwipeRefreshLayout srl) {
 //        firstSeeLastItem = true;
-        if(srl!=null){
+        if (srl != null) {
             srl.setRefreshing(false);
         }
     }
 
-    protected void openMovieDetailActivity(Movie movie){
+    protected void openMovieDetailActivity(Movie movie) {
         Intent intent = new Intent(context, MovieDetailActivity.class);
-        intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,movie);
+        intent.putExtra(MovieDetailActivity.MOVIE_OBJECT, movie);
         context.startActivity(intent);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        Logger.d("isViewPrepared:"+isViewPrepared);
+        Logger.d("isViewPrepared:" + isViewPrepared);
         this.isVisibleToUser = isVisibleToUser;
-        if(isVisibleToUser && isFirstVisibleToUser && isViewPrepared){
+        if (isVisibleToUser && isFirstVisibleToUser && isViewPrepared) {
             Logger.d("请求数据...setUserVisibleHint");
             isFirstVisibleToUser = false;
             requestBaseData();
@@ -106,12 +113,13 @@ abstract public class BaseFragment extends Fragment {
     /**
      * 如果用户进入当前Fragment不是通过滑动页面，且当前Fragment不是之前Fragment的左右邻，
      * 则isViewPrepared会为false，导致第一次可见时不加载数据
+     *
      * @param srl
      * @param presenter
      */
-    protected void requestBaseDataIfUserNotScrollToFragments(SwipeRefreshLayout srl,ListPresenter presenter){
+    protected void requestBaseDataIfUserNotScrollToFragments(SwipeRefreshLayout srl, ListPresenter presenter) {
         isViewPrepared = true;
-        if (isViewPrepared && isFirstVisibleToUser && isVisibleToUser){
+        if (isViewPrepared && isFirstVisibleToUser && isVisibleToUser) {
             isFirstVisibleToUser = false;
             Logger.d("请求数据...requestBaseDataIfUserNotScrollToFragments");
             srl.setRefreshing(true);
@@ -121,4 +129,10 @@ abstract public class BaseFragment extends Fragment {
     }
 
     abstract protected void requestBaseData();
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBusManager.unRegister(this);
+    }
 }
