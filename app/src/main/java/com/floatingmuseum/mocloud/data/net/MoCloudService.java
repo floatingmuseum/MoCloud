@@ -102,7 +102,7 @@ public interface MoCloudService {
     Observable removeFromCollections();
 
     @GET("sync/watched/movies")
-    Observable<List<MovieWatchedItem>> syncMovieHistory();
+    Observable<List<MovieWatchedItem>> syncMovieWatched();
 
     @GET("sync/watched/shows")
     Observable getShowsWatched();

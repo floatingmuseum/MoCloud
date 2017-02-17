@@ -15,6 +15,7 @@ import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.callback.RecommendationsCallback;
 import com.floatingmuseum.mocloud.data.callback.SyncCallback;
 import com.floatingmuseum.mocloud.data.callback.UserDetailCallback;
+import com.floatingmuseum.mocloud.data.db.RealmManager;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
@@ -38,6 +39,7 @@ import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
 import com.floatingmuseum.mocloud.data.net.MoCloudService;
 import com.floatingmuseum.mocloud.utils.ErrorUtil;
+import com.floatingmuseum.mocloud.utils.ListUtil;
 import com.floatingmuseum.mocloud.utils.PermissionsUtil;
 import com.floatingmuseum.mocloud.utils.RxUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
@@ -55,6 +57,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -948,7 +951,7 @@ public class Repository {
     /**
      * 获取用户最后动态时间
      */
-    public void getLastActivities(SyncCallback callback) {
+    public void getLastActivities(final SyncCallback callback) {
         service.getLastActivities()
                 .onErrorResumeNext(refreshTokenAndRetry(service.getLastActivities()))
                 .compose(RxUtil.<LastActivities>threadSwitch())
@@ -965,14 +968,22 @@ public class Repository {
 
                     @Override
                     public void onNext(LastActivities lastActivities) {
-
+                        callback.onLastActivitiesSucceed(lastActivities);
                     }
                 });
     }
 
-    public void syncMovieHistory(final SyncCallback callback){
-        service.syncMovieHistory()
-                .onErrorResumeNext(refreshTokenAndRetry(service.syncMovieHistory()))
+    public void syncMovieWatched(final SyncCallback callback){
+        service.syncMovieWatched()
+                .onErrorResumeNext(refreshTokenAndRetry(service.syncMovieWatched()))
+                .doOnNext(new Action1<List<MovieWatchedItem>>() {
+                    @Override
+                    public void call(List<MovieWatchedItem> movieWatchedItems) {
+                        if (ListUtil.hasData(movieWatchedItems)) {
+                            RealmManager.insertOrUpdate();
+                        }
+                    }
+                })
                 .compose(RxUtil.<List<MovieWatchedItem>>threadSwitch())
                 .subscribe(new Observer<List<MovieWatchedItem>>() {
                     @Override
@@ -987,12 +998,22 @@ public class Repository {
 
                     @Override
                     public void onNext(List<MovieWatchedItem> movieWatchedItems) {
-                        callback.onSyncMovieHistorySucceed(movieWatchedItems);
+                        callback.onSyncMovieWatchedSucceed(movieWatchedItems);
                     }
                 });
     }
 
+    public void syncMovieWatchlist(final SyncCallback callback){
 
+    }
+
+    public void syncMovieRatings(final SyncCallback callback){
+
+    }
+
+    public void syncMovieCollection(final SyncCallback callback){
+
+    }
 
     /*******************************************************************
      * 图片处理
