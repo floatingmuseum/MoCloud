@@ -980,7 +980,9 @@ public class Repository {
                     @Override
                     public void call(List<MovieWatchedItem> movieWatchedItems) {
                         if (ListUtil.hasData(movieWatchedItems)) {
-                            RealmManager.insertOrUpdate();
+                            for (MovieWatchedItem movieWatchedItem : movieWatchedItems) {
+                                RealmManager.insertOrUpdate();
+                            }
                         }
                     }
                 })
