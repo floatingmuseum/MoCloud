@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.data.db;
+package com.floatingmuseum.mocloud.data.db.entity;
 
 import io.realm.RealmModel;
 import io.realm.RealmObject;
@@ -18,14 +18,18 @@ public class RealmMovieState implements RealmModel{
     private String slug;
     private String imdb_id;
 
+    //about watched
     private int plays;
     private String last_watched_at;
 
+    //about watchlist
     private int rank;
     private String listed_at;
 
+    //about collection
     private String collected_at;
 
+    //about rating
     private String rated_at;
     private int rating;
 
