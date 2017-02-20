@@ -85,8 +85,8 @@ public class MainActivity extends BaseActivity
         mainPresenter = new MainPresenter(this);
         isLogin = SPUtil.isLogin();
         initView();
-        Intent intent = new Intent(this, SyncService.class);
-        startService(intent);
+//        Intent intent = new Intent(this, SyncService.class);
+//        startService(intent);
     }
 
     protected void initView() {

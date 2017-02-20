@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.data.db.entity;
 
 import io.realm.RealmModel;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 /**
@@ -9,21 +10,19 @@ import io.realm.annotations.RealmClass;
  */
 
 @RealmClass
-public class RealmMovieState implements RealmModel{
+public class RealmMovieState implements RealmModel {
 
     private String title;
-    private int year;
-    private int trakt_id;
-    private int tmdb_Id;
-    private String slug;
-    private String imdb_id;
+    private Integer year;
+    @PrimaryKey
+    private Integer trakt_id;
 
     //about watched
-    private int plays;
+    private Integer plays;
     private String last_watched_at;
 
     //about watchlist
-    private int rank;
+    private Integer rank;
     private String listed_at;
 
     //about collection
@@ -31,7 +30,7 @@ public class RealmMovieState implements RealmModel{
 
     //about rating
     private String rated_at;
-    private int rating;
+    private Integer rating;
 
     public String getTitle() {
         return title;
@@ -41,51 +40,27 @@ public class RealmMovieState implements RealmModel{
         this.title = title;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
-    public int getTrakt_id() {
+    public Integer getTrakt_id() {
         return trakt_id;
     }
 
-    public void setTrakt_id(int trakt_id) {
+    public void setTrakt_id(Integer trakt_id) {
         this.trakt_id = trakt_id;
     }
 
-    public int getTmdb_Id() {
-        return tmdb_Id;
-    }
-
-    public void setTmdb_Id(int tmdb_Id) {
-        this.tmdb_Id = tmdb_Id;
-    }
-
-    public String getSlug() {
-        return slug;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-    public String getImdb_id() {
-        return imdb_id;
-    }
-
-    public void setImdb_id(String imdb_id) {
-        this.imdb_id = imdb_id;
-    }
-
-    public int getPlays() {
+    public Integer getPlays() {
         return plays;
     }
 
-    public void setPlays(int plays) {
+    public void setPlays(Integer plays) {
         this.plays = plays;
     }
 
@@ -97,11 +72,11 @@ public class RealmMovieState implements RealmModel{
         this.last_watched_at = last_watched_at;
     }
 
-    public int getRank() {
+    public Integer getRank() {
         return rank;
     }
 
-    public void setRank(int rank) {
+    public void setRank(Integer rank) {
         this.rank = rank;
     }
 
@@ -129,11 +104,11 @@ public class RealmMovieState implements RealmModel{
         this.rated_at = rated_at;
     }
 
-    public int getRating() {
+    public Integer getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(Integer rating) {
         this.rating = rating;
     }
 }

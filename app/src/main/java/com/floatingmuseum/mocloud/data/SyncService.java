@@ -60,6 +60,7 @@ public class SyncService extends Service implements SyncCallback{
     }
 
     private void syncAll() {
+        Logger.d("syncAll");
         repository.getLastActivities(this);
         repository.syncMovieWatched(this);//看过
         repository.syncMovieWatchlist(this);//想看

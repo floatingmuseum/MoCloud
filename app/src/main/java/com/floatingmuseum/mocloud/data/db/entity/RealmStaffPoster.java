@@ -1,6 +1,7 @@
 package com.floatingmuseum.mocloud.data.db.entity;
 
 import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 /**
@@ -9,6 +10,8 @@ import io.realm.annotations.RealmClass;
 @RealmClass
 public class RealmStaffPoster implements RealmModel{
 
+    @PrimaryKey
     private int tmdb_id;
     private String storage_path;
+    private long last_use_time;
 }

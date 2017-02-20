@@ -4,11 +4,10 @@ package com.floatingmuseum.mocloud.data.entity;
  * Created by Floatingmuseum on 2017/2/14.
  */
 
-public class MovieRatingItem {
+public class MovieRatingItem extends MovieSyncItem{
     private String rated_at;
     private int rating;
     private String type;
-    private Movie movie;
 
     public String getRated_at() {
         return rated_at;
@@ -32,13 +31,5 @@ public class MovieRatingItem {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public Movie getMovie() {
-        return movie;
-    }
-
-    public void setMovie(Movie movie) {
-        this.movie = movie;
     }
 }

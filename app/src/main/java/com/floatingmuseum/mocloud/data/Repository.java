@@ -974,6 +974,7 @@ public class Repository {
     }
 
     public void syncMovieWatched(final SyncCallback callback){
+        Logger.d("syncMovieWatched");
         service.syncMovieWatched()
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncMovieWatched()))
                 .doOnNext(new Action1<List<MovieWatchedItem>>() {
@@ -981,7 +982,7 @@ public class Repository {
                     public void call(List<MovieWatchedItem> movieWatchedItems) {
                         if (ListUtil.hasData(movieWatchedItems)) {
                             for (MovieWatchedItem movieWatchedItem : movieWatchedItems) {
-                                RealmManager.insertOrUpdate();
+                                RealmManager.insertOrUpdate(movieWatchedItem);
                             }
                         }
                     }
@@ -996,6 +997,7 @@ public class Repository {
                     @Override
                     public void onError(Throwable e) {
                         callback.onError(e);
+                        e.printStackTrace();
                     }
 
                     @Override
@@ -1006,7 +1008,6 @@ public class Repository {
     }
 
     public void syncMovieWatchlist(final SyncCallback callback){
-
     }
 
     public void syncMovieRatings(final SyncCallback callback){

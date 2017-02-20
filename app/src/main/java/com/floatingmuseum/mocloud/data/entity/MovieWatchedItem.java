@@ -4,10 +4,9 @@ package com.floatingmuseum.mocloud.data.entity;
  * Created by Floatingmuseum on 2017/2/14.
  */
 
-public class MovieWatchedItem {
+public class MovieWatchedItem extends MovieSyncItem{
     private int plays;
     private String last_watched_at;
-    private Movie movie;
 
     public int getPlays() {
         return plays;
@@ -23,13 +22,5 @@ public class MovieWatchedItem {
 
     public void setLast_watched_at(String last_watched_at) {
         this.last_watched_at = last_watched_at;
-    }
-
-    public Movie getMovie() {
-        return movie;
-    }
-
-    public void setMovie(Movie movie) {
-        this.movie = movie;
     }
 }
