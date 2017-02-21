@@ -38,6 +38,10 @@ android {
         applicationVariants.all{variant->
             variant.buildConfigField "String","TmdbApiKey","\""+getTmdbApiKey()+"\""
         }
+
+        applicationVariants.all{variant->
+            variant.buildConfigField "String","YoutubeKey","\""+getYoutubeKey()+"\""
+        }
     }
 }
 
@@ -63,6 +67,12 @@ def getTmdbApiKey(){
     def Properties properties = new Properties();
     properties.load(new  FileInputStream(new File('secrets.properties')))
     return properties['TmdbApiKey']
+}
+
+def getYoutubeKey(){
+    def Properties properties = new Properties();
+    properties.load(new  FileInputStream(new File('secrets.properties')))
+    return properties['YoutubeKey']
 }
 
 dependencies {

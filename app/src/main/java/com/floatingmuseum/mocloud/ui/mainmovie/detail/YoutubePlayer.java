@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.os.Bundle;
 
+import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.R;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -22,9 +23,9 @@ public class YoutubePlayer extends YouTubeBaseActivity implements YouTubePlayer.
 
     @BindView(R.id.youtube_view)
     YouTubePlayerView youtubeView;
-//    @BindView(R.id.thumbnail)
+    //    @BindView(R.id.thumbnail)
 //    YouTubeThumbnailView thumbnail;
-
+    private YouTubePlayer youTubePlayer;
     private String id;
 
     @Override
@@ -34,7 +35,7 @@ public class YoutubePlayer extends YouTubeBaseActivity implements YouTubePlayer.
         ButterKnife.bind(this);
         String url = getIntent().getStringExtra("url");
         getVideoId(url);
-        youtubeView.initialize("AIzaSyBp-cSteGR7qt3d3iU6v_DeR5ieUqahieU", this);
+        youtubeView.initialize(BuildConfig.YoutubeKey, this);
     }
 
     private void getVideoId(String url) {
@@ -47,11 +48,20 @@ public class YoutubePlayer extends YouTubeBaseActivity implements YouTubePlayer.
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
         Logger.d("Youtube播放onInitializationSuccess");
+        this.youTubePlayer = youTubePlayer;
         youTubePlayer.cueVideo(id);
     }
 
     @Override
     public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-        Logger.d("Youtube播放onInitializationFailure");
+        Logger.d("Youtube播放onInitializationFailure..." + youTubeInitializationResult.toString());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (youTubePlayer != null) {
+            youTubePlayer.release();
+        }
     }
 }
