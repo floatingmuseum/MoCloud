@@ -68,6 +68,7 @@ def getTmdbApiKey(){
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    compile files('libs/YouTubeAndroidPlayerApi.jar')
     compile rootProject.ext.dependencies["appcompat-v7:23.1.1"]
     compile rootProject.ext.dependencies["design:23.1.1"]
     compile rootProject.ext.dependencies["cardview-v7"]
