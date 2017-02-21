@@ -262,6 +262,16 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_tagline_title"
+                style="@style/detail_title"
+                android:text="@string/tagline" />
+
+            <TextView
+                android:id="@+id/tv_tagline"
+                style="@style/detail_content"
+                tools:text="Your destiny is in your blood" />
+
+            <TextView
                 android:id="@+id/tv_overview_title"
                 style="@style/detail_title"
                 android:text="@string/overview" />

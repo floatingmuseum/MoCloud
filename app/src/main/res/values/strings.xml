@@ -43,6 +43,7 @@
     <string name="certification">Certification</string>
     <string name="genres">Genres</string>
     <string name="logging_in">Logging in...</string>
+    <string name="tagline">Tagline</string>
 
     <string-array name="tab_names">
         <item>Trending</item>

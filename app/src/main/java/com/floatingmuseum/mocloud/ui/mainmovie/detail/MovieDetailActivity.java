@@ -102,6 +102,10 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     TextView tvRuntime;
     @BindView(R.id.tv_language)
     TextView tvLanguage;
+    @BindView(R.id.tv_tagline_title)
+    TextView tvTaglineTitle;
+    @BindView(R.id.tv_tagline)
+    TextView tvTagline;
     @BindView(R.id.tv_overview)
     TextView tvOverview;
     @BindView(R.id.ll_crew)
@@ -193,6 +197,13 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tvRuntime.setText(movie.getRuntime() + " mins");
         tvLanguage.setText(movie.getLanguage());
         tvOverview.setText(movie.getOverview());
+        String tagline = movie.getTagline();
+        if (StringUtil.hasData(tagline)) {
+            tvTagline.setText(tagline);
+        } else {
+            tvTaglineTitle.setVisibility(View.GONE);
+            tvTagline.setVisibility(View.GONE);
+        }
         if (movie.getCertification() != null && movie.getCertification().length() > 0) {
             tvCertificationTitleText.setVisibility(View.VISIBLE);
             tvCertification.setVisibility(View.VISIBLE);
@@ -270,6 +281,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     tvImdbRating.setTextColor(bodyTextColor);
                     tvImdbRatingCount.setTextColor(bodyTextColor);
                     tvOverview.setTextColor(bodyTextColor);
+                    tvTagline.setTextColor(bodyTextColor);
 
                     int titleTextColor = mainSwatch.getTitleTextColor();
                     tvMovieTitleText.setTextColor(titleTextColor);
@@ -280,6 +292,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     tvGenresTitleText.setTextColor(titleTextColor);
                     tvCertificationTitleText.setTextColor(titleTextColor);
                     tvOverviewTitle.setTextColor(titleTextColor);
+                    tvTaglineTitle.setTextColor(titleTextColor);
                     tvCrewTitle.setTextColor(titleTextColor);
                     tvCommentsTitle.setTextColor(titleTextColor);
 
