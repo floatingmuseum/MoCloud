@@ -21,8 +21,11 @@ import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.MovieCollectionItem;
+import com.floatingmuseum.mocloud.data.entity.MovieRatingItem;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.MovieWatchedItem;
+import com.floatingmuseum.mocloud.data.entity.MovieWatchlistItem;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Reply;
@@ -973,7 +976,7 @@ public class Repository {
                 });
     }
 
-    public void syncMovieWatched(final SyncCallback callback){
+    public void syncMovieWatched(final SyncCallback callback) {
         Logger.d("syncMovieWatched");
         service.syncMovieWatched()
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncMovieWatched()))
@@ -981,6 +984,7 @@ public class Repository {
                     @Override
                     public void call(List<MovieWatchedItem> movieWatchedItems) {
                         if (ListUtil.hasData(movieWatchedItems)) {
+                            Logger.d("Sync数据:看过:" + movieWatchedItems.size() + "电影");
                             for (MovieWatchedItem movieWatchedItem : movieWatchedItems) {
                                 RealmManager.insertOrUpdate(movieWatchedItem);
                             }
@@ -1007,15 +1011,107 @@ public class Repository {
                 });
     }
 
-    public void syncMovieWatchlist(final SyncCallback callback){
+    public void syncMovieWatchlist(final SyncCallback callback) {
+        service.syncMovieWatchlist()
+                .onErrorResumeNext(refreshTokenAndRetry(service.syncMovieWatchlist()))
+                .doOnNext(new Action1<List<MovieWatchlistItem>>() {
+                    @Override
+                    public void call(List<MovieWatchlistItem> movieWatchlistItems) {
+                        if (ListUtil.hasData(movieWatchlistItems)) {
+                            // TODO: 2017/2/22 同一个表不同线程无法同时插入数据 还是多个表吧
+                            Logger.d("Sync数据:想看:" + movieWatchlistItems.size() + "电影");
+                            for (MovieWatchlistItem movieWatchlistItem : movieWatchlistItems) {
+                                RealmManager.insertOrUpdate(movieWatchlistItem);
+                            }
+                        }
+                    }
+                })
+                .compose(RxUtil.<List<MovieWatchlistItem>>threadSwitch())
+                .subscribe(new Observer<List<MovieWatchlistItem>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onError(e);
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<MovieWatchlistItem> movieWatchlistItems) {
+                        callback.onSyncMovieWatchlistSucceed(movieWatchlistItems);
+                    }
+                });
     }
 
-    public void syncMovieRatings(final SyncCallback callback){
+    public void syncMovieRatings(final SyncCallback callback) {
+        service.syncMovieRatings()
+                .onErrorResumeNext(refreshTokenAndRetry(service.syncMovieRatings()))
+                .doOnNext(new Action1<List<MovieRatingItem>>() {
+                    @Override
+                    public void call(List<MovieRatingItem> movieRatingItems) {
+                        if (ListUtil.hasData(movieRatingItems)) {
+                            Logger.d("Sync数据:评分:" + movieRatingItems.size() + "电影");
+                            for (MovieRatingItem movieRatingItem : movieRatingItems) {
+                                RealmManager.insertOrUpdate(movieRatingItem);
+                            }
+                        }
+                    }
+                })
+                .compose(RxUtil.<List<MovieRatingItem>>threadSwitch())
+                .subscribe(new Observer<List<MovieRatingItem>>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onError(e);
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<MovieRatingItem> movieRatingItems) {
+                        callback.onSyncMovieRatingsSucceed(movieRatingItems);
+                    }
+                });
     }
 
-    public void syncMovieCollection(final SyncCallback callback){
+    public void syncMovieCollection(final SyncCallback callback) {
+        service.syncMoviesCollections()
+                .onErrorResumeNext(refreshTokenAndRetry(service.syncMoviesCollections()))
+                .doOnNext(new Action1<List<MovieCollectionItem>>() {
+                    @Override
+                    public void call(List<MovieCollectionItem> movieCollectionItems) {
+                        if (ListUtil.hasData(movieCollectionItems)) {
+                            Logger.d("Sync数据:收藏:" + movieCollectionItems.size() + "电影");
+                            for (MovieCollectionItem movieCollectionItem : movieCollectionItems) {
+                                RealmManager.insertOrUpdate(movieCollectionItem);
+                            }
+                        }
+                    }
+                })
+                .compose(RxUtil.<List<MovieCollectionItem>>threadSwitch())
+                .subscribe(new Observer<List<MovieCollectionItem>>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onError(e);
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<MovieCollectionItem> movieCollectionItems) {
+                        callback.onSyncMovieCollectionSucceed(movieCollectionItems);
+                    }
+                });
     }
 
     /*******************************************************************

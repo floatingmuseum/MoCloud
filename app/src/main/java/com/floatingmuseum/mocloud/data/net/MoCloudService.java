@@ -8,6 +8,7 @@ import com.floatingmuseum.mocloud.data.entity.MovieCollectionItem;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
 import com.floatingmuseum.mocloud.data.entity.MovieRatingItem;
 import com.floatingmuseum.mocloud.data.entity.MovieWatchedItem;
+import com.floatingmuseum.mocloud.data.entity.MovieWatchlistItem;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Person;
@@ -89,26 +90,11 @@ public interface MoCloudService {
     @GET("sync/last_activities")
     Observable<LastActivities> getLastActivities();
 
-    @GET("sync/collection/movies")
-    Observable<List<MovieCollectionItem>> getMoviesCollections();
-
-    @GET("sync/collection/shows")
-    Observable getShowsCollections();
-
-    @POST("sync/collection")
-    Observable addToCollections();
-
-    @POST("sync/collection/remove")
-    Observable removeFromCollections();
-
     @GET("sync/watched/movies")
     Observable<List<MovieWatchedItem>> syncMovieWatched();
 
-    @GET("sync/watched/shows")
-    Observable getShowsWatched();
-
-    @GET("sync/watchlist/{type}")
-    Observable<List<MovieWatchedItem>> getWatchlists(@Path("type")String type);
+    @GET("sync/watchlist/movies")
+    Observable<List<MovieWatchlistItem>> syncMovieWatchlist();
 
     @POST("sync/watchlist")
     Observable addToWatchlist();
@@ -116,14 +102,23 @@ public interface MoCloudService {
     @POST("sync/watchlist/remove")
     Observable removeFromWatchlist();
 
-    @GET("sync/ratings/{type}")
-    Observable<List<MovieRatingItem>> getRatings(@Path("type")String type);
+    @GET("sync/ratings/movies")
+    Observable<List<MovieRatingItem>> syncMovieRatings();
 
     @POST("sync/ratings")
     Observable addRating();
 
     @POST("sync/ratings/remove")
     Observable removeRating();
+
+    @GET("sync/collection/movies")
+    Observable<List<MovieCollectionItem>> syncMoviesCollections();
+
+    @POST("sync/collection")
+    Observable addToCollections();
+
+    @POST("sync/collection/remove")
+    Observable removeFromCollections();
 
 //*******************************************电  影*******************************************
     /**

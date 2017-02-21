@@ -1,7 +1,6 @@
 package com.floatingmuseum.mocloud.ui.login;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,11 +17,15 @@ import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
-import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.SyncService;
+import com.floatingmuseum.mocloud.data.bus.EventBusManager;
+import com.floatingmuseum.mocloud.data.bus.SyncEvent;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 import com.wang.avi.AVLoadingIndicatorView;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,6 +63,7 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         ButterKnife.bind(this);
+        EventBusManager.register(this);
         loginPresenter = new LoginPresenter(this);
         initView();
     }
@@ -141,5 +145,16 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onError(Exception e) {
         // TODO: 2017/2/7 请求失败的处理
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSyncEvent(SyncEvent syncEvent) {
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBusManager.unRegister(this);
     }
 }
