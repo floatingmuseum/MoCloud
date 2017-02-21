@@ -261,6 +261,12 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <Button
+                android:id="@+id/show_youtube"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Trailer" />
+
             <TextView
                 android:id="@+id/tv_tagline_title"
                 style="@style/detail_title"

@@ -17,6 +17,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,6 +32,7 @@ import com.floatingmuseum.mocloud.base.BaseDetailActivity;
 import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.MovieDetail;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
@@ -128,6 +130,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     TextView tvRuntimeTitleText;
     @BindView(R.id.tv_language_title_text)
     TextView tvLanguageTitleText;
+    @BindView(R.id.show_youtube)
+    Button showYoutube;
 
     @BindView(R.id.ll_movie_header)
     LinearLayout llMovieHeader;
@@ -228,6 +232,15 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 //        tvRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2) + "/" + movie.getVotes() + "votes");
         tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2));
         tvTraktRatingCount.setText(movie.getVotes() + "votes");
+
+        showYoutube.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MovieDetailActivity.this, YoutubePlayer.class);
+                intent.putExtra("url", movie.getTrailer());
+                startActivity(intent);
+            }
+        });
     }
 
     private void initColors(Bitmap bitmap) {

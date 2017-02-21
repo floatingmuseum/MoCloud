@@ -99,7 +99,7 @@ public class Movie implements Parcelable{
         this.updated_at = updated_at;
     }
 
-    public Object getTrailer() {
+    public String getTrailer() {
         return trailer;
     }
 
