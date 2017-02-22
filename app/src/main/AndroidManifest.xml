@@ -41,6 +41,7 @@
         <activity android:name=".ui.comments.SingleCommentActivity" />
         <activity
             android:name=".ui.mainmovie.detail.YoutubePlayer"
+            android:configChanges="orientation"
             android:theme="@style/DialogActivity" />
 
         <service android:name=".data.SyncService" />

@@ -44,6 +44,7 @@
     <string name="genres">Genres</string>
     <string name="logging_in">Logging in...</string>
     <string name="tagline">Tagline</string>
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
 
     <string-array name="tab_names">
         <item>Trending</item>

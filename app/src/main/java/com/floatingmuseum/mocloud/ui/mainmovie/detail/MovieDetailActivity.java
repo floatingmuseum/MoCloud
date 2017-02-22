@@ -26,6 +26,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
@@ -46,6 +47,7 @@ import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
+import com.google.android.youtube.player.YouTubeIntents;
 import com.orhanobut.logger.Logger;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -233,14 +235,25 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2));
         tvTraktRatingCount.setText(movie.getVotes() + "votes");
 
-        String trailerUrl = movie.getTrailer();
+        final String trailerUrl = movie.getTrailer();
         if (trailerUrl != null && trailerUrl.length() > 0) {
             showYoutube.setVisibility(View.VISIBLE);
             showYoutube.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(MovieDetailActivity.this, YoutubePlayer.class);
-                    intent.putExtra("url", movie.getTrailer());
+                    if (!YouTubeIntents.isYouTubeInstalled(MoCloud.context)) {
+                        ToastUtil.showToast("Can't find youtube on your device.");
+                        return;
+                    }
+
+//                    Intent intent = new Intent(MovieDetailActivity.this, YoutubePlayer.class);
+//                    intent.putExtra("url", movie.getTrailer());
+//                    startActivity(intent);
+
+                    int subStart = trailerUrl.indexOf("=");
+                    String id = trailerUrl.substring(subStart + 1);
+                    //最后两个参数，是否全屏，是否播放结束后自动退出Youtube
+                    Intent intent = YouTubeIntents.createPlayVideoIntentWithOptions(MoCloud.context, id, true, false);
                     startActivity(intent);
                 }
             });
