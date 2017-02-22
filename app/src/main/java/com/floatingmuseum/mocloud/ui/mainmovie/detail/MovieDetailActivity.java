@@ -233,14 +233,18 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2));
         tvTraktRatingCount.setText(movie.getVotes() + "votes");
 
-        showYoutube.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MovieDetailActivity.this, YoutubePlayer.class);
-                intent.putExtra("url", movie.getTrailer());
-                startActivity(intent);
-            }
-        });
+        String trailerUrl = movie.getTrailer();
+        if (trailerUrl != null && trailerUrl.length() > 0) {
+            showYoutube.setVisibility(View.VISIBLE);
+            showYoutube.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MovieDetailActivity.this, YoutubePlayer.class);
+                    intent.putExtra("url", movie.getTrailer());
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     private void initColors(Bitmap bitmap) {
