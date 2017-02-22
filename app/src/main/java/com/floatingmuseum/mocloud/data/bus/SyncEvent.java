@@ -5,4 +5,11 @@ package com.floatingmuseum.mocloud.data.bus;
  */
 
 public class SyncEvent {
+    public String syncInfo;
+    public boolean syncFinished;
+
+    public SyncEvent(String syncInfo, boolean syncFinished) {
+        this.syncInfo = syncInfo;
+        this.syncFinished = syncFinished;
+    }
 }

@@ -2,6 +2,8 @@ package com.floatingmuseum.mocloud.data.db;
 
 
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieState;
+import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
+import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.Ids;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieCollectionItem;
@@ -19,23 +21,43 @@ import io.realm.Realm;
 
 public class RealmManager {
 
-    private static Realm realm = Realm.getDefaultInstance();
+
+//    public static void insertOrUpdate(final RealmMovieWatched item) {
+//        Realm.getDefaultInstance()
+//                .executeTransaction(new Realm.Transaction() {
+//                    @Override
+//                    public void execute(Realm realm) {
+//                        realm.insertOrUpdate(item);
+//                    }
+//                });
+//    }
+//
+//    public static void insertOrUpdate(final RealmMovieWatchlist item) {
+//        Realm.getDefaultInstance()
+//                .executeTransaction(new Realm.Transaction() {
+//                    @Override
+//                    public void execute(Realm realm) {
+//                        realm.insertOrUpdate(item);
+//                    }
+//                });
+//    }
 
     public static void insertOrUpdate(final MovieSyncItem item) {
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                int trakt = item.getMovie().getIds().getTrakt();
-                RealmMovieState state = realm.where(RealmMovieState.class).equalTo("trakt_id", trakt).findFirst();
-                if (state == null) {
-                    Logger.d("插入数据：" + item.getMovie().getTitle());
-                    insertMovieState(realm, item);
-                } else {
-                    Logger.d("更新数据：" + item.getMovie().getTitle());
-                    updateMovieState(state, item);
-                }
-            }
-        });
+        Realm.getDefaultInstance()
+                .executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        int trakt = item.getMovie().getIds().getTrakt();
+                        RealmMovieState state = realm.where(RealmMovieState.class).equalTo("trakt_id", trakt).findFirst();
+                        if (state == null) {
+                            Logger.d("Sync数据:插入数据:" + item.getMovie().getTitle());
+                            insertMovieState(realm, item);
+                        } else {
+                            Logger.d("Sync数据:更新数据:" + item.getMovie().getTitle());
+                            updateMovieState(state, item);
+                        }
+                    }
+                });
     }
 
     private static void insertMovieState(Realm realm, MovieSyncItem item) {
@@ -69,13 +91,14 @@ public class RealmManager {
     }
 
     public static void query(final MovieWatchedItem item) {
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                RealmMovieState state = realm.where(RealmMovieState.class)
-                        .equalTo("trakt_id", item.getMovie().getIds().getTrakt())
-                        .findFirst();
-            }
-        });
+        Realm.getDefaultInstance()
+                .executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        RealmMovieState state = realm.where(RealmMovieState.class)
+                                .equalTo("trakt_id", item.getMovie().getIds().getTrakt())
+                                .findFirst();
+                    }
+                });
     }
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.ValueCallback;
@@ -20,6 +21,8 @@ import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.data.SyncService;
 import com.floatingmuseum.mocloud.data.bus.EventBusManager;
 import com.floatingmuseum.mocloud.data.bus.SyncEvent;
+import com.floatingmuseum.mocloud.utils.ResUtil;
+import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -42,8 +45,8 @@ public class LoginActivity extends BaseActivity {
     AVLoadingIndicatorView loading_token_request;
     @BindView(R.id.ll_web_request)
     LinearLayout ll_web_request;
-    @BindView(R.id.tv_info_show)
-    TextView tvInfoShow;
+    @BindView(R.id.tv_info_show_container)
+    LinearLayout tvInfoShowContainer;
 
     private LoginPresenter loginPresenter;
 
@@ -95,10 +98,10 @@ public class LoginActivity extends BaseActivity {
     public void requestTokenSuccess() {
 //        loading_token_request.smoothToHide();
         ToastUtil.showToast("Login success");
+        updateSyncInfo("Login success");
         Intent intent = new Intent(this, SyncService.class);
         startService(intent);
-//        setResult(LoginActivity.LOGIN_SUCCESS_CODE);
-//        finish();
+        setResult(LoginActivity.LOGIN_SUCCESS_CODE);
     }
 
     public void requestTokenFailed() {
@@ -121,11 +124,18 @@ public class LoginActivity extends BaseActivity {
 //                Logger.d("Code:"+code+"..."+getCode(url));
                 ll_web_request.setVisibility(View.GONE);
                 loading_token_request.smoothToShow();
-                tvInfoShow.setText(R.string.logging_in);
+                updateSyncInfo(ResUtil.getString(R.string.logging_in));
                 loginPresenter.exchangeAccessToken(code);
             }
             return super.shouldOverrideUrlLoading(view, url);
         }
+    }
+
+    private void updateSyncInfo(String content) {
+        TextView textView = new TextView(this);
+        textView.setText(content);
+        textView.setGravity(Gravity.CENTER);
+        tvInfoShowContainer.addView(textView);
     }
 
     private class LoginWebChromeClient extends WebChromeClient {
@@ -149,7 +159,10 @@ public class LoginActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSyncEvent(SyncEvent syncEvent) {
-        finish();
+        if (syncEvent.syncFinished) {
+            finish();
+        }
+        updateSyncInfo(syncEvent.syncInfo);
     }
 
     @Override

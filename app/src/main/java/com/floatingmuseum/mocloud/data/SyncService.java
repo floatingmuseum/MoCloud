@@ -83,7 +83,7 @@ public class SyncService extends Service implements SyncCallback {
         calculateSyncSuccess(lastActivities);
         if (syncSuccess == 0) {
             //0表示虽然有不同，但是下列需要同步选项不在其中
-            EventBus.getDefault().post(new SyncEvent());
+            EventBus.getDefault().post(new SyncEvent("All data sync finished.", true));
             stopSelf();
             return;
         }
@@ -128,7 +128,7 @@ public class SyncService extends Service implements SyncCallback {
             syncNeeded(lastActivities);
         } else {
             SPUtil.saveUserLastActivities(lastActivities);
-            syncFinished();
+            syncFinished("Sync last activities finished.");
         }
     }
 
@@ -144,28 +144,29 @@ public class SyncService extends Service implements SyncCallback {
 //                count++;
 //            }
 //        }
-        syncFinished();
+        syncFinished("Sync movie watched history finished.");
     }
 
     @Override
     public void onSyncMovieCollectionSucceed(List<MovieCollectionItem> movieCollectionItems) {
-        syncFinished();
+        syncFinished("Sync movie collection finished.");
     }
 
     @Override
     public void onSyncMovieRatingsSucceed(List<MovieRatingItem> movieRatingItems) {
-        syncFinished();
+        syncFinished("Sync movie ratings finished");
     }
 
     @Override
     public void onSyncMovieWatchlistSucceed(List<MovieWatchlistItem> movieWatchlistItems) {
-        syncFinished();
+        syncFinished("Sync movie watchlist finished.");
     }
 
-    private void syncFinished() {
+    private void syncFinished(String syncInfo) {
         syncSuccess--;
+        EventBus.getDefault().post(new SyncEvent(syncInfo, true));
         if (syncSuccess == 0) {
-            EventBus.getDefault().post(new SyncEvent());
+            EventBus.getDefault().post(new SyncEvent("All data sync finished.", true));
             stopSelf();
         }
     }

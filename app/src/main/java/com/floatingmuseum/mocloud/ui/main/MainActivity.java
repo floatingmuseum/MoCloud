@@ -25,6 +25,7 @@ import com.floatingmuseum.mocloud.MainMovieAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.data.SyncService;
+import com.floatingmuseum.mocloud.data.db.entity.RealmMovieState;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
@@ -50,6 +51,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -85,8 +88,26 @@ public class MainActivity extends BaseActivity
         mainPresenter = new MainPresenter(this);
         isLogin = SPUtil.isLogin();
         initView();
-//        Intent intent = new Intent(this, SyncService.class);
-//        startService(intent);
+//        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm realm) {
+//                int i = 0;
+//                RealmResults<RealmMovieState> results = realm.where(RealmMovieState.class).findAll();
+//                Logger.d("Results:" + results.size());
+//                for (RealmMovieState result : results) {
+//                    i++;
+//                    if (i > 50) {
+//                        break;
+//                    }
+//                    Logger.d("Results:" + result.getTrakt_id() + "..." + result.getTitle() + "..." + result.getLast_watched_at() + "..." + result.getListed_at());
+//                }
+//            }
+//        }, new Realm.Transaction.OnSuccess() {
+//            @Override
+//            public void onSuccess() {
+//
+//            }
+//        });
     }
 
     protected void initView() {

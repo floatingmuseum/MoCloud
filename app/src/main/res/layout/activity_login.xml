@@ -42,11 +42,12 @@
             app:indicatorColor="@color/loading"
             app:indicatorName="LineScaleIndicator" />
 
-        <TextView
-            android:id="@+id/tv_info_show"
+        <LinearLayout
+            android:id="@+id/tv_info_show_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_below="@+id/loading_token_request"
+            android:gravity="center_horizontal"
             android:orientation="vertical" />
     </RelativeLayout>
 </LinearLayout>
