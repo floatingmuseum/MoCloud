@@ -22,7 +22,7 @@ import io.realm.RealmList;
 /**
  * Created by Floatingmuseum on 2016/4/13.
  */
-public class MoCloud extends Application implements ThemeUtils.switchColor{
+public class MoCloud extends Application implements ThemeUtils.switchColor {
 
     public static Context context;
 
@@ -33,7 +33,7 @@ public class MoCloud extends Application implements ThemeUtils.switchColor{
         Repository.init();
         ImageCacheManager.init(this);
 //        LeakCanary.install(this);
-        BlockCanary.install(this,new AppBlockCanaryContext()).start();
+        BlockCanary.install(this, new AppBlockCanaryContext()).start();
         initRealm();
     }
 
@@ -43,7 +43,7 @@ public class MoCloud extends Application implements ThemeUtils.switchColor{
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
                         .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).withLimit(5000).build())
                         .build());
     }
 
