@@ -95,7 +95,10 @@ public class RealmManager {
     }
 
     public static <T extends RealmModel> T query(final Class<? extends RealmModel> clazz, final int id) {
-        RealmModel model = Realm.getDefaultInstance().where(clazz).equalTo("trakt_id", id).findFirst();
+        RealmModel model = Realm.getDefaultInstance()
+                .where(clazz)
+                .equalTo("trakt_id", id)
+                .findFirst();
         return (T) model;
     }
 }

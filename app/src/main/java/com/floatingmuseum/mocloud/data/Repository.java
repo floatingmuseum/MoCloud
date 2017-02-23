@@ -767,37 +767,9 @@ public class Repository {
 
     /******************************************
      * 用户数据
-     ********************************************************/
-
-    /**
-     * 获取UserSettings
-     */
-    public Subscription getUserSettings(final DataCallback callback) {
-        return service.getUserSettings()
-                .onErrorResumeNext(refreshTokenAndRetry(service.getUserSettings()))
-                .compose(RxUtil.<UserSettings>threadSwitch())
-                .subscribe(new Observer<UserSettings>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Logger.d("UserSettings:onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(UserSettings userSettings) {
-                        Logger.d("UserSettings:onNext:" + userSettings);
-                        callback.onBaseDataSuccess(userSettings);
-                    }
-                });
-    }
-
-    /**
+     * **********************************************************
+     * <p>
+     * /**
      * 获取UserFollowers
      */
     public Subscription getUserFollowers(String slug, final UserDetailCallback callback) {
@@ -974,6 +946,62 @@ public class Repository {
                     @Override
                     public void onNext(LastActivities lastActivities) {
                         callback.onLastActivitiesSucceed(lastActivities);
+                    }
+                });
+    }
+
+    /**
+     * 获取UserSettings
+     */
+    public Subscription getUserSettings(final DataCallback callback) {
+        return service.syncUserSettings()
+                .onErrorResumeNext(refreshTokenAndRetry(service.syncUserSettings()))
+                .compose(RxUtil.<UserSettings>threadSwitch())
+                .subscribe(new Observer<UserSettings>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("UserSettings:onError");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(UserSettings userSettings) {
+                        Logger.d("UserSettings:onNext:" + userSettings);
+                        callback.onBaseDataSuccess(userSettings);
+                    }
+                });
+    }
+
+    /**
+     * 获取UserSettings
+     */
+    public Subscription syncUserSettings(final SyncCallback callback) {
+        return service.syncUserSettings()
+                .onErrorResumeNext(refreshTokenAndRetry(service.syncUserSettings()))
+                .compose(RxUtil.<UserSettings>threadSwitch())
+                .subscribe(new Observer<UserSettings>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("UserSettings:onError");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(UserSettings userSettings) {
+                        Logger.d("UserSettings:onNext:" + userSettings);
+                        callback.onSyncUserSettingsSucceed(userSettings);
                     }
                 });
     }

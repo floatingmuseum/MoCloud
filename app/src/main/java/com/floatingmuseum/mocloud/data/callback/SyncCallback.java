@@ -5,6 +5,7 @@ import com.floatingmuseum.mocloud.data.entity.MovieCollectionItem;
 import com.floatingmuseum.mocloud.data.entity.MovieRatingItem;
 import com.floatingmuseum.mocloud.data.entity.MovieWatchedItem;
 import com.floatingmuseum.mocloud.data.entity.MovieWatchlistItem;
+import com.floatingmuseum.mocloud.data.entity.UserSettings;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public interface SyncCallback {
 
     void onError(Throwable e);
     void onLastActivitiesSucceed(LastActivities lastActivities);
+    void onSyncUserSettingsSucceed(UserSettings userSettings);
     void onSyncMovieWatchedSucceed(List<MovieWatchedItem> movieWatchedItems);
     void onSyncMovieCollectionSucceed(List<MovieCollectionItem> movieCollectionItems);
     void onSyncMovieRatingsSucceed(List<MovieRatingItem> movieRatingItems);

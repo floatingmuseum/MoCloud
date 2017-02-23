@@ -25,6 +25,7 @@ import com.floatingmuseum.mocloud.MainMovieAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.data.SyncService;
+import com.floatingmuseum.mocloud.data.bus.SyncEvent;
 import com.floatingmuseum.mocloud.data.db.RealmManager;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieState;
 import com.floatingmuseum.mocloud.data.entity.Movie;
@@ -90,26 +91,6 @@ public class MainActivity extends BaseActivity
         mainPresenter = new MainPresenter(this);
         isLogin = SPUtil.isLogin();
         initView();
-//        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
-//            @Override
-//            public void execute(Realm realm) {
-//                int i = 0;
-//                RealmResults<RealmMovieState> results = realm.where(RealmMovieState.class).findAll();
-//                Logger.d("Results:" + results.size());
-//                for (RealmMovieState result : results) {
-//                    i++;
-//                    if (i > 50) {
-//                        break;
-//                    }
-//                    Logger.d("Results:" + result.getTrakt_id() + "..." + result.getTitle() + "..." + result.getLast_watched_at() + "..." + result.getListed_at());
-//                }
-//            }
-//        }, new Realm.Transaction.OnSuccess() {
-//            @Override
-//            public void onSuccess() {
-//
-//            }
-//        });
     }
 
     protected void initView() {
@@ -141,7 +122,7 @@ public class MainActivity extends BaseActivity
             mainPresenter.getUserSettings();
             // TODO: 2017/2/7 空指针 
 //            syncState.setVisible(true);
-            mainPresenter.syncUserData();
+            mainPresenter.syncUserData(this);
         }
 
         iv_avatar.setOnClickListener(new View.OnClickListener() {
@@ -306,6 +287,19 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onError(Exception e) {
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSyncEvent(SyncEvent syncEvent) {
+        if ("Sync user settings finished.".equals(syncEvent.syncInfo)) {
+            updateUserRelatedViews();
+        }
+        if (syncEvent.syncFinished) {
+            ToastUtil.showToast(syncEvent.syncInfo);
+        }
+    }
+
+    private void updateUserRelatedViews() {
     }
 
     @Override

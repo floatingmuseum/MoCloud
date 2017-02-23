@@ -13,6 +13,7 @@ import com.floatingmuseum.mocloud.data.entity.MovieCollectionItem;
 import com.floatingmuseum.mocloud.data.entity.MovieRatingItem;
 import com.floatingmuseum.mocloud.data.entity.MovieWatchedItem;
 import com.floatingmuseum.mocloud.data.entity.MovieWatchlistItem;
+import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.orhanobut.logger.Logger;
 
@@ -29,15 +30,13 @@ public class SyncService extends Service implements SyncCallback {
     private Repository repository;
     private boolean hasFirstSync;
     private boolean isSyncing = false;
-    private int syncSuccess = 0;
-    //    private SyncManager syncManager;
+    private int syncSuccessNeeded = 0;
 
     @Override
     public void onCreate() {
         super.onCreate();
         repository = Repository.getInstance();
         hasFirstSync = SPUtil.getBoolean(SPUtil.SP_USER_LASTACTIVITIES, "has_first_sync", false);
-//        syncManager = new SyncManager();
     }
 
     @Nullable
@@ -53,19 +52,20 @@ public class SyncService extends Service implements SyncCallback {
     }
 
     public void startSync() {
+        Logger.d("数据同步:hasFirstSync:" + hasFirstSync + "...isSyncing:" + isSyncing);
         if (isSyncing) {
             return;
         }
         isSyncing = true;
         if (hasFirstSync) {
-            repository.getLastActivities(this);
+            syncNeeded();
         } else {
             syncAll();
         }
     }
 
     private void syncAll() {
-        syncSuccess = 5;
+        syncSuccessNeeded = 5;
         Logger.d("syncAll");
         repository.getLastActivities(this);
         repository.syncMovieWatched(this);//看过
@@ -74,17 +74,34 @@ public class SyncService extends Service implements SyncCallback {
         repository.syncMovieCollection(this);//拥有
     }
 
-    private void syncNeeded(LastActivities lastActivities) {
+    private void syncNeeded() {
+        syncSuccessNeeded = 2;
+        repository.getLastActivities(this);
+        repository.syncUserSettings(this);
+    }
+
+    @Override
+    public void onLastActivitiesSucceed(LastActivities lastActivities) {
+        if (hasFirstSync) {
+            syncOthers(lastActivities);
+        } else {
+            SPUtil.saveUserLastActivities(lastActivities);
+            syncFinished("Sync last activities finished.");
+        }
+    }
+
+    private void syncOthers(LastActivities lastActivities) {
         if (SPUtil.getString(SPUtil.SP_USER_LASTACTIVITIES, "all", "").equals(lastActivities.getAll())) {
+            syncFinished("Sync last activities finished.");
             //没有变化，无需任何同步
             return;
         }
-        SPUtil.editString(SPUtil.SP_USER_LASTACTIVITIES, "all", lastActivities.getAll());
-        calculateSyncSuccess(lastActivities);
-        if (syncSuccess == 0) {
+        calculateSyncNeeded(lastActivities);
+        //保存lastActivities
+        SPUtil.saveUserLastActivities(lastActivities);
+        if (syncSuccessNeeded == 0) {
             //0表示虽然有不同，但是下列需要同步选项不在其中
-            EventBus.getDefault().post(new SyncEvent("All data sync finished.", true));
-            stopSelf();
+            syncFinished("Sync last activities finished.");
             return;
         }
         if (!SPUtil.getString(SPUtil.SP_USER_LASTACTIVITIES, "movies_watched_at", "").equals(lastActivities.getMovies().getWatched_at())) {
@@ -104,46 +121,34 @@ public class SyncService extends Service implements SyncCallback {
         }
     }
 
-    private void calculateSyncSuccess(LastActivities lastActivities) {
+    /**
+     * 计算有几项需要同步
+     */
+    private void calculateSyncNeeded(LastActivities lastActivities) {
         if (!SPUtil.getString(SPUtil.SP_USER_LASTACTIVITIES, "movies_watched_at", "").equals(lastActivities.getMovies().getWatched_at())) {
-            syncSuccess++;
+            syncSuccessNeeded++;
         }
 
-        if (!SPUtil.getString(SPUtil.SP_USER_LASTACTIVITIES, "movies_watchlisted_at", "").equals(lastActivities.getMovies().getWatchlisted_at())) {
-            syncSuccess++;
+        if (!SPUtil.getString(SPUtil.SP_USER_LASTACTIVITIES, "movies_watchlist_at", "").equals(lastActivities.getMovies().getWatchlisted_at())) {
+            syncSuccessNeeded++;
         }
 
         if (!SPUtil.getString(SPUtil.SP_USER_LASTACTIVITIES, "movies_rated_at", "").equals(lastActivities.getMovies().getRated_at())) {
-            syncSuccess++;
+            syncSuccessNeeded++;
         }
 
         if (!SPUtil.getString(SPUtil.SP_USER_LASTACTIVITIES, "movies_collected_at", "").equals(lastActivities.getMovies().getCollected_at())) {
-            syncSuccess++;
+            syncSuccessNeeded++;
         }
     }
 
     @Override
-    public void onLastActivitiesSucceed(LastActivities lastActivities) {
-        if (hasFirstSync) {
-            syncNeeded(lastActivities);
-        } else {
-            SPUtil.saveUserLastActivities(lastActivities);
-            syncFinished("Sync last activities finished.");
-        }
+    public void onSyncUserSettingsSucceed(UserSettings userSettings) {
+        syncFinished("Sync user settings finished.");
     }
 
     @Override
     public void onSyncMovieWatchedSucceed(List<MovieWatchedItem> movieWatchedItems) {
-//        if (movieWatchedItems!=null && movieWatchedItems.size()>0){
-//            int count = 0;
-//            for (MovieWatchedItem movieWatchedItem : movieWatchedItems) {
-//                if (count==10){
-//                    break;
-//                }
-//                Logger.d("Title:"+movieWatchedItem.getMovie().getTitle()+"...lastWatchedAt:"+movieWatchedItem.getLast_watched_at());
-//                count++;
-//            }
-//        }
         syncFinished("Sync movie watched history finished.");
     }
 
@@ -163,10 +168,13 @@ public class SyncService extends Service implements SyncCallback {
     }
 
     private void syncFinished(String syncInfo) {
-        syncSuccess--;
-        EventBus.getDefault().post(new SyncEvent(syncInfo, true));
-        if (syncSuccess == 0) {
+        syncSuccessNeeded--;
+        EventBus.getDefault().post(new SyncEvent(syncInfo, false));
+        if (syncSuccessNeeded == 0) {
             EventBus.getDefault().post(new SyncEvent("All data sync finished.", true));
+            if (!hasFirstSync) {//第一次同步成功，修改标记，之后再同步时只需要同步needed
+                SPUtil.editBoolean(SPUtil.SP_USER_LASTACTIVITIES, "has_first_sync", true);
+            }
             stopSelf();
         }
     }

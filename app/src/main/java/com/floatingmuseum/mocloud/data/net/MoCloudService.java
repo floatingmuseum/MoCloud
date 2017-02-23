@@ -59,7 +59,7 @@ public interface MoCloudService {
 
 
     @GET("users/settings")
-    Observable<UserSettings> getUserSettings();
+    Observable<UserSettings> syncUserSettings();
 
     @GET("users/settings")
     Call<UserSettings> getUserSetting();
