@@ -1,6 +1,8 @@
 package com.floatingmuseum.mocloud.data.db;
 
 
+import android.transition.Transition;
+
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieState;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
@@ -14,6 +16,8 @@ import com.floatingmuseum.mocloud.data.entity.MovieWatchlistItem;
 import com.orhanobut.logger.Logger;
 
 import io.realm.Realm;
+import io.realm.RealmModel;
+import io.realm.RealmQuery;
 
 /**
  * Created by Floatingmuseum on 2017/2/14.
@@ -90,15 +94,8 @@ public class RealmManager {
         }
     }
 
-    public static void query(final MovieWatchedItem item) {
-        Realm.getDefaultInstance()
-                .executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        RealmMovieState state = realm.where(RealmMovieState.class)
-                                .equalTo("trakt_id", item.getMovie().getIds().getTrakt())
-                                .findFirst();
-                    }
-                });
+    public static <T extends RealmModel> T query(final Class<? extends RealmModel> clazz, final int id) {
+        RealmModel model = Realm.getDefaultInstance().where(clazz).equalTo("trakt_id", id).findFirst();
+        return (T) model;
     }
 }

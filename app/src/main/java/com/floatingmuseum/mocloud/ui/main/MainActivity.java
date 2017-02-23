@@ -25,6 +25,7 @@ import com.floatingmuseum.mocloud.MainMovieAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.data.SyncService;
+import com.floatingmuseum.mocloud.data.db.RealmManager;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieState;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.User;
@@ -52,6 +53,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import io.realm.RealmModel;
 import io.realm.RealmResults;
 
 public class MainActivity extends BaseActivity

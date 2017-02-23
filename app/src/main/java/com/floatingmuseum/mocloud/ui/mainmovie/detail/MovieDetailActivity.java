@@ -30,6 +30,8 @@ import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
+import com.floatingmuseum.mocloud.data.db.RealmManager;
+import com.floatingmuseum.mocloud.data.db.entity.RealmMovieState;
 import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
@@ -183,6 +185,10 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 //        Logger.d("电影名onCreate:" + movie.getTitle() + "..." + movie.getId());
         presenter.getData(movie);
         initView();
+        RealmMovieState state = RealmManager.query(RealmMovieState.class, movie.getIds().getTrakt());
+        if (state != null) {
+            Logger.d("State详情:" + state.getTitle() + "..." + state.getTrakt_id() + "..." + state.getRating() + "..." + state.getLast_watched_at() + "..." + state.getListed_at() + "..." + state.getCollected_at());
+        }
     }
 
     @Override
