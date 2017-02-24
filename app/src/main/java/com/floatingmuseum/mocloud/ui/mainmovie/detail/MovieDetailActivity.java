@@ -193,6 +193,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     @Override
     protected void initView() {
+        initLoginView();
         avlComments.smoothToShow();
         avlCrew.smoothToShow();
 //        ImageLoader.load(this, movie.getImage().getBitmap(), ivPoster, R.drawable.default_movie_poster);
@@ -263,6 +264,12 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     startActivity(intent);
                 }
             });
+        }
+    }
+
+    private void initLoginView() {
+        if (SPUtil.isLogin()) {
+            llRatings.setVisibility(View.VISIBLE);
         }
     }
 

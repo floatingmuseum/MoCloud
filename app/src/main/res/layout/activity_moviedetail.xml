@@ -168,7 +168,8 @@
                 android:background="@drawable/textview_border"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:id="@+id/ll_tomato_rating"
