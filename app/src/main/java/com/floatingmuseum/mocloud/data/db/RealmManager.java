@@ -54,10 +54,10 @@ public class RealmManager {
                         int trakt = item.getMovie().getIds().getTrakt();
                         RealmMovieState state = realm.where(RealmMovieState.class).equalTo("trakt_id", trakt).findFirst();
                         if (state == null) {
-                            Logger.d("Sync数据:插入数据:" + item.getMovie().getTitle());
+//                            Logger.d("Sync数据:插入数据:" + item.getMovie().getTitle());
                             insertMovieState(realm, item);
                         } else {
-                            Logger.d("Sync数据:更新数据:" + item.getMovie().getTitle());
+//                            Logger.d("Sync数据:更新数据:" + item.getMovie().getTitle());
                             updateMovieState(state, item);
                         }
                     }

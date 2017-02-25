@@ -65,9 +65,10 @@ public class SyncService extends Service implements SyncCallback {
     }
 
     private void syncAll() {
-        syncSuccessNeeded = 5;
+        syncSuccessNeeded = 6;
         Logger.d("syncAll");
         repository.getLastActivities(this);
+        repository.syncUserSettings(this);
         repository.syncMovieWatched(this);//看过
         repository.syncMovieWatchlist(this);//想看
         repository.syncMovieRatings(this);//评分
@@ -144,6 +145,7 @@ public class SyncService extends Service implements SyncCallback {
 
     @Override
     public void onSyncUserSettingsSucceed(UserSettings userSettings) {
+        SPUtil.saveUserSettings(userSettings);
         syncFinished("Sync user settings finished.");
     }
 

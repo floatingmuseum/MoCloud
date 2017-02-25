@@ -24,13 +24,9 @@ import android.widget.TextView;
 import com.floatingmuseum.mocloud.MainMovieAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
-import com.floatingmuseum.mocloud.data.SyncService;
+import com.floatingmuseum.mocloud.data.bus.EventBusManager;
 import com.floatingmuseum.mocloud.data.bus.SyncEvent;
-import com.floatingmuseum.mocloud.data.db.RealmManager;
-import com.floatingmuseum.mocloud.data.db.entity.RealmMovieState;
-import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.User;
-import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.ui.about.AboutActivity;
 import com.floatingmuseum.mocloud.ui.calendar.CalendarActivity;
 import com.floatingmuseum.mocloud.ui.recommendations.RecommendationsActivity;
@@ -43,19 +39,12 @@ import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 
-
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.Arrays;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.Realm;
-import io.realm.RealmModel;
-import io.realm.RealmResults;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -69,12 +58,11 @@ public class MainActivity extends BaseActivity
     DrawerLayout drawerLayout;
 
     private final int REQUEST_CODE_ASK_PERMISSIONS = 233;
-    ImageView iv_avatar;
+    CircleImageView iv_avatar;
     TextView tv_username;
 
     MainPresenter mainPresenter;
 
-    private boolean isLogin;
     private MenuItem syncState;
     //    private ImageView iv_avatar;
 
@@ -88,8 +76,8 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
 
         ButterKnife.bind(this);
+        registerEventBusHere();
         mainPresenter = new MainPresenter(this);
-        isLogin = SPUtil.isLogin();
         initView();
     }
 
@@ -112,23 +100,10 @@ public class MainActivity extends BaseActivity
         mainViewPager.setAdapter(adapter);
         mainTabLayout.setupWithViewPager(mainViewPager);
 
-        if (isLogin) {
-            //已登录，获取头像和用户名
-            String avatarUrl = SPUtil.getString(SPUtil.SP_USER_SETTINGS, "avatar", "");
-            ImageLoader.load(this, avatarUrl, iv_avatar, R.drawable.default_userhead);
-            tv_username.setText(SPUtil.getString(SPUtil.SP_USER_SETTINGS, "username", ""));
-            //请求用户最新信息
-            //request user settings every time when app start,if login is true.
-            mainPresenter.getUserSettings();
-            // TODO: 2017/2/7 空指针 
-//            syncState.setVisible(true);
-            mainPresenter.syncUserData(this);
-        }
-
         iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isLogin) {
+                if (SPUtil.isLogin()) {
                     startUserActivity();
                 } else {
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -137,6 +112,10 @@ public class MainActivity extends BaseActivity
             }
         });
 
+        updateUserRelatedViews();
+        if (SPUtil.isLogin()) {
+            mainPresenter.syncUserData(this);
+        }
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             initPermissionRequestDialog();
         }
@@ -181,13 +160,6 @@ public class MainActivity extends BaseActivity
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-    }
-
-    public void refreshUserView(UserSettings userSettings) {
-        String avatarUrl = userSettings.getUser().getImages().getAvatar().getFull();
-        // TODO: 2017/1/9 第一次登陆后这里头像刷新不出来 
-        ImageLoader.load(this, avatarUrl, iv_avatar, R.drawable.default_userhead);
-        tv_username.setText(userSettings.getUser().getUsername());
     }
 
     @Override
@@ -274,23 +246,13 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == LoginActivity.REQUEST_CODE) {
-            if (resultCode == LoginActivity.LOGIN_SUCCESS_CODE) {
-                mainPresenter.getUserSettings();
-                //登录成功，更新头像
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     protected void onError(Exception e) {
 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSyncEvent(SyncEvent syncEvent) {
+        Logger.d("onSyncEvent:" + syncEvent.syncInfo);
         if ("Sync user settings finished.".equals(syncEvent.syncInfo)) {
             updateUserRelatedViews();
         }
@@ -300,6 +262,16 @@ public class MainActivity extends BaseActivity
     }
 
     private void updateUserRelatedViews() {
+        if (SPUtil.isLogin()) {
+            //已登录，获取头像和用户名
+            String avatarUrl = SPUtil.getString(SPUtil.SP_USER_SETTINGS, "avatar", "");
+            // TODO: 2017/2/26 昵称更新成功，头像不成功
+            ImageLoader.load(this, avatarUrl, iv_avatar, R.drawable.default_userhead);
+            tv_username.setText(SPUtil.getString(SPUtil.SP_USER_SETTINGS, "username", ""));
+            Logger.d("avatarUrl:" + avatarUrl + "...");
+            // TODO: 2017/2/7 空指针
+//            syncState.setVisible(true);
+        }
     }
 
     @Override
