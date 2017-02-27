@@ -26,6 +26,8 @@ import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.data.bus.EventBusManager;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 
 /**
@@ -63,6 +65,10 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
     protected boolean canGoBack() {
         return true;
+    }
+
+    protected void registerEventBusHere() {
+        EventBusManager.register(this);
     }
 
     @Override

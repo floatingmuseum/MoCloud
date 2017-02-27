@@ -39,6 +39,8 @@ import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPersonImage;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
+import com.floatingmuseum.mocloud.data.entity.UserCommentLike;
+import com.floatingmuseum.mocloud.data.entity.UserListLike;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
@@ -1013,28 +1015,11 @@ public class Repository {
                 .doOnNext(new Action1<List<MovieWatchedItem>>() {
                     @Override
                     public void call(List<MovieWatchedItem> movieWatchedItems) {
-                        if (ListUtil.hasData(movieWatchedItems)) {
                             Logger.d("Sync数据:看过:" + movieWatchedItems.size() + "电影");
-                            for (MovieWatchedItem movieWatchedItem : movieWatchedItems) {
-                                RealmManager.insertOrUpdate(movieWatchedItem);
-                            }
-                        }
-//                        if (ListUtil.hasData(movieWatchedItems)) {
-//                            Logger.d("Sync数据:看过:" + movieWatchedItems.size() + "电影");
-//                            int i = 0;
+                        RealmManager.insertOrUpdateMovieWatched(movieWatchedItems);
 //                            for (MovieWatchedItem movieWatchedItem : movieWatchedItems) {
-//                                i++;
-//                                Movie movie = movieWatchedItem.getMovie();
-//                                Logger.d("执行第" + i + "条数据:" + movie.getTitle());
-//                                RealmMovieWatched realmMovieWatched = new RealmMovieWatched();
-//                                realmMovieWatched.setTitle(movie.getTitle());
-//                                realmMovieWatched.setYear(movie.getYear());
-//                                realmMovieWatched.setTrakt_id(movie.getIds().getTrakt());
-//                                realmMovieWatched.setPlays(movieWatchedItem.getPlays());
-//                                realmMovieWatched.setLast_watched_at(movieWatchedItem.getLast_watched_at());
-//                                RealmManager.insertOrUpdate(realmMovieWatched);
+//                                RealmManager.insertOrUpdate(movieWatchedItem);
 //                            }
-//                        }
                     }
                 })
                 .compose(RxUtil.<List<MovieWatchedItem>>threadSwitch())
@@ -1063,28 +1048,8 @@ public class Repository {
                 .doOnNext(new Action1<List<MovieWatchlistItem>>() {
                     @Override
                     public void call(List<MovieWatchlistItem> movieWatchlistItems) {
-                        if (ListUtil.hasData(movieWatchlistItems)) {
                             Logger.d("Sync数据:想看:" + movieWatchlistItems.size() + "电影");
-                            for (MovieWatchlistItem movieWatchlistItem : movieWatchlistItems) {
-                                RealmManager.insertOrUpdate(movieWatchlistItem);
-                            }
-                        }
-//                        if (ListUtil.hasData(movieWatchlistItems)) {
-//                            Logger.d("Sync数据:想看:" + movieWatchlistItems.size() + "电影");
-//                            int i = 0;
-//                            for (MovieWatchlistItem movieWatchlistItem : movieWatchlistItems) {
-//                                i++;
-//                                Movie movie = movieWatchlistItem.getMovie();
-//                                Logger.d("执行第" + i + "条数据:" + movie.getTitle());
-//                                RealmMovieWatchlist realmMovieWatchlist = new RealmMovieWatchlist();
-//                                realmMovieWatchlist.setTitle(movie.getTitle());
-//                                realmMovieWatchlist.setYear(movie.getYear());
-//                                realmMovieWatchlist.setTrakt_id(movie.getIds().getTrakt());
-//                                realmMovieWatchlist.setRank(movieWatchlistItem.getRank());
-//                                realmMovieWatchlist.setListed_at(movieWatchlistItem.getListed_at());
-//                                RealmManager.insertOrUpdate(realmMovieWatchlist);
-//                            }
-//                        }
+                        RealmManager.insertOrUpdateMovieWatchlist(movieWatchlistItems);
                     }
                 })
                 .compose(RxUtil.<List<MovieWatchlistItem>>threadSwitch())
@@ -1114,15 +1079,7 @@ public class Repository {
                     @Override
                     public void call(List<MovieRatingItem> movieRatingItems) {
                         Logger.d("Sync数据:评分:" + movieRatingItems.size() + "电影");
-                        for (MovieRatingItem movieRatingItem : movieRatingItems) {
-                            RealmManager.insertOrUpdate(movieRatingItem);
-                        }
-//                        if (ListUtil.hasData(movieRatingItems)) {
-//                            Logger.d("Sync数据:评分:" + movieRatingItems.size() + "电影");
-//                            for (MovieRatingItem movieRatingItem : movieRatingItems) {
-//                                RealmManager.insertOrUpdate(movieRatingItem);
-//                            }
-//                        }
+                        RealmManager.insertOrUpdateMovieRating(movieRatingItems);
                     }
                 })
                 .compose(RxUtil.<List<MovieRatingItem>>threadSwitch())
@@ -1151,12 +1108,8 @@ public class Repository {
                 .doOnNext(new Action1<List<MovieCollectionItem>>() {
                     @Override
                     public void call(List<MovieCollectionItem> movieCollectionItems) {
-                        if (ListUtil.hasData(movieCollectionItems)) {
-                            Logger.d("Sync数据:收藏:" + movieCollectionItems.size() + "电影");
-                            for (MovieCollectionItem movieCollectionItem : movieCollectionItems) {
-                                RealmManager.insertOrUpdate(movieCollectionItem);
-                            }
-                        }
+                        Logger.d("Sync数据:收藏:" + movieCollectionItems.size() + "电影");
+                        RealmManager.insertOrUpdateMovieCollection(movieCollectionItems);
                     }
                 })
                 .compose(RxUtil.<List<MovieCollectionItem>>threadSwitch())
@@ -1175,6 +1128,66 @@ public class Repository {
                     @Override
                     public void onNext(List<MovieCollectionItem> movieCollectionItems) {
                         callback.onSyncMovieCollectionSucceed(movieCollectionItems);
+                    }
+                });
+    }
+
+    public void syncUserCommentsLikes(final SyncCallback callback){
+        service.syncUserCommentsLikes()
+                .onErrorResumeNext(refreshTokenAndRetry(service.syncUserCommentsLikes()))
+                .doOnNext(new Action1<List<UserCommentLike>>() {
+                    @Override
+                    public void call(List<UserCommentLike> userCommentLikes) {
+                        Logger.d("Sync数据:评论点赞:" + userCommentLikes.size());
+                        RealmManager.insertOrUpdateUserCommentsLikes(userCommentLikes);
+                    }
+                })
+                .compose(RxUtil.<List<UserCommentLike>>threadSwitch())
+                .subscribe(new Observer<List<UserCommentLike>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onError(e);
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<UserCommentLike> userCommentLikes) {
+                        callback.onSyncUserCommentsLikes(userCommentLikes);
+                    }
+                });
+    }
+
+    public void syncUserListsLikes(final SyncCallback callback){
+        service.syncUserListsLikes()
+                .onErrorResumeNext(refreshTokenAndRetry(service.syncUserListsLikes()))
+                .doOnNext(new Action1<List<UserListLike>>() {
+                    @Override
+                    public void call(List<UserListLike> userListLikes) {
+                        Logger.d("Sync数据:列表点赞:" + userListLikes.size());
+                        RealmManager.insertOrUpdateUserListsLikes(userListLikes);
+                    }
+                })
+                .compose(RxUtil.<List<UserListLike>>threadSwitch())
+                .subscribe(new Observer<List<UserListLike>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onError(e);
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<UserListLike> userListLikes) {
+                        callback.onSyncUserListLikes(userListLikes);
                     }
                 });
     }

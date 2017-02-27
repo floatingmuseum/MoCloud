@@ -101,7 +101,6 @@ public class LoginActivity extends BaseActivity {
         updateSyncInfo("Login success");
         Intent intent = new Intent(this, SyncService.class);
         startService(intent);
-        setResult(LoginActivity.LOGIN_SUCCESS_CODE);
     }
 
     public void requestTokenFailed() {

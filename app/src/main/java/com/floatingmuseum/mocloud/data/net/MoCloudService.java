@@ -24,6 +24,8 @@ import com.floatingmuseum.mocloud.data.entity.TmdbPersonImage;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
 import com.floatingmuseum.mocloud.data.entity.User;
+import com.floatingmuseum.mocloud.data.entity.UserCommentLike;
+import com.floatingmuseum.mocloud.data.entity.UserListLike;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
 
 import java.util.List;
@@ -47,13 +49,14 @@ import rx.Observable;
 public interface MoCloudService {
     /**
      * Person
+     *
      * @param name
      * @return
      */
     @GET("people/{id}")
     Observable<Person> getPerson(@Path("id") String name);
 
-//*******************************************OAUTH*******************************************
+    //*******************************************OAUTH*******************************************
     @POST("oauth/token")
     Observable<TraktToken> getToken(@Body TokenRequest tokenRequest);
 
@@ -70,19 +73,19 @@ public interface MoCloudService {
     @POST("oauth/revoke")
     Observable<Response> revokeToken(@Body String accessToken);
 
-//*******************************************用 户*******************************************
+    //*******************************************用 户*******************************************
     @GET("users/{id}?extended=full")
-    Observable<User> getUserProfile(@Path("id")String slug);
+    Observable<User> getUserProfile(@Path("id") String slug);
 
     @GET("users/{id}/followers?extended=full")
-    Observable<List<Follower>> getUserFollowers(@Path("id")String slug);
+    Observable<List<Follower>> getUserFollowers(@Path("id") String slug);
 
     @GET("users/{id}/following?extended=full")
-    Observable<List<Follower>> getUserFollowing(@Path("id")String slug);
+    Observable<List<Follower>> getUserFollowing(@Path("id") String slug);
 
     //用户统计数据
     @GET("users/{id}/stats")
-    Observable<Stats> getUserStats(@Path("id")String slug);
+    Observable<Stats> getUserStats(@Path("id") String slug);
 
     //******************************************* Sync *******************************************
 
@@ -120,48 +123,55 @@ public interface MoCloudService {
     @POST("sync/collection/remove")
     Observable removeFromCollections();
 
+    @GET("users/likes/comments")
+    Observable<List<UserCommentLike>> syncUserCommentsLikes();
+
+    @GET("users/likes/lists")
+    Observable<List<UserListLike>> syncUserListsLikes();
+
 //*******************************************电  影*******************************************
+
     /**
      * 电影趋势
      * Returns all movies being watched right now. Movies with the most users are returned first.
      * limit每页数据的数量
      */
     @GET("movies/trending?extended=full")
-    Observable<List<BaseMovie>> getMovieTrending(@Query("page") int page,@Query("limit")int limit);
+    Observable<List<BaseMovie>> getMovieTrending(@Query("page") int page, @Query("limit") int limit);
 
     /**
      * 电影流行
      * Returns the most popular movies.Popularity is calculated using the rating percentage and the number of ratings.
      */
     @GET("movies/popular?extended=full")
-    Observable<List<Movie>> getMoviePopular(@Query("page") int page,@Query("limit")int limit);
+    Observable<List<Movie>> getMoviePopular(@Query("page") int page, @Query("limit") int limit);
 
     /**
      * 电影播放最多
      * Returns the most played (a single user can watch multiple times) movies in the specified time period
      */
     @GET("movies/played/{period}?extended=full")
-    Observable<List<BaseMovie>> getMoviePlayed(@Path("period") String period,@Query("page") int page,@Query("limit")int limit);
+    Observable<List<BaseMovie>> getMoviePlayed(@Path("period") String period, @Query("page") int page, @Query("limit") int limit);
 
     /**
      * 电影观看最多
      * Returns the most watched (unique users) movies in the specified time period
      */
     @GET("movies/watched/{period}?extended=full")
-    Observable<List<BaseMovie>> getMovieWatched(@Path("period") String period,@Query("page") int page,@Query("limit")int limit);
+    Observable<List<BaseMovie>> getMovieWatched(@Path("period") String period, @Query("page") int page, @Query("limit") int limit);
 
     /**
      * 电影被收藏最多
      * Returns the most collected (unique users) movies in the specified time period
      */
     @GET("movies/collected/{period}?extended=full")
-    Observable<List<BaseMovie>> getMovieCollected(@Path("period")String period,@Query("page") int page,@Query("limit")int limit);
+    Observable<List<BaseMovie>> getMovieCollected(@Path("period") String period, @Query("page") int page, @Query("limit") int limit);
 
     /**
      * Returns the most anticipated movies based on the number of lists a movie appears on.
      */
     @GET("movies/anticipated?extended=full")
-    Observable<List<BaseMovie>> getMovieAnticipated(@Query("page") int page,@Query("limit")int limit);
+    Observable<List<BaseMovie>> getMovieAnticipated(@Query("page") int page, @Query("limit") int limit);
 
     /**
      * Returns the top 10 grossing movies in the U.S. box office last weekend. Updated every Monday morning.
@@ -198,31 +208,31 @@ public interface MoCloudService {
      * tomato评分
      */
     @GET("http://www.omdbapi.com/")
-    Observable<OmdbInfo> getMovieOtherRatings(@Query("i") String imdbId,@Query("tomatoes")String b);
+    Observable<OmdbInfo> getMovieOtherRatings(@Query("i") String imdbId, @Query("tomatoes") String b);
 
     /**
      * 电影Popular from Tmdb
      */
     @GET("https://api.themoviedb.org/3/movie/popular")
-    Observable<TmdbMovieDataList> getMoviePopular(@Query("page")int page, @Query("api_key")String tmdbApiKey);
+    Observable<TmdbMovieDataList> getMoviePopular(@Query("page") int page, @Query("api_key") String tmdbApiKey);
 
     /**
      * 电影NowPlaying from Tmdb
      */
     @GET("https://api.themoviedb.org/3/movie/now_playing")
-    Observable<TmdbMovieDataList> getMovieNowPlaying(@Query("page")int page, @Query("api_key")String tmdbApiKey);
+    Observable<TmdbMovieDataList> getMovieNowPlaying(@Query("page") int page, @Query("api_key") String tmdbApiKey);
 
     /**
      * 电影TopRated from Tmdb
      */
     @GET("https://api.themoviedb.org/3/movie/top_rated")
-    Observable<TmdbMovieDataList> getMovieTopRated(@Query("page")int page, @Query("api_key")String tmdbApiKey);
+    Observable<TmdbMovieDataList> getMovieTopRated(@Query("page") int page, @Query("api_key") String tmdbApiKey);
 
     /**
      * 电影Upcoming from Tmdb
      */
     @GET("https://api.themoviedb.org/3/movie/upcoming")
-    Observable<TmdbMovieDataList> getMovieUpcoming(@Query("page")int page, @Query("api_key")String tmdbApiKey);
+    Observable<TmdbMovieDataList> getMovieUpcoming(@Query("page") int page, @Query("api_key") String tmdbApiKey);
 
     /**
      * 电影团队 from Trakt
@@ -235,36 +245,34 @@ public interface MoCloudService {
      */
 //    @GET("https://api.themoviedb.org/3/movie/{tmdbID}/credits")
 //    Observable<TmdbPeople> getMovieTeam(@Path("tmdbID") int tmdbId,@Query("api_key")String tmdbApiKey);
-
     @GET("https://api.themoviedb.org/3/person/{tmdbID}/images")
-    Observable<TmdbPersonImage> getPersonImagesFromTmdb(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
+    Observable<TmdbPersonImage> getPersonImagesFromTmdb(@Path("tmdbID") int tmdbId, @Query("api_key") String tmdbApiKey);
 
     @GET("recommendations/movies?extended=full")
     Observable<List<Movie>> getRecommendations();
 
     @DELETE("recommendations/movies/{id}")
-    Observable<ResponseBody> hideMovie(@Path("id")String slug);
+    Observable<ResponseBody> hideMovie(@Path("id") String slug);
 
     /**
      * 影人详情 from TMDB
      */
 //    @GET("https://api.themoviedb.org/3/person/{tmdbID}")
 //    Observable<TmdbStaff> getStaff(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
-
     @GET("people/{id}?extended=full")
     Observable<Person> getStaff(@Path("id") String id);
 
     @GET("people/{id}/movies?extended=full")
-    Observable<PeopleCredit> getStaffMovieCredits(@Path("id")String slug);
+    Observable<PeopleCredit> getStaffMovieCredits(@Path("id") String slug);
 
     @GET("people/{id}/shows?extended=full")
-    Observable getStaffShowsCredits(@Path("id")String traktId);
+    Observable getStaffShowsCredits(@Path("id") String traktId);
 
 //    @GET("https://api.themoviedb.org/3/person/{tmdbID}/movie_credits")
 //    Observable<TmdbStaffMovieCredits> getStaffMovieCredits(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
 
     @GET("https://api.themoviedb.org/3/person/{tmdbID}/images")
-    Observable<StaffImages> getStaffImages(@Path("tmdbID") int tmdbId, @Query("api_key")String tmdbApiKey);
+    Observable<StaffImages> getStaffImages(@Path("tmdbID") int tmdbId, @Query("api_key") String tmdbApiKey);
 
 //******************************************评 论*******************************************
 
@@ -272,7 +280,7 @@ public interface MoCloudService {
      * 获取电影评论
      */
     @GET("movies/{id}/comments/{sort}?extended=full,images")
-    Observable<List<Comment>> getComments(@Path("id")String id, @Path("sort")String sort, @Query("limit")int limit, @Query("page")int page);
+    Observable<List<Comment>> getComments(@Path("id") String id, @Path("sort") String sort, @Query("limit") int limit, @Query("page") int page);
 
     //评论电影 OAuth Required
     @POST("comments?extended=full,images")
@@ -280,30 +288,30 @@ public interface MoCloudService {
 
     //点赞评论 OAuth Required 204状态码成功
     @POST("comments/{id}/like")
-    Observable sendLikeComment(@Path("id")long id);
+    Observable sendLikeComment(@Path("id") long id);
 
     //获取单个评论下的评论
     @GET("comments/{id}/replies?extended=full,images")
-    Observable<List<Comment>> getCommentReplies(@Path("id")long id);
+    Observable<List<Comment>> getCommentReplies(@Path("id") long id);
 
     //回复某个评论 OAuth Required
     @POST("comments/{id}/replies?extended=full,images")
-    Observable<Comment> sendReply(@Path("id")long id, @Body Reply reply);
+    Observable<Comment> sendReply(@Path("id") long id, @Body Reply reply);
 
 
 //******************************************图 片*******************************************
 
     @GET("")
-    Observable<TmdbImagesConfiguration> getTmdbImagesConfiguration(@Query("api_key")String tmdbApiKey);
+    Observable<TmdbImagesConfiguration> getTmdbImagesConfiguration(@Query("api_key") String tmdbApiKey);
 
     @GET("https://api.themoviedb.org/3/movie/{tmdb_id}/images")
-    Observable<TmdbMovieImage> getTmdbImages(@Path("tmdb_id")int tmdbID, @Query("api_key")String tmdbApiKey);
+    Observable<TmdbMovieImage> getTmdbImages(@Path("tmdb_id") int tmdbID, @Query("api_key") String tmdbApiKey);
 
     @GET("http://webservice.fanart.tv/v3/movies/{imdbID}")
-    Observable<MovieImage> getMovieImages(@Path("imdbID")String imdbID, @Query("api_key")String fanartApiKey);
+    Observable<MovieImage> getMovieImages(@Path("imdbID") String imdbID, @Query("api_key") String fanartApiKey);
 
     @GET("http://webservice.fanart.tv/v3/movies/{tmdbID}")
-    Observable<MovieImage> getMovieImages(@Path("tmdbID")int tmdbID, @Query("api_key")String fanartApiKey);
+    Observable<MovieImage> getMovieImages(@Path("tmdbID") int tmdbID, @Query("api_key") String fanartApiKey);
 
     @Streaming
     @GET

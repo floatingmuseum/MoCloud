@@ -28,11 +28,6 @@ public class MainPresenter extends Presenter implements DataCallback<UserSetting
         this.mainActivity = mainActivity;
     }
 
-    public void getUserSettings() {
-        Subscription userSettingsSubscription = repository.getUserSettings(this);
-        compositeSubscription.add(userSettingsSubscription);
-    }
-
     public void syncUserData(Context context) {
         Intent intent = new Intent(context, SyncService.class);
         context.startService(intent);
@@ -40,10 +35,7 @@ public class MainPresenter extends Presenter implements DataCallback<UserSetting
 
     @Override
     public void onBaseDataSuccess(UserSettings userSettings) {
-        //界面上暂时只需更新用户头像和用户名，然后存储UserSettings
-        Logger.d("UserSettings:" + userSettings.getUser().getUsername() + "...");
-        SPUtil.saveUserSettings(userSettings);
-        mainActivity.refreshUserView(userSettings);
+
     }
 
     @Override
@@ -57,6 +49,5 @@ public class MainPresenter extends Presenter implements DataCallback<UserSetting
     public void logout() {
         SPUtil.removeUserSettings();
         SPUtil.editBoolean("isLogin", false);
-        mainActivity.refreshUserView(null);
     }
 }
