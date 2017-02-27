@@ -191,12 +191,12 @@ public class SyncService extends Service implements SyncCallback {
 
     @Override
     public void onSyncUserListLikes(List<UserListLike> userListLikes) {
-        syncFinished("Sync user comment likes finished");
+        syncFinished("Sync user list likes finished");
     }
 
     @Override
     public void onSyncUserCommentsLikes(List<UserCommentLike> userCommentLikes) {
-        syncFinished("Sync user list likes finished");
+        syncFinished("Sync user comment likes finished");
     }
 
     private void syncFinished(String syncInfo) {

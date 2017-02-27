@@ -11,8 +11,8 @@ import io.realm.annotations.RealmClass;
 public class RealmCommentLike implements RealmModel {
     private String liked_at;
     @PrimaryKey
-    private Integer id;
-    private Integer parent_id;
+    private Long id;
+    private Long parent_id;
     private String created_at;
     private String updated_at;
     private String comment;
@@ -40,19 +40,19 @@ public class RealmCommentLike implements RealmModel {
         this.liked_at = liked_at;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getParent_id() {
+    public Long getParent_id() {
         return parent_id;
     }
 
-    public void setParent_id(Integer parent_id) {
+    public void setParent_id(Long parent_id) {
         this.parent_id = parent_id;
     }
 

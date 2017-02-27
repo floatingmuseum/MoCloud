@@ -97,6 +97,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     LinearLayout llImdbRating;
     @BindView(R.id.ll_ratings)
     LinearLayout llRatings;
+    @BindView(R.id.ll_sync)
+    LinearLayout llSync;
 
     @BindView(R.id.poster)
     RatioImageView ivPoster;
@@ -185,10 +187,10 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 //        Logger.d("电影名onCreate:" + movie.getTitle() + "..." + movie.getId());
         presenter.getData(movie);
         initView();
-        RealmMovieState state = RealmManager.query(RealmMovieState.class, movie.getIds().getTrakt());
-        if (state != null) {
-            Logger.d("State详情:" + state.getTitle() + "..." + state.getTrakt_id() + "..." + state.getRating() + "..." + state.getLast_watched_at() + "..." + state.getListed_at() + "..." + state.getCollected_at());
-        }
+//        RealmMovieState state = RealmManager.query(RealmMovieState.class, movie.getIds().getTrakt());
+//        if (state != null) {
+//            Logger.d("State详情:" + state.getTitle() + "..." + state.getTrakt_id() + "..." + state.getRating() + "..." + state.getLast_watched_at() + "..." + state.getListed_at() + "..." + state.getCollected_at());
+//        }
     }
 
     @Override
@@ -269,7 +271,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     private void initLoginView() {
         if (SPUtil.isLogin()) {
-            llRatings.setVisibility(View.VISIBLE);
+            llSync.setVisibility(View.VISIBLE);
         }
     }
 
