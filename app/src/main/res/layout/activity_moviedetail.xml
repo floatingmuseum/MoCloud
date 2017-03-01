@@ -126,6 +126,7 @@
                 android:visibility="gone">
 
                 <TextView
+                    android:id="@+id/tv_sync_watchlist"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_margin="1dp"
@@ -138,25 +139,27 @@
                     tools:text="Add to watchlist" />
 
                 <TextView
+                    android:id="@+id/tv_sync_watched"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:background="@drawable/history_round_corner_bg"
                     android:gravity="center"
-                    android:text="Add to history"
+                    android:text="Add to watched"
                     android:textColor="#8e44ad"
                     android:textStyle="bold"
                     tools:text="Add to history" />
 
                 <TextView
+                    android:id="@+id/tv_sync_collection"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:background="@drawable/collections_round_corner_bg"
                     android:gravity="center"
-                    android:text="Add to Collections"
+                    android:text="Add to collection"
                     android:textColor="#16a085"
                     android:textStyle="bold"
                     tools:text="Add to Collections" />

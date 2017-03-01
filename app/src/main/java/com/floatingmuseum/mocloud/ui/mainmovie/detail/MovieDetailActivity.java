@@ -99,6 +99,12 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     LinearLayout llRatings;
     @BindView(R.id.ll_sync)
     LinearLayout llSync;
+    @BindView(R.id.tv_sync_watchlist)
+    TextView tvSyncWatchlist;
+    @BindView(R.id.tv_sync_watched)
+    TextView tvSyncWatched;
+    @BindView(R.id.tv_sync_collection)
+    TextView tvSyncCollection;
 
     @BindView(R.id.poster)
     RatioImageView ivPoster;
@@ -187,10 +193,17 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 //        Logger.d("电影名onCreate:" + movie.getTitle() + "..." + movie.getId());
         presenter.getData(movie);
         initView();
+        loadUserData();
 //        RealmMovieState state = RealmManager.query(RealmMovieState.class, movie.getIds().getTrakt());
 //        if (state != null) {
 //            Logger.d("State详情:" + state.getTitle() + "..." + state.getTrakt_id() + "..." + state.getRating() + "..." + state.getLast_watched_at() + "..." + state.getListed_at() + "..." + state.getCollected_at());
 //        }
+    }
+
+    private void loadUserData() {
+        if (SPUtil.isLogin()) {
+            presenter.loadUserData(movie.getIds().getTrakt());
+        }
     }
 
     @Override
@@ -272,6 +285,26 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     private void initLoginView() {
         if (SPUtil.isLogin()) {
             llSync.setVisibility(View.VISIBLE);
+            tvSyncWatchlist.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            tvSyncWatched.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            tvSyncCollection.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
     }
 
