@@ -960,7 +960,9 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Logger.d("Sync数据:getLastActivities...onError");
+                        e.printStackTrace();
+                        callback.onError(e);
                     }
 
                     @Override
@@ -1013,7 +1015,7 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
-                        Logger.d("UserSettings:onError");
+                        Logger.d("Sync数据:syncUserSettings...onError");
                         e.printStackTrace();
                         callback.onError(e);
                     }
@@ -1027,7 +1029,6 @@ public class Repository {
     }
 
     public void syncMovieWatched(final SyncCallback callback) {
-        Logger.d("syncMovieWatched");
         service.syncMovieWatched()
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncMovieWatched()))
                 .doOnNext(new Action1<List<MovieWatchedItem>>() {
@@ -1046,6 +1047,7 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
+                        Logger.d("Sync数据:syncMovieWatched...onError");
                         callback.onError(e);
                         e.printStackTrace();
                     }
@@ -1143,6 +1145,7 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
+                        Logger.d("Sync数据:syncMovieWatchlist...onError");
                         callback.onError(e);
                         e.printStackTrace();
                     }
@@ -1173,6 +1176,7 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
+                        Logger.d("Sync数据:syncMovieRatings...onError");
                         callback.onError(e);
                         e.printStackTrace();
                     }
@@ -1203,6 +1207,7 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
+                        Logger.d("Sync数据:syncMovieCollection...onError");
                         callback.onError(e);
                         e.printStackTrace();
                     }
@@ -1233,6 +1238,7 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
+                        Logger.d("Sync数据:syncUserCommentsLikes...onError");
                         callback.onError(e);
                         e.printStackTrace();
                     }
@@ -1263,6 +1269,7 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
+                        Logger.d("Sync数据:syncUserListsLikes...onError");
                         callback.onError(e);
                         e.printStackTrace();
                     }

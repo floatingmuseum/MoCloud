@@ -93,8 +93,8 @@ public class SyncService extends Service implements SyncCallback {
             syncOthers(lastActivities);
         } else {
             SPUtil.saveUserLastActivities(lastActivities);
-            syncFinished("Sync last activities finished.");
         }
+        syncFinished("Sync last activities finished.");
     }
 
     private void syncOthers(LastActivities lastActivities) {
@@ -247,6 +247,7 @@ public class SyncService extends Service implements SyncCallback {
             if (!hasFirstSync) {//第一次同步成功，修改标记，之后再同步时只需要同步needed
                 SPUtil.editBoolean(SPUtil.SP_USER_LASTACTIVITIES, "has_first_sync", true);
             }
+            Logger.d("Sync数据:stop syncService");
             stopSelf();
         }
     }
