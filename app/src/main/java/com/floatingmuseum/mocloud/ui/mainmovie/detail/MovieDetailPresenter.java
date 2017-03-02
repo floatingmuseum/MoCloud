@@ -12,10 +12,13 @@ import com.floatingmuseum.mocloud.data.db.entity.RealmMovieRating;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.Comment;
+import com.floatingmuseum.mocloud.data.entity.HistorySyncItem;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.MovieHistorySyncItem;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
+import com.floatingmuseum.mocloud.data.entity.SyncResponse;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.orhanobut.logger.Logger;
 
@@ -92,6 +95,25 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     @Override
     public void onSendCommentSuccess(Comment comment) {
         activity.onSendCommentSuccess(comment);
+    }
+
+    public void syncMovieWatchedState(boolean hasWatched, HistorySyncItem item) {
+        Logger.d("看过测试:syncMovieWatchedState...是否看过:" + hasWatched);
+        if (!hasWatched) {
+            repository.addMovieToWatched(item, this);
+        } else {
+            repository.removeMovieFromWatched(item, this);
+        }
+    }
+
+    @Override
+    public void onAddMovieToWatchedSucceed(SyncResponse syncResponse) {
+        activity.onAddMovieToWatchedSucceed();
+    }
+
+    @Override
+    public void onRemoveMovieFromWatchedSucceed(SyncResponse syncResponse) {
+        activity.onRemoveMovieFromWatchedSucceed();
     }
 
     @Override

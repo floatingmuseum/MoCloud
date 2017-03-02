@@ -4,7 +4,7 @@ package com.floatingmuseum.mocloud.data.entity;
  * Created by Floatingmuseum on 2017/2/14.
  */
 
-public class MovieWatchlistItem extends MovieSyncItem{
+public class MovieWatchlistItem extends BaseMovieSyncItem {
     private int rank;
     private String listed_at;
     private String type;

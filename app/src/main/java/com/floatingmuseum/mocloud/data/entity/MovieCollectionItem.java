@@ -4,7 +4,7 @@ package com.floatingmuseum.mocloud.data.entity;
  * Created by Floatingmuseum on 2017/2/14.
  */
 
-public class MovieCollectionItem extends MovieSyncItem {
+public class MovieCollectionItem extends BaseMovieSyncItem {
     private String collected_at;
 
     public String getCollected_at() {

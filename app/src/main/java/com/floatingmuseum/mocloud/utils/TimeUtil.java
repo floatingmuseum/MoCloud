@@ -29,7 +29,7 @@ public class TimeUtil {
         return null;
     }
 
-    public static Date formatStringToDate(String time,String format){
+    public static Date formatStringToDate(String time, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         Date date = null;
         try {
@@ -39,5 +39,12 @@ public class TimeUtil {
             e.printStackTrace();
         }
         return date;
+    }
+
+    public static String getNowUTCTime() {
+        final SimpleDateFormat sdf = new SimpleDateFormat(GMT_ISO8601_FORMAT);
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        final String utcTime = sdf.format(new Date());
+        return utcTime;
     }
 }

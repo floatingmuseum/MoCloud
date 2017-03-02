@@ -3,6 +3,7 @@ package com.floatingmuseum.mocloud.data.net;
 
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
+import com.floatingmuseum.mocloud.data.entity.HistorySyncItem;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.MovieCollectionItem;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
@@ -17,6 +18,7 @@ import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.StaffImages;
 import com.floatingmuseum.mocloud.data.entity.Stats;
+import com.floatingmuseum.mocloud.data.entity.SyncResponse;
 import com.floatingmuseum.mocloud.data.entity.TmdbImagesConfiguration;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
@@ -128,6 +130,12 @@ public interface MoCloudService {
 
     @GET("users/likes/lists")
     Observable<List<UserListLike>> syncUserListsLikes();
+
+    @POST("sync/history")
+    Observable<SyncResponse> addMovieToWatched(@Body HistorySyncItem historySyncItem);
+
+    @POST("sync/history/remove")
+    Observable<SyncResponse> removeMovieFromWatched(@Body HistorySyncItem historySyncItem);
 
 //*******************************************电  影*******************************************
 

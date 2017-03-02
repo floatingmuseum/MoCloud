@@ -2,11 +2,6 @@ package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.ScaleDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -14,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -31,15 +25,15 @@ import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
-import com.floatingmuseum.mocloud.data.db.RealmManager;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieCollection;
-import com.floatingmuseum.mocloud.data.db.entity.RealmMovieState;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
+import com.floatingmuseum.mocloud.data.entity.HistorySyncItem;
+import com.floatingmuseum.mocloud.data.entity.Ids;
 import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.floatingmuseum.mocloud.data.entity.MovieDetail;
+import com.floatingmuseum.mocloud.data.entity.MovieHistorySyncItem;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
@@ -60,8 +54,6 @@ import com.orhanobut.logger.Logger;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,6 +182,10 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     private Staff staff;
     private Palette.Swatch itemSwatch;
     private Palette.Swatch mainSwatch;
+    private boolean hasWatched = false;
+    private boolean hasWatchlist = false;
+    private boolean hasCollected = false;
+    private String nowWatchedTime;
 
 
     @Override
@@ -204,14 +200,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
         movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
         presenter = new MovieDetailPresenter(this);
-//        Logger.d("电影名onCreate:" + movie.getTitle() + "..." + movie.getId());
         presenter.getData(movie);
         initView();
         loadUserData();
-//        RealmMovieState state = RealmManager.query(RealmMovieState.class, movie.getIds().getTrakt());
-//        if (state != null) {
-//            Logger.d("State详情:" + state.getTitle() + "..." + state.getTrakt_id() + "..." + state.getRating() + "..." + state.getLast_watched_at() + "..." + state.getListed_at() + "..." + state.getCollected_at());
-//        }
     }
 
     private void loadUserData() {
@@ -302,21 +293,31 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             fbWatched.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    MovieHistorySyncItem item = new MovieHistorySyncItem();
+                    Ids ids = new Ids();
+                    ids.setTrakt(movie.getIds().getTrakt());
+                    item.setIds(ids);
+                    nowWatchedTime = TimeUtil.getNowUTCTime();
+                    item.setWatched_at(nowWatchedTime);
+                    List<MovieHistorySyncItem> items = new ArrayList<>();
+                    items.add(item);
+                    HistorySyncItem historySyncItem = new HistorySyncItem();
+                    historySyncItem.setMovies(items);
+                    presenter.syncMovieWatchedState(hasWatched, historySyncItem);
                 }
             });
 
             fbWatchlist.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+//                    presenter.syncMovieWatchlistState(hasWatchlist);
                 }
             });
 
             fbCollection.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+//                    presenter.syncMovieCollectedState(hasCollected);
                 }
             });
         }
@@ -325,6 +326,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     public void updateLoginView(int viewId, RealmModel realmModel) {
         switch (viewId) {
             case R.id.fb_watched:
+                hasWatched = true;
                 fbWatched.setBackgroundColor(ResUtil.getColor(this, R.color.watched_color));
                 fbWatched.setTextColor(ResUtil.getColor(this, R.color.white_text));
                 RealmMovieWatched realmMovieWatched = (RealmMovieWatched) realmModel;
@@ -332,6 +334,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                 fbWatched.setText("Watched at " + watchedTime);
                 break;
             case R.id.fb_watchlist:
+                hasWatchlist = true;
                 fbWatchlist.setBackgroundColor(ResUtil.getColor(this, R.color.watchlist_color));
                 fbWatchlist.setTextColor(ResUtil.getColor(this, R.color.white_text));
                 RealmMovieWatchlist realmMovieWatchlist = (RealmMovieWatchlist) realmModel;
@@ -339,6 +342,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                 fbWatchlist.setText("Listed on " + listedTime);
                 break;
             case R.id.fb_collection:
+                hasCollected = true;
                 fbCollection.setBackgroundColor(ResUtil.getColor(this, R.color.collection_color));
                 fbCollection.setTextColor(ResUtil.getColor(this, R.color.white_text));
                 RealmMovieCollection realmMovieCollection = (RealmMovieCollection) realmModel;
@@ -619,6 +623,21 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tvTomatoRatingCount.setText(omdbInfo.getTomatoUserReviews() + "votes");
         llImdbRating.setVisibility(View.VISIBLE);
         llTomatoRating.setVisibility(View.VISIBLE);
+    }
+
+    public void onAddMovieToWatchedSucceed() {
+        hasWatched = true;
+        fbWatched.setBackgroundColor(ResUtil.getColor(this, R.color.watched_color));
+        fbWatched.setTextColor(ResUtil.getColor(this, R.color.white_text));
+        String watchedTime = TimeUtil.formatGmtTime(nowWatchedTime);
+        fbWatched.setText("Watched at " + watchedTime);
+    }
+
+    public void onRemoveMovieFromWatchedSucceed() {
+        hasWatched = false;
+        fbWatched.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+        fbWatched.setTextColor(ResUtil.getColor(this, R.color.watched_color));
+        fbWatched.setText("Add to watched");
     }
 
     @Override

@@ -22,9 +22,11 @@ import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
+import com.floatingmuseum.mocloud.data.entity.HistorySyncItem;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieCollectionItem;
+import com.floatingmuseum.mocloud.data.entity.MovieHistorySyncItem;
 import com.floatingmuseum.mocloud.data.entity.MovieRatingItem;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.MovieWatchedItem;
@@ -35,6 +37,7 @@ import com.floatingmuseum.mocloud.data.entity.Reply;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.StaffImages;
 import com.floatingmuseum.mocloud.data.entity.Stats;
+import com.floatingmuseum.mocloud.data.entity.SyncResponse;
 import com.floatingmuseum.mocloud.data.entity.TmdbImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPersonImage;
@@ -46,6 +49,7 @@ import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
 import com.floatingmuseum.mocloud.data.net.MoCloudService;
+import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailPresenter;
 import com.floatingmuseum.mocloud.utils.ErrorUtil;
 import com.floatingmuseum.mocloud.utils.ListUtil;
 import com.floatingmuseum.mocloud.utils.PermissionsUtil;
@@ -526,7 +530,7 @@ public class Repository {
                     public void call(List<Comment> comments) {
                         if (SPUtil.isLogin() && SPUtil.getBoolean(SPUtil.SP_USER_LASTACTIVITIES, "has_first_sync", false) && ListUtil.hasData(comments)) {
                             for (Comment comment : comments) {
-                                RealmCommentLike realmCommentLike = RealmManager.query(RealmCommentLike.class,"id", comment.getId());
+                                RealmCommentLike realmCommentLike = RealmManager.query(RealmCommentLike.class, "id", comment.getId());
                                 if (realmCommentLike != null) {
                                     comment.setLike(true);
                                 }
@@ -1049,6 +1053,73 @@ public class Repository {
                     @Override
                     public void onNext(List<MovieWatchedItem> movieWatchedItems) {
                         callback.onSyncMovieWatchedSucceed(movieWatchedItems);
+                    }
+                });
+    }
+
+    public void addMovieToWatched(final HistorySyncItem item, final MovieDetailCallback callback) {
+        service.addMovieToWatched(item)
+                .onErrorResumeNext(refreshTokenAndRetry(service.addMovieToWatched(item)))
+                .doOnNext(new Action1<SyncResponse>() {
+                    @Override
+                    public void call(SyncResponse syncResponse) {
+                        RealmMovieWatched realmMovieWatched = new RealmMovieWatched();
+                        realmMovieWatched.setTitle(item.getMovies().get(0).getTitle());
+                        realmMovieWatched.setYear(item.getMovies().get(0).getYear());
+                        realmMovieWatched.setTrakt_id(item.getMovies().get(0).getIds().getTrakt());
+                        realmMovieWatched.setLast_watched_at(item.getMovies().get(0).getWatched_at());
+                        RealmManager.insertOrUpdate(realmMovieWatched);
+                    }
+                })
+                .compose(RxUtil.<SyncResponse>threadSwitch())
+                .subscribe(new Observer<SyncResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("看过测试:addMovieToWatched:...add失败");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(SyncResponse syncResponse) {
+                        Logger.d("看过测试:addMovieToWatched:...add成功");
+                        callback.onAddMovieToWatchedSucceed(syncResponse);
+                    }
+                });
+    }
+
+    public void removeMovieFromWatched(final HistorySyncItem item, final MovieDetailCallback callback) {
+        service.removeMovieFromWatched(item)
+                .onErrorResumeNext(refreshTokenAndRetry(service.removeMovieFromWatched(item)))
+                .doOnNext(new Action1<SyncResponse>() {
+                    @Override
+                    public void call(SyncResponse syncResponse) {
+                        RealmManager.delete(RealmMovieWatched.class, "trakt_id", item.getMovies().get(0).getIds().getTrakt());
+                    }
+                })
+                .compose(RxUtil.<SyncResponse>threadSwitch())
+                .subscribe(new Observer<SyncResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("看过测试:addMovieToWatched:...remove失败");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(SyncResponse syncResponse) {
+                        Logger.d("看过测试:addMovieToWatched:...remove成功");
+                        callback.onRemoveMovieFromWatchedSucceed(syncResponse);
                     }
                 });
     }

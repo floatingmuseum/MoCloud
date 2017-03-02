@@ -4,6 +4,7 @@ import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
+import com.floatingmuseum.mocloud.data.entity.SyncResponse;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface MovieDetailCallback extends CommentsCallback{
     void onCommentsSuccess(List<Comment> comments);
     void onTraktRatingsSuccess(Ratings ratings);
     void onOtherRatingsSuccess(OmdbInfo omdbInfo);
+    void onAddMovieToWatchedSucceed(SyncResponse syncResponse);
+    void onRemoveMovieFromWatchedSucceed(SyncResponse syncResponse);
 }
