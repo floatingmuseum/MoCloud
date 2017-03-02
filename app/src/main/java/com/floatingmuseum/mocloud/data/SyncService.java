@@ -217,8 +217,8 @@ public class SyncService extends Service implements SyncCallback {
     }
 
     @Override
-    public void onSyncUserListLikes(List<UserListLike> userListLikes) {
-        Logger.d("Sync数据:onSyncUserListLikes");
+    public void onSyncUserListLikesSucceed(List<UserListLike> userListLikes) {
+        Logger.d("Sync数据:onSyncUserListLikesSucceed");
         if (hasFirstSync) {
             updateLastActivities("lists_liked_at", lastActivities.getLists().getLiked_at());
         }
@@ -226,8 +226,8 @@ public class SyncService extends Service implements SyncCallback {
     }
 
     @Override
-    public void onSyncUserCommentsLikes(List<UserCommentLike> userCommentLikes) {
-        Logger.d("Sync数据:onSyncUserCommentsLikes");
+    public void onSyncUserCommentsLikesSucceed(List<UserCommentLike> userCommentLikes) {
+        Logger.d("Sync数据:onSyncUserCommentsLikesSucceed");
         if (hasFirstSync) {
             updateLastActivities("comments_liked_at", lastActivities.getComments().getLiked_at());
         }

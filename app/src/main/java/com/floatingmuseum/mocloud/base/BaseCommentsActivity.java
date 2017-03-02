@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -51,6 +52,8 @@ public abstract class BaseCommentsActivity extends BaseActivity {
         TextView tvSpoilerTip = (TextView) commentItem.findViewById(R.id.tv_spoiler_tip);
         TextView tvReviewTip = (TextView) commentItem.findViewById(R.id.tv_review_tip);
         TextView tvRatingTip = (TextView) commentItem.findViewById(R.id.tv_rating_tip);
+        ImageView ivCommentLikes = (ImageView) commentItem.findViewById(R.id.iv_comment_likes);
+
 
         LinearLayout commentTitle = (LinearLayout) commentItem.findViewById(R.id.comment_title);
 
@@ -78,7 +81,9 @@ public abstract class BaseCommentsActivity extends BaseActivity {
         tvCommentsLikes.setText("" + comment.getLikes());
         tvCommentReplies.setText("" + comment.getReplies());
         tvComment.setText(comment.getComment());
-
+        if (comment.isLike()) {
+            ivCommentLikes.setImageResource(R.drawable.appreciate_fill);
+        }
         tvUpdatetime.setVisibility(comment.getCreated_at().equals(comment.getUpdated_at()) ? View.GONE : View.VISIBLE);
         tvUpdatetime.setText("---updated at " + TimeUtil.formatGmtTime(comment.getUpdated_at()));
         Integer userRating = comment.getUser_rating();

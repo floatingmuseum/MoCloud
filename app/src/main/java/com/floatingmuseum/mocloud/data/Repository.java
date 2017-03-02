@@ -16,6 +16,7 @@ import com.floatingmuseum.mocloud.data.callback.RecommendationsCallback;
 import com.floatingmuseum.mocloud.data.callback.SyncCallback;
 import com.floatingmuseum.mocloud.data.callback.UserDetailCallback;
 import com.floatingmuseum.mocloud.data.db.RealmManager;
+import com.floatingmuseum.mocloud.data.db.entity.RealmCommentLike;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
@@ -520,6 +521,19 @@ public class Repository {
     public Subscription getMovieComments(String movieId, String sortCondition, int limit, int page, final MovieDetailCallback movieDetailCallback, final CommentsCallback commentsCallback) {
         Logger.d("加载Comment:" + movieId + "..." + sortCondition + "..." + limit + "..." + page + "..." + movieDetailCallback + "..." + commentsCallback);
         return service.getComments(movieId, sortCondition, limit, page)
+                .doOnNext(new Action1<List<Comment>>() {
+                    @Override
+                    public void call(List<Comment> comments) {
+                        if (SPUtil.isLogin() && SPUtil.getBoolean(SPUtil.SP_USER_LASTACTIVITIES, "has_first_sync", false) && ListUtil.hasData(comments)) {
+                            for (Comment comment : comments) {
+                                RealmCommentLike realmCommentLike = RealmManager.query(RealmCommentLike.class,"id", comment.getId());
+                                if (realmCommentLike != null) {
+                                    comment.setLike(true);
+                                }
+                            }
+                        }
+                    }
+                })
                 .compose(RxUtil.<List<Comment>>threadSwitch())
                 .subscribe(new Observer<List<Comment>>() {
                     @Override
@@ -1015,7 +1029,7 @@ public class Repository {
                 .doOnNext(new Action1<List<MovieWatchedItem>>() {
                     @Override
                     public void call(List<MovieWatchedItem> movieWatchedItems) {
-                            Logger.d("Sync数据:看过:" + movieWatchedItems.size() + "电影");
+                        Logger.d("Sync数据:看过:" + movieWatchedItems.size() + "电影");
                         RealmManager.insertOrUpdateMovieWatched(movieWatchedItems);
                     }
                 })
@@ -1045,7 +1059,7 @@ public class Repository {
                 .doOnNext(new Action1<List<MovieWatchlistItem>>() {
                     @Override
                     public void call(List<MovieWatchlistItem> movieWatchlistItems) {
-                            Logger.d("Sync数据:想看:" + movieWatchlistItems.size() + "电影");
+                        Logger.d("Sync数据:想看:" + movieWatchlistItems.size() + "电影");
                         RealmManager.insertOrUpdateMovieWatchlist(movieWatchlistItems);
                     }
                 })
@@ -1129,7 +1143,7 @@ public class Repository {
                 });
     }
 
-    public void syncUserCommentsLikes(final SyncCallback callback){
+    public void syncUserCommentsLikes(final SyncCallback callback) {
         service.syncUserCommentsLikes()
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncUserCommentsLikes()))
                 .doOnNext(new Action1<List<UserCommentLike>>() {
@@ -1159,7 +1173,7 @@ public class Repository {
                 });
     }
 
-    public void syncUserListsLikes(final SyncCallback callback){
+    public void syncUserListsLikes(final SyncCallback callback) {
         service.syncUserListsLikes()
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncUserListsLikes()))
                 .doOnNext(new Action1<List<UserListLike>>() {

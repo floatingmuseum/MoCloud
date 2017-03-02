@@ -25,6 +25,7 @@ public class Comment implements Parcelable {
     private User user;
     private Sharing sharing;
     private Movie movie;
+    private boolean isLike;
 
     public User getUser() {
         return user;
@@ -130,6 +131,17 @@ public class Comment implements Parcelable {
         this.sharing = sharing;
     }
 
+    public boolean isLike() {
+        return isLike;
+    }
+
+    public void setLike(boolean like) {
+        isLike = like;
+    }
+
+    public Comment() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -150,9 +162,7 @@ public class Comment implements Parcelable {
         dest.writeParcelable(this.user, flags);
         dest.writeParcelable(this.sharing, flags);
         dest.writeParcelable(this.movie, flags);
-    }
-
-    public Comment() {
+        dest.writeByte(this.isLike ? (byte) 1 : (byte) 0);
     }
 
     protected Comment(Parcel in) {
@@ -169,6 +179,7 @@ public class Comment implements Parcelable {
         this.user = in.readParcelable(User.class.getClassLoader());
         this.sharing = in.readParcelable(Sharing.class.getClassLoader());
         this.movie = in.readParcelable(Movie.class.getClassLoader());
+        this.isLike = in.readByte() != 0;
     }
 
     public static final Creator<Comment> CREATOR = new Creator<Comment>() {

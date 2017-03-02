@@ -43,22 +43,22 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     }
 
     public void loadUserData(int traktId) {
-        RealmMovieWatched realmMovieWatched = RealmManager.query(RealmMovieWatched.class, traktId);
+        RealmMovieWatched realmMovieWatched = RealmManager.query(RealmMovieWatched.class, "trakt_id", traktId);
         if (realmMovieWatched != null) {
-            activity.updateLoginView(R.id.fb_watched,realmMovieWatched);
+            activity.updateLoginView(R.id.fb_watched, realmMovieWatched);
             Logger.d("本地查询RealmMovieWatched:" + realmMovieWatched.getTitle() + "..." + realmMovieWatched.getLast_watched_at());
         }
-        RealmMovieWatchlist realmMovieWatchlist = RealmManager.query(RealmMovieWatchlist.class, traktId);
+        RealmMovieWatchlist realmMovieWatchlist = RealmManager.query(RealmMovieWatchlist.class, "trakt_id", traktId);
         if (realmMovieWatchlist != null) {
-            activity.updateLoginView(R.id.fb_watchlist,realmMovieWatchlist);
+            activity.updateLoginView(R.id.fb_watchlist, realmMovieWatchlist);
             Logger.d("本地查询RealmMovieWatchlist:" + realmMovieWatchlist.getTitle() + "..." + realmMovieWatchlist.getListed_at());
         }
-        RealmMovieCollection realmMovieCollection = RealmManager.query(RealmMovieCollection.class, traktId);
+        RealmMovieCollection realmMovieCollection = RealmManager.query(RealmMovieCollection.class, "trakt_id", traktId);
         if (realmMovieCollection != null) {
-            activity.updateLoginView(R.id.fb_collection,realmMovieCollection);
+            activity.updateLoginView(R.id.fb_collection, realmMovieCollection);
             Logger.d("本地查询RealmMovieCollection:" + realmMovieCollection.getTitle() + "..." + realmMovieCollection.getCollected_at());
         }
-        RealmMovieRating realmMovieRating = RealmManager.query(RealmMovieRating.class, traktId);
+        RealmMovieRating realmMovieRating = RealmManager.query(RealmMovieRating.class, "trakt_id", traktId);
         if (realmMovieRating != null) {
 //            activity.updateLoginView(R.id.,realmMovieRating);
             Logger.d("本地查询RealmMovieRating:" + realmMovieRating.getTitle() + "..." + realmMovieRating.getRated_at() + "..." + realmMovieRating.getRating());

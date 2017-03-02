@@ -252,10 +252,10 @@ public class RealmManager {
         }
     }
 
-    public static <T extends RealmModel> T query(final Class<? extends RealmModel> clazz, final int id) {
+    public static <T extends RealmModel> T query(final Class<? extends RealmModel> clazz, String filedName, final long value) {
         RealmModel model = Realm.getDefaultInstance()
                 .where(clazz)
-                .equalTo("trakt_id", id)
+                .equalTo(filedName, value)
                 .findFirst();
         return (T) model;
     }

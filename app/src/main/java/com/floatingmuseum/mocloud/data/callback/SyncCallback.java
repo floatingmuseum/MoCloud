@@ -24,6 +24,6 @@ public interface SyncCallback {
     void onSyncMovieCollectionSucceed(List<MovieCollectionItem> movieCollectionItems);
     void onSyncMovieRatingsSucceed(List<MovieRatingItem> movieRatingItems);
     void onSyncMovieWatchlistSucceed(List<MovieWatchlistItem> movieWatchlistItems);
-    void onSyncUserListLikes(List<UserListLike> userListLikes);
-    void onSyncUserCommentsLikes(List<UserCommentLike> userCommentLikes);
+    void onSyncUserListLikesSucceed(List<UserListLike> userListLikes);
+    void onSyncUserCommentsLikesSucceed(List<UserCommentLike> userCommentLikes);
 }
