@@ -1017,9 +1017,6 @@ public class Repository {
                     public void call(List<MovieWatchedItem> movieWatchedItems) {
                             Logger.d("Sync数据:看过:" + movieWatchedItems.size() + "电影");
                         RealmManager.insertOrUpdateMovieWatched(movieWatchedItems);
-//                            for (MovieWatchedItem movieWatchedItem : movieWatchedItems) {
-//                                RealmManager.insertOrUpdate(movieWatchedItem);
-//                            }
                     }
                 })
                 .compose(RxUtil.<List<MovieWatchedItem>>threadSwitch())
