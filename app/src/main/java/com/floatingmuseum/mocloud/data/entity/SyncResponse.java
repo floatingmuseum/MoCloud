@@ -28,6 +28,14 @@ public class SyncResponse {
         this.not_found = not_found;
     }
 
+    public Deleted getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Deleted deleted) {
+        this.deleted = deleted;
+    }
+
     public static class Added {
         private int movies;
         private int episodes;

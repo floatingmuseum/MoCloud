@@ -185,14 +185,19 @@ public class RealmManager {
                 });
     }
 
-    public static void delete(final Class<? extends RealmModel> clazz, String filedName, long value) {
-        RealmResults results = Realm.getDefaultInstance()
-                .where(clazz)
-                .equalTo(filedName, value)
-                .findAll();
-        if (ListUtil.hasData(results)) {
-            results.deleteFirstFromRealm();
-        }
+    public static void delete(final Class<? extends RealmModel> clazz, final String filedName, final long value) {
+        Realm.getDefaultInstance()
+                .executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        RealmResults results = realm.where(clazz)
+                                .equalTo(filedName, value)
+                                .findAll();
+                        if (ListUtil.hasData(results)) {
+                            results.deleteFirstFromRealm();
+                        }
+                    }
+                });
     }
 
     public static <T extends RealmModel> T query(final Class<? extends RealmModel> clazz, String filedName, final long value) {

@@ -1120,7 +1120,7 @@ public class Repository {
 
                     @Override
                     public void onNext(SyncResponse syncResponse) {
-                        Logger.d("看过测试:addMovieToWatched:...remove成功");
+                        Logger.d("看过测试:addMovieToWatched:...remove成功..." + syncResponse.getDeleted().getMovies());
                         callback.onRemoveMovieFromWatchedSucceed(syncResponse);
                     }
                 });
