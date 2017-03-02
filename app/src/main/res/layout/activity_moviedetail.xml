@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     xmlns:mocloud="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_movie_container"
@@ -122,47 +123,95 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/tv_sync_watchlist"
+                android:orientation="horizontal">
+                <!--android:visibility="gone"-->
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/fb_watched"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    fancy:fb_borderColor="#8e44ad"
+                    fancy:fb_borderWidth="1dp"
+                    fancy:fb_defaultColor="@android:color/transparent"
+                    fancy:fb_focusColor="#8e44ad"
+                    fancy:fb_radius="5dp"
+                    fancy:fb_text="Add to watched"
+                    fancy:fb_textColor="#8e44ad" />
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/fb_watchlist"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
                     android:layout_margin="1dp"
                     android:layout_weight="1"
-                    android:background="@drawable/watchlist_round_corner_bg"
                     android:gravity="center"
-                    android:text="Add to watchlist"
-                    android:textColor="#009edf"
-                    android:textStyle="bold"
-                    tools:text="Add to watchlist" />
+                    fancy:fb_borderColor="#009edf"
+                    fancy:fb_borderWidth="1dp"
+                    fancy:fb_defaultColor="@android:color/transparent"
+                    fancy:fb_focusColor="#009edf"
+                    fancy:fb_radius="5dp"
+                    fancy:fb_text="Add to watchlist"
+                    fancy:fb_textColor="#009edf" />
 
-                <TextView
-                    android:id="@+id/tv_sync_watched"
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/fb_collection"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="1dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginTop="1dp"
                     android:layout_weight="1"
-                    android:background="@drawable/history_round_corner_bg"
                     android:gravity="center"
-                    android:text="Add to watched"
-                    android:textColor="#8e44ad"
-                    android:textStyle="bold"
-                    tools:text="Add to history" />
+                    fancy:fb_borderColor="#16a085"
+                    fancy:fb_borderWidth="1dp"
+                    fancy:fb_defaultColor="@android:color/transparent"
+                    fancy:fb_focusColor="#16a085"
+                    fancy:fb_radius="5dp"
+                    fancy:fb_text="Add to collection"
+                    fancy:fb_textColor="#16a085" />
 
-                <TextView
-                    android:id="@+id/tv_sync_collection"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="1dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/collections_round_corner_bg"
-                    android:gravity="center"
-                    android:text="Add to collection"
-                    android:textColor="#16a085"
-                    android:textStyle="bold"
-                    tools:text="Add to Collections" />
+                <!--<TextView-->
+                <!--android:id="@+id/tv_sync_watchlist"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_margin="1dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@drawable/watchlist_round_corner_bg"-->
+                <!--android:gravity="center"-->
+                <!--android:text="Add to watchlist"-->
+                <!--android:textColor="#009edf"-->
+                <!--android:textStyle="bold"-->
+                <!--tools:text="Add to watchlist" />-->
+
+                <!--<TextView-->
+                <!--android:id="@+id/tv_sync_watched"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_margin="1dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@drawable/history_round_corner_bg"-->
+                <!--android:gravity="center"-->
+                <!--android:text="Add to watched"-->
+                <!--android:textColor="#8e44ad"-->
+                <!--android:textStyle="bold"-->
+                <!--tools:text="Add to history" />-->
+
+                <!--<TextView-->
+                <!--android:id="@+id/tv_sync_collection"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_margin="1dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@drawable/collections_round_corner_bg"-->
+                <!--android:gravity="center"-->
+                <!--android:text="Add to collection"-->
+                <!--android:textColor="#16a085"-->
+                <!--android:textStyle="bold"-->
+                <!--tools:text="Add to Collections" />-->
             </LinearLayout>
 
             <LinearLayout

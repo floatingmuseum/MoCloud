@@ -118,4 +118,5 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.facebook.stetho:stetho:1.4.1'
     compile 'com.uphyca:stetho_realm:2.0.0'
+    compile 'com.github.medyo:fancybuttons:1.8.3'
 }

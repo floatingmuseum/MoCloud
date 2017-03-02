@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.support.annotation.NonNull;
 
+import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.db.RealmManager;
@@ -44,21 +45,24 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     public void loadUserData(int traktId) {
         RealmMovieWatched realmMovieWatched = RealmManager.query(RealmMovieWatched.class, traktId);
         if (realmMovieWatched != null) {
+            activity.updateLoginView(R.id.fb_watched,realmMovieWatched);
             Logger.d("本地查询RealmMovieWatched:" + realmMovieWatched.getTitle() + "..." + realmMovieWatched.getLast_watched_at());
         }
         RealmMovieWatchlist realmMovieWatchlist = RealmManager.query(RealmMovieWatchlist.class, traktId);
         if (realmMovieWatchlist != null) {
+            activity.updateLoginView(R.id.fb_watchlist,realmMovieWatchlist);
             Logger.d("本地查询RealmMovieWatchlist:" + realmMovieWatchlist.getTitle() + "..." + realmMovieWatchlist.getListed_at());
         }
         RealmMovieCollection realmMovieCollection = RealmManager.query(RealmMovieCollection.class, traktId);
         if (realmMovieCollection != null) {
+            activity.updateLoginView(R.id.fb_collection,realmMovieCollection);
             Logger.d("本地查询RealmMovieCollection:" + realmMovieCollection.getTitle() + "..." + realmMovieCollection.getCollected_at());
         }
         RealmMovieRating realmMovieRating = RealmManager.query(RealmMovieRating.class, traktId);
-        if (realmMovieWatchlist != null) {
+        if (realmMovieRating != null) {
+//            activity.updateLoginView(R.id.,realmMovieRating);
             Logger.d("本地查询RealmMovieRating:" + realmMovieRating.getTitle() + "..." + realmMovieRating.getRated_at() + "..." + realmMovieRating.getRating());
         }
-//        RealmCommentLike realmCommentLike = RealmManager.query(RealmCommentLike.class,traktId);
     }
 
     @Override

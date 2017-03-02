@@ -25,4 +25,7 @@
     <color name="comment_user">#737373</color>
     <color name="review_tip_bg">#999999</color>
     <color name="text_updatetime">#999999</color>
+    <color name="watched_color">#8e44ad</color>
+    <color name="watchlist_color">#009edf</color>
+    <color name="collection_color">#16a085</color>
 </resources>

@@ -20,7 +20,7 @@ import java.util.List;
  * Created by Floatingmuseum on 2016/12/20.
  */
 
-public class SingleCommentAdapter extends BaseQuickAdapter<Comment,BaseViewHolder> {
+public class SingleCommentAdapter extends BaseQuickAdapter<Comment, BaseViewHolder> {
 
     private String commentOwner;
 
@@ -50,12 +50,12 @@ public class SingleCommentAdapter extends BaseQuickAdapter<Comment,BaseViewHolde
         ImageLoader.loadDontAnimate(mContext, avatarUrl, iv_userhead, R.drawable.default_userhead);
 
         TextView tvUsername = baseViewHolder.getView(R.id.tv_username);
-        if (username.equals(commentOwner)){
-            tvUsername.setTypeface(tvUsername.getTypeface(),Typeface.BOLD);
-            tvUsername.setTextColor(ResUtil.getColor(R.color.comment_owner,null));
-        }else{
+        if (username.equals(commentOwner)) {
+            tvUsername.setTypeface(tvUsername.getTypeface(), Typeface.BOLD);
+            tvUsername.setTextColor(ResUtil.getColor(mContext, R.color.comment_owner));
+        } else {
             tvUsername.setTypeface(Typeface.DEFAULT);
-            tvUsername.setTextColor(ResUtil.getColor(R.color.comment_user,null));
+            tvUsername.setTextColor(ResUtil.getColor(mContext, R.color.comment_user));
         }
         tvUsername.setText(username);
     }

@@ -10,6 +10,7 @@ import android.graphics.drawable.ScaleDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -31,7 +32,10 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
 import com.floatingmuseum.mocloud.data.db.RealmManager;
+import com.floatingmuseum.mocloud.data.db.entity.RealmMovieCollection;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieState;
+import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
+import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
@@ -45,8 +49,10 @@ import com.floatingmuseum.mocloud.utils.ColorUtil;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
 import com.floatingmuseum.mocloud.utils.NumberFormatUtil;
+import com.floatingmuseum.mocloud.utils.ResUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
+import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.google.android.youtube.player.YouTubeIntents;
@@ -62,6 +68,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.RealmModel;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 
 /**
@@ -99,12 +107,18 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     LinearLayout llRatings;
     @BindView(R.id.ll_sync)
     LinearLayout llSync;
-    @BindView(R.id.tv_sync_watchlist)
-    TextView tvSyncWatchlist;
-    @BindView(R.id.tv_sync_watched)
-    TextView tvSyncWatched;
-    @BindView(R.id.tv_sync_collection)
-    TextView tvSyncCollection;
+    @BindView(R.id.fb_watched)
+    FancyButton fbWatched;
+    @BindView(R.id.fb_watchlist)
+    FancyButton fbWatchlist;
+    @BindView(R.id.fb_collection)
+    FancyButton fbCollection;
+//    @BindView(R.id.tv_sync_watchlist)
+//    TextView tvSyncWatchlist;
+//    @BindView(R.id.tv_sync_watched)
+//    TextView tvSyncWatched;
+//    @BindView(R.id.tv_sync_collection)
+//    TextView tvSyncCollection;
 
     @BindView(R.id.poster)
     RatioImageView ivPoster;
@@ -285,26 +299,52 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     private void initLoginView() {
         if (SPUtil.isLogin()) {
             llSync.setVisibility(View.VISIBLE);
-            tvSyncWatchlist.setOnClickListener(new View.OnClickListener() {
+            fbWatched.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                 }
             });
 
-            tvSyncWatched.setOnClickListener(new View.OnClickListener() {
+            fbWatchlist.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                 }
             });
 
-            tvSyncCollection.setOnClickListener(new View.OnClickListener() {
+            fbCollection.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                 }
             });
+        }
+    }
+
+    public void updateLoginView(int viewId, RealmModel realmModel) {
+        switch (viewId) {
+            case R.id.fb_watched:
+                fbWatched.setBackgroundColor(ResUtil.getColor(this, R.color.watched_color));
+                fbWatched.setTextColor(ResUtil.getColor(this, R.color.white_text));
+                RealmMovieWatched realmMovieWatched = (RealmMovieWatched) realmModel;
+                String watchedTime = TimeUtil.formatGmtTime(realmMovieWatched.getLast_watched_at());
+                fbWatched.setText("Watched at " + watchedTime);
+                break;
+            case R.id.fb_watchlist:
+                fbWatchlist.setBackgroundColor(ResUtil.getColor(this, R.color.watchlist_color));
+                fbWatchlist.setTextColor(ResUtil.getColor(this, R.color.white_text));
+                RealmMovieWatchlist realmMovieWatchlist = (RealmMovieWatchlist) realmModel;
+                String listedTime = TimeUtil.formatGmtTime(realmMovieWatchlist.getListed_at());
+                fbWatchlist.setText("Listed on " + listedTime);
+                break;
+            case R.id.fb_collection:
+                fbCollection.setBackgroundColor(ResUtil.getColor(this, R.color.collection_color));
+                fbCollection.setTextColor(ResUtil.getColor(this, R.color.white_text));
+                RealmMovieCollection realmMovieCollection = (RealmMovieCollection) realmModel;
+                String collectedTime = TimeUtil.formatGmtTime(realmMovieCollection.getCollected_at());
+                fbCollection.setText("Collected at " + collectedTime);
+                break;
         }
     }
 
