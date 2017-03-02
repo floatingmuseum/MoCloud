@@ -1168,7 +1168,7 @@ public class Repository {
 
                     @Override
                     public void onNext(List<UserCommentLike> userCommentLikes) {
-                        callback.onSyncUserCommentsLikes(userCommentLikes);
+                        callback.onSyncUserCommentsLikesSucceed(userCommentLikes);
                     }
                 });
     }
@@ -1198,7 +1198,7 @@ public class Repository {
 
                     @Override
                     public void onNext(List<UserListLike> userListLikes) {
-                        callback.onSyncUserListLikes(userListLikes);
+                        callback.onSyncUserListLikesSucceed(userListLikes);
                     }
                 });
     }
