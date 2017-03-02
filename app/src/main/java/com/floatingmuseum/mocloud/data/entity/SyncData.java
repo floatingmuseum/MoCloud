@@ -6,17 +6,17 @@ import java.util.List;
  * Created by Floatingmuseum on 2017/3/2.
  */
 
-public class HistorySyncItem {
-    private List<MovieHistorySyncItem> movies;
+public class SyncData {
+    private List<MovieSyncItem> movies;
     private List<ShowsHistorySyncItem> shows;
     private List<SeasonsHistorySyncItem> seasons;
     private List<EpisodesHistorySyncItem> episodes;
 
-    public List<MovieHistorySyncItem> getMovies() {
+    public List<MovieSyncItem> getMovies() {
         return movies;
     }
 
-    public void setMovies(List<MovieHistorySyncItem> movies) {
+    public void setMovies(List<MovieSyncItem> movies) {
         this.movies = movies;
     }
 

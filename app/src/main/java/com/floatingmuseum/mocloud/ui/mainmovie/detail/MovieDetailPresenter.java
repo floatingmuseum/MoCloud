@@ -6,15 +6,13 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.db.RealmManager;
-import com.floatingmuseum.mocloud.data.db.entity.RealmCommentLike;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieCollection;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieRating;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.Comment;
-import com.floatingmuseum.mocloud.data.entity.HistorySyncItem;
+import com.floatingmuseum.mocloud.data.entity.SyncData;
 import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.floatingmuseum.mocloud.data.entity.MovieHistorySyncItem;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
@@ -97,12 +95,21 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
         activity.onSendCommentSuccess(comment);
     }
 
-    public void syncMovieWatchedState(boolean hasWatched, HistorySyncItem item) {
+    public void syncMovieWatchedState(boolean hasWatched, SyncData item) {
         Logger.d("看过测试:syncMovieWatchedState...是否看过:" + hasWatched);
         if (!hasWatched) {
             repository.addMovieToWatched(item, this);
         } else {
             repository.removeMovieFromWatched(item, this);
+        }
+    }
+
+    public void syncMovieWatchlistState(boolean hasWatchlist, SyncData item) {
+        Logger.d("看过测试:syncMovieWatchedState...是否想看:" + hasWatchlist);
+        if (!hasWatchlist) {
+            repository.addMovieToWatchlist(item, this);
+        } else {
+            repository.removeMovieFromWatchlist(item, this);
         }
     }
 
@@ -114,6 +121,16 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     @Override
     public void onRemoveMovieFromWatchedSucceed(SyncResponse syncResponse) {
         activity.onRemoveMovieFromWatchedSucceed();
+    }
+
+    @Override
+    public void onAddMovieToWatchlistSucceed(SyncResponse syncResponse) {
+        activity.onAddMovieToWatchlistSucceed();
+    }
+
+    @Override
+    public void onRemoveMovieFromWatchlistSucceed(SyncResponse syncResponse) {
+        activity.onRemoveMovieFromWatchlistSucceed();
     }
 
     @Override

@@ -18,4 +18,6 @@ public interface MovieDetailCallback extends CommentsCallback{
     void onOtherRatingsSuccess(OmdbInfo omdbInfo);
     void onAddMovieToWatchedSucceed(SyncResponse syncResponse);
     void onRemoveMovieFromWatchedSucceed(SyncResponse syncResponse);
+    void onAddMovieToWatchlistSucceed(SyncResponse syncResponse);
+    void onRemoveMovieFromWatchlistSucceed(SyncResponse syncResponse);
 }

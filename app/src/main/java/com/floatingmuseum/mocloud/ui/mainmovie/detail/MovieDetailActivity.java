@@ -30,10 +30,10 @@ import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
-import com.floatingmuseum.mocloud.data.entity.HistorySyncItem;
+import com.floatingmuseum.mocloud.data.entity.SyncData;
 import com.floatingmuseum.mocloud.data.entity.Ids;
 import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.floatingmuseum.mocloud.data.entity.MovieHistorySyncItem;
+import com.floatingmuseum.mocloud.data.entity.MovieSyncItem;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
@@ -186,6 +186,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     private boolean hasWatchlist = false;
     private boolean hasCollected = false;
     private String nowWatchedTime;
+    private String nowCollectedTime;
 
 
     @Override
@@ -293,34 +294,42 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             fbWatched.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MovieHistorySyncItem item = new MovieHistorySyncItem();
-                    Ids ids = new Ids();
-                    ids.setTrakt(movie.getIds().getTrakt());
-                    item.setIds(ids);
                     nowWatchedTime = TimeUtil.getNowUTCTime();
-                    item.setWatched_at(nowWatchedTime);
-                    List<MovieHistorySyncItem> items = new ArrayList<>();
-                    items.add(item);
-                    HistorySyncItem historySyncItem = new HistorySyncItem();
-                    historySyncItem.setMovies(items);
-                    presenter.syncMovieWatchedState(hasWatched, historySyncItem);
+                    SyncData syncData = buildSyncData();
+                    syncData.getMovies().get(0).setWatched_at(nowWatchedTime);
+                    presenter.syncMovieWatchedState(hasWatched, syncData);
                 }
             });
 
             fbWatchlist.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    presenter.syncMovieWatchlistState(hasWatchlist);
+                    SyncData syncData = buildSyncData();
+                    presenter.syncMovieWatchlistState(hasWatchlist,syncData);
                 }
             });
 
             fbCollection.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    nowCollectedTime = TimeUtil.getNowUTCTime();
+                    SyncData syncData = buildSyncData();
+                    syncData.getMovies().get(0).setCollected_at(nowCollectedTime);
 //                    presenter.syncMovieCollectedState(hasCollected);
                 }
             });
         }
+    }
+    private SyncData buildSyncData(){
+        MovieSyncItem item = new MovieSyncItem();
+        Ids ids = new Ids();
+        ids.setTrakt(movie.getIds().getTrakt());
+        item.setIds(ids);
+        List<MovieSyncItem> items = new ArrayList<>();
+        items.add(item);
+        SyncData syncData = new SyncData();
+        syncData.setMovies(items);
+        return syncData;
     }
 
     public void updateLoginView(int viewId, RealmModel realmModel) {
@@ -638,6 +647,20 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         fbWatched.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
         fbWatched.setTextColor(ResUtil.getColor(this, R.color.watched_color));
         fbWatched.setText("Add to watched");
+    }
+
+    public void onAddMovieToWatchlistSucceed() {
+        hasWatchlist = true;
+        fbWatchlist.setBackgroundColor(ResUtil.getColor(this, R.color.watchlist_color));
+        fbWatchlist.setTextColor(ResUtil.getColor(this, R.color.white_text));
+        fbWatchlist.setText("List on watchlist");
+    }
+
+    public void onRemoveMovieFromWatchlistSucceed() {
+        hasWatchlist = false;
+        fbWatchlist.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+        fbWatchlist.setTextColor(ResUtil.getColor(this, R.color.watchlist_color));
+        fbWatchlist.setText("Add to watchlist");
     }
 
     @Override

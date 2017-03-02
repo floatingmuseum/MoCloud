@@ -10,6 +10,7 @@ public class SyncResponse {
 
     private Added added;
     private Deleted deleted;
+    private Existing existing;
     private NotFound not_found;
 
     public Added getAdded() {
@@ -38,6 +39,8 @@ public class SyncResponse {
 
     public static class Added {
         private int movies;
+        private int shows;
+        private int seasons;
         private int episodes;
 
         public int getMovies() {
@@ -54,11 +57,29 @@ public class SyncResponse {
 
         public void setEpisodes(int episodes) {
             this.episodes = episodes;
+        }
+
+        public int getShows() {
+            return shows;
+        }
+
+        public void setShows(int shows) {
+            this.shows = shows;
+        }
+
+        public int getSeasons() {
+            return seasons;
+        }
+
+        public void setSeasons(int seasons) {
+            this.seasons = seasons;
         }
     }
 
     public static class Deleted {
         private int movies;
+        private int shows;
+        private int seasons;
         private int episodes;
 
         public int getMovies() {
@@ -75,6 +96,61 @@ public class SyncResponse {
 
         public void setEpisodes(int episodes) {
             this.episodes = episodes;
+        }
+
+        public int getShows() {
+            return shows;
+        }
+
+        public void setShows(int shows) {
+            this.shows = shows;
+        }
+
+        public int getSeasons() {
+            return seasons;
+        }
+
+        public void setSeasons(int seasons) {
+            this.seasons = seasons;
+        }
+    }
+
+    public static class Existing {
+        private int movies;
+        private int shows;
+        private int seasons;
+        private int episodes;
+
+        public int getMovies() {
+            return movies;
+        }
+
+        public void setMovies(int movies) {
+            this.movies = movies;
+        }
+
+        public int getEpisodes() {
+            return episodes;
+        }
+
+        public void setEpisodes(int episodes) {
+            this.episodes = episodes;
+        }
+
+        public int getShows() {
+            return shows;
+        }
+
+        public void setShows(int shows) {
+            this.shows = shows;
+        }
+
+        public int getSeasons() {
+            return seasons;
+        }
+
+        public void setSeasons(int seasons) {
+            this.seasons = seasons;
         }
     }
 

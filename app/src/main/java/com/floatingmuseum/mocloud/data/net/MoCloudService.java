@@ -3,7 +3,7 @@ package com.floatingmuseum.mocloud.data.net;
 
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
-import com.floatingmuseum.mocloud.data.entity.HistorySyncItem;
+import com.floatingmuseum.mocloud.data.entity.SyncData;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.MovieCollectionItem;
 import com.floatingmuseum.mocloud.data.entity.MovieImage;
@@ -101,29 +101,11 @@ public interface MoCloudService {
     @GET("sync/watchlist/movies")
     Observable<List<MovieWatchlistItem>> syncMovieWatchlist();
 
-    @POST("sync/watchlist")
-    Observable addToWatchlist();
-
-    @POST("sync/watchlist/remove")
-    Observable removeFromWatchlist();
-
     @GET("sync/ratings/movies")
     Observable<List<MovieRatingItem>> syncMovieRatings();
 
-    @POST("sync/ratings")
-    Observable addRating();
-
-    @POST("sync/ratings/remove")
-    Observable removeRating();
-
     @GET("sync/collection/movies")
     Observable<List<MovieCollectionItem>> syncMoviesCollections();
-
-    @POST("sync/collection")
-    Observable addToCollections();
-
-    @POST("sync/collection/remove")
-    Observable removeFromCollections();
 
     @GET("users/likes/comments")
     Observable<List<UserCommentLike>> syncUserCommentsLikes();
@@ -132,10 +114,16 @@ public interface MoCloudService {
     Observable<List<UserListLike>> syncUserListsLikes();
 
     @POST("sync/history")
-    Observable<SyncResponse> addMovieToWatched(@Body HistorySyncItem historySyncItem);
+    Observable<SyncResponse> addMovieToWatched(@Body SyncData syncData);
 
     @POST("sync/history/remove")
-    Observable<SyncResponse> removeMovieFromWatched(@Body HistorySyncItem historySyncItem);
+    Observable<SyncResponse> removeMovieFromWatched(@Body SyncData syncData);
+
+    @POST("sync/watchlist")
+    Observable<SyncResponse> addMovieToWatchlist(@Body SyncData syncData);
+
+    @POST("sync/watchlist/remove")
+    Observable<SyncResponse> removeMovieFromWatchlist(@Body SyncData syncData);
 
 //*******************************************电  影*******************************************
 

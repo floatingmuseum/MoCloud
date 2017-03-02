@@ -22,11 +22,10 @@ import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
-import com.floatingmuseum.mocloud.data.entity.HistorySyncItem;
+import com.floatingmuseum.mocloud.data.entity.SyncData;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieCollectionItem;
-import com.floatingmuseum.mocloud.data.entity.MovieHistorySyncItem;
 import com.floatingmuseum.mocloud.data.entity.MovieRatingItem;
 import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.MovieWatchedItem;
@@ -1059,7 +1058,8 @@ public class Repository {
                 });
     }
 
-    public void addMovieToWatched(final HistorySyncItem item, final MovieDetailCallback callback) {
+    public void addMovieToWatched(final SyncData item, final MovieDetailCallback callback) {
+        // TODO: 2017/3/2 如果数据库添加成功，网络请求失败，如何保持数据一致性，其他sync也是如此
         service.addMovieToWatched(item)
                 .onErrorResumeNext(refreshTokenAndRetry(service.addMovieToWatched(item)))
                 .doOnNext(new Action1<SyncResponse>() {
@@ -1095,7 +1095,7 @@ public class Repository {
                 });
     }
 
-    public void removeMovieFromWatched(final HistorySyncItem item, final MovieDetailCallback callback) {
+    public void removeMovieFromWatched(final SyncData item, final MovieDetailCallback callback) {
         service.removeMovieFromWatched(item)
                 .onErrorResumeNext(refreshTokenAndRetry(service.removeMovieFromWatched(item)))
                 .doOnNext(new Action1<SyncResponse>() {
@@ -1153,6 +1153,68 @@ public class Repository {
                     @Override
                     public void onNext(List<MovieWatchlistItem> movieWatchlistItems) {
                         callback.onSyncMovieWatchlistSucceed(movieWatchlistItems);
+                    }
+                });
+    }
+
+    public void addMovieToWatchlist(final SyncData item, final MovieDetailCallback callback){
+        service.addMovieToWatchlist(item)
+                .onErrorResumeNext(refreshTokenAndRetry(service.addMovieToWatchlist(item)))
+                .doOnNext(new Action1<SyncResponse>() {
+                    @Override
+                    public void call(SyncResponse syncResponse) {
+                        RealmManager.delete(RealmMovieWatchlist.class, "trakt_id", item.getMovies().get(0).getIds().getTrakt());
+                    }
+                })
+                .compose(RxUtil.<SyncResponse>threadSwitch())
+                .subscribe(new Observer<SyncResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("想看测试:addMovieToWatchlist:...add失败");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(SyncResponse syncResponse) {
+                        Logger.d("想看测试:addMovieToWatchlist:...add成功..." + syncResponse.getAdded().getMovies());
+                        callback.onAddMovieToWatchlistSucceed(syncResponse);
+                    }
+                });
+    }
+
+    public void removeMovieFromWatchlist(final SyncData item, final MovieDetailCallback callback){
+        service.removeMovieFromWatchlist(item)
+                .onErrorResumeNext(refreshTokenAndRetry(service.removeMovieFromWatchlist(item)))
+                .doOnNext(new Action1<SyncResponse>() {
+                    @Override
+                    public void call(SyncResponse syncResponse) {
+                        RealmManager.delete(RealmMovieWatchlist.class, "trakt_id", item.getMovies().get(0).getIds().getTrakt());
+                    }
+                })
+                .compose(RxUtil.<SyncResponse>threadSwitch())
+                .subscribe(new Observer<SyncResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("想看测试:removeMovieFromWatchlist:...remove失败");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(SyncResponse syncResponse) {
+                        Logger.d("想看测试:removeMovieFromWatchlist:...remove成功..." + syncResponse.getDeleted().getMovies());
+                        callback.onRemoveMovieFromWatchlistSucceed(syncResponse);
                     }
                 });
     }
