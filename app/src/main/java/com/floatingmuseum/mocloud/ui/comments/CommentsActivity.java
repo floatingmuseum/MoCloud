@@ -267,6 +267,9 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * false,表示不需要手动排序，重新按新sort规则请求评论
+     */
     private boolean checkBeforeSort(String sortCondition) {
         if (commentsData.size() == 0 || sortCondition.equals(currentSortCondition)) {
             return false;
@@ -306,6 +309,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         });
         Logger.d("已加载完全部，直接排序");
         adapter.notifyDataSetChanged();
+        manager.scrollToPosition(0);
     }
 
     private void sortByReplies(final String sortCondition) {
@@ -316,10 +320,11 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         Collections.sort(commentsData, new Comparator<Comment>() {
             @Override
             public int compare(Comment lhs, Comment rhs) {
-                return lhs.getReplies() - rhs.getReplies();
+                return rhs.getReplies() - lhs.getReplies();
             }
         });
         adapter.notifyDataSetChanged();
+        manager.scrollToPosition(0);
     }
 
     private void sortByLikes(String sortCondition) {
@@ -330,10 +335,11 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         Collections.sort(commentsData, new Comparator<Comment>() {
             @Override
             public int compare(Comment lhs, Comment rhs) {
-                return lhs.getLikes() - rhs.getLikes();
+                return rhs.getLikes() - lhs.getLikes();
             }
         });
         adapter.notifyDataSetChanged();
+        manager.scrollToPosition(0);
     }
 
     private void triggerRefreshRequest() {
