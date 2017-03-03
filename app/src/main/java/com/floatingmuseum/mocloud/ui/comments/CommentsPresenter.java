@@ -46,12 +46,12 @@ public class CommentsPresenter extends BaseCommentsPresenter implements Comments
 
     @Override
     public void onAddCommentToLikesSucceed(long commentId) {
-
+        activity.onAddCommentToLikesSucceed(commentId);
     }
 
     @Override
     public void onRemoveCommentFromLikesSucceed(long commentId) {
-
+        activity.onRemoveCommentFromLikesSucceed(commentId);
     }
 
     @Override

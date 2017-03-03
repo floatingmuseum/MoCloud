@@ -22,6 +22,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseCommentsItemAdapter;
+import com.floatingmuseum.mocloud.data.bus.CommentLikeEvent;
 import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
@@ -31,6 +32,8 @@ import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,6 +82,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     private MenuItem miSortByOldest;
     private MenuItem miSortByLikes;
     private MenuItem miSortByReplies;
+    private int commentLikePosition;
 
     @Override
     protected int currentLayoutId() {
@@ -144,12 +148,15 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 super.onItemChildClick(adapter, view, position);
+                Comment comment = commentsData.get(position);
                 switch (view.getId()) {
                     case R.id.iv_userhead:
                         Logger.d("头像被点击");
-                        openUserActivity(CommentsActivity.this, commentsData.get(position).getUser());
+                        openUserActivity(CommentsActivity.this, comment.getUser());
                         break;
                     case R.id.ll_comment_likes:
+                        commentLikePosition = position;
+                        syncCommentLike(comment.isLike(), comment);
                         break;
                 }
             }
@@ -359,6 +366,28 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     @Override
     public void onRefresh() {
         presenter.start(currentSortCondition, movie.getIds().getSlug(), shouldClean);
+    }
+
+    public void onAddCommentToLikesSucceed(long commentId) {
+        Comment comment = commentsData.get(commentLikePosition);
+        if (comment.getId() == commentId) {
+            comment.setLike(true);
+            int likes = comment.getLikes();
+            comment.setLikes(++likes);
+            adapter.notifyDataSetChanged();
+            EventBus.getDefault().post(new CommentLikeEvent(commentId, true));
+        }
+    }
+
+    public void onRemoveCommentFromLikesSucceed(long commentId) {
+        Comment comment = commentsData.get(commentLikePosition);
+        if (comment.getId() == commentId) {
+            comment.setLike(false);
+            int likes = comment.getLikes();
+            comment.setLikes(--likes);
+            adapter.notifyDataSetChanged();
+            EventBus.getDefault().post(new CommentLikeEvent(commentId, false));
+        }
     }
 
     @Override
