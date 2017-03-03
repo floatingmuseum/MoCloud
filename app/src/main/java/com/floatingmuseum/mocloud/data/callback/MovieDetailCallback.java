@@ -11,13 +11,24 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/8/15.
  */
-public interface MovieDetailCallback extends CommentsCallback{
+public interface MovieDetailCallback extends CommentsCallback {
     void onMovieTeamSuccess(MovieTeam movieTeam);
+
     void onCommentsSuccess(List<Comment> comments);
+
     void onTraktRatingsSuccess(Ratings ratings);
+
     void onOtherRatingsSuccess(OmdbInfo omdbInfo);
+
     void onAddMovieToWatchedSucceed(SyncResponse syncResponse);
+
     void onRemoveMovieFromWatchedSucceed(SyncResponse syncResponse);
+
     void onAddMovieToWatchlistSucceed(SyncResponse syncResponse);
+
     void onRemoveMovieFromWatchlistSucceed(SyncResponse syncResponse);
+
+    void onAddMovieToCollectionSucceed(SyncResponse syncResponse);
+
+    void onRemoveMovieFromCollectionSucceed(SyncResponse syncResponse);
 }

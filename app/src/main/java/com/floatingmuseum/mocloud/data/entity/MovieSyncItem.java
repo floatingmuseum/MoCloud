@@ -7,6 +7,8 @@ package com.floatingmuseum.mocloud.data.entity;
 public class MovieSyncItem extends Movie {
     private String watched_at;
     private String collected_at;
+    private String listed_at;
+
     public String getWatched_at() {
         return watched_at;
     }
@@ -21,5 +23,13 @@ public class MovieSyncItem extends Movie {
 
     public void setCollected_at(String collected_at) {
         this.collected_at = collected_at;
+    }
+
+    public String getListed_at() {
+        return listed_at;
+    }
+
+    public void setListed_at(String listed_at) {
+        this.listed_at = listed_at;
     }
 }

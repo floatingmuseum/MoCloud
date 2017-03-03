@@ -187,6 +187,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     private boolean hasCollected = false;
     private String nowWatchedTime;
     private String nowCollectedTime;
+    private String nowListedTime;
 
 
     @Override
@@ -305,7 +306,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                 @Override
                 public void onClick(View v) {
                     SyncData syncData = buildSyncData();
-                    presenter.syncMovieWatchlistState(hasWatchlist,syncData);
+                    nowListedTime = TimeUtil.getNowUTCTime();
+                    syncData.getMovies().get(0).setListed_at(nowListedTime);
+                    presenter.syncMovieWatchlistState(hasWatchlist, syncData);
                 }
             });
 
@@ -315,12 +318,13 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     nowCollectedTime = TimeUtil.getNowUTCTime();
                     SyncData syncData = buildSyncData();
                     syncData.getMovies().get(0).setCollected_at(nowCollectedTime);
-//                    presenter.syncMovieCollectedState(hasCollected);
+                    presenter.syncMovieCollectedState(hasCollected, syncData);
                 }
             });
         }
     }
-    private SyncData buildSyncData(){
+
+    private SyncData buildSyncData() {
         MovieSyncItem item = new MovieSyncItem();
         Ids ids = new Ids();
         ids.setTrakt(movie.getIds().getTrakt());
@@ -636,31 +640,41 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     public void onAddMovieToWatchedSucceed() {
         hasWatched = true;
-        fbWatched.setBackgroundColor(ResUtil.getColor(this, R.color.watched_color));
-        fbWatched.setTextColor(ResUtil.getColor(this, R.color.white_text));
         String watchedTime = TimeUtil.formatGmtTime(nowWatchedTime);
-        fbWatched.setText("Watched at " + watchedTime);
+        changeFancyButton(fbWatched, R.color.watched_color, R.color.white_text, "Watched at " + watchedTime);
     }
 
     public void onRemoveMovieFromWatchedSucceed() {
         hasWatched = false;
-        fbWatched.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
-        fbWatched.setTextColor(ResUtil.getColor(this, R.color.watched_color));
-        fbWatched.setText("Add to watched");
+        changeFancyButton(fbWatched, android.R.color.transparent, R.color.watched_color, "Add to watched");
     }
 
     public void onAddMovieToWatchlistSucceed() {
         hasWatchlist = true;
-        fbWatchlist.setBackgroundColor(ResUtil.getColor(this, R.color.watchlist_color));
-        fbWatchlist.setTextColor(ResUtil.getColor(this, R.color.white_text));
-        fbWatchlist.setText("List on watchlist");
+        String listedTime = TimeUtil.formatGmtTime(nowListedTime);
+        changeFancyButton(fbWatchlist, R.color.watchlist_color, R.color.white_text, "Listed at " + listedTime);
     }
 
     public void onRemoveMovieFromWatchlistSucceed() {
         hasWatchlist = false;
-        fbWatchlist.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
-        fbWatchlist.setTextColor(ResUtil.getColor(this, R.color.watchlist_color));
-        fbWatchlist.setText("Add to watchlist");
+        changeFancyButton(fbWatchlist, android.R.color.transparent, R.color.watchlist_color, "Add to watchlist");
+    }
+
+    public void onAddMovieToCollectionSucceed() {
+        hasCollected = true;
+        String collectedTime = TimeUtil.formatGmtTime(nowCollectedTime);
+        changeFancyButton(fbCollection, R.color.collection_color, R.color.white_text, "Collected at " + collectedTime);
+    }
+
+    public void onRemoveMovieFromCollectionSucceed() {
+        hasCollected = false;
+        changeFancyButton(fbCollection, android.R.color.transparent, R.color.collection_color, "Add to collection");
+    }
+
+    private void changeFancyButton(FancyButton fb, int backgroundColor, int textColor, String text) {
+        fb.setBackgroundColor(ResUtil.getColor(this, backgroundColor));
+        fb.setTextColor(ResUtil.getColor(this, textColor));
+        fb.setText(text);
     }
 
     @Override

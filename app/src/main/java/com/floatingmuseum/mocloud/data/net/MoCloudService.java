@@ -125,6 +125,12 @@ public interface MoCloudService {
     @POST("sync/watchlist/remove")
     Observable<SyncResponse> removeMovieFromWatchlist(@Body SyncData syncData);
 
+    @POST("sync/collection")
+    Observable<SyncResponse> addMovieToCollection(@Body SyncData syncData);
+
+    @POST("sync/collection/remove")
+    Observable<SyncResponse> removeMovieFromCollection(@Body SyncData syncData);
+
 //*******************************************电  影*******************************************
 
     /**

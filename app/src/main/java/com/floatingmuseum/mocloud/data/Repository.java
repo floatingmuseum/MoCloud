@@ -17,6 +17,7 @@ import com.floatingmuseum.mocloud.data.callback.SyncCallback;
 import com.floatingmuseum.mocloud.data.callback.UserDetailCallback;
 import com.floatingmuseum.mocloud.data.db.RealmManager;
 import com.floatingmuseum.mocloud.data.db.entity.RealmCommentLike;
+import com.floatingmuseum.mocloud.data.db.entity.RealmMovieCollection;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
@@ -1163,7 +1164,12 @@ public class Repository {
                 .doOnNext(new Action1<SyncResponse>() {
                     @Override
                     public void call(SyncResponse syncResponse) {
-                        RealmManager.delete(RealmMovieWatchlist.class, "trakt_id", item.getMovies().get(0).getIds().getTrakt());
+                        RealmMovieWatchlist realmMovieWatchlist = new RealmMovieWatchlist();
+                        realmMovieWatchlist.setTitle(item.getMovies().get(0).getTitle());
+                        realmMovieWatchlist.setYear(item.getMovies().get(0).getYear());
+                        realmMovieWatchlist.setTrakt_id(item.getMovies().get(0).getIds().getTrakt());
+                        realmMovieWatchlist.setListed_at(item.getMovies().get(0).getListed_at());
+                        RealmManager.insertOrUpdate(realmMovieWatchlist);
                     }
                 })
                 .compose(RxUtil.<SyncResponse>threadSwitch())
@@ -1277,6 +1283,74 @@ public class Repository {
                     @Override
                     public void onNext(List<MovieCollectionItem> movieCollectionItems) {
                         callback.onSyncMovieCollectionSucceed(movieCollectionItems);
+                    }
+                });
+    }
+
+    public void addMovieToCollection(final SyncData item, final MovieDetailCallback callback){
+        // TODO: 2017/3/3 add various metadata
+        service.addMovieToCollection(item)
+                .onErrorResumeNext(refreshTokenAndRetry(service.addMovieToCollection(item)))
+                .doOnNext(new Action1<SyncResponse>() {
+                    @Override
+                    public void call(SyncResponse syncResponse) {
+                        RealmMovieCollection realmMovieCollection = new RealmMovieCollection();
+                        realmMovieCollection.setTitle(item.getMovies().get(0).getTitle());
+                        realmMovieCollection.setYear(item.getMovies().get(0).getYear());
+                        realmMovieCollection.setTrakt_id(item.getMovies().get(0).getIds().getTrakt());
+                        realmMovieCollection.setCollected_at(item.getMovies().get(0).getCollected_at());
+                        RealmManager.insertOrUpdate(realmMovieCollection);
+                    }
+                })
+                .compose(RxUtil.<SyncResponse>threadSwitch())
+                .subscribe(new Observer<SyncResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("收藏测试:addMovieToCollection:...add");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(SyncResponse syncResponse) {
+                        Logger.d("收藏测试:addMovieToCollection:...add成功..." + syncResponse.getAdded().getMovies());
+                        callback.onAddMovieToCollectionSucceed(syncResponse);
+                    }
+                });
+    }
+
+    public void removeMovieFromCollection(final SyncData item, final MovieDetailCallback callback){
+        service.removeMovieFromCollection(item)
+                .onErrorResumeNext(refreshTokenAndRetry(service.removeMovieFromCollection(item)))
+                .doOnNext(new Action1<SyncResponse>() {
+                    @Override
+                    public void call(SyncResponse syncResponse) {
+                        RealmManager.delete(RealmMovieCollection.class, "trakt_id", item.getMovies().get(0).getIds().getTrakt());
+                    }
+                })
+                .compose(RxUtil.<SyncResponse>threadSwitch())
+                .subscribe(new Observer<SyncResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("收藏测试:removeMovieFromCollection:...remove失败");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(SyncResponse syncResponse) {
+                        Logger.d("收藏测试:removeMovieFromCollection:...remove成功..." + syncResponse.getDeleted().getMovies());
+                        callback.onRemoveMovieFromCollectionSucceed(syncResponse);
                     }
                 });
     }

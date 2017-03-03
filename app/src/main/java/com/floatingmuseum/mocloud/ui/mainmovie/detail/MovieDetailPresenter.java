@@ -105,11 +105,20 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     }
 
     public void syncMovieWatchlistState(boolean hasWatchlist, SyncData item) {
-        Logger.d("看过测试:syncMovieWatchedState...是否想看:" + hasWatchlist);
+        Logger.d("想看测试:syncMovieWatchlistState...是否想看:" + hasWatchlist);
         if (!hasWatchlist) {
             repository.addMovieToWatchlist(item, this);
         } else {
             repository.removeMovieFromWatchlist(item, this);
+        }
+    }
+
+    public void syncMovieCollectedState(boolean hasCollection, SyncData item) {
+        Logger.d("收藏测试:syncMovieCollectedState...是否想看:" + hasCollection);
+        if (!hasCollection) {
+            repository.addMovieToCollection(item, this);
+        } else {
+            repository.removeMovieFromCollection(item, this);
         }
     }
 
@@ -131,6 +140,16 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     @Override
     public void onRemoveMovieFromWatchlistSucceed(SyncResponse syncResponse) {
         activity.onRemoveMovieFromWatchlistSucceed();
+    }
+
+    @Override
+    public void onAddMovieToCollectionSucceed(SyncResponse syncResponse) {
+        activity.onAddMovieToCollectionSucceed();
+    }
+
+    @Override
+    public void onRemoveMovieFromCollectionSucceed(SyncResponse syncResponse) {
+        activity.onRemoveMovieFromCollectionSucceed();
     }
 
     @Override
