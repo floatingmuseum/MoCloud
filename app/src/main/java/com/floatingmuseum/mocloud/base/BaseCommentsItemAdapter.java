@@ -53,7 +53,7 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment, BaseViewH
                 .setText(R.id.tv_rating_tip, userRating + "/10")
                 .setImageDrawable(R.id.iv_comment_likes, comment.isLike() ? ResUtil.getDrawable(R.drawable.appreciate_fill) : ResUtil.getDrawable(R.drawable.appreciate))
                 .addOnClickListener(R.id.iv_userhead)
-                .addOnClickListener(R.id.iv_comment_likes)
+                .addOnClickListener(R.id.ll_comment_likes)
                 .setVisible(R.id.iv_replies, commentOwner != null ? false : true)
                 .setVisible(R.id.tv_comments_replies, commentOwner != null ? false : true)
                 .setVisible(R.id.tv_spoiler_tip, comment.isSpoiler() ? true : false)

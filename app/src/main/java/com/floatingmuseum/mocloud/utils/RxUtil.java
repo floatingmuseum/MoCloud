@@ -64,6 +64,9 @@ public class RxUtil {
         }
     };
 
+    /**
+     * 更新评论数据的每条like状态
+     */
     public static Action1<List<Comment>> updateCommentsResultLikesState() {
         return CommentsResultLikesUpdateAction1;
     }
@@ -72,6 +75,9 @@ public class RxUtil {
         return checkLocalPosterCache;
     }
 
+    /**
+     * 线程切换
+     */
     public static <T> Observable.Transformer<T, T> threadSwitch() {
         return (Observable.Transformer<T, T>) schedulerTransFormer;
     }

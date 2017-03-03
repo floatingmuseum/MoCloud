@@ -149,7 +149,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
                         Logger.d("头像被点击");
                         openUserActivity(CommentsActivity.this, commentsData.get(position).getUser());
                         break;
-                    case R.id.tv_comment_likes:
+                    case R.id.ll_comment_likes:
                         break;
                 }
             }

@@ -164,7 +164,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
                     case R.id.iv_userhead:
                         openUserActivity(SingleCommentActivity.this, comment.getUser());
                         break;
-                    case R.id.iv_comment_likes:
+                    case R.id.ll_comment_likes:
                         //记录点赞位置
                         commentLikePosition = position;
                         syncCommentLike(comment.isLike(), comment);

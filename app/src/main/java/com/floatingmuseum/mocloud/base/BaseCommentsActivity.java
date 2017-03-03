@@ -46,13 +46,14 @@ public abstract class BaseCommentsActivity extends BaseActivity {
         TextView tvCreatetime = (TextView) commentItem.findViewById(R.id.tv_createtime);
         TextView tvUpdatetime = (TextView) commentItem.findViewById(R.id.tv_updatetime);
         TextView tvCommentsLikes = (TextView) commentItem.findViewById(R.id.tv_comment_likes);
+        ImageView ivCommentLikes = (ImageView) commentItem.findViewById(R.id.iv_comment_likes);
+        LinearLayout llCommentLikes = (LinearLayout) commentItem.findViewById(R.id.ll_comment_likes);
         tvCommentReplies = (TextView) commentItem.findViewById(R.id.tv_comments_replies);
         TextView tvComment = (TextView) commentItem.findViewById(R.id.tv_comment);
         LinearLayout llTip = (LinearLayout) commentItem.findViewById(R.id.ll_tip);
         TextView tvSpoilerTip = (TextView) commentItem.findViewById(R.id.tv_spoiler_tip);
         TextView tvReviewTip = (TextView) commentItem.findViewById(R.id.tv_review_tip);
         TextView tvRatingTip = (TextView) commentItem.findViewById(R.id.tv_rating_tip);
-        ImageView ivCommentLikes = (ImageView) commentItem.findViewById(R.id.iv_comment_likes);
 
 
         LinearLayout commentTitle = (LinearLayout) commentItem.findViewById(R.id.comment_title);
@@ -100,7 +101,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
             llTip.setVisibility(View.GONE);
         }
 
-        ivCommentLikes.setOnClickListener(new View.OnClickListener() {
+        llCommentLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 syncCommentLike(comment.isLike(), comment);
