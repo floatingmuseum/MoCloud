@@ -301,6 +301,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             fbWatched.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // TODO: 2017/3/3 当一个电影处于想看列表的电影，点击看过后，应该自动取消想看的状态 
                     nowWatchedTime = TimeUtil.getNowUTCTime();
                     SyncData syncData = buildSyncData();
                     syncData.getMovies().get(0).setWatched_at(nowWatchedTime);
