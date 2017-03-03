@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.floatingmuseum.mocloud.MainMovieAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
@@ -266,7 +267,8 @@ public class MainActivity extends BaseActivity
             //已登录，获取头像和用户名
             String avatarUrl = SPUtil.getString(SPUtil.SP_USER_SETTINGS, "avatar", "");
             // TODO: 2017/2/26 昵称更新成功，头像不成功
-            ImageLoader.load(this, avatarUrl, iv_avatar, R.drawable.default_userhead);
+//            ImageLoader.load(this, avatarUrl, iv_avatar, R.drawable.default_userhead);
+            Glide.with(this).load(avatarUrl).into(iv_avatar);
             tv_username.setText(SPUtil.getString(SPUtil.SP_USER_SETTINGS, "username", ""));
             Logger.d("avatarUrl:" + avatarUrl + "...");
             // TODO: 2017/2/7 空指针
