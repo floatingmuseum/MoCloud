@@ -262,7 +262,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
 //            adapter.notifyItemChanged(commentLikePosition);
         } else {
             updateCommentLikesView(true, headerView, mainCommentContent);
-            EventBus.getDefault().post(new CommentLikeEvent(commentId, true));
+            EventBus.getDefault().post(new CommentLikeEvent(commentId, true, mainCommentContent.getLikes()));
         }
         adapter.notifyDataSetChanged();
     }
@@ -277,7 +277,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         } else {
             updateCommentLikesView(false, headerView, mainCommentContent);
             //只有headerView的状态变化后需要通知MovieDetailActivity评论的like状态
-            EventBus.getDefault().post(new CommentLikeEvent(commentId, false));
+            EventBus.getDefault().post(new CommentLikeEvent(commentId, false, mainCommentContent.getLikes()));
         }
         adapter.notifyDataSetChanged();
     }

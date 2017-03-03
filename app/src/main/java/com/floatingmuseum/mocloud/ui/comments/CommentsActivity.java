@@ -23,6 +23,7 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseCommentsItemAdapter;
 import com.floatingmuseum.mocloud.data.bus.CommentLikeEvent;
+import com.floatingmuseum.mocloud.data.bus.EventBusManager;
 import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Movie;
@@ -34,11 +35,14 @@ import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -82,7 +86,9 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     private MenuItem miSortByOldest;
     private MenuItem miSortByLikes;
     private MenuItem miSortByReplies;
-    private int commentLikePosition;
+    //存储CommentID和点赞时间，防止多条点赞同时发送时，返回结果错乱
+    private HashMap<Long, Integer> likeStateController = new HashMap<>();
+    private int openSingleCommentActivityItemPosition;
 
     @Override
     protected int currentLayoutId() {
@@ -99,6 +105,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         itemColors = getIntent().getParcelableExtra(ITEM_COLORS);
         actionBar.setTitle(movie.getTitle());
         presenter = new CommentsPresenter(this);
+        EventBusManager.register(this);
         currentSortCondition = SPUtil.getString(SPUtil.KEY_COMMENTS_SORT_CONDITION, SORT_BY_NEWEST);
         initView();
         if (mainColors != null && itemColors != null) {
@@ -134,6 +141,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         rvComments.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
+                openSingleCommentActivityItemPosition = position;
                 Logger.d("条目被点击");
                 Intent intent = new Intent(CommentsActivity.this, SingleCommentActivity.class);
                 intent.putExtra(SingleCommentActivity.MAIN_COMMENT, commentsData.get(position));
@@ -155,7 +163,11 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
                         openUserActivity(CommentsActivity.this, comment.getUser());
                         break;
                     case R.id.ll_comment_likes:
-                        commentLikePosition = position;
+                        if (likeStateController.containsKey(comment.getId())) {
+                            ToastUtil.showToast("Like state is syncing.");
+                            return;
+                        }
+                        likeStateController.put(comment.getId(), position);
                         syncCommentLike(comment.isLike(), comment);
                         break;
                 }
@@ -369,8 +381,9 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     }
 
     public void onAddCommentToLikesSucceed(long commentId) {
-        Comment comment = commentsData.get(commentLikePosition);
+        Comment comment = commentsData.get(likeStateController.get(commentId));
         if (comment.getId() == commentId) {
+            likeStateController.remove(commentId);
             comment.setLike(true);
             int likes = comment.getLikes();
             comment.setLikes(++likes);
@@ -380,13 +393,24 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     }
 
     public void onRemoveCommentFromLikesSucceed(long commentId) {
-        Comment comment = commentsData.get(commentLikePosition);
+        Comment comment = commentsData.get(likeStateController.get(commentId));
         if (comment.getId() == commentId) {
+            likeStateController.remove(commentId);
             comment.setLike(false);
             int likes = comment.getLikes();
             comment.setLikes(--likes);
             adapter.notifyDataSetChanged();
             EventBus.getDefault().post(new CommentLikeEvent(commentId, false));
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCommentLikeEvent(CommentLikeEvent event) {
+        Comment comment = commentsData.get(openSingleCommentActivityItemPosition);
+        if (comment.getId() == event.commentId) {
+            comment.setLike(event.isLike);
+            comment.setLikes(event.likes);
+            adapter.notifyDataSetChanged();
         }
     }
 
