@@ -122,6 +122,15 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
         }
     }
 
+    public void syncCommentLike(boolean isLike, Comment comment) {
+        Logger.d("评论点赞测试:syncCommentLike...是否点赞:" + isLike);
+        if (isLike) {
+            repository.removeCommentFromLikes(comment, this);
+        } else {
+            repository.addCommentToLikes(comment, this);
+        }
+    }
+
     @Override
     public void onAddMovieToWatchedSucceed(SyncResponse syncResponse) {
         activity.onAddMovieToWatchedSucceed();
@@ -150,6 +159,16 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
     @Override
     public void onRemoveMovieFromCollectionSucceed(SyncResponse syncResponse) {
         activity.onRemoveMovieFromCollectionSucceed();
+    }
+
+    @Override
+    public void onAddCommentToLikesSucceed(long commentId) {
+        activity.onAddCommentToLikesSucceed(commentId);
+    }
+
+    @Override
+    public void onRemoveCommentFromLikesSucceed(long commentId) {
+        activity.onRemoveCommentFromLikesSucceed(commentId);
     }
 
     @Override

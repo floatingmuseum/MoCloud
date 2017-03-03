@@ -100,6 +100,13 @@ public abstract class BaseCommentsActivity extends BaseActivity {
             llTip.setVisibility(View.GONE);
         }
 
+        ivCommentLikes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                syncCommentLike(comment.isLike(), comment);
+            }
+        });
+
         tvCommentsLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,4 +166,16 @@ public abstract class BaseCommentsActivity extends BaseActivity {
         isSpoiler.setChecked(false);
         KeyboardUtil.hideSoftInput(this);
     }
+
+    protected void updateCommentLikesView(boolean isLike, CardView commentView, Comment comment) {
+        ImageView likesView = (ImageView) commentView.findViewById(R.id.iv_comment_likes);
+        likesView.setImageResource(isLike ? R.drawable.appreciate_fill : R.drawable.appreciate);
+        comment.setLike(isLike);
+        int likes = comment.getLikes();
+        comment.setLikes(isLike ? ++likes : --likes);
+        TextView tvCommentLikes = (TextView) commentView.findViewById(R.id.tv_comment_likes);
+        tvCommentLikes.setText(String.valueOf(comment.getLikes()));
+    }
+
+    protected abstract void syncCommentLike(boolean isLike, Comment comment);
 }

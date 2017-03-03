@@ -188,6 +188,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     private String nowWatchedTime;
     private String nowCollectedTime;
     private String nowListedTime;
+    private List<Comment> comments = new ArrayList<>();
 
 
     @Override
@@ -494,7 +495,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         }
     }
 
-    public void onCommentsSuccess(final List<Comment> comments) {
+    public void onCommentsSuccess(final List<Comment> commentsResult) {
+        this.comments.addAll(commentsResult);
         // TODO: 2017/1/9 Sync likes,添加回复当回复数不足3个时
         avlComments.setVisibility(View.GONE);
         commentContainer.setVisibility(View.VISIBLE);
@@ -512,7 +514,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                         intent.putExtra(MAIN_COLORS, mainColors);
                         intent.putExtra(ITEM_COLORS, itemColors);
                     }
-
                     startActivity(intent);
                 }
             });
@@ -522,7 +523,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                 @Override
                 public void onClick(View v) {
                     Logger.d("tv_no_more_comments...点击");
-                    inflateCommentLayout();
+                    inflateCommentReplyLayout();
                 }
             });
         }
@@ -551,7 +552,32 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         return commentItem;
     }
 
-    private void inflateCommentLayout() {
+    @Override
+    protected void syncCommentLike(boolean isLike, Comment comment) {
+        presenter.syncCommentLike(isLike, comment);
+    }
+
+    public void onAddCommentToLikesSucceed(long commentId) {
+        for (int i = 0; i < comments.size(); i++) {
+            Comment comment = comments.get(i);
+            if (commentId == comment.getId()) {
+                updateCommentLikesView(true, (CardView) commentContainer.getChildAt(i), comment);
+            }
+        }
+    }
+
+
+    public void onRemoveCommentFromLikesSucceed(long commentId) {
+        for (int i = 0; i < comments.size(); i++) {
+            Comment comment = comments.get(i);
+            if (commentId == comment.getId()) {
+                updateCommentLikesView(false, (CardView) commentContainer.getChildAt(i), comment);
+            }
+        }
+    }
+
+
+    private void inflateCommentReplyLayout() {
         if (!SPUtil.isLogin()) {
             ToastUtil.showToast(R.string.not_login);
             return;
@@ -596,6 +622,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     public void onSendCommentSuccess(Comment comment) {
         CardView comment_item = buildCommentItem(comment);
+        comments.add(comment);
         ToastUtil.showToast(R.string.comment_success);
         resetCommentBox(commentBox, isSpoiler);
 //        KeyboardUtil.hideSoftInput(this);

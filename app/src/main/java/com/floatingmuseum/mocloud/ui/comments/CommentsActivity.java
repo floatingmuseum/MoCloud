@@ -365,4 +365,9 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     protected void onDestroy() {
         super.onDestroy();
     }
+
+    @Override
+    protected void syncCommentLike(boolean isLike, Comment comment) {
+
+    }
 }

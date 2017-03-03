@@ -44,6 +44,16 @@ public class CommentsPresenter extends Presenter implements CommentsCallback<Lis
     }
 
     @Override
+    public void onAddCommentToLikesSucceed(long commentId) {
+
+    }
+
+    @Override
+    public void onRemoveCommentFromLikesSucceed(long commentId) {
+
+    }
+
+    @Override
     public void onError(Throwable e) {
         activity.stopRefresh();
         Logger.d("onError");

@@ -131,6 +131,12 @@ public interface MoCloudService {
     @POST("sync/collection/remove")
     Observable<SyncResponse> removeMovieFromCollection(@Body SyncData syncData);
 
+    @POST("comments/{id}/like")
+    Observable<ResponseBody> addCommentToLikes(@Path("id") long commentId);
+
+    @DELETE("comments/{id}/like")
+    Observable<ResponseBody> removeCommentFromLikes(@Path("id") long commentId);
+
 //*******************************************电  影*******************************************
 
     /**

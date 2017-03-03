@@ -43,19 +43,20 @@ import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPersonImage;
 import com.floatingmuseum.mocloud.data.entity.TokenRequest;
 import com.floatingmuseum.mocloud.data.entity.TraktToken;
+import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.data.entity.UserCommentLike;
 import com.floatingmuseum.mocloud.data.entity.UserListLike;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
 import com.floatingmuseum.mocloud.data.net.MoCloudService;
-import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailPresenter;
 import com.floatingmuseum.mocloud.utils.ErrorUtil;
 import com.floatingmuseum.mocloud.utils.ListUtil;
 import com.floatingmuseum.mocloud.utils.PermissionsUtil;
 import com.floatingmuseum.mocloud.utils.RxUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
+import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -165,7 +166,8 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
+                        callback.onError(e);
                     }
 
                     @Override
@@ -174,7 +176,6 @@ public class Repository {
                         downloadMovieImage(null, movies, ImageCacheManager.TYPE_POSTER);
                     }
                 });
-
     }
 
     /**
@@ -648,6 +649,88 @@ public class Repository {
                     @Override
                     public void onNext(Comment comment) {
                         callback.onSendCommentSuccess(comment);
+                    }
+                });
+    }
+
+    public void addCommentToLikes(final Comment comment, final CommentsCallback callback) {
+        service.addCommentToLikes(comment.getId())
+                .onErrorResumeNext(refreshTokenAndRetry(service.addCommentToLikes(comment.getId())))
+                .doOnNext(new Action1<ResponseBody>() {
+                    @Override
+                    public void call(ResponseBody responseBody) {
+                        RealmCommentLike realmCommentLike = new RealmCommentLike();
+                        User user = comment.getUser();
+                        realmCommentLike.setLiked_at(TimeUtil.getNowUTCTime());
+                        realmCommentLike.setId(comment.getId());
+                        realmCommentLike.setParent_id(comment.getParent_id());
+                        realmCommentLike.setCreated_at(comment.getCreated_at());
+                        realmCommentLike.setUpdated_at(comment.getUpdated_at());
+                        realmCommentLike.setComment(comment.getComment());
+                        realmCommentLike.setSpoiler(comment.isSpoiler());
+                        realmCommentLike.setReview(comment.isReview());
+                        realmCommentLike.setReplies(comment.getReplies());
+                        realmCommentLike.setLikes(comment.getLikes());
+                        realmCommentLike.setUser_rating(comment.getUser_rating());
+                        realmCommentLike.setUsername(user.getUsername());
+
+                        realmCommentLike.setPrivate_user(user.isPrivateX());
+                        realmCommentLike.setUser_slug(user.getIds().getSlug());
+                        realmCommentLike.setVip(user.isVip());
+                        realmCommentLike.setVip_ep(user.isVip_ep());
+                        realmCommentLike.setName(user.getName());
+                        RealmManager.insertOrUpdate(realmCommentLike);
+                    }
+                })
+                .compose(RxUtil.<ResponseBody>threadSwitch())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("评论点赞测试:addCommentToLikes...点赞失败");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        Logger.d("评论点赞测试:addCommentToLikes...点赞成功");
+                        callback.onAddCommentToLikesSucceed(comment.getId());
+                    }
+                });
+    }
+
+    public void removeCommentFromLikes(final Comment comment, final CommentsCallback callback) {
+        service.removeCommentFromLikes(comment.getId())
+                .onErrorResumeNext(refreshTokenAndRetry(service.removeCommentFromLikes(comment.getId())))
+                .doOnNext(new Action1<ResponseBody>() {
+                    @Override
+                    public void call(ResponseBody responseBody) {
+                        RealmManager.delete(RealmCommentLike.class, "id", comment.getId());
+                    }
+                })
+                .compose(RxUtil.<ResponseBody>threadSwitch())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("评论点赞测试:removeCommentFromLikes...取消点赞失败");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        Logger.d("评论点赞测试:removeCommentFromLikes...取消点赞成功");
+                        callback.onRemoveCommentFromLikesSucceed(comment.getId());
                     }
                 });
     }
@@ -1158,7 +1241,7 @@ public class Repository {
                 });
     }
 
-    public void addMovieToWatchlist(final SyncData item, final MovieDetailCallback callback){
+    public void addMovieToWatchlist(final SyncData item, final MovieDetailCallback callback) {
         service.addMovieToWatchlist(item)
                 .onErrorResumeNext(refreshTokenAndRetry(service.addMovieToWatchlist(item)))
                 .doOnNext(new Action1<SyncResponse>() {
@@ -1194,7 +1277,7 @@ public class Repository {
                 });
     }
 
-    public void removeMovieFromWatchlist(final SyncData item, final MovieDetailCallback callback){
+    public void removeMovieFromWatchlist(final SyncData item, final MovieDetailCallback callback) {
         service.removeMovieFromWatchlist(item)
                 .onErrorResumeNext(refreshTokenAndRetry(service.removeMovieFromWatchlist(item)))
                 .doOnNext(new Action1<SyncResponse>() {
@@ -1287,7 +1370,7 @@ public class Repository {
                 });
     }
 
-    public void addMovieToCollection(final SyncData item, final MovieDetailCallback callback){
+    public void addMovieToCollection(final SyncData item, final MovieDetailCallback callback) {
         // TODO: 2017/3/3 add various metadata
         service.addMovieToCollection(item)
                 .onErrorResumeNext(refreshTokenAndRetry(service.addMovieToCollection(item)))
@@ -1324,7 +1407,7 @@ public class Repository {
                 });
     }
 
-    public void removeMovieFromCollection(final SyncData item, final MovieDetailCallback callback){
+    public void removeMovieFromCollection(final SyncData item, final MovieDetailCallback callback) {
         service.removeMovieFromCollection(item)
                 .onErrorResumeNext(refreshTokenAndRetry(service.removeMovieFromCollection(item)))
                 .doOnNext(new Action1<SyncResponse>() {

@@ -251,4 +251,9 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         super.onDestroy();
         presenter.unSubscription();
     }
+
+    @Override
+    protected void syncCommentLike(boolean isLike, Comment comment) {
+
+    }
 }
