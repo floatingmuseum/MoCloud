@@ -176,6 +176,11 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         commentBox.setHintTextColor(mainColors.getTitleTextColor());
     }
 
+    @Override
+    protected void syncCommentLike(boolean isLike, Comment comment) {
+        presenter.syncCommentLike(isLike, comment, presenter);
+    }
+
     private void sendComment() {
         if (!SPUtil.isLogin()) {
             ToastUtil.showToast(R.string.not_login);
@@ -364,10 +369,5 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    protected void syncCommentLike(boolean isLike, Comment comment) {
-
     }
 }

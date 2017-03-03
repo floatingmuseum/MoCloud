@@ -28,6 +28,9 @@ import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseCommentsItemAdapter;
 import com.floatingmuseum.mocloud.data.Repository;
+import com.floatingmuseum.mocloud.data.bus.CommentLikeEvent;
+import com.floatingmuseum.mocloud.data.bus.EventBusManager;
+import com.floatingmuseum.mocloud.data.bus.SyncEvent;
 import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Image;
@@ -44,6 +47,8 @@ import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +92,8 @@ public class SingleCommentActivity extends BaseCommentsActivity {
     private Colors mainColors;
     private Colors itemColors;
     private String movieTitle;
+    private int commentLikePosition;
+    private CardView headerView;
 
 
     @Override
@@ -121,7 +128,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         Logger.d("喜欢数:" + likes + "...回复数:" + replies);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         rvReplies.setLayoutManager(manager);
-        CardView headerView = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, rvReplies, false);
+        headerView = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, rvReplies, false);
 
         if (mainColors != null && itemColors != null) {
             Palette.Swatch commentItemSwatch = new Palette.Swatch(itemColors.getRgb(), itemColors.getPopulation());
@@ -152,10 +159,15 @@ public class SingleCommentActivity extends BaseCommentsActivity {
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 super.onItemChildClick(adapter, view, position);
+                Comment comment = repliesList.get(position);
                 switch (view.getId()) {
                     case R.id.iv_userhead:
-                        openUserActivity(SingleCommentActivity.this, repliesList.get(position).getUser());
+                        openUserActivity(SingleCommentActivity.this, comment.getUser());
                         break;
+                    case R.id.iv_comment_likes:
+                        //记录点赞位置
+                        commentLikePosition = position;
+                        syncCommentLike(comment.isLike(), comment);
                 }
             }
         });
@@ -225,7 +237,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         presenter.sendReply(mainCommentContent.getId(), reply);
     }
 
-    public void onSendReplySuccess(Comment comment) {
+    public void onSendCommentSuccess(Comment comment) {
         Logger.d("sendReply...onSendReplySuccess:" + comment.getComment());
         repliesList.add(comment);
         adapter.notifyItemInserted(repliesList.indexOf(comment));
@@ -237,6 +249,40 @@ public class SingleCommentActivity extends BaseCommentsActivity {
     }
 
     @Override
+    protected void syncCommentLike(boolean isLike, Comment comment) {
+        presenter.syncCommentLike(isLike, comment, presenter);
+    }
+
+    public void onAddCommentToLikesSucceed(long commentId) {
+        Comment comment = repliesList.get(commentLikePosition);
+        if (comment.getId() == commentId) {
+            comment.setLike(true);
+            int likes = comment.getLikes();
+            comment.setLikes(++likes);
+//            adapter.notifyItemChanged(commentLikePosition);
+        } else {
+            updateCommentLikesView(true, headerView, mainCommentContent);
+            EventBus.getDefault().post(new CommentLikeEvent(commentId, true));
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    public void onRemoveCommentFromLikesSucceed(long commentId) {
+        Comment comment = repliesList.get(commentLikePosition);
+        if (comment.getId() == commentId) {
+            comment.setLike(false);
+            int likes = comment.getLikes();
+            comment.setLikes(--likes);
+//            adapter.notifyItemChanged(commentLikePosition);
+        } else {
+            updateCommentLikesView(false, headerView, mainCommentContent);
+            //只有headerView的状态变化后需要通知MovieDetailActivity评论的like状态
+            EventBus.getDefault().post(new CommentLikeEvent(commentId, false));
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     protected void onError(Exception e) {
 
     }
@@ -245,10 +291,5 @@ public class SingleCommentActivity extends BaseCommentsActivity {
     protected void onDestroy() {
         super.onDestroy();
         presenter.unSubscription();
-    }
-
-    @Override
-    protected void syncCommentLike(boolean isLike, Comment comment) {
-
     }
 }

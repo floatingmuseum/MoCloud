@@ -3,6 +3,7 @@ package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 import android.support.annotation.NonNull;
 
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.base.BaseCommentsPresenter;
 import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.db.RealmManager;
@@ -26,7 +27,7 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/7/14.
  */
-public class MovieDetailPresenter extends Presenter implements MovieDetailCallback {
+public class MovieDetailPresenter extends BaseCommentsPresenter implements MovieDetailCallback {
 
     MovieDetailActivity activity;
     private int limit = 4;
@@ -122,14 +123,14 @@ public class MovieDetailPresenter extends Presenter implements MovieDetailCallba
         }
     }
 
-    public void syncCommentLike(boolean isLike, Comment comment) {
-        Logger.d("评论点赞测试:syncCommentLike...是否点赞:" + isLike);
-        if (isLike) {
-            repository.removeCommentFromLikes(comment, this);
-        } else {
-            repository.addCommentToLikes(comment, this);
-        }
-    }
+//    public void syncCommentLike(boolean isLike, Comment comment) {
+//        Logger.d("评论点赞测试:syncCommentLike...是否点赞:" + isLike);
+//        if (isLike) {
+//            repository.removeCommentFromLikes(comment, this);
+//        } else {
+//            repository.addCommentToLikes(comment, this);
+//        }
+//    }
 
     @Override
     public void onAddMovieToWatchedSucceed(SyncResponse syncResponse) {

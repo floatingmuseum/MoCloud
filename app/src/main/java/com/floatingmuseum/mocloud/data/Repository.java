@@ -8,7 +8,6 @@ import com.bumptech.glide.request.target.Target;
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.Constants;
 import com.floatingmuseum.mocloud.MoCloud;
-import com.floatingmuseum.mocloud.data.callback.CommentReplyCallback;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.callback.CommentsCallback;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
@@ -526,19 +525,7 @@ public class Repository {
     public Subscription getMovieComments(String movieId, String sortCondition, int limit, int page, final MovieDetailCallback movieDetailCallback, final CommentsCallback commentsCallback) {
         Logger.d("加载Comment:" + movieId + "..." + sortCondition + "..." + limit + "..." + page + "..." + movieDetailCallback + "..." + commentsCallback);
         return service.getComments(movieId, sortCondition, limit, page)
-                .doOnNext(new Action1<List<Comment>>() {
-                    @Override
-                    public void call(List<Comment> comments) {
-                        if (SPUtil.isLogin() && SPUtil.getBoolean(SPUtil.SP_USER_LASTACTIVITIES, "has_first_sync", false) && ListUtil.hasData(comments)) {
-                            for (Comment comment : comments) {
-                                RealmCommentLike realmCommentLike = RealmManager.query(RealmCommentLike.class, "id", comment.getId());
-                                if (realmCommentLike != null) {
-                                    comment.setLike(true);
-                                }
-                            }
-                        }
-                    }
-                })
+                .doOnNext(RxUtil.updateCommentsResultLikesState())
                 .compose(RxUtil.<List<Comment>>threadSwitch())
                 .subscribe(new Observer<List<Comment>>() {
                     @Override
@@ -572,6 +559,7 @@ public class Repository {
      */
     public Subscription getCommentReplies(long commentId, final DataCallback callback) {
         return service.getCommentReplies(commentId)
+                .doOnNext(RxUtil.updateCommentsResultLikesState())
                 .compose(RxUtil.<List<Comment>>threadSwitch())
                 .subscribe(new Observer<List<Comment>>() {
                     @Override
@@ -596,7 +584,7 @@ public class Repository {
     /**
      * 发送针对单个评论的回复
      */
-    public Subscription sendReply(long id, Reply reply, final CommentReplyCallback callback) {
+    public Subscription sendReply(long id, Reply reply, final CommentsCallback callback) {
         Logger.d("sendReply:" + id + "..." + reply.getComment());
         return service.sendReply(id, reply)
                 .onErrorResumeNext(refreshTokenAndRetry(service.sendReply(id, reply)))
@@ -615,7 +603,7 @@ public class Repository {
 
                     @Override
                     public void onNext(Comment comment) {
-                        callback.onSendReplySuccess(comment);
+                        callback.onSendCommentSuccess(comment);
                     }
                 });
     }

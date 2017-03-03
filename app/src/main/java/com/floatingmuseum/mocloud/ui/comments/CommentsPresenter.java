@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.ui.comments;
 
 import android.support.annotation.NonNull;
 
+import com.floatingmuseum.mocloud.base.BaseCommentsPresenter;
 import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.callback.CommentsCallback;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/9/2.
  */
-public class CommentsPresenter extends Presenter implements CommentsCallback<List<Comment>> {
+public class CommentsPresenter extends BaseCommentsPresenter implements CommentsCallback<List<Comment>> {
 
     CommentsActivity activity;
     private int limit = 20;

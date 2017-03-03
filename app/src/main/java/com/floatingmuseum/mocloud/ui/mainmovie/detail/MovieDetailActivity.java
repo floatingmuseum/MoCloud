@@ -25,6 +25,8 @@ import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
+import com.floatingmuseum.mocloud.data.bus.CommentLikeEvent;
+import com.floatingmuseum.mocloud.data.bus.EventBusManager;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieCollection;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
@@ -54,6 +56,8 @@ import com.orhanobut.logger.Logger;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -202,6 +206,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         ButterKnife.bind(this);
 
         movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
+        EventBusManager.register(this);
         presenter = new MovieDetailPresenter(this);
         presenter.getData(movie);
         initView();
@@ -554,7 +559,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     @Override
     protected void syncCommentLike(boolean isLike, Comment comment) {
-        presenter.syncCommentLike(isLike, comment);
+        presenter.syncCommentLike(isLike, comment, presenter);
     }
 
     public void onAddCommentToLikesSucceed(long commentId) {
@@ -702,6 +707,16 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         fb.setBackgroundColor(ResUtil.getColor(this, backgroundColor));
         fb.setTextColor(ResUtil.getColor(this, textColor));
         fb.setText(text);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCommentLikeEvent(CommentLikeEvent event) {
+        for (int i = 0; i < comments.size(); i++) {
+            Comment comment = comments.get(i);
+            if (event.commentId == comment.getId()) {
+                updateCommentLikesView(event.isLike, (CardView) commentContainer.getChildAt(i), comment);
+            }
+        }
     }
 
     @Override
