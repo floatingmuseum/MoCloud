@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud;
 
 import android.support.v4.app.Fragment;
 
+import com.floatingmuseum.mocloud.ui.mainmovie.anticipated.MovieAnticipatedFragment;
 import com.floatingmuseum.mocloud.ui.mainmovie.boxoffice.MovieBoxOfficeFragment;
 import com.floatingmuseum.mocloud.ui.mainmovie.collected.MovieCollectedFragment;
 import com.floatingmuseum.mocloud.ui.mainmovie.played.MoviePlayedFragment;
@@ -36,10 +37,10 @@ public class MovieFragmentFactory {
             case 4:
                 fragment = MovieCollectedFragment.newInstance();
                 break;
-//            case 5:
-//                fragment = MovieAnticipatedFragment.newInstance();
-//                break;
             case 5:
+                fragment = MovieAnticipatedFragment.newInstance();
+                break;
+            case 6:
                 fragment = MovieBoxOfficeFragment.newInstance();
                 break;
         }

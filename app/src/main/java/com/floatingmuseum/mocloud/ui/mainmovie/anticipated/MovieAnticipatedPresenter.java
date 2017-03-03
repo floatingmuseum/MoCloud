@@ -30,7 +30,7 @@ public class MovieAnticipatedPresenter extends ListPresenter implements DataCall
     public void start(boolean shouldClean) {
         pageNum = shouldClean?1:++pageNum;
         this.shouldClean =shouldClean;
-//        repository.getMovieAnticipatedData(pageNum,limit,this);
+        repository.getMovieAnticipatedData(pageNum,limit,this);
     }
 
     @Override

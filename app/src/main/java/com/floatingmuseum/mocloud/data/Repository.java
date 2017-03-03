@@ -268,7 +268,9 @@ public class Repository {
      * 暂时不用
      */
     public void getMovieAnticipatedData(int pageNum, int limit, final DataCallback callback) {
+        final List<BaseMovie> movies = new ArrayList<>();
         service.getMovieAnticipated(pageNum, limit)
+                .compose(getEachPoster(movies))
                 .compose(RxUtil.<List<BaseMovie>>threadSwitch())
                 .subscribe(new Observer<List<BaseMovie>>() {
                     @Override
@@ -277,12 +279,16 @@ public class Repository {
 
                     @Override
                     public void onError(Throwable e) {
+                        Logger.d("getMovieAnticipated...onError");
+                        e.printStackTrace();
                         callback.onError(e);
                     }
 
                     @Override
                     public void onNext(List<BaseMovie> movies) {
-                        getTmdbImagesByBaseMovie(movies, callback);
+                        Logger.d("getMovieAnticipated...onNext:" + movies);
+                        callback.onBaseDataSuccess(movies);
+                        downloadMovieImage(movies, null, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
