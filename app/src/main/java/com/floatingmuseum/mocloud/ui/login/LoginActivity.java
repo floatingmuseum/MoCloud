@@ -105,7 +105,6 @@ public class LoginActivity extends BaseActivity {
 
     public void requestTokenFailed() {
         loading_token_request.smoothToHide();
-        // TODO: 2016/9/18 失败原因？retry按钮？关闭Activity？ 
     }
 
     public String getCode(String url) {
@@ -153,7 +152,6 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void onError(Exception e) {
-        // TODO: 2017/2/7 请求失败的处理
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

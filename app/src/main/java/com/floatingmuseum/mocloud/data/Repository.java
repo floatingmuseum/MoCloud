@@ -405,7 +405,7 @@ public class Repository {
                 .map(new Func1<PeopleCredit, MovieTeam>() {
                     @Override
                     public MovieTeam call(PeopleCredit credit) {
-                        // TODO: 2017/1/20 这里去DataMachine里处理一下数据，旨在提取出1个导演3个主演用于MovieDetail显示，剩下一个原始List用于MovieDetail中点击more时使用
+                        //这里去DataMachine里处理一下数据，旨在提取出1个导演3个主演用于MovieDetail显示，剩下一个原始List用于MovieDetail中点击more时使用
                         team = DataMachine.mixingStaffsWorks(credit);
                         return team;
                     }

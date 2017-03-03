@@ -502,7 +502,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     public void onCommentsSuccess(final List<Comment> commentsResult) {
         this.comments.addAll(commentsResult);
-        // TODO: 2017/1/9 Sync likes,添加回复当回复数不足3个时
         avlComments.setVisibility(View.GONE);
         commentContainer.setVisibility(View.VISIBLE);
         int showSize = comments.size() > 3 ? 3 : comments.size();
