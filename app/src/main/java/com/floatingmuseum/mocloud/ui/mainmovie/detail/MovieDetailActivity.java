@@ -674,6 +674,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         hasWatched = true;
         String watchedTime = TimeUtil.formatGmtTime(nowWatchedTime);
         changeFancyButton(fbWatched, R.color.watched_color, R.color.white_text, "Watched at " + watchedTime);
+        //当一个处于想看状态的电影，被点击看过之后，要移除其想看的状态
+        changeFancyButton(fbWatchlist, android.R.color.transparent, R.color.watchlist_color, "Add to watchlist");
     }
 
     public void onRemoveMovieFromWatchedSucceed() {

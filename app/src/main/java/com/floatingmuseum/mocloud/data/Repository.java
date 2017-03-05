@@ -22,6 +22,7 @@ import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
+import com.floatingmuseum.mocloud.data.entity.MovieSyncItem;
 import com.floatingmuseum.mocloud.data.entity.SyncData;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.Movie;
@@ -1144,11 +1145,14 @@ public class Repository {
                     @Override
                     public void call(SyncResponse syncResponse) {
                         RealmMovieWatched realmMovieWatched = new RealmMovieWatched();
-                        realmMovieWatched.setTitle(item.getMovies().get(0).getTitle());
-                        realmMovieWatched.setYear(item.getMovies().get(0).getYear());
-                        realmMovieWatched.setTrakt_id(item.getMovies().get(0).getIds().getTrakt());
-                        realmMovieWatched.setLast_watched_at(item.getMovies().get(0).getWatched_at());
+                        MovieSyncItem movieSyncItem = item.getMovies().get(0);
+                        realmMovieWatched.setTitle(movieSyncItem.getTitle());
+                        realmMovieWatched.setYear(movieSyncItem.getYear());
+                        realmMovieWatched.setTrakt_id(movieSyncItem.getIds().getTrakt());
+                        realmMovieWatched.setLast_watched_at(movieSyncItem.getWatched_at());
                         RealmManager.insertOrUpdate(realmMovieWatched);
+                        //当一个处于想看列表的电影，被点击看过之后，要移除其在数据库想看表中的数据
+                        RealmManager.delete(RealmMovieWatchlist.class, "trakt_id", movieSyncItem.getIds().getTrakt());
                     }
                 })
                 .compose(RxUtil.<SyncResponse>threadSwitch())
