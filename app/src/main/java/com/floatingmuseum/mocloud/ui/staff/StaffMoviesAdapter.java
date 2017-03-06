@@ -5,14 +5,18 @@ import android.widget.ImageView;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.MoCloudUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -63,13 +67,27 @@ public class StaffMoviesAdapter extends BaseQuickAdapter<Staff, BaseViewHolder> 
             holder.setText(R.id.tv_role, staff.getJob());
         }
         holder.setVisible(R.id.tv_role, true);
-//        RatioImageView ivPoster = holder.getView(R.id.iv_poster);
-//        if (staff.getPoster_path() != null) {
-//            Logger.d("电影名:" + staff.getTitle() + "...海报:" + staff.getPoster_path());
-//            ImageLoader.load(mContext, StringUtil.buildPosterUrl(staff.getPoster_path()), ivPoster, R.drawable.default_movie_poster);
-//        } else {
-//            Logger.d("电影名:" + staff.getTitle() + "...没有海报:" + staff.getPoster_path());
-//            ImageLoader.load(mContext, staff.getPoster_path(), ivPoster, R.drawable.default_movie_poster);
-//        }
+        RatioImageView ivPoster = holder.getView(R.id.iv_poster);
+        loadPoster(ivPoster,staff.getMovie());
+    }
+
+    protected void loadPoster(RatioImageView posterView, Movie movie) {
+        TmdbMovieImage image = movie.getImage();
+        Logger.d("MovieName:" + movie.getTitle() + "..." + image);
+        if (image != null) {
+            if (image.isHasCache()) {
+                File file = image.getCacheFile();
+                ImageLoader.load(mContext, file, posterView, R.drawable.default_movie_poster);
+                Logger.d("图片从本地加载:" + movie.getTitle() + "..." + file.getName());
+                return;
+            } else if (image.isHasPoster()) {
+                String tmdbPosterUrl = StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path());
+                ImageLoader.load(mContext, tmdbPosterUrl, posterView, R.drawable.default_movie_poster);
+                Logger.d("图片从网络加载:" + movie.getTitle() + "..." + image.getId() + "...tmdbPosterUrl:" + tmdbPosterUrl);
+                return;
+            }
+        }
+        Logger.d("没有图片showImage:" + movie.getTitle());
+        ImageLoader.loadDefault(mContext, posterView);
     }
 }

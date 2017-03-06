@@ -25,6 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Floatingmuseum on 2016/12/26.
@@ -73,7 +74,6 @@ public class StaffMoviesFragment extends BaseFragment {
         staffMoviesRv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
-                // TODO: 2017/2/6 没有海报
                 openMovieDetailActivity(works.get(position).getMovie());
             }
         });
@@ -84,11 +84,18 @@ public class StaffMoviesFragment extends BaseFragment {
         presenter.start(staff.getPerson().getIds().getSlug());
     }
 
-    public void onBaseDataSuccess(List<Staff> works) {
-//        for (Staff work : works) {
-//            Logger.d("电影名:" + work.getMovie().getTitle() + "...ReleasedYear:" + work.getMovie().getReleased() + "..." + work.getCharacter() + "..." + work.getJob());
-//        }
-        this.works.addAll(works);
+    private boolean alreadyGetAllImages = false;
+
+
+    public void onGetWorksImagesSucceed(List<Staff> staffs,boolean alreadyGetAllImages) {
+        works.addAll(staffs);
         adapter.notifyDataSetChanged();
+        this.alreadyGetAllImages = alreadyGetAllImages;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.unSubscription();
     }
 }

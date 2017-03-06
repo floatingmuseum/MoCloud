@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
+import com.facebook.stetho.server.LeakyBufferedInputStream;
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.Constants;
 import com.floatingmuseum.mocloud.MoCloud;
@@ -12,6 +13,7 @@ import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.callback.CommentsCallback;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
 import com.floatingmuseum.mocloud.data.callback.RecommendationsCallback;
+import com.floatingmuseum.mocloud.data.callback.StaffWorksCallback;
 import com.floatingmuseum.mocloud.data.callback.SyncCallback;
 import com.floatingmuseum.mocloud.data.callback.UserDetailCallback;
 import com.floatingmuseum.mocloud.data.db.RealmManager;
@@ -764,6 +766,52 @@ public class Repository {
                 });
     }
 
+    public Subscription getWorksImages(final List<Staff> originalWorks, int imageRequestStart, int imageRequestEnd, final StaffWorksCallback callback){
+        final List<Staff> subWorks = originalWorks.subList(imageRequestStart,imageRequestEnd);
+        Logger.d("getWorksImages...subWorks:"+subWorks.size());
+        return Observable.from(subWorks)
+                .flatMap(new Func1<Staff, Observable<TmdbMovieImage>>() {
+                    @Override
+                    public Observable<TmdbMovieImage> call(Staff staff) {
+                        Logger.d("getWorksImages...getImage");
+                        return getTmdbMovieImageObservable(staff.getMovie());
+                    }
+                }).map(new Func1<TmdbMovieImage, Staff>() {
+            @Override
+            public Staff call(TmdbMovieImage image) {
+                Logger.d("getWorksImages...merge");
+                for (Staff staff : subWorks) {
+                    Movie movie = staff.getMovie();
+                    if (movie.getIds().getTmdb() == image.getId()) {
+                        Logger.d("getWorksImages...movieId:"+movie.getIds().getTmdb()+"...imageId:"+image.getId());
+                        staff.setMovie(getMergedMovie(movie, image));
+                        return staff;
+                    }
+                }
+                return null;
+            }
+        }).toList()
+                .compose(RxUtil.<List<Staff>>threadSwitch())
+                .subscribe(new Observer<List<Staff>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("getWorksImages...onError");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(List<Staff> staffs) {
+                        callback.onGetWorksImagesSucceed(staffs);
+                    }
+                });
+    }
+
     /**
      * 获取人物其他图片
      */
@@ -1138,7 +1186,6 @@ public class Repository {
     }
 
     public void addMovieToWatched(final SyncData item, final MovieDetailCallback callback) {
-        // TODO: 2017/3/2 如果数据库添加成功，网络请求失败，如何保持数据一致性，其他sync也是如此
         service.addMovieToWatched(item)
                 .onErrorResumeNext(refreshTokenAndRetry(service.addMovieToWatched(item)))
                 .doOnNext(new Action1<SyncResponse>() {
