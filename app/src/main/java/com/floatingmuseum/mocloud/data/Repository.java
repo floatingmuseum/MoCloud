@@ -359,13 +359,26 @@ public class Repository {
     /**
      * 从本地or网络获取电影海报
      */
-    private Observable<TmdbMovieImage> getTmdbMovieImageObservable(Movie movie) {
+    private Observable<TmdbMovieImage> getTmdbMovieImageObservable(final Movie movie) {
+        Logger.d("getTmdbMovieImageObservable...Movie:" + movie.getTitle() + "...TmdbId:" + movie.getIds().getTmdb());
         int tmdbId = movie.getIds().getTmdb();
         File file = ImageCacheManager.hasCacheImage(tmdbId, ImageCacheManager.TYPE_POSTER);
         if (file != null) {
             return ImageCacheManager.localPosterImage(tmdbId, file);
         }
-        return service.getTmdbImages(tmdbId, BuildConfig.TmdbApiKey);
+        return service.getTmdbImages(tmdbId, BuildConfig.TmdbApiKey)
+                .onErrorReturn(new Func1<Throwable, TmdbMovieImage>() {
+                    @Override
+                    public TmdbMovieImage call(Throwable throwable) {
+                        Logger.d("getTmdbImages...onErrorReturn");
+                        throwable.printStackTrace();
+                        TmdbMovieImage tmdbMovieImage = new TmdbMovieImage();
+                        tmdbMovieImage.setId(movie.getIds().getTmdb());
+                        tmdbMovieImage.setHasPoster(false);
+                        tmdbMovieImage.setHasCache(false);
+                        return tmdbMovieImage;
+                    }
+                });
     }
 
     /**
@@ -766,9 +779,9 @@ public class Repository {
                 });
     }
 
-    public Subscription getWorksImages(final List<Staff> originalWorks, int imageRequestStart, int imageRequestEnd, final StaffWorksCallback callback){
-        final List<Staff> subWorks = originalWorks.subList(imageRequestStart,imageRequestEnd);
-        Logger.d("getWorksImages...subWorks:"+subWorks.size());
+    public Subscription getWorksImages(final List<Staff> originalWorks, int imageRequestStart, int imageRequestEnd, final StaffWorksCallback callback) {
+        final List<Staff> subWorks = originalWorks.subList(imageRequestStart, imageRequestEnd);
+        Logger.d("getWorksImages...subWorks:" + subWorks.size());
         return Observable.from(subWorks)
                 .flatMap(new Func1<Staff, Observable<TmdbMovieImage>>() {
                     @Override
@@ -777,20 +790,20 @@ public class Repository {
                         return getTmdbMovieImageObservable(staff.getMovie());
                     }
                 }).map(new Func1<TmdbMovieImage, Staff>() {
-            @Override
-            public Staff call(TmdbMovieImage image) {
-                Logger.d("getWorksImages...merge");
-                for (Staff staff : subWorks) {
-                    Movie movie = staff.getMovie();
-                    if (movie.getIds().getTmdb() == image.getId()) {
-                        Logger.d("getWorksImages...movieId:"+movie.getIds().getTmdb()+"...imageId:"+image.getId());
-                        staff.setMovie(getMergedMovie(movie, image));
-                        return staff;
+                    @Override
+                    public Staff call(TmdbMovieImage image) {
+                        Logger.d("getWorksImages...merge..." + image);
+                        for (Staff staff : subWorks) {
+                            Movie movie = staff.getMovie();
+                            if (movie.getIds().getTmdb() == image.getId()) {
+                                Logger.d("getWorksImages...movieId:" + movie.getIds().getTmdb() + "...imageId:" + image.getId());
+                                staff.setMovie(getMergedMovie(movie, image));
+                                return staff;
+                            }
+                        }
+                        return null;
                     }
-                }
-                return null;
-            }
-        }).toList()
+                }).toList()
                 .compose(RxUtil.<List<Staff>>threadSwitch())
                 .subscribe(new Observer<List<Staff>>() {
                     @Override
