@@ -107,7 +107,7 @@ public class Repository {
      * 趋势
      */
     public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
-        Logger.d("getMovieTrendingData");
+        Logger.d("getMovieTrendingData...pageNum:"+pageNum);
         final List<BaseMovie> movies = new ArrayList<>();
         service.getMovieTrending(pageNum, limit)
                 .compose(getEachPoster(movies))

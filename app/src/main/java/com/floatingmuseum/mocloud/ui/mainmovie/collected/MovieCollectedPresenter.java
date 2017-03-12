@@ -15,10 +15,7 @@ import java.util.List;
  */
 public class MovieCollectedPresenter extends ListPresenter implements DataCallback<List<BaseMovie>> {
     private MovieCollectedFragment fragment;
-    private int pageNum = 1;
-    private int limit = 12;
     private String period = "weekly";
-    protected Boolean shouldClean;
 
     public MovieCollectedPresenter(@NonNull MovieCollectedFragment fragment){
         this.fragment = fragment;
@@ -26,15 +23,16 @@ public class MovieCollectedPresenter extends ListPresenter implements DataCallba
 
     @Override
     public void start(boolean shouldClean) {
-        pageNum = shouldClean?1:++pageNum;
-        this.shouldClean =shouldClean;
-        repository.getMovieCollectedData(period,pageNum,limit,this);
+        repository.getMovieCollectedData(period,getPageNum(shouldClean),limit,this);
     }
 
     @Override
     public void onBaseDataSuccess(List<BaseMovie> baseMovies) {
         fragment.refreshData(baseMovies,shouldClean);
         fragment.stopRefresh();
+        if (!shouldClean){
+            pageNum+=1;
+        }
     }
 
     public int getLimit(){

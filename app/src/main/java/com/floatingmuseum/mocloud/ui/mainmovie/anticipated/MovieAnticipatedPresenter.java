@@ -17,9 +17,6 @@ import java.util.List;
 public class MovieAnticipatedPresenter extends ListPresenter implements DataCallback<List<BaseMovie>> {
 
     private MovieAnticipatedFragment fragment;
-    private int pageNum = 1;
-    private int limit = 12;
-    protected boolean shouldClean;
 
 
     public MovieAnticipatedPresenter(@NonNull MovieAnticipatedFragment fragment){
@@ -28,18 +25,19 @@ public class MovieAnticipatedPresenter extends ListPresenter implements DataCall
 
     @Override
     public void start(boolean shouldClean) {
-        pageNum = shouldClean?1:++pageNum;
-        this.shouldClean =shouldClean;
-        repository.getMovieAnticipatedData(pageNum,limit,this);
+        repository.getMovieAnticipatedData(getPageNum(shouldClean),limit,this);
     }
 
     @Override
     public void onBaseDataSuccess(List<BaseMovie> baseMovies) {
-        for (BaseMovie baseMovie : baseMovies) {
-            Logger.d("Error测试...Movie:"+baseMovie.getMovie().getTitle()+"...Image:"+baseMovie.getMovie().getImage());
-        }
+//        for (BaseMovie baseMovie : baseMovies) {
+//            Logger.d("Error测试...Movie:"+baseMovie.getMovie().getTitle()+"...Image:"+baseMovie.getMovie().getImage());
+//        }
         fragment.refreshData(baseMovies,shouldClean);
         fragment.stopRefresh();
+        if (!shouldClean){
+            pageNum+=1;
+        }
     }
 
     public int getLimit(){

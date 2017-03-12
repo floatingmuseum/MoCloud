@@ -28,6 +28,8 @@ public class StaffMoviesPresenter extends Presenter implements StaffWorksCallbac
     }
 
     public void start(String slug) {
+        imageRequestStart=0;
+        imageRequestEnd=9;
         compositeSubscription.add(repository.getStaffMovieCredits(slug, this));
     }
 

@@ -18,9 +18,6 @@ import java.util.List;
 public class MovieTrendingPresenter extends ListPresenter implements DataCallback<List<BaseMovie>> {
 
     private MovieTrendingFragment fragment;
-    private int limit = 12;
-    private int pageNum = 1;
-    protected Boolean shouldClean;
 
     MovieTrendingPresenter(@NonNull MovieTrendingFragment fragment){
         this.fragment = fragment;
@@ -29,16 +26,17 @@ public class MovieTrendingPresenter extends ListPresenter implements DataCallbac
     @Override
     public void start(final boolean shouldClean) {
         Logger.d("刷新...start:"+shouldClean);
-        pageNum = shouldClean?1:++pageNum;
-        this.shouldClean =shouldClean;
-//        repository.getMovieTrendingData1(pageNum,limit,this);
-        repository.getMovieTrendingData(pageNum,limit,this);
+        repository.getMovieTrendingData(getPageNum(shouldClean),limit,this);
     }
 
     @Override
     public void onBaseDataSuccess(List<BaseMovie> data) {
         fragment.refreshData(data,shouldClean);
         fragment.stopRefresh();
+        //请求成功后，页码永久+1
+        if (!shouldClean){
+            pageNum+=1;
+        }
     }
 
     public int getLimit(){

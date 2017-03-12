@@ -18,9 +18,6 @@ import java.util.List;
 public class MoviePopularPresenter extends ListPresenter implements DataCallback<List<Movie>> {
 
     private MoviePopularFragment fragment;
-    private int pageNum = 1;
-    private int limit = 12;
-    protected Boolean shouldClean;
 
 
     public MoviePopularPresenter(@NonNull MoviePopularFragment fragment){
@@ -29,15 +26,16 @@ public class MoviePopularPresenter extends ListPresenter implements DataCallback
 
     @Override
     public void start(boolean shouldClean) {
-        pageNum = shouldClean?1:++pageNum;
-        this.shouldClean =shouldClean;
-        repository.getMoviePopularData(pageNum,limit,this);
+        repository.getMoviePopularData(getPageNum(shouldClean),limit,this);
     }
 
     @Override
     public void onBaseDataSuccess(List<Movie> movies) {
         fragment.refreshData(movies,shouldClean);
         fragment.stopRefresh();
+        if (!shouldClean){
+            pageNum+=1;
+        }
     }
 
     public int getLimit(){
