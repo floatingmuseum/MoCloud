@@ -271,7 +271,7 @@ public interface MoCloudService {
     Observable<Person> getStaff(@Path("id") String id);
 
     @GET("people/{id}/movies?extended=full")
-    Observable<PeopleCredit> getStaffMovieCredits(@Path("id") String slug);
+    Observable<PeopleCredit> getStaffMovieCredits(@Path("id") int traktId);
 
     @GET("people/{id}/shows?extended=full")
     Observable getStaffShowsCredits(@Path("id") String traktId);

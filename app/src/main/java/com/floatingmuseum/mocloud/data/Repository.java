@@ -107,7 +107,7 @@ public class Repository {
      * 趋势
      */
     public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
-        Logger.d("getMovieTrendingData...pageNum:"+pageNum);
+        Logger.d("getMovieTrendingData...pageNum:" + pageNum);
         final List<BaseMovie> movies = new ArrayList<>();
         service.getMovieTrending(pageNum, limit)
                 .compose(getEachPoster(movies))
@@ -752,8 +752,8 @@ public class Repository {
     /**
      * 获取人物电影作品
      */
-    public Subscription getStaffMovieCredits(String slug, final DataCallback callback) {
-        return service.getStaffMovieCredits(slug)
+    public Subscription getStaffMovieCredits(int traktId, final DataCallback callback) {
+        return service.getStaffMovieCredits(traktId)
                 .map(new Func1<PeopleCredit, List<Staff>>() {
                     @Override
                     public List<Staff> call(PeopleCredit credits) {
@@ -779,9 +779,7 @@ public class Repository {
                 });
     }
 
-    public Subscription getWorksImages(final List<Staff> originalWorks, int imageRequestStart, int imageRequestEnd, final StaffWorksCallback callback) {
-        final List<Staff> subWorks = originalWorks.subList(imageRequestStart, imageRequestEnd);
-        Logger.d("getWorksImages...subWorks:" + subWorks.size());
+    public Subscription getWorksImages(final List<Staff> subWorks, final StaffWorksCallback callback) {
         return Observable.from(subWorks)
                 .flatMap(new Func1<Staff, Observable<TmdbMovieImage>>() {
                     @Override

@@ -17,6 +17,8 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.utils.ToastUtil;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,9 @@ public class StaffMoviesFragment extends BaseFragment {
     private StaffMoviesPresenter presenter;
     private List<Staff> works;
     private StaffMoviesAdapter adapter;
+    private LinearLayoutManager manager;
+    private boolean alreadyGetAllImages = false;
+    private int traktId;
 
     public static Fragment newInstance(Staff staff) {
         StaffMoviesFragment fragment = new StaffMoviesFragment();
@@ -54,6 +59,7 @@ public class StaffMoviesFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_staff_movies, container, false);
         staff = getArguments().getParcelable("staff");
+        traktId = staff.getPerson().getIds().getTrakt();
         ButterKnife.bind(this, view);
         presenter = new StaffMoviesPresenter(this);
         initView();
@@ -64,7 +70,7 @@ public class StaffMoviesFragment extends BaseFragment {
     @Override
     protected void initView() {
         staffMoviesRv.setHasFixedSize(true);
-        LinearLayoutManager manager = new LinearLayoutManager(context);
+        manager = new LinearLayoutManager(context);
         staffMoviesRv.setLayoutManager(manager);
         works = new ArrayList<>();
         adapter = new StaffMoviesAdapter(works);
@@ -77,10 +83,25 @@ public class StaffMoviesFragment extends BaseFragment {
             }
         });
 
+        staffMoviesRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (alreadyGetAllImages) {
+                    return;
+                }
+                int lastItemPosition = manager.findLastVisibleItemPosition();
+                if ((lastItemPosition + 3) == adapter.getItemCount() && !swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(true);
+                    presenter.start(traktId, true);
+                }
+            }
+        });
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                presenter.start(staff.getPerson().getIds().getSlug());
+                presenter.start(traktId, false);
             }
         });
     }
@@ -88,17 +109,28 @@ public class StaffMoviesFragment extends BaseFragment {
     @Override
     protected void requestBaseData() {
         swipeRefreshLayout.setRefreshing(true);
-        presenter.start(staff.getPerson().getIds().getSlug());
+        presenter.start(traktId, false);
     }
 
-    private boolean alreadyGetAllImages = false;
-
-
-    public void onGetWorksImagesSucceed(List<Staff> staffs, boolean alreadyGetAllImages) {
+    public void onGetWorksImagesSucceed(List<Staff> staffs, boolean isLoadMore) {
         swipeRefreshLayout.setRefreshing(false);
+        if (staffs == null) {
+            ToastUtil.showToast(R.string.already_get_all_data);
+            alreadyGetAllImages = true;
+            return;
+        } else if (staffs.size() < 10) {
+            ToastUtil.showToast(R.string.already_get_all_data);
+            alreadyGetAllImages = true;
+        } else {
+            alreadyGetAllImages = false;
+        }
+
+
+        if (!isLoadMore) {
+            works.clear();
+        }
         works.addAll(staffs);
         adapter.notifyDataSetChanged();
-        this.alreadyGetAllImages = alreadyGetAllImages;
     }
 
     @Override

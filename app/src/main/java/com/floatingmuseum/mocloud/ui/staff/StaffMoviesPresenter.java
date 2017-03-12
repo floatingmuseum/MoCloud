@@ -6,6 +6,7 @@ import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.callback.StaffWorksCallback;
 import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.utils.ListUtil;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -18,40 +19,47 @@ import java.util.List;
 public class StaffMoviesPresenter extends Presenter implements StaffWorksCallback<List<Staff>> {
 
     private StaffMoviesFragment fragment;
-    private int imageRequestStart = 0;
-    private int imageRequestEnd = 9;
+    private int pageNum = 1;
+    private int limit = 10;
     private List<Staff> originalWorks = new ArrayList<>();
-
+    private boolean isLoadMore;
 
     public StaffMoviesPresenter(StaffMoviesFragment fragment) {
         this.fragment = fragment;
     }
 
-    public void start(String slug) {
-        imageRequestStart=0;
-        imageRequestEnd=9;
-        compositeSubscription.add(repository.getStaffMovieCredits(slug, this));
+    public void start(int traktId, boolean isLoadMore) {
+        this.isLoadMore = isLoadMore;
+        if (isLoadMore) {
+            pageNum++;
+            getWorksImages();
+        } else {
+            pageNum = 1;
+            compositeSubscription.add(repository.getStaffMovieCredits(traktId, this));
+        }
     }
 
     @Override
     public void onBaseDataSuccess(List<Staff> works) {
         Logger.d("StaffMoviesPresenter...onBaseDataSuccess");
+        originalWorks.clear();
         originalWorks.addAll(works);
-        if (originalWorks.size() < 10) {
-            imageRequestEnd = originalWorks.size() - 1;
-        }
         getWorksImages();
     }
 
     public void getWorksImages() {
-        compositeSubscription.add(repository.getWorksImages(originalWorks, imageRequestStart, imageRequestEnd, this));
+        List<Staff> subWorks = ListUtil.subList(originalWorks, pageNum, limit);
+        if (subWorks == null) {
+            onGetWorksImagesSucceed(null);
+            return;
+        }
+        compositeSubscription.add(repository.getWorksImages(subWorks, this));
     }
 
     @Override
     public void onGetWorksImagesSucceed(List<Staff> staffs) {
         Logger.d("StaffMoviesPresenter...onGetWorksImagesSucceed");
-        boolean alreadyGetAllWorksImages = staffs.size() == originalWorks.size() || staffs.size() < 10;
-        fragment.onGetWorksImagesSucceed(staffs, alreadyGetAllWorksImages);
+        fragment.onGetWorksImagesSucceed(staffs, isLoadMore);
     }
 
     @Override

@@ -45,6 +45,7 @@
     <string name="logging_in">Logging in...</string>
     <string name="tagline">Tagline</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+    <string name="already_get_all_data">Already get all data.</string>
 
     <string-array name="tab_names">
         <item>Trending</item>

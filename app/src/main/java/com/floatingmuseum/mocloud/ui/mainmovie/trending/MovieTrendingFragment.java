@@ -15,6 +15,7 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -114,10 +115,7 @@ public class MovieTrendingFragment extends BaseFragment {
 
 
     public void refreshData(List<BaseMovie> newData, boolean shouldClean) {
-        if (newData.size() < presenter.getLimit()) {
-            alreadyGetAllData = true;
-        }
-
+        checkDataSize(newData, presenter.getLimit());
         if (shouldClean) {
             trendingList.clear();
         }

@@ -35,7 +35,7 @@ public class MovieAnticipatedFragment extends BaseFragment {
     public final static String MOVIE_ANTICIPATED_FRAGMENT = "MovieAnticipatedFragment";
     private List<BaseMovie> anticipatedList;
     private MovieAnticipatedAdapter adapter;
-//    private TestAdapter testAdapter;
+    //    private TestAdapter testAdapter;
     private MovieAnticipatedPresenter presenter;
     private GridLayoutManager manager;
 
@@ -45,7 +45,7 @@ public class MovieAnticipatedFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
         ButterKnife.bind(this, rootView);
 
@@ -57,10 +57,10 @@ public class MovieAnticipatedFragment extends BaseFragment {
 
     protected void initView() {
         anticipatedList = new ArrayList<>();
-        adapter =  new MovieAnticipatedAdapter(anticipatedList);
+        adapter = new MovieAnticipatedAdapter(anticipatedList);
 //        testAdapter = new TestAdapter(getActivity(),anticipatedList);
         rv.setHasFixedSize(true);
-        manager = new GridLayoutManager(context,2);
+        manager = new GridLayoutManager(context, 2);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
 //        rv.setAdapter(testAdapter);
@@ -74,7 +74,7 @@ public class MovieAnticipatedFragment extends BaseFragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                loadMore(manager,adapter,presenter,srl);
+                loadMore(manager, adapter, presenter, srl);
             }
         });
 
@@ -85,7 +85,7 @@ public class MovieAnticipatedFragment extends BaseFragment {
             }
         });
 
-        requestBaseDataIfUserNotScrollToFragments(srl,presenter);
+        requestBaseDataIfUserNotScrollToFragments(srl, presenter);
     }
 
     @Override
@@ -95,16 +95,12 @@ public class MovieAnticipatedFragment extends BaseFragment {
     }
 
     public void refreshData(List<BaseMovie> newData, boolean shouldClean) {
-        if(newData.size()<presenter.getLimit()){
-            alreadyGetAllData = true;
-        }
-
-        if(shouldClean){
+        checkDataSize(newData, presenter.getLimit());
+        if (shouldClean) {
             anticipatedList.clear();
         }
         anticipatedList.addAll(newData);
         adapter.notifyDataSetChanged();
-//        testAdapter.notifyDataSetChanged();
     }
 
     public void stopRefresh() {

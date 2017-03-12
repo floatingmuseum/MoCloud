@@ -95,10 +95,7 @@ public class MoviePlayedFragment extends BaseFragment {
 
 
     public void refreshData(List<BaseMovie> newData, boolean shouldClean) {
-        if (newData.size() < presenter.getLimit()) {
-            alreadyGetAllData = true;
-        }
-
+        checkDataSize(newData, presenter.getLimit());
         if (shouldClean) {
             playedList.clear();
         }

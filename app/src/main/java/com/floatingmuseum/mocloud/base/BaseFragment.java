@@ -11,10 +11,14 @@ import android.support.v7.widget.GridLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
+import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 import com.floatingmuseum.mocloud.data.bus.EventBusManager;
+import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
+
+import java.util.List;
 
 
 /**
@@ -66,6 +70,9 @@ abstract public class BaseFragment extends Fragment {
     }
 
     protected void loadMore(GridLayoutManager manager, BaseQuickAdapter adapter, ListPresenter presenter, SwipeRefreshLayout srl) {
+        if (alreadyGetAllData) {
+            return;
+        }
         int lastItemPosition = manager.findLastVisibleItemPosition();
 //        Logger.d("lastItemPosition:"+lastItemPosition+"...可加载位置:"+(adapter.getItemCount()-4)+"...alreadyGetAllData:"+alreadyGetAllData+"...firstSeeLastItem:"+firstSeeLastItem+"...notFirstLoadData:"+notFirstLoadData);
 //        if(lastItemPosition>(adapter.getItemCount()-4) && !alreadyGetAllData && firstSeeLastItem){
@@ -125,6 +132,18 @@ abstract public class BaseFragment extends Fragment {
             srl.setRefreshing(true);
 //        requestBaseData();
             presenter.start(true);
+        }
+    }
+
+    /**
+     * 根据数据长度，来确定是否加载完毕
+     */
+    protected void checkDataSize(List list, int limit) {
+        if (list.size() < limit) {
+            ToastUtil.showToast(R.string.already_get_all_data);
+            alreadyGetAllData = true;
+        } else {
+            alreadyGetAllData = false;
         }
     }
 
