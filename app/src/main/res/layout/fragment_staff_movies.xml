@@ -3,10 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/staff_movies_rv"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
 
-    <include layout="@layout/layout_no_data"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/staff_movies_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <include layout="@layout/layout_no_data" />
 </FrameLayout>

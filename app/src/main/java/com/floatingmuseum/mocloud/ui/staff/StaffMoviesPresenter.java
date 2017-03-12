@@ -23,31 +23,33 @@ public class StaffMoviesPresenter extends Presenter implements StaffWorksCallbac
     private List<Staff> originalWorks = new ArrayList<>();
 
 
-    public StaffMoviesPresenter(StaffMoviesFragment fragment){
+    public StaffMoviesPresenter(StaffMoviesFragment fragment) {
         this.fragment = fragment;
     }
 
     public void start(String slug) {
-        compositeSubscription.add(repository.getStaffMovieCredits(slug,this));
+        compositeSubscription.add(repository.getStaffMovieCredits(slug, this));
     }
 
     @Override
     public void onBaseDataSuccess(List<Staff> works) {
+        Logger.d("StaffMoviesPresenter...onBaseDataSuccess");
         originalWorks.addAll(works);
-        if (originalWorks.size()<10){
-            imageRequestEnd = originalWorks.size()-1;
+        if (originalWorks.size() < 10) {
+            imageRequestEnd = originalWorks.size() - 1;
         }
         getWorksImages();
     }
 
     public void getWorksImages() {
-        compositeSubscription.add(repository.getWorksImages(originalWorks,imageRequestStart,imageRequestEnd,this));
+        compositeSubscription.add(repository.getWorksImages(originalWorks, imageRequestStart, imageRequestEnd, this));
     }
 
     @Override
     public void onGetWorksImagesSucceed(List<Staff> staffs) {
-        boolean alreadyGetAllWorksImages = staffs.size()==originalWorks.size() || staffs.size()<10;
-        fragment.onGetWorksImagesSucceed(staffs,alreadyGetAllWorksImages);
+        Logger.d("StaffMoviesPresenter...onGetWorksImagesSucceed");
+        boolean alreadyGetAllWorksImages = staffs.size() == originalWorks.size() || staffs.size() < 10;
+        fragment.onGetWorksImagesSucceed(staffs, alreadyGetAllWorksImages);
     }
 
     @Override

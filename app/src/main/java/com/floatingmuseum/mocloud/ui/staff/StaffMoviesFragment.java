@@ -3,6 +3,7 @@ package com.floatingmuseum.mocloud.ui.staff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,22 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ajguan.library.EasyRefreshLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
-import com.floatingmuseum.mocloud.base.Presenter;
-import com.floatingmuseum.mocloud.data.Repository;
-import com.floatingmuseum.mocloud.data.entity.PeopleCredit;
 import com.floatingmuseum.mocloud.data.entity.Staff;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Floatingmuseum on 2016/12/26.
@@ -36,6 +33,8 @@ public class StaffMoviesFragment extends BaseFragment {
     RecyclerView staffMoviesRv;
     @BindView(R.id.no_data)
     TextView noData;
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private Staff staff;
     private StaffMoviesPresenter presenter;
@@ -77,17 +76,26 @@ public class StaffMoviesFragment extends BaseFragment {
                 openMovieDetailActivity(works.get(position).getMovie());
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.start(staff.getPerson().getIds().getSlug());
+            }
+        });
     }
 
     @Override
     protected void requestBaseData() {
+        swipeRefreshLayout.setRefreshing(true);
         presenter.start(staff.getPerson().getIds().getSlug());
     }
 
     private boolean alreadyGetAllImages = false;
 
 
-    public void onGetWorksImagesSucceed(List<Staff> staffs,boolean alreadyGetAllImages) {
+    public void onGetWorksImagesSucceed(List<Staff> staffs, boolean alreadyGetAllImages) {
+        swipeRefreshLayout.setRefreshing(false);
         works.addAll(staffs);
         adapter.notifyDataSetChanged();
         this.alreadyGetAllImages = alreadyGetAllImages;
