@@ -654,6 +654,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         String imdbVotes = omdbInfo.getImdbVotes();
         imdbVotes = imdbVotes == null ? "N/A" : omdbInfo.getImdbVotes().replace(",", "") + "votes";
         tvImdbRatingCount.setText(imdbVotes);
+        llImdbRating.setVisibility(View.VISIBLE);
 
         String tomatoUserRating = omdbInfo.getTomatoUserRating();
         double tomatoRating = Double.valueOf(tomatoUserRating);
@@ -665,7 +666,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tvTomatoRating.setText(tomatoUserRating);
         // TODO: 2017/2/13 西红柿的userReview应该不是rating count
         tvTomatoRatingCount.setText(omdbInfo.getTomatoUserReviews() + "votes");
-        llImdbRating.setVisibility(View.VISIBLE);
         llTomatoRating.setVisibility(View.VISIBLE);
     }
 
