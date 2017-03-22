@@ -1715,7 +1715,19 @@ public class Repository {
                 if (image.isHasCache()) {
                     bitmap = Glide.with(MoCloud.context).load(image.getCacheFile()).asBitmap().into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
                 } else if (image.isHasPoster()) {
-                    String tmdbPosterUrl = StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path());
+                    String tmdbPosterUrl = null;
+                    List<TmdbMovieImage.Posters> posters = image.getPosters();
+                    //默认使用英文海报
+                    for (TmdbMovieImage.Posters poster : posters) {
+                        if ("en".equals(poster.getIso_639_1())) {
+                            tmdbPosterUrl = StringUtil.buildPosterUrl(poster.getFile_path());
+                            break;
+                        }
+                    }
+
+                    if (tmdbPosterUrl == null) {
+                        tmdbPosterUrl = StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path());
+                    }
                     bitmap = Glide.with(MoCloud.context).load(tmdbPosterUrl).asBitmap().into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
                 }
             }
