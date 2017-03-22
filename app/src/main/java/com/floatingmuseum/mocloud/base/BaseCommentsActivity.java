@@ -79,8 +79,11 @@ public abstract class BaseCommentsActivity extends BaseActivity {
         tvUsername.setText(name);
 
         tvCreatetime.setText(TimeUtil.formatGmtTime(comment.getCreated_at()));
+        // TODO: 2017/3/22 如果超过3位数显示会有问题
         tvCommentsLikes.setText("" + comment.getLikes());
+//        tvCommentsLikes.setText("" + 999);
         tvCommentReplies.setText("" + comment.getReplies());
+//        tvCommentReplies.setText("" + 999);
         tvComment.setText(comment.getComment());
         if (comment.isLike()) {
             ivCommentLikes.setImageResource(R.drawable.appreciate_fill);
