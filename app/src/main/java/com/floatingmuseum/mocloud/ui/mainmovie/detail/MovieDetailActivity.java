@@ -656,6 +656,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tvImdbRatingCount.setText(imdbVotes);
         llImdbRating.setVisibility(View.VISIBLE);
 
+<<<<<<< HEAD
         Logger.d("OtherRatings:...Imdb:" + omdbInfo.getImdbRating() + "...Tomato:" + omdbInfo.getTomatoUserRating());
         /**
          * OMDB的tomatoes评分都变成了N/A
@@ -679,6 +680,19 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 //        // TODO: 2017/2/13 西红柿的userReview应该不是rating count
 //        tvTomatoRatingCount.setText(omdbInfo.getTomatoUserReviews() + "votes");
 //        llTomatoRating.setVisibility(View.VISIBLE);
+=======
+        String tomatoUserRating = omdbInfo.getTomatoUserRating();
+        double tomatoRating = Double.valueOf(tomatoUserRating);
+        if (tomatoRating < 3.5) {
+            Glide.with(this).load(R.drawable.popcorn_bad).into(ivTomatoPopcornState);
+        } else {
+            Glide.with(this).load(R.drawable.popcorn_good).into(ivTomatoPopcornState);
+        }
+        tvTomatoRating.setText(tomatoUserRating);
+        // TODO: 2017/2/13 西红柿的userReview应该不是rating count
+        tvTomatoRatingCount.setText(omdbInfo.getTomatoUserReviews() + "votes");
+        llTomatoRating.setVisibility(View.VISIBLE);
+>>>>>>> refs/remotes/origin/master
     }
 
     public void onAddMovieToWatchedSucceed() {
