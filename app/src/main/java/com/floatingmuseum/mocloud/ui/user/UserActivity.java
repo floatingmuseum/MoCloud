@@ -24,6 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
  * Created by Floatingmuseum on 2016/9/14.
@@ -34,8 +35,8 @@ public class UserActivity extends BaseActivity {
     CircleImageView ivUserhead;
     @BindView(R.id.tv_username)
     TextView tvUsername;
-    @BindView(R.id.tv_is_following)
-    TextView tvIsFollowing;
+    @BindView(R.id.fb_following_state)
+    FancyButton fbFollowingState;
     @BindView(R.id.tv_following)
     TextView tvFollowing;
     @BindView(R.id.tv_followers)
@@ -92,9 +93,9 @@ public class UserActivity extends BaseActivity {
         actionBar.setTitle(username);
         ImageLoader.loadDontAnimate(this, MoCloudUtil.getUserAvatar(user), ivUserhead, R.drawable.default_userhead);
         boolean isUserSelf = user.getIds().getSlug().equals(SPUtil.getString(SPUtil.SP_USER_SETTINGS, "slug", ""));
-        Logger.d("isUserSelf:"+isUserSelf);
+        Logger.d("isUserSelf:" + isUserSelf);
         if (isUserSelf) {
-            tvIsFollowing.setVisibility(View.GONE);
+            fbFollowingState.setVisibility(View.GONE);
         }
         if (user.isPrivateX() && !isUserSelf) {
             // TODO: 2017/1/4 如果是一个private用户，可以获取到的数据有限。但是不确定一个已登录的private用户是否可以访问自己的全部资料
@@ -119,14 +120,15 @@ public class UserActivity extends BaseActivity {
                 + " for watching " + stats.getMovies().getWatched() + " movies,and has given "
                 + MoCloudUtil.getAverageRating(stats.getRatings()) + " average rating, "
                 + stats.getMovies().getComments() + " comments.");
-        if (stats.getNetwork().getFollowers() == 0) {
-            tvIsFollowing.setText("Follow");
-        }
+//        if (stats.getNetwork().getFollowers() == 0) {
+//            fbFollowingState.setText("Follow");
+//        }
     }
 
     public void onUserFollowersSuccess(List<Follower> followers) {
         if (followers != null && followers.size() > 0) {
-            tvIsFollowing.setText(MoCloudUtil.isFollowing(followers) ? "Following" : "Follow");
+            fbFollowingState.setText(MoCloudUtil.isFollowing(followers) ? "Following" : "Follow");
+            fbFollowingState.setVisibility(View.VISIBLE);
         }
     }
 

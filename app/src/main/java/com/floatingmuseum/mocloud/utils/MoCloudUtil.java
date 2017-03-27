@@ -5,6 +5,7 @@ import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.Stats;
 import com.floatingmuseum.mocloud.data.entity.User;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class MoCloudUtil {
     }
 
     public static boolean isFollowing(List<Follower> followers) {
-        String slug = SPUtil.getString(SPUtil.SP_USER_SETTINGS, "slug");
+        String slug = SPUtil.getString(SPUtil.SP_USER_SETTINGS, "slug", "");
         for (Follower follower : followers) {
             if (follower.getUser().getIds().getSlug().equals(slug)) {
                 return true;

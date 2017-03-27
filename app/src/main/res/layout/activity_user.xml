@@ -34,11 +34,11 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/iv_userhead"
-                    mocloud:civ_border_color="#FF000000"
-                    mocloud:civ_border_width="2dp"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:scaleType="centerCrop"
+                    mocloud:civ_border_color="#FF000000"
+                    mocloud:civ_border_width="2dp"
                     tools:src="@drawable/default_userhead" />
 
                 <TextView
@@ -47,15 +47,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:padding="2dp"
+                    android:textSize="16sp"
                     tools:text="Floatingmuseum" />
 
-                <TextView
-                    android:id="@+id/tv_is_following"
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/fb_following_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/textview_border"
                     android:padding="2dp"
+                    android:textSize="16sp"
+                    android:visibility="gone"
                     tools:text="Follow" />
 
                 <LinearLayout
