@@ -68,6 +68,6 @@
     <string-array name="staff_tab_names">
         <item>Biography</item>
         <item>Movie</item>
-        <item>Show</item>
+        <!--<item>Show</item>-->
     </string-array>
 </resources>
