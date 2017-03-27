@@ -1,6 +1,8 @@
 package com.floatingmuseum.mocloud.data.net;
 
 
+import android.content.Loader;
+
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.SyncData;
@@ -136,6 +138,12 @@ public interface MoCloudService {
 
     @DELETE("comments/{id}/like")
     Observable<ResponseBody> removeCommentFromLikes(@Path("id") long commentId);
+
+    @GET("users/{id}/following")
+    Observable<List<Follower>> syncUserFollowing(@Path("id")String slug);
+
+    @GET("users/{id}/followers")
+    Observable<List<Follower>> syncUserFollowers(@Path("id")String slug);
 
 //*******************************************电  影*******************************************
 

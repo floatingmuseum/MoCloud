@@ -1,5 +1,6 @@
 package com.floatingmuseum.mocloud.data.callback;
 
+import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.MovieCollectionItem;
 import com.floatingmuseum.mocloud.data.entity.MovieRatingItem;
@@ -18,12 +19,24 @@ import java.util.List;
 public interface SyncCallback {
 
     void onError(Throwable e);
+
     void onLastActivitiesSucceed(LastActivities lastActivities);
+
     void onSyncUserSettingsSucceed(UserSettings userSettings);
+
     void onSyncMovieWatchedSucceed(List<MovieWatchedItem> movieWatchedItems);
+
     void onSyncMovieCollectionSucceed(List<MovieCollectionItem> movieCollectionItems);
+
     void onSyncMovieRatingsSucceed(List<MovieRatingItem> movieRatingItems);
+
     void onSyncMovieWatchlistSucceed(List<MovieWatchlistItem> movieWatchlistItems);
+
     void onSyncUserListLikesSucceed(List<UserListLike> userListLikes);
+
     void onSyncUserCommentsLikesSucceed(List<UserCommentLike> userCommentLikes);
+
+    void onSyncUserFollowingSucceed(List<Follower> followingList);
+
+    void onSyncUserFollowersSucceed(List<Follower> followers);
 }

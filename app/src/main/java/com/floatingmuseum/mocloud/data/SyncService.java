@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import com.floatingmuseum.mocloud.data.bus.EventBusManager;
 import com.floatingmuseum.mocloud.data.bus.SyncEvent;
 import com.floatingmuseum.mocloud.data.callback.SyncCallback;
+import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.MovieCollectionItem;
 import com.floatingmuseum.mocloud.data.entity.MovieRatingItem;
@@ -176,6 +177,11 @@ public class SyncService extends Service implements SyncCallback {
     @Override
     public void onSyncUserSettingsSucceed(UserSettings userSettings) {
         SPUtil.saveUserSettings(userSettings);
+        String slug = SPUtil.getString(SPUtil.SP_USER_SETTINGS, "slug", "");
+        //after user settings syncing finished
+        syncSuccessNeeded += 2;
+        repository.syncUserFollowing(slug, this);
+        repository.syncUserFollowers(slug, this);
         Logger.d("Sync数据:onSyncUserSettingsSucceed");
         syncFinished("Sync user settings finished.");
     }
@@ -232,6 +238,18 @@ public class SyncService extends Service implements SyncCallback {
             updateLastActivities("comments_liked_at", lastActivities.getComments().getLiked_at());
         }
         syncFinished("Sync user comment likes finished");
+    }
+
+    @Override
+    public void onSyncUserFollowingSucceed(List<Follower> followingList) {
+        Logger.d("Sync数据:onSyncUserFollowingSucceed");
+        syncFinished("Sync user following finished");
+    }
+
+    @Override
+    public void onSyncUserFollowersSucceed(List<Follower> followers) {
+        Logger.d("Sync数据:onSyncUserFollowersSucceed");
+        syncFinished("Sync user followers finished");
     }
 
     private void updateLastActivities(String key, String value) {

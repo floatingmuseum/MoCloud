@@ -1556,6 +1556,65 @@ public class Repository {
                 });
     }
 
+    public void syncUserFollowing(String slug, final SyncCallback callback) {
+        service.syncUserFollowing(slug)
+                .onErrorResumeNext(refreshTokenAndRetry(service.syncUserFollowing(slug)))
+                .doOnNext(new Action1<List<Follower>>() {
+                    @Override
+                    public void call(List<Follower> followers) {
+                        // TODO: 2017/3/27 save data to realm
+                    }
+                }).compose(RxUtil.<List<Follower>>threadSwitch())
+                .subscribe(new Observer<List<Follower>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("Sync数据:syncUserFollowing...onError");
+                        callback.onError(e);
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<Follower> followers) {
+                        callback.onSyncUserFollowingSucceed(followers);
+                    }
+                });
+    }
+
+    public void syncUserFollowers(String slug, final SyncCallback callback) {
+        service.syncUserFollowers(slug)
+                .onErrorResumeNext(refreshTokenAndRetry(service.syncUserFollowers(slug)))
+                .doOnNext(new Action1<List<Follower>>() {
+                    @Override
+                    public void call(List<Follower> followers) {
+                        // TODO: 2017/3/27 save data to realm
+//                        RealmManager.insertOrUpdate();
+                    }
+                }).compose(RxUtil.<List<Follower>>threadSwitch())
+                .subscribe(new Observer<List<Follower>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("Sync数据:syncUserFollowers...onError");
+                        callback.onError(e);
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<Follower> followers) {
+                        callback.onSyncUserFollowersSucceed(followers);
+                    }
+                });
+    }
+
     /*******************************************************************
      * 图片处理
      *******************************************************************************/
