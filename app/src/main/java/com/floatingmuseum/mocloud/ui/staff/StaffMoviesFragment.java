@@ -112,7 +112,7 @@ public class StaffMoviesFragment extends BaseFragment {
         presenter.start(traktId, false);
     }
 
-    public void onGetWorksImagesSucceed(List<Staff> staffs, boolean isLoadMore) {
+    public void onGetWorksImagesSuccess(List<Staff> staffs, boolean isLoadMore) {
         swipeRefreshLayout.setRefreshing(false);
         if (staffs == null) {
             ToastUtil.showToast(R.string.already_get_all_data);

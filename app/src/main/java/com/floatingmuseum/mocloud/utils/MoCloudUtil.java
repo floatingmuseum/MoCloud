@@ -78,6 +78,7 @@ public class MoCloudUtil {
         return day + "days";
     }
 
+    @Deprecated
     public static boolean isFollowing(List<Follower> followers) {
         String slug = SPUtil.getString(SPUtil.SP_USER_SETTINGS, "slug", "");
         for (Follower follower : followers) {

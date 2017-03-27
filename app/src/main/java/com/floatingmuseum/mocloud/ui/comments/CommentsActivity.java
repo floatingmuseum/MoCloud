@@ -379,7 +379,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         presenter.start(currentSortCondition, movie.getIds().getSlug(), shouldClean);
     }
 
-    public void onAddCommentToLikesSucceed(long commentId) {
+    public void onAddCommentToLikesSuccess(long commentId) {
         Comment comment = commentsData.get(likeStateController.get(commentId));
         if (comment.getId() == commentId) {
             likeStateController.remove(commentId);
@@ -391,7 +391,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         }
     }
 
-    public void onRemoveCommentFromLikesSucceed(long commentId) {
+    public void onRemoveCommentFromLikesSuccess(long commentId) {
         Comment comment = commentsData.get(likeStateController.get(commentId));
         if (comment.getId() == commentId) {
             likeStateController.remove(commentId);

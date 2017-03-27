@@ -7,8 +7,10 @@ import com.floatingmuseum.mocloud.data.db.entity.RealmMovieCollection;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieRating;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
+import com.floatingmuseum.mocloud.data.db.entity.RealmUserFollow;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.CustomListInfo;
+import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.MovieCollectionItem;
 import com.floatingmuseum.mocloud.data.entity.MovieRatingItem;
 import com.floatingmuseum.mocloud.data.entity.MovieWatchedItem;
@@ -175,6 +177,28 @@ public class RealmManager {
                 });
     }
 
+    public static void insertOrUpdateFollowData(final List<Follower> followers, final boolean isFollowersData) {
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.delete(RealmUserFollow.class);
+                for (Follower follower : followers) {
+                    User user = follower.getUser();
+                    RealmUserFollow realmUserFollow = new RealmUserFollow();
+                    realmUserFollow.setUsername(user.getUsername());
+                    realmUserFollow.setSlug(user.getIds().getSlug());
+                    realmUserFollow.setPrivate(user.isPrivateX());
+                    if (isFollowersData) {
+                        realmUserFollow.setFollower(true);
+                    } else {
+                        realmUserFollow.setFollowing(true);
+                    }
+                    realm.insertOrUpdate(realmUserFollow);
+                }
+            }
+        });
+    }
+
     public static void insertOrUpdate(final RealmModel model) {
         Realm.getDefaultInstance()
                 .executeTransaction(new Realm.Transaction() {
@@ -201,6 +225,14 @@ public class RealmManager {
     }
 
     public static <T extends RealmModel> T query(final Class<? extends RealmModel> clazz, String filedName, final long value) {
+        RealmModel model = Realm.getDefaultInstance()
+                .where(clazz)
+                .equalTo(filedName, value)
+                .findFirst();
+        return (T) model;
+    }
+
+    public static <T extends RealmModel> T query(final Class<? extends RealmModel> clazz, String filedName, final String value) {
         RealmModel model = Realm.getDefaultInstance()
                 .where(clazz)
                 .equalTo(filedName, value)

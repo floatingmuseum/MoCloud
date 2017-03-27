@@ -9,7 +9,7 @@ public interface CommentsCallback<T> extends DataCallback<T> {
 
     void onSendCommentSuccess(Comment comment);
 
-    void onAddCommentToLikesSucceed(long commentId);
+    void onAddCommentToLikesSuccess(long commentId);
 
-    void onRemoveCommentFromLikesSucceed(long commentId);
+    void onRemoveCommentFromLikesSuccess(long commentId);
 }

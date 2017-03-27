@@ -133,43 +133,43 @@ public class MovieDetailPresenter extends BaseCommentsPresenter implements Movie
 //    }
 
     @Override
-    public void onAddMovieToWatchedSucceed(SyncResponse syncResponse) {
-        activity.onAddMovieToWatchedSucceed();
+    public void onAddMovieToWatchedSuccess(SyncResponse syncResponse) {
+        activity.onAddMovieToWatchedSuccess();
     }
 
     @Override
-    public void onRemoveMovieFromWatchedSucceed(SyncResponse syncResponse) {
-        activity.onRemoveMovieFromWatchedSucceed();
+    public void onRemoveMovieFromWatchedSuccess(SyncResponse syncResponse) {
+        activity.onRemoveMovieFromWatchedSuccess();
     }
 
     @Override
-    public void onAddMovieToWatchlistSucceed(SyncResponse syncResponse) {
-        activity.onAddMovieToWatchlistSucceed();
+    public void onAddMovieToWatchlistSuccess(SyncResponse syncResponse) {
+        activity.onAddMovieToWatchlistSuccess();
     }
 
     @Override
-    public void onRemoveMovieFromWatchlistSucceed(SyncResponse syncResponse) {
-        activity.onRemoveMovieFromWatchlistSucceed();
+    public void onRemoveMovieFromWatchlistSuccess(SyncResponse syncResponse) {
+        activity.onRemoveMovieFromWatchlistSuccess();
     }
 
     @Override
-    public void onAddMovieToCollectionSucceed(SyncResponse syncResponse) {
-        activity.onAddMovieToCollectionSucceed();
+    public void onAddMovieToCollectionSuccess(SyncResponse syncResponse) {
+        activity.onAddMovieToCollectionSuccess();
     }
 
     @Override
-    public void onRemoveMovieFromCollectionSucceed(SyncResponse syncResponse) {
-        activity.onRemoveMovieFromCollectionSucceed();
+    public void onRemoveMovieFromCollectionSuccess(SyncResponse syncResponse) {
+        activity.onRemoveMovieFromCollectionSuccess();
     }
 
     @Override
-    public void onAddCommentToLikesSucceed(long commentId) {
-        activity.onAddCommentToLikesSucceed(commentId);
+    public void onAddCommentToLikesSuccess(long commentId) {
+        activity.onAddCommentToLikesSuccess(commentId);
     }
 
     @Override
-    public void onRemoveCommentFromLikesSucceed(long commentId) {
-        activity.onRemoveCommentFromLikesSucceed(commentId);
+    public void onRemoveCommentFromLikesSuccess(long commentId) {
+        activity.onRemoveCommentFromLikesSuccess(commentId);
     }
 
     @Override

@@ -20,15 +20,15 @@ public interface MovieDetailCallback extends CommentsCallback {
 
     void onOtherRatingsSuccess(OmdbInfo omdbInfo);
 
-    void onAddMovieToWatchedSucceed(SyncResponse syncResponse);
+    void onAddMovieToWatchedSuccess(SyncResponse syncResponse);
 
-    void onRemoveMovieFromWatchedSucceed(SyncResponse syncResponse);
+    void onRemoveMovieFromWatchedSuccess(SyncResponse syncResponse);
 
-    void onAddMovieToWatchlistSucceed(SyncResponse syncResponse);
+    void onAddMovieToWatchlistSuccess(SyncResponse syncResponse);
 
-    void onRemoveMovieFromWatchlistSucceed(SyncResponse syncResponse);
+    void onRemoveMovieFromWatchlistSuccess(SyncResponse syncResponse);
 
-    void onAddMovieToCollectionSucceed(SyncResponse syncResponse);
+    void onAddMovieToCollectionSuccess(SyncResponse syncResponse);
 
-    void onRemoveMovieFromCollectionSucceed(SyncResponse syncResponse);
+    void onRemoveMovieFromCollectionSuccess(SyncResponse syncResponse);
 }

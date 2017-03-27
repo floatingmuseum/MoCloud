@@ -20,23 +20,23 @@ public interface SyncCallback {
 
     void onError(Throwable e);
 
-    void onLastActivitiesSucceed(LastActivities lastActivities);
+    void onLastActivitiesSuccess(LastActivities lastActivities);
 
-    void onSyncUserSettingsSucceed(UserSettings userSettings);
+    void onSyncUserSettingsSuccess(UserSettings userSettings);
 
-    void onSyncMovieWatchedSucceed(List<MovieWatchedItem> movieWatchedItems);
+    void onSyncMovieWatchedSuccess(List<MovieWatchedItem> movieWatchedItems);
 
-    void onSyncMovieCollectionSucceed(List<MovieCollectionItem> movieCollectionItems);
+    void onSyncMovieCollectionSuccess(List<MovieCollectionItem> movieCollectionItems);
 
-    void onSyncMovieRatingsSucceed(List<MovieRatingItem> movieRatingItems);
+    void onSyncMovieRatingsSuccess(List<MovieRatingItem> movieRatingItems);
 
-    void onSyncMovieWatchlistSucceed(List<MovieWatchlistItem> movieWatchlistItems);
+    void onSyncMovieWatchlistSuccess(List<MovieWatchlistItem> movieWatchlistItems);
 
-    void onSyncUserListLikesSucceed(List<UserListLike> userListLikes);
+    void onSyncUserListLikesSuccess(List<UserListLike> userListLikes);
 
-    void onSyncUserCommentsLikesSucceed(List<UserCommentLike> userCommentLikes);
+    void onSyncUserCommentsLikesSuccess(List<UserCommentLike> userCommentLikes);
 
-    void onSyncUserFollowingSucceed(List<Follower> followingList);
+    void onSyncUserFollowingSuccess(List<Follower> followingList);
 
-    void onSyncUserFollowersSucceed(List<Follower> followers);
+    void onSyncUserFollowersSuccess(List<Follower> followers);
 }

@@ -88,14 +88,14 @@ public class SyncService extends Service implements SyncCallback {
     }
 
     @Override
-    public void onLastActivitiesSucceed(LastActivities lastActivities) {
-        Logger.d("Sync数据:onLastActivitiesSucceed");
+    public void onLastActivitiesSuccess(LastActivities lastActivities) {
+        Logger.d("Sync数据:onLastActivitiesSuccess");
         if (hasFirstSync) {
             syncOthers(lastActivities);
         } else {
             SPUtil.saveUserLastActivities(lastActivities);
+            syncFinished("Sync last activities finished.");
         }
-        syncFinished("Sync last activities finished.");
     }
 
     private void syncOthers(LastActivities lastActivities) {
@@ -142,6 +142,7 @@ public class SyncService extends Service implements SyncCallback {
             Logger.d("Sync数据:syncUserListsLikes");
             repository.syncUserListsLikes(this);
         }
+        syncFinished("Sync last activities finished.");
     }
 
     /**
@@ -175,20 +176,20 @@ public class SyncService extends Service implements SyncCallback {
     }
 
     @Override
-    public void onSyncUserSettingsSucceed(UserSettings userSettings) {
+    public void onSyncUserSettingsSuccess(UserSettings userSettings) {
         SPUtil.saveUserSettings(userSettings);
         String slug = SPUtil.getString(SPUtil.SP_USER_SETTINGS, "slug", "");
         //after user settings syncing finished
         syncSuccessNeeded += 2;
         repository.syncUserFollowing(slug, this);
         repository.syncUserFollowers(slug, this);
-        Logger.d("Sync数据:onSyncUserSettingsSucceed");
+        Logger.d("Sync数据:onSyncUserSettingsSuccess");
         syncFinished("Sync user settings finished.");
     }
 
     @Override
-    public void onSyncMovieWatchedSucceed(List<MovieWatchedItem> movieWatchedItems) {
-        Logger.d("Sync数据:onSyncMovieWatchedSucceed");
+    public void onSyncMovieWatchedSuccess(List<MovieWatchedItem> movieWatchedItems) {
+        Logger.d("Sync数据:onSyncMovieWatchedSuccess");
         if (hasFirstSync) {
             updateLastActivities("movies_watched_at", lastActivities.getMovies().getWatched_at());
         }
@@ -196,8 +197,8 @@ public class SyncService extends Service implements SyncCallback {
     }
 
     @Override
-    public void onSyncMovieCollectionSucceed(List<MovieCollectionItem> movieCollectionItems) {
-        Logger.d("Sync数据:onSyncMovieCollectionSucceed");
+    public void onSyncMovieCollectionSuccess(List<MovieCollectionItem> movieCollectionItems) {
+        Logger.d("Sync数据:onSyncMovieCollectionSuccess");
         if (hasFirstSync) {
             updateLastActivities("movies_collected_at", lastActivities.getMovies().getCollected_at());
         }
@@ -205,8 +206,8 @@ public class SyncService extends Service implements SyncCallback {
     }
 
     @Override
-    public void onSyncMovieRatingsSucceed(List<MovieRatingItem> movieRatingItems) {
-        Logger.d("Sync数据:onSyncMovieRatingsSucceed");
+    public void onSyncMovieRatingsSuccess(List<MovieRatingItem> movieRatingItems) {
+        Logger.d("Sync数据:onSyncMovieRatingsSuccess");
         if (hasFirstSync) {
             updateLastActivities("movies_rated_at", lastActivities.getMovies().getRated_at());
         }
@@ -214,8 +215,8 @@ public class SyncService extends Service implements SyncCallback {
     }
 
     @Override
-    public void onSyncMovieWatchlistSucceed(List<MovieWatchlistItem> movieWatchlistItems) {
-        Logger.d("Sync数据:onSyncMovieWatchlistSucceed");
+    public void onSyncMovieWatchlistSuccess(List<MovieWatchlistItem> movieWatchlistItems) {
+        Logger.d("Sync数据:onSyncMovieWatchlistSuccess");
         if (hasFirstSync) {
             updateLastActivities("movies_watchlist_at", lastActivities.getMovies().getWatchlisted_at());
         }
@@ -223,8 +224,8 @@ public class SyncService extends Service implements SyncCallback {
     }
 
     @Override
-    public void onSyncUserListLikesSucceed(List<UserListLike> userListLikes) {
-        Logger.d("Sync数据:onSyncUserListLikesSucceed");
+    public void onSyncUserListLikesSuccess(List<UserListLike> userListLikes) {
+        Logger.d("Sync数据:onSyncUserListLikesSuccess");
         if (hasFirstSync) {
             updateLastActivities("lists_liked_at", lastActivities.getLists().getLiked_at());
         }
@@ -232,8 +233,8 @@ public class SyncService extends Service implements SyncCallback {
     }
 
     @Override
-    public void onSyncUserCommentsLikesSucceed(List<UserCommentLike> userCommentLikes) {
-        Logger.d("Sync数据:onSyncUserCommentsLikesSucceed");
+    public void onSyncUserCommentsLikesSuccess(List<UserCommentLike> userCommentLikes) {
+        Logger.d("Sync数据:onSyncUserCommentsLikesSuccess");
         if (hasFirstSync) {
             updateLastActivities("comments_liked_at", lastActivities.getComments().getLiked_at());
         }
@@ -241,14 +242,14 @@ public class SyncService extends Service implements SyncCallback {
     }
 
     @Override
-    public void onSyncUserFollowingSucceed(List<Follower> followingList) {
-        Logger.d("Sync数据:onSyncUserFollowingSucceed");
+    public void onSyncUserFollowingSuccess(List<Follower> followingList) {
+        Logger.d("Sync数据:onSyncUserFollowingSuccess");
         syncFinished("Sync user following finished");
     }
 
     @Override
-    public void onSyncUserFollowersSucceed(List<Follower> followers) {
-        Logger.d("Sync数据:onSyncUserFollowersSucceed");
+    public void onSyncUserFollowersSuccess(List<Follower> followers) {
+        Logger.d("Sync数据:onSyncUserFollowersSuccess");
         syncFinished("Sync user followers finished");
     }
 
@@ -258,6 +259,7 @@ public class SyncService extends Service implements SyncCallback {
 
     private void syncFinished(String syncInfo) {
         syncSuccessNeeded--;
+        Logger.d("Sync数据:syncSuccessNeeded:" + syncSuccessNeeded + "..." + syncInfo);
         EventBus.getDefault().post(new SyncEvent(syncInfo, false));
         if (syncSuccessNeeded == 0) {
             EventBus.getDefault().post(new SyncEvent("All data sync finished.", true));

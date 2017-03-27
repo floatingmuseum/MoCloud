@@ -709,7 +709,7 @@ public class Repository {
                     @Override
                     public void onNext(ResponseBody responseBody) {
                         Logger.d("评论点赞测试:addCommentToLikes...点赞成功");
-                        callback.onAddCommentToLikesSucceed(comment.getId());
+                        callback.onAddCommentToLikesSuccess(comment.getId());
                     }
                 });
     }
@@ -740,7 +740,7 @@ public class Repository {
                     @Override
                     public void onNext(ResponseBody responseBody) {
                         Logger.d("评论点赞测试:removeCommentFromLikes...取消点赞成功");
-                        callback.onRemoveCommentFromLikesSucceed(comment.getId());
+                        callback.onRemoveCommentFromLikesSuccess(comment.getId());
                     }
                 });
     }
@@ -818,7 +818,7 @@ public class Repository {
 
                     @Override
                     public void onNext(List<Staff> staffs) {
-                        callback.onGetWorksImagesSucceed(staffs);
+                        callback.onGetWorksImagesSuccess(staffs);
                     }
                 });
     }
@@ -1104,7 +1104,7 @@ public class Repository {
 
                     @Override
                     public void onNext(LastActivities lastActivities) {
-                        callback.onLastActivitiesSucceed(lastActivities);
+                        callback.onLastActivitiesSuccess(lastActivities);
                     }
                 });
     }
@@ -1160,7 +1160,7 @@ public class Repository {
                     @Override
                     public void onNext(UserSettings userSettings) {
                         Logger.d("UserSettings:onNext:" + userSettings);
-                        callback.onSyncUserSettingsSucceed(userSettings);
+                        callback.onSyncUserSettingsSuccess(userSettings);
                     }
                 });
     }
@@ -1191,7 +1191,7 @@ public class Repository {
 
                     @Override
                     public void onNext(List<MovieWatchedItem> movieWatchedItems) {
-                        callback.onSyncMovieWatchedSucceed(movieWatchedItems);
+                        callback.onSyncMovieWatchedSuccess(movieWatchedItems);
                     }
                 });
     }
@@ -1230,7 +1230,7 @@ public class Repository {
                     @Override
                     public void onNext(SyncResponse syncResponse) {
                         Logger.d("看过测试:addMovieToWatched:...add成功");
-                        callback.onAddMovieToWatchedSucceed(syncResponse);
+                        callback.onAddMovieToWatchedSuccess(syncResponse);
                     }
                 });
     }
@@ -1261,7 +1261,7 @@ public class Repository {
                     @Override
                     public void onNext(SyncResponse syncResponse) {
                         Logger.d("看过测试:addMovieToWatched:...remove成功..." + syncResponse.getDeleted().getMovies());
-                        callback.onRemoveMovieFromWatchedSucceed(syncResponse);
+                        callback.onRemoveMovieFromWatchedSuccess(syncResponse);
                     }
                 });
     }
@@ -1292,7 +1292,7 @@ public class Repository {
 
                     @Override
                     public void onNext(List<MovieWatchlistItem> movieWatchlistItems) {
-                        callback.onSyncMovieWatchlistSucceed(movieWatchlistItems);
+                        callback.onSyncMovieWatchlistSuccess(movieWatchlistItems);
                     }
                 });
     }
@@ -1328,7 +1328,7 @@ public class Repository {
                     @Override
                     public void onNext(SyncResponse syncResponse) {
                         Logger.d("想看测试:addMovieToWatchlist:...add成功..." + syncResponse.getAdded().getMovies());
-                        callback.onAddMovieToWatchlistSucceed(syncResponse);
+                        callback.onAddMovieToWatchlistSuccess(syncResponse);
                     }
                 });
     }
@@ -1359,7 +1359,7 @@ public class Repository {
                     @Override
                     public void onNext(SyncResponse syncResponse) {
                         Logger.d("想看测试:removeMovieFromWatchlist:...remove成功..." + syncResponse.getDeleted().getMovies());
-                        callback.onRemoveMovieFromWatchlistSucceed(syncResponse);
+                        callback.onRemoveMovieFromWatchlistSuccess(syncResponse);
                     }
                 });
     }
@@ -1390,7 +1390,7 @@ public class Repository {
 
                     @Override
                     public void onNext(List<MovieRatingItem> movieRatingItems) {
-                        callback.onSyncMovieRatingsSucceed(movieRatingItems);
+                        callback.onSyncMovieRatingsSuccess(movieRatingItems);
                     }
                 });
     }
@@ -1421,7 +1421,7 @@ public class Repository {
 
                     @Override
                     public void onNext(List<MovieCollectionItem> movieCollectionItems) {
-                        callback.onSyncMovieCollectionSucceed(movieCollectionItems);
+                        callback.onSyncMovieCollectionSuccess(movieCollectionItems);
                     }
                 });
     }
@@ -1458,7 +1458,7 @@ public class Repository {
                     @Override
                     public void onNext(SyncResponse syncResponse) {
                         Logger.d("收藏测试:addMovieToCollection:...add成功..." + syncResponse.getAdded().getMovies());
-                        callback.onAddMovieToCollectionSucceed(syncResponse);
+                        callback.onAddMovieToCollectionSuccess(syncResponse);
                     }
                 });
     }
@@ -1489,7 +1489,7 @@ public class Repository {
                     @Override
                     public void onNext(SyncResponse syncResponse) {
                         Logger.d("收藏测试:removeMovieFromCollection:...remove成功..." + syncResponse.getDeleted().getMovies());
-                        callback.onRemoveMovieFromCollectionSucceed(syncResponse);
+                        callback.onRemoveMovieFromCollectionSuccess(syncResponse);
                     }
                 });
     }
@@ -1520,7 +1520,7 @@ public class Repository {
 
                     @Override
                     public void onNext(List<UserCommentLike> userCommentLikes) {
-                        callback.onSyncUserCommentsLikesSucceed(userCommentLikes);
+                        callback.onSyncUserCommentsLikesSuccess(userCommentLikes);
                     }
                 });
     }
@@ -1551,7 +1551,7 @@ public class Repository {
 
                     @Override
                     public void onNext(List<UserListLike> userListLikes) {
-                        callback.onSyncUserListLikesSucceed(userListLikes);
+                        callback.onSyncUserListLikesSuccess(userListLikes);
                     }
                 });
     }
@@ -1562,7 +1562,7 @@ public class Repository {
                 .doOnNext(new Action1<List<Follower>>() {
                     @Override
                     public void call(List<Follower> followers) {
-                        // TODO: 2017/3/27 save data to realm
+                        RealmManager.insertOrUpdateFollowData(followers, false);
                     }
                 }).compose(RxUtil.<List<Follower>>threadSwitch())
                 .subscribe(new Observer<List<Follower>>() {
@@ -1580,7 +1580,7 @@ public class Repository {
 
                     @Override
                     public void onNext(List<Follower> followers) {
-                        callback.onSyncUserFollowingSucceed(followers);
+                        callback.onSyncUserFollowingSuccess(followers);
                     }
                 });
     }
@@ -1591,8 +1591,7 @@ public class Repository {
                 .doOnNext(new Action1<List<Follower>>() {
                     @Override
                     public void call(List<Follower> followers) {
-                        // TODO: 2017/3/27 save data to realm
-//                        RealmManager.insertOrUpdate();
+                        RealmManager.insertOrUpdateFollowData(followers, true);
                     }
                 }).compose(RxUtil.<List<Follower>>threadSwitch())
                 .subscribe(new Observer<List<Follower>>() {
@@ -1610,7 +1609,7 @@ public class Repository {
 
                     @Override
                     public void onNext(List<Follower> followers) {
-                        callback.onSyncUserFollowersSucceed(followers);
+                        callback.onSyncUserFollowersSuccess(followers);
                     }
                 });
     }

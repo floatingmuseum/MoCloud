@@ -253,7 +253,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         presenter.syncCommentLike(isLike, comment, presenter);
     }
 
-    public void onAddCommentToLikesSucceed(long commentId) {
+    public void onAddCommentToLikesSuccess(long commentId) {
         Comment comment = repliesList.get(commentLikePosition);
         if (comment.getId() == commentId) {
             comment.setLike(true);
@@ -267,7 +267,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         adapter.notifyDataSetChanged();
     }
 
-    public void onRemoveCommentFromLikesSucceed(long commentId) {
+    public void onRemoveCommentFromLikesSuccess(long commentId) {
         Comment comment = repliesList.get(commentLikePosition);
         if (comment.getId() == commentId) {
             comment.setLike(false);

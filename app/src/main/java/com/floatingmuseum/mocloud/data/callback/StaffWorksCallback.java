@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface StaffWorksCallback<T> extends DataCallback<T>{
 
-    void onGetWorksImagesSucceed(List<Staff> staffs);
+    void onGetWorksImagesSuccess(List<Staff> staffs);
 }

@@ -50,16 +50,16 @@ public class StaffMoviesPresenter extends Presenter implements StaffWorksCallbac
     public void getWorksImages() {
         List<Staff> subWorks = ListUtil.subList(originalWorks, pageNum, limit);
         if (subWorks == null) {
-            onGetWorksImagesSucceed(null);
+            onGetWorksImagesSuccess(null);
             return;
         }
         compositeSubscription.add(repository.getWorksImages(subWorks, this));
     }
 
     @Override
-    public void onGetWorksImagesSucceed(List<Staff> staffs) {
+    public void onGetWorksImagesSuccess(List<Staff> staffs) {
         Logger.d("StaffMoviesPresenter...onGetWorksImagesSucceed");
-        fragment.onGetWorksImagesSucceed(staffs, isLoadMore);
+        fragment.onGetWorksImagesSuccess(staffs, isLoadMore);
     }
 
     @Override

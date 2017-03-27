@@ -561,7 +561,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         presenter.syncCommentLike(isLike, comment, presenter);
     }
 
-    public void onAddCommentToLikesSucceed(long commentId) {
+    public void onAddCommentToLikesSuccess(long commentId) {
         for (int i = 0; i < comments.size(); i++) {
             Comment comment = comments.get(i);
             if (commentId == comment.getId()) {
@@ -571,7 +571,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     }
 
 
-    public void onRemoveCommentFromLikesSucceed(long commentId) {
+    public void onRemoveCommentFromLikesSuccess(long commentId) {
         for (int i = 0; i < comments.size(); i++) {
             Comment comment = comments.get(i);
             if (commentId == comment.getId()) {
@@ -671,7 +671,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         llTomatoRating.setVisibility(View.VISIBLE);
     }
 
-    public void onAddMovieToWatchedSucceed() {
+    public void onAddMovieToWatchedSuccess() {
         hasWatched = true;
         String watchedTime = TimeUtil.formatGmtTime(nowWatchedTime);
         changeFancyButton(fbWatched, R.color.watched_color, R.color.white_text, "Watched at " + watchedTime);
@@ -679,29 +679,29 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         changeFancyButton(fbWatchlist, android.R.color.transparent, R.color.watchlist_color, "Add to watchlist");
     }
 
-    public void onRemoveMovieFromWatchedSucceed() {
+    public void onRemoveMovieFromWatchedSuccess() {
         hasWatched = false;
         changeFancyButton(fbWatched, android.R.color.transparent, R.color.watched_color, "Add to watched");
     }
 
-    public void onAddMovieToWatchlistSucceed() {
+    public void onAddMovieToWatchlistSuccess() {
         hasWatchlist = true;
         String listedTime = TimeUtil.formatGmtTime(nowListedTime);
         changeFancyButton(fbWatchlist, R.color.watchlist_color, R.color.white_text, "Listed at " + listedTime);
     }
 
-    public void onRemoveMovieFromWatchlistSucceed() {
+    public void onRemoveMovieFromWatchlistSuccess() {
         hasWatchlist = false;
         changeFancyButton(fbWatchlist, android.R.color.transparent, R.color.watchlist_color, "Add to watchlist");
     }
 
-    public void onAddMovieToCollectionSucceed() {
+    public void onAddMovieToCollectionSuccess() {
         hasCollected = true;
         String collectedTime = TimeUtil.formatGmtTime(nowCollectedTime);
         changeFancyButton(fbCollection, R.color.collection_color, R.color.white_text, "Collected at " + collectedTime);
     }
 
-    public void onRemoveMovieFromCollectionSucceed() {
+    public void onRemoveMovieFromCollectionSuccess() {
         hasCollected = false;
         changeFancyButton(fbCollection, android.R.color.transparent, R.color.collection_color, "Add to collection");
     }

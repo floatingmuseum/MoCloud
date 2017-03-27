@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
+import com.floatingmuseum.mocloud.data.db.entity.RealmUserFollow;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.Stats;
 import com.floatingmuseum.mocloud.data.entity.User;
@@ -135,6 +136,22 @@ public class UserActivity extends BaseActivity {
     public void onUserFollowingSuccess(List<Follower> followers) {
         if (followers != null && followers.size() > 0) {
         }
+    }
+
+    public void onUserFollowDataSuccess(RealmUserFollow realmUserFollow) {
+        Logger.d("onUserFollowDataSuccess:"+realmUserFollow.toString());
+        if (realmUserFollow != null) {
+            if (realmUserFollow.getFollower() && realmUserFollow.getFollowing()) {
+                // TODO: 2017/3/27 means you guys following each other
+            } else if (realmUserFollow.getFollower()) {
+                // TODO: 2017/3/27 he is following you
+            } else {
+                fbFollowingState.setText("Following");
+            }
+        } else {
+            fbFollowingState.setText("Follow");
+        }
+        fbFollowingState.setVisibility(View.VISIBLE);
     }
 
     @Override

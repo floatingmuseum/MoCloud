@@ -16,6 +16,7 @@ import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.data.db.entity.RealmUserFollow;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbPersonImage;
 import com.floatingmuseum.mocloud.data.entity.User;
@@ -150,4 +151,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         super.onDestroy();
         EventBusManager.unRegister(this);
     }
+
+
 }
