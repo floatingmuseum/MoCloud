@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -270,6 +271,13 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2));
         tvTraktRatingCount.setText(movie.getVotes() + "votes");
 
+        llTraktRating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openInBrowser("https://trakt.tv/movies/" + movie.getIds().getSlug());
+            }
+        });
+
         final String trailerUrl = movie.getTrailer();
         if (trailerUrl != null && trailerUrl.length() > 0) {
             showYoutube.setVisibility(View.VISIBLE);
@@ -340,6 +348,14 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         SyncData syncData = new SyncData();
         syncData.setMovies(items);
         return syncData;
+    }
+
+    private void openInBrowser(String url) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Uri.parse(url);
+        intent.setData(uri);
+        startActivity(intent);
     }
 
     public void updateLoginView(int viewId, RealmModel realmModel) {
@@ -656,6 +672,12 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         imdbVotes = imdbVotes == null ? "N/A" : omdbInfo.getImdbVotes().replace(",", "") + "votes";
         tvImdbRatingCount.setText(imdbVotes);
         llImdbRating.setVisibility(View.VISIBLE);
+        llImdbRating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openInBrowser("http://www.imdb.com/title/" + movie.getIds().getImdb());
+            }
+        });
         /**
          * OMDB的tomatoes评分都变成了N/A
          */
