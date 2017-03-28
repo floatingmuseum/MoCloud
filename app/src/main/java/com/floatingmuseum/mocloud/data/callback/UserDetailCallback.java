@@ -11,8 +11,6 @@ import java.util.List;
 
 public interface UserDetailCallback {
 
-    void onUserFollowersSuccess(List<Follower> users);
-    void onUserFollowingSuccess(List<Follower> users);
     void onUserStatsSuccess(Stats stats);
     void onError(Exception e);
 }

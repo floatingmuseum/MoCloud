@@ -547,6 +547,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     }
 
     private CardView buildCommentItem(final Comment comment) {
+        // TODO: 2017/3/28 want switch likes and replies position
         CardView commentItem = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, commentContainer, false);
         if (enableColorful()) {
             initCommentItem(this, commentItem, comment, mainSwatch, itemSwatch, movie.getTitle(), false);

@@ -24,8 +24,6 @@ public class UserPresenter extends Presenter implements UserDetailCallback{
     public void start(String slug) {
         compositeSubscription.add(repository.getUserStats(slug,this));
         getUserFollowData(slug);
-//        compositeSubscription.add(repository.getUserFollowers(slug,this));
-//        compositeSubscription.add(repository.getUserFollowing(slug,this));
     }
 
     public void getUserFollowData(String slug){
@@ -33,16 +31,6 @@ public class UserPresenter extends Presenter implements UserDetailCallback{
         RealmFollowing realmFollowing = RealmManager.query(RealmFollowing.class,"slug",slug);
 
         activity.onUserFollowDataSuccess(realmFollower,realmFollowing);
-    }
-
-    @Override
-    public void onUserFollowersSuccess(List<Follower> followers) {
-        activity.onUserFollowersSuccess(followers);
-    }
-
-    @Override
-    public void onUserFollowingSuccess(List<Follower> followers) {
-        activity.onUserFollowingSuccess(followers);
     }
 
     @Override

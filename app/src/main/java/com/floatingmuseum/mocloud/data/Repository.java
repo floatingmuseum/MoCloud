@@ -947,7 +947,6 @@ public class Repository {
 
                     @Override
                     public void onNext(List<Follower> followers) {
-                        callback.onUserFollowersSuccess(followers);
                     }
                 });
     }
@@ -973,7 +972,6 @@ public class Repository {
 
                     @Override
                     public void onNext(List<Follower> followers) {
-                        callback.onUserFollowingSuccess(followers);
                     }
                 });
     }

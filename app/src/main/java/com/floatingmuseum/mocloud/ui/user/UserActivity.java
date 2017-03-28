@@ -122,21 +122,6 @@ public class UserActivity extends BaseActivity {
                 + " for watching " + stats.getMovies().getWatched() + " movies,and has given "
                 + MoCloudUtil.getAverageRating(stats.getRatings()) + " average rating, "
                 + stats.getMovies().getComments() + " comments.");
-//        if (stats.getNetwork().getFollowers() == 0) {
-//            fbFollowingState.setText("Follow");
-//        }
-    }
-
-    public void onUserFollowersSuccess(List<Follower> followers) {
-        if (followers != null && followers.size() > 0) {
-            fbFollowingState.setText(MoCloudUtil.isFollowing(followers) ? "Following" : "Follow");
-            fbFollowingState.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void onUserFollowingSuccess(List<Follower> followers) {
-        if (followers != null && followers.size() > 0) {
-        }
     }
 
     public void onUserFollowDataSuccess(RealmFollower realmFollower, RealmFollowing realmFollowing) {
