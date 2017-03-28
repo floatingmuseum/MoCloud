@@ -16,7 +16,6 @@ import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.R;
-import com.floatingmuseum.mocloud.data.db.entity.RealmUserFollow;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbPersonImage;
 import com.floatingmuseum.mocloud.data.entity.User;
@@ -26,8 +25,6 @@ import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.data.bus.EventBusManager;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 

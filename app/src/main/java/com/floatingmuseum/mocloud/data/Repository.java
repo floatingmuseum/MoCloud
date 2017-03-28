@@ -1562,7 +1562,7 @@ public class Repository {
                 .doOnNext(new Action1<List<Follower>>() {
                     @Override
                     public void call(List<Follower> followers) {
-                        RealmManager.insertOrUpdateFollowData(followers, false);
+                        RealmManager.insertOrUpdateFollowings(followers);
                     }
                 }).compose(RxUtil.<List<Follower>>threadSwitch())
                 .subscribe(new Observer<List<Follower>>() {
@@ -1591,7 +1591,7 @@ public class Repository {
                 .doOnNext(new Action1<List<Follower>>() {
                     @Override
                     public void call(List<Follower> followers) {
-                        RealmManager.insertOrUpdateFollowData(followers, true);
+                        RealmManager.insertOrUpdateFollowers(followers);
                     }
                 }).compose(RxUtil.<List<Follower>>threadSwitch())
                 .subscribe(new Observer<List<Follower>>() {

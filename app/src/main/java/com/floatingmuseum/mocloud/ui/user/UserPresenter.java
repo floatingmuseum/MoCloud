@@ -3,10 +3,10 @@ package com.floatingmuseum.mocloud.ui.user;
 import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.callback.UserDetailCallback;
 import com.floatingmuseum.mocloud.data.db.RealmManager;
-import com.floatingmuseum.mocloud.data.db.entity.RealmUserFollow;
+import com.floatingmuseum.mocloud.data.db.entity.RealmFollower;
+import com.floatingmuseum.mocloud.data.db.entity.RealmFollowing;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.Stats;
-import com.floatingmuseum.mocloud.data.entity.User;
 
 import java.util.List;
 
@@ -29,8 +29,10 @@ public class UserPresenter extends Presenter implements UserDetailCallback{
     }
 
     public void getUserFollowData(String slug){
-        RealmUserFollow realmUserFollow = RealmManager.query(RealmUserFollow.class,"slug",slug);
-        activity.onUserFollowDataSuccess(realmUserFollow);
+        RealmFollower realmFollower = RealmManager.query(RealmFollower.class,"slug",slug);
+        RealmFollowing realmFollowing = RealmManager.query(RealmFollowing.class,"slug",slug);
+
+        activity.onUserFollowDataSuccess(realmFollower,realmFollowing);
     }
 
     @Override
