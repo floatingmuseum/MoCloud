@@ -322,7 +322,9 @@
                 android:text="Trailer"
                 android:visibility="gone" />
 
+
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tv_tagline_title"
                 style="@style/detail_title"
                 android:text="@string/tagline" />
@@ -330,7 +332,13 @@
             <TextView
                 android:id="@+id/tv_tagline"
                 style="@style/detail_content"
+                android:layout_height="50dp"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:textSize="17sp"
+                android:textStyle="italic"
                 tools:text="Your destiny is in your blood" />
+
 
             <TextView
                 android:id="@+id/tv_overview_title"

@@ -240,7 +240,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tvOverview.setText(movie.getOverview());
         String tagline = movie.getTagline();
         if (StringUtil.hasData(tagline)) {
-            tvTagline.setText(tagline);
+            tvTagline.setText("\"" + tagline + "\"");
         } else {
             tvTaglineTitle.setVisibility(View.GONE);
             tvTagline.setVisibility(View.GONE);
