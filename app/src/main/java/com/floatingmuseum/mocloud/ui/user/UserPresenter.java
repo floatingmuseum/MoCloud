@@ -7,6 +7,7 @@ import com.floatingmuseum.mocloud.data.db.entity.RealmFollower;
 import com.floatingmuseum.mocloud.data.db.entity.RealmFollowing;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.Stats;
+import com.floatingmuseum.mocloud.utils.SPUtil;
 
 import java.util.List;
 
@@ -23,7 +24,9 @@ public class UserPresenter extends Presenter implements UserDetailCallback{
 
     public void start(String slug) {
         compositeSubscription.add(repository.getUserStats(slug,this));
-        getUserFollowData(slug);
+        if (SPUtil.isLogin()) {
+            getUserFollowData(slug);
+        }
     }
 
     public void getUserFollowData(String slug){
