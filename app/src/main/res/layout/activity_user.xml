@@ -134,7 +134,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/title_text"
+                    style="@style/detail_title"
                     android:text="Stats" />
 
                 <View
@@ -144,32 +144,38 @@
 
                 <TextView
                     android:id="@+id/movie_stats"
-                    style="@style/title_text"
+                    style="@style/detail_content"
+                    android:padding="5dp"
                     tools:text="Floatingmuseum has spent 1d33hour for watching 233 movies,and has gaven 7.4 average rating " />
 
                 <TextView
                     android:id="@+id/tv_see_watching"
-                    style="@style/title_text"
+                    style="@style/detail_content"
+                    android:padding="5dp"
                     android:text="See what Floatingmuseum watching now" />
 
                 <TextView
                     android:id="@+id/tv_see_watched"
-                    style="@style/title_text"
+                    style="@style/detail_content"
+                    android:padding="5dp"
                     android:text="See what Floatingmuseum has watched" />
 
                 <TextView
                     android:id="@+id/tv_see_comments"
-                    style="@style/title_text"
+                    style="@style/detail_content"
+                    android:padding="5dp"
                     android:text="See what Floatingmuseum has commented" />
 
                 <TextView
                     android:id="@+id/tv_see_ratings"
-                    style="@style/title_text"
+                    style="@style/detail_content"
+                    android:padding="5dp"
                     android:text="See what Floatingmuseum has rated" />
 
                 <TextView
                     android:id="@+id/tv_see_watchlist"
-                    style="@style/title_text"
+                    style="@style/detail_content"
+                    android:padding="5dp"
                     android:text="See Floatingmuseum's watchlist" />
 
                 <TextView
@@ -180,9 +186,9 @@
 
             <TextView
                 android:id="@+id/tv_user_private"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                style="@style/detail_content"
                 android:gravity="center"
+                android:padding="5dp"
                 android:text="This is Private User."
                 android:visibility="gone" />
         </FrameLayout>

@@ -145,6 +145,12 @@ public interface MoCloudService {
     @GET("users/{id}/followers")
     Observable<List<Follower>> syncUserFollowers(@Path("id")String slug);
 
+    @POST("users/{id}/follow")
+    Observable followUser(@Path("id")String slug);
+
+    @DELETE("users/{id}/follow")
+    Observable unfollowUser(@Path("id")String slug);
+
 //*******************************************电  影*******************************************
 
     /**

@@ -2,12 +2,13 @@ package com.floatingmuseum.mocloud.data.db;
 
 
 import com.floatingmuseum.mocloud.data.db.entity.RealmCommentLike;
+import com.floatingmuseum.mocloud.data.db.entity.RealmFollower;
+import com.floatingmuseum.mocloud.data.db.entity.RealmFollowing;
 import com.floatingmuseum.mocloud.data.db.entity.RealmListLike;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieCollection;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieRating;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
-import com.floatingmuseum.mocloud.data.db.entity.RealmUserFollow;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.CustomListInfo;
 import com.floatingmuseum.mocloud.data.entity.Follower;
@@ -177,23 +178,37 @@ public class RealmManager {
                 });
     }
 
-    public static void insertOrUpdateFollowData(final List<Follower> followers, final boolean isFollowersData) {
+    public static void insertOrUpdateFollowers(final List<Follower> followers) {
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realm.delete(RealmUserFollow.class);
+                realm.delete(RealmFollower.class);
                 for (Follower follower : followers) {
                     User user = follower.getUser();
-                    RealmUserFollow realmUserFollow = new RealmUserFollow();
-                    realmUserFollow.setUsername(user.getUsername());
-                    realmUserFollow.setSlug(user.getIds().getSlug());
-                    realmUserFollow.setPrivate(user.isPrivateX());
-                    if (isFollowersData) {
-                        realmUserFollow.setFollower(true);
-                    } else {
-                        realmUserFollow.setFollowing(true);
-                    }
-                    realm.insertOrUpdate(realmUserFollow);
+                    RealmFollower realmFollower = new RealmFollower();
+                    realmFollower.setUsername(user.getUsername());
+                    realmFollower.setSlug(user.getIds().getSlug());
+                    realmFollower.setPrivate(user.isPrivateX());
+                    realmFollower.setFollowing_at(follower.getFollowed_at());
+                    realm.insertOrUpdate(realmFollower);
+                }
+            }
+        });
+    }
+
+    public static void insertOrUpdateFollowings(final List<Follower> followers) {
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.delete(RealmFollowing.class);
+                for (Follower follower : followers) {
+                    User user = follower.getUser();
+                    RealmFollowing realmFollowing = new RealmFollowing();
+                    realmFollowing.setUsername(user.getUsername());
+                    realmFollowing.setSlug(user.getIds().getSlug());
+                    realmFollowing.setPrivate(user.isPrivateX());
+                    realmFollowing.setFollowing_at(follower.getFollowed_at());
+                    realm.insertOrUpdate(realmFollowing);
                 }
             }
         });
@@ -217,7 +232,7 @@ public class RealmManager {
                         RealmResults results = realm.where(clazz)
                                 .equalTo(filedName, value)
                                 .findAll();
-                        if (ListUtil.hasData(results)) {
+                        if (ListUtil.isEmpty(results)) {
                             results.deleteFirstFromRealm();
                         }
                     }

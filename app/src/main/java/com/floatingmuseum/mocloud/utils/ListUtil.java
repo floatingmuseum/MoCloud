@@ -15,7 +15,7 @@ public class ListUtil {
      * @param list
      * @return
      */
-    public static boolean hasData(List<?> list) {
+    public static boolean isEmpty(List<?> list) {
         if (list != null && list.size() > 0) {
             return true;
         } else {

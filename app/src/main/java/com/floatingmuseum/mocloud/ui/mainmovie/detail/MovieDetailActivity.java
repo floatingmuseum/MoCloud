@@ -1,9 +1,13 @@
 package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
@@ -44,6 +48,7 @@ import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.utils.ColorUtil;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
+import com.floatingmuseum.mocloud.utils.ListUtil;
 import com.floatingmuseum.mocloud.utils.NumberFormatUtil;
 import com.floatingmuseum.mocloud.utils.ResUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
@@ -60,6 +65,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -270,6 +276,13 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2));
         tvTraktRatingCount.setText(movie.getVotes() + "votes");
 
+        llTraktRating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openInBrowser("https://trakt.tv/movies/" + movie.getIds().getSlug());
+            }
+        });
+
         final String trailerUrl = movie.getTrailer();
         if (trailerUrl != null && trailerUrl.length() > 0) {
             showYoutube.setVisibility(View.VISIBLE);
@@ -340,6 +353,14 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         SyncData syncData = new SyncData();
         syncData.setMovies(items);
         return syncData;
+    }
+
+    private void openInBrowser(String url) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Uri.parse(url);
+        intent.setData(uri);
+        startActivity(intent);
     }
 
     public void updateLoginView(int viewId, RealmModel realmModel) {
@@ -547,6 +568,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     }
 
     private CardView buildCommentItem(final Comment comment) {
+        // TODO: 2017/3/28 want switch likes and replies position
         CardView commentItem = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, commentContainer, false);
         if (enableColorful()) {
             initCommentItem(this, commentItem, comment, mainSwatch, itemSwatch, movie.getTitle(), false);
@@ -648,13 +670,18 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     }
 
     public void onOtherRatingsSuccess(OmdbInfo omdbInfo) {
-        Logger.d("ImdbRating:" + omdbInfo.getImdbRating() + "..." + omdbInfo.getImdbVotes() + "...tomatoesRating:" + omdbInfo.getTomatoUserRating() + "..." + omdbInfo.getTomatoUserReviews());
         String imdbRating = omdbInfo.getImdbRating();
         tvImdbRating.setText(imdbRating == null ? "N/A" : imdbRating);
         String imdbVotes = omdbInfo.getImdbVotes();
         imdbVotes = imdbVotes == null ? "N/A" : omdbInfo.getImdbVotes().replace(",", "") + "votes";
         tvImdbRatingCount.setText(imdbVotes);
         llImdbRating.setVisibility(View.VISIBLE);
+        llImdbRating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openInBrowser("http://www.imdb.com/title/" + movie.getIds().getImdb());
+            }
+        });
         /**
          * OMDB的tomatoes评分都变成了N/A
          */

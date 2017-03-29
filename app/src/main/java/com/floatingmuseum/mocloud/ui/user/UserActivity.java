@@ -11,7 +11,8 @@ import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
-import com.floatingmuseum.mocloud.data.db.entity.RealmUserFollow;
+import com.floatingmuseum.mocloud.data.db.entity.RealmFollower;
+import com.floatingmuseum.mocloud.data.db.entity.RealmFollowing;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.Stats;
 import com.floatingmuseum.mocloud.data.entity.User;
@@ -121,35 +122,18 @@ public class UserActivity extends BaseActivity {
                 + " for watching " + stats.getMovies().getWatched() + " movies,and has given "
                 + MoCloudUtil.getAverageRating(stats.getRatings()) + " average rating, "
                 + stats.getMovies().getComments() + " comments.");
-//        if (stats.getNetwork().getFollowers() == 0) {
-//            fbFollowingState.setText("Follow");
-//        }
     }
 
-    public void onUserFollowersSuccess(List<Follower> followers) {
-        if (followers != null && followers.size() > 0) {
-            fbFollowingState.setText(MoCloudUtil.isFollowing(followers) ? "Following" : "Follow");
-            fbFollowingState.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void onUserFollowingSuccess(List<Follower> followers) {
-        if (followers != null && followers.size() > 0) {
-        }
-    }
-
-    public void onUserFollowDataSuccess(RealmUserFollow realmUserFollow) {
-        Logger.d("onUserFollowDataSuccess:"+realmUserFollow.toString());
-        if (realmUserFollow != null) {
-            if (realmUserFollow.getFollower() && realmUserFollow.getFollowing()) {
-                // TODO: 2017/3/27 means you guys following each other
-            } else if (realmUserFollow.getFollower()) {
-                // TODO: 2017/3/27 he is following you
-            } else {
-                fbFollowingState.setText("Following");
-            }
-        } else {
+    public void onUserFollowDataSuccess(RealmFollower realmFollower, RealmFollowing realmFollowing) {
+        if (realmFollower==null && realmFollowing==null){
             fbFollowingState.setText("Follow");
+        }else if (realmFollower!=null && realmFollowing!=null){
+            // TODO: 2017/3/27 means you guys following each other
+        }else if (realmFollower!=null){
+            // TODO: 2017/3/28 means this user following you
+        }else{
+            // TODO: 2017/3/28 means you following this user
+            fbFollowingState.setText("Following");
         }
         fbFollowingState.setVisibility(View.VISIBLE);
     }

@@ -8,14 +8,14 @@ import io.realm.annotations.RealmClass;
  * Created by Floatingmuseum on 2017/3/27.
  */
 @RealmClass
-public class RealmUserFollow implements RealmModel {
+public class RealmFollower implements RealmModel {
 
-    String username;
+    private String username;
     @PrimaryKey
-    String slug;
-    Boolean isPrivate;
-    Boolean following;
-    Boolean follower;
+    private String slug;
+    private String following_at;
+    private Boolean isPrivate;
+
 
     public String getUsername() {
         return username;
@@ -33,6 +33,14 @@ public class RealmUserFollow implements RealmModel {
         this.slug = slug;
     }
 
+    public String getFollowing_at() {
+        return following_at;
+    }
+
+    public void setFollowing_at(String following_at) {
+        this.following_at = following_at;
+    }
+
     public Boolean getPrivate() {
         return isPrivate;
     }
@@ -41,30 +49,13 @@ public class RealmUserFollow implements RealmModel {
         isPrivate = aPrivate;
     }
 
-    public Boolean getFollowing() {
-        return following;
-    }
-
-    public void setFollowing(Boolean following) {
-        this.following = following;
-    }
-
-    public Boolean getFollower() {
-        return follower;
-    }
-
-    public void setFollower(Boolean follower) {
-        this.follower = follower;
-    }
-
     @Override
     public String toString() {
-        return "RealmUserFollow{" +
+        return "RealmFollower{" +
                 "username='" + username + '\'' +
                 ", slug='" + slug + '\'' +
+                ", following_at='" + following_at + '\'' +
                 ", isPrivate=" + isPrivate +
-                ", following=" + following +
-                ", follower=" + follower +
                 '}';
     }
 }
