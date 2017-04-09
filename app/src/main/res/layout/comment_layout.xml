@@ -11,12 +11,13 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:layout_weight="2"
         android:gravity="center"
         android:orientation="vertical">
 
         <CheckBox
-            android:id="@+id/isSpoiler"
+            android:id="@+id/is_spoiler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -28,16 +29,18 @@
     </LinearLayout>
 
     <EditText
-        android:hint="@string/comment_tip"
         android:id="@+id/comment_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="8" />
+        android:layout_weight="8"
+        android:hint="@string/comment_tip"
+        android:maxLines="4" />
 
     <ImageView
         android:id="@+id/iv_reply"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:layout_weight="1"
         android:src="@drawable/send" />
 </LinearLayout>

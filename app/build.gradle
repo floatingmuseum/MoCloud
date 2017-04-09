@@ -120,4 +120,5 @@ dependencies {
     compile 'com.uphyca:stetho_realm:2.0.0'
     compile 'com.github.medyo:fancybuttons:1.8.3'
     compile 'com.github.anzaizai:EasyRefreshLayout:1.1.5'
+    compile 'com.github.maoruibin:OneDrawable:1.0.2'
 }

@@ -57,7 +57,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     RecyclerView rvComments;
     @BindView(R.id.srl_comments)
     SwipeRefreshLayout srlComments;
-    @BindView(R.id.isSpoiler)
+    @BindView(R.id.is_spoiler)
     CheckBox isSpoiler;
     @BindView(R.id.tv_spoiler)
     TextView tvSpoiler;

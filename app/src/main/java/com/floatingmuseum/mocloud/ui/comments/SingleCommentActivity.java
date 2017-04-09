@@ -75,7 +75,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
     EditText commentBox;
     @BindView(R.id.iv_reply)
     ImageView ivReply;
-    @BindView(R.id.isSpoiler)
+    @BindView(R.id.is_spoiler)
     CheckBox isSpoiler;
     @BindView(R.id.tv_spoiler)
     TextView tvSpoiler;

@@ -4,6 +4,7 @@ import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -72,6 +73,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.RealmModel;
 import mehdi.sakout.fancybuttons.FancyButton;
+import name.gudong.statebackground.OneDrawable;
 
 
 /**
@@ -608,11 +610,17 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             ToastUtil.showToast(R.string.not_login);
             return;
         }
-        llCommentsReply = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.comment_layout, commentContainer, false);
+        // TODO: 2017/4/10 超过4行时存在滑动冲突
+        llCommentsReply = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.comment_layout, llMovieContainer, false);
         isSpoiler = (CheckBox) llCommentsReply.findViewById(R.id.is_spoiler);
         TextView tvSpoiler = (TextView) llCommentsReply.findViewById(R.id.tv_spoiler);
         commentBox = (EditText) llCommentsReply.findViewById(R.id.comment_box);
+
+        // TODO: 2017/4/9 添加点击阴影效果不成功 
         ImageView ivReply = (ImageView) llCommentsReply.findViewById(R.id.iv_reply);
+        Drawable icon1 = OneDrawable.createBgDrawableWithDarkMode(this,R.drawable.send);
+        ivReply.setBackgroundDrawable(icon1);
+        
         movieDetailContainer.addView(llCommentsReply);
         tvNoMoreComments.setVisibility(View.GONE);
         svMovieDetail.fullScroll(View.FOCUS_DOWN);
