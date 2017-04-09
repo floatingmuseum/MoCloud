@@ -480,7 +480,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             RatioImageView iv_staff_headshot = (RatioImageView) director_item.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) director_item.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) director_item.findViewById(R.id.tv_crew_realname);
-            director_item.findViewById(R.id.tv_crew_character).setVisibility(View.GONE);
+//            director_item.findViewById(R.id.tv_crew_character).setVisibility(View.GONE);
             ImageLoader.loadFromTmdbPersonImage(this, director.getTmdbPersonImage(), iv_staff_headshot, R.drawable.default_movie_poster);
             tv_crew_job.setText(director.getJob());
             tv_crew_realname.setText(director.getPerson().getName());
@@ -499,15 +499,15 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             RatioImageView iv_staff_headshot = (RatioImageView) actor_item.findViewById(R.id.iv_staff_headshot);
             TextView tv_crew_job = (TextView) actor_item.findViewById(R.id.tv_crew_job);
             TextView tv_crew_realname = (TextView) actor_item.findViewById(R.id.tv_crew_realname);
-            TextView tv_crew_character = (TextView) actor_item.findViewById(R.id.tv_crew_character);
+//            TextView tv_crew_character = (TextView) actor_item.findViewById(R.id.tv_crew_character);
             ImageLoader.loadFromTmdbPersonImage(this, cast.getTmdbPersonImage(), iv_staff_headshot, R.drawable.default_movie_poster);
             tv_crew_job.setText("Actor");
             tv_crew_realname.setText(cast.getPerson().getName());
-            tv_crew_character.setText(cast.getCharacter());
+//            tv_crew_character.setText(cast.getCharacter());
             if (enableColorful()) {
                 tv_crew_job.setTextColor(mainSwatch.getBodyTextColor());
                 tv_crew_realname.setTextColor(mainSwatch.getBodyTextColor());
-                tv_crew_character.setTextColor(mainSwatch.getBodyTextColor());
+//                tv_crew_character.setTextColor(mainSwatch.getBodyTextColor());
             }
             llCrew.addView(actor_item);
         }

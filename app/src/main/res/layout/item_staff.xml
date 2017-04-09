@@ -32,10 +32,10 @@
             android:layout_height="wrap_content"
             tools:text="Will Smith" />
 
-        <TextView
-            android:id="@+id/tv_crew_character"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Hancok" />
+        <!--<TextView-->
+            <!--android:id="@+id/tv_crew_character"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--tools:text="Hancok" />-->
     </LinearLayout>
 </LinearLayout>
