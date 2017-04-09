@@ -332,12 +332,13 @@
             <TextView
                 android:id="@+id/tv_tagline"
                 style="@style/detail_content"
-                android:layout_height="50dp"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:gravity="center"
                 android:textSize="17sp"
                 android:textStyle="italic"
-                tools:text="Your destiny is in your blood" />
+                tools:text="Kevin has 23 distinct personalities. The 24th is about to be unleashed." />
 
 
             <TextView
