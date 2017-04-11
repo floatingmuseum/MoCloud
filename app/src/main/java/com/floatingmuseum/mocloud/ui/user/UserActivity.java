@@ -112,7 +112,7 @@ public class UserActivity extends BaseActivity {
         tvSeeRatings.setText("See what " + username + " has rated");
         tvSeeWatchlist.setText("See what " + username + "'s watchlist");
         tvSeeCollection.setText("See what " + username + "'s collections");
-        presenter.start(user.getIds().getSlug());
+        presenter.start(user.getIds().getSlug(), isUserSelf);
     }
 
     public void onUserStatsSuccess(Stats stats) {
@@ -125,13 +125,13 @@ public class UserActivity extends BaseActivity {
     }
 
     public void onUserFollowDataSuccess(RealmFollower realmFollower, RealmFollowing realmFollowing) {
-        if (realmFollower==null && realmFollowing==null){
+        if (realmFollower == null && realmFollowing == null) {
             fbFollowingState.setText("Follow");
-        }else if (realmFollower!=null && realmFollowing!=null){
+        } else if (realmFollower != null && realmFollowing != null) {
             // TODO: 2017/3/27 means you guys following each other
-        }else if (realmFollower!=null){
+        } else if (realmFollower != null) {
             // TODO: 2017/3/28 means this user following you
-        }else{
+        } else {
             // TODO: 2017/3/28 means you following this user
             fbFollowingState.setText("Following");
         }

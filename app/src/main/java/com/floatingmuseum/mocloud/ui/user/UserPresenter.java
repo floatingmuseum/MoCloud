@@ -22,9 +22,9 @@ public class UserPresenter extends Presenter implements UserDetailCallback{
         this.activity = activity;
     }
 
-    public void start(String slug) {
+    public void start(String slug,boolean isUserSelf) {
         compositeSubscription.add(repository.getUserStats(slug,this));
-        if (SPUtil.isLogin()) {
+        if (SPUtil.isLogin() && !isUserSelf) {
             getUserFollowData(slug);
         }
     }
