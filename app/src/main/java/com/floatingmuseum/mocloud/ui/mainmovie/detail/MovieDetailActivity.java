@@ -1,16 +1,12 @@
 package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -49,7 +45,6 @@ import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.utils.ColorUtil;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
-import com.floatingmuseum.mocloud.utils.ListUtil;
 import com.floatingmuseum.mocloud.utils.NumberFormatUtil;
 import com.floatingmuseum.mocloud.utils.ResUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
@@ -66,7 +61,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -212,7 +206,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-
         movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
         EventBusManager.register(this);
         presenter = new MovieDetailPresenter(this);
@@ -618,9 +611,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
         // TODO: 2017/4/9 添加点击阴影效果不成功 
         ImageView ivReply = (ImageView) llCommentsReply.findViewById(R.id.iv_reply);
-        Drawable icon1 = OneDrawable.createBgDrawableWithDarkMode(this,R.drawable.send);
+        Drawable icon1 = OneDrawable.createBgDrawableWithDarkMode(this, R.drawable.send);
         ivReply.setBackgroundDrawable(icon1);
-        
+
         movieDetailContainer.addView(llCommentsReply);
         tvNoMoreComments.setVisibility(View.GONE);
         svMovieDetail.fullScroll(View.FOCUS_DOWN);
