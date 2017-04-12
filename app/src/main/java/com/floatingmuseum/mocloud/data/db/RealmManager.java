@@ -232,7 +232,7 @@ public class RealmManager {
                         RealmResults results = realm.where(clazz)
                                 .equalTo(filedName, value)
                                 .findAll();
-                        if (ListUtil.isEmpty(results)) {
+                        if (ListUtil.hasData(results)) {
                             results.deleteFirstFromRealm();
                         }
                     }

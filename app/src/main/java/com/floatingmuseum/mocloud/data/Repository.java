@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
-import com.facebook.stetho.server.LeakyBufferedInputStream;
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.Constants;
 import com.floatingmuseum.mocloud.MoCloud;
@@ -1725,7 +1724,13 @@ public class Repository {
     private String getImageUrl(TmdbMovieImage tmdbMovieImage) {
         if (tmdbMovieImage != null) {
             List<TmdbMovieImage.Posters> posters = tmdbMovieImage.getPosters();
-            if (posters != null && posters.size() != 0) {
+            if (ListUtil.hasData(posters)) {
+                for (TmdbMovieImage.Posters poster : posters) {
+                    // TODO: 2017/4/12 默认优先选择英文海报，之后可以优化为根据影片语言优先选择对应海报
+                    if ("en".equals(poster.getIso_639_1())) {
+                        return poster.getFile_path();
+                    }
+                }
                 return posters.get(0).getFile_path();
             }
         }

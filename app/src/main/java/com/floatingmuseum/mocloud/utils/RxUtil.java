@@ -6,10 +6,8 @@ import com.floatingmuseum.mocloud.data.db.RealmManager;
 import com.floatingmuseum.mocloud.data.db.entity.RealmCommentLike;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieDataList;
-import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.orhanobut.logger.Logger;
 
-import java.io.File;
 import java.util.List;
 
 import rx.Observable;
@@ -53,7 +51,7 @@ public class RxUtil {
     private static Action1<List<Comment>> CommentsResultLikesUpdateAction1 = new Action1<List<Comment>>() {
         @Override
         public void call(List<Comment> comments) {
-            if (SPUtil.isLogin() && SPUtil.getBoolean(SPUtil.SP_USER_LASTACTIVITIES, "has_first_sync", false) && ListUtil.isEmpty(comments)) {
+            if (SPUtil.isLogin() && SPUtil.getBoolean(SPUtil.SP_USER_LASTACTIVITIES, "has_first_sync", false) && ListUtil.hasData(comments)) {
                 for (Comment comment : comments) {
                     RealmCommentLike realmCommentLike = RealmManager.query(RealmCommentLike.class, "id", comment.getId());
                     if (realmCommentLike != null) {
