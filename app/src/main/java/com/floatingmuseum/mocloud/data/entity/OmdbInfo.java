@@ -1,5 +1,7 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import java.util.List;
+
 /**
  * Created by Floatingmuseum on 2017/1/14.
  */
@@ -25,22 +27,17 @@ public class OmdbInfo {
     private String imdbVotes;
     private String imdbID;
     private String Type;
-    private String tomatoMeter;
-    private String tomatoImage;
-    private String tomatoRating;
-    private String tomatoReviews;
-    private String tomatoFresh;
-    private String tomatoRotten;
-    private String tomatoConsensus;
-    private String tomatoUserMeter;
-    private String tomatoUserRating;
-    private String tomatoUserReviews;
-    private String tomatoURL;
     private String DVD;
     private String BoxOffice;
     private String Production;
     private String Website;
     private String Response;
+    /**
+     * Source : Internet Movie Database
+     * Value : 7.1/10
+     */
+
+    private List<RatingsBean> Ratings;
 
     public String getTitle() {
         return Title;
@@ -194,94 +191,6 @@ public class OmdbInfo {
         this.Type = Type;
     }
 
-    public String getTomatoMeter() {
-        return tomatoMeter;
-    }
-
-    public void setTomatoMeter(String tomatoMeter) {
-        this.tomatoMeter = tomatoMeter;
-    }
-
-    public String getTomatoImage() {
-        return tomatoImage;
-    }
-
-    public void setTomatoImage(String tomatoImage) {
-        this.tomatoImage = tomatoImage;
-    }
-
-    public String getTomatoRating() {
-        return tomatoRating;
-    }
-
-    public void setTomatoRating(String tomatoRating) {
-        this.tomatoRating = tomatoRating;
-    }
-
-    public String getTomatoReviews() {
-        return tomatoReviews;
-    }
-
-    public void setTomatoReviews(String tomatoReviews) {
-        this.tomatoReviews = tomatoReviews;
-    }
-
-    public String getTomatoFresh() {
-        return tomatoFresh;
-    }
-
-    public void setTomatoFresh(String tomatoFresh) {
-        this.tomatoFresh = tomatoFresh;
-    }
-
-    public String getTomatoRotten() {
-        return tomatoRotten;
-    }
-
-    public void setTomatoRotten(String tomatoRotten) {
-        this.tomatoRotten = tomatoRotten;
-    }
-
-    public String getTomatoConsensus() {
-        return tomatoConsensus;
-    }
-
-    public void setTomatoConsensus(String tomatoConsensus) {
-        this.tomatoConsensus = tomatoConsensus;
-    }
-
-    public String getTomatoUserMeter() {
-        return tomatoUserMeter;
-    }
-
-    public void setTomatoUserMeter(String tomatoUserMeter) {
-        this.tomatoUserMeter = tomatoUserMeter;
-    }
-
-    public String getTomatoUserRating() {
-        return tomatoUserRating;
-    }
-
-    public void setTomatoUserRating(String tomatoUserRating) {
-        this.tomatoUserRating = tomatoUserRating;
-    }
-
-    public String getTomatoUserReviews() {
-        return tomatoUserReviews;
-    }
-
-    public void setTomatoUserReviews(String tomatoUserReviews) {
-        this.tomatoUserReviews = tomatoUserReviews;
-    }
-
-    public String getTomatoURL() {
-        return tomatoURL;
-    }
-
-    public void setTomatoURL(String tomatoURL) {
-        this.tomatoURL = tomatoURL;
-    }
-
     public String getDVD() {
         return DVD;
     }
@@ -320,5 +229,34 @@ public class OmdbInfo {
 
     public void setResponse(String Response) {
         this.Response = Response;
+    }
+
+    public List<RatingsBean> getRatings() {
+        return Ratings;
+    }
+
+    public void setRatings(List<RatingsBean> Ratings) {
+        this.Ratings = Ratings;
+    }
+
+    public static class RatingsBean {
+        private String Source;
+        private String Value;
+
+        public String getSource() {
+            return Source;
+        }
+
+        public void setSource(String Source) {
+            this.Source = Source;
+        }
+
+        public String getValue() {
+            return Value;
+        }
+
+        public void setValue(String Value) {
+            this.Value = Value;
+        }
     }
 }
