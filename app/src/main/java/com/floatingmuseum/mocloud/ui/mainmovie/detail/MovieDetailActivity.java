@@ -10,6 +10,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -238,7 +239,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tvReleased.setText(movie.getReleased());
         tvRuntime.setText(movie.getRuntime() + " mins");
         tvLanguage.setText(movie.getLanguage());
-        tvOverview.setText(movie.getOverview());
+        String overView = movie.getOverview();
+        tvOverview.setText(TextUtils.isEmpty(overView) ? ResUtil.getString(R.string.empty_data) : overView);
         String tagline = movie.getTagline();
         if (StringUtil.hasData(tagline)) {
             tvTagline.setText("\"" + tagline + "\"");

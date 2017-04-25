@@ -46,6 +46,7 @@
     <string name="tagline">Tagline</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="already_get_all_data">Already get all data.</string>
+    <string name="empty_data">No data.</string>
 
     <string-array name="tab_names">
         <item>Trending</item>
