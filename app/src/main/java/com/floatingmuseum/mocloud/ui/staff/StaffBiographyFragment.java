@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.R;
@@ -44,9 +43,12 @@ public class StaffBiographyFragment extends BaseFragment {
     TextView tvHomepageTitle;
     @BindView(R.id.tv_biography_title)
     TextView tvBiographyTitle;
+    @BindView(R.id.tv_no_bio)
+    TextView tvNoBio;
 
     private Staff staff;
     private StaffBiographyPresenter presenter;
+    private boolean noAnyInfo = true;
 
     public static Fragment newInstance(Staff staff) {
         StaffBiographyFragment fragment = new StaffBiographyFragment();
@@ -76,10 +78,14 @@ public class StaffBiographyFragment extends BaseFragment {
         initText(person.getBirthplace(), tvBirthplace, tvBirthplaceTitle);
         initText(person.getHomepage(), tvHomepage, tvHomepageTitle);
         initText(person.getBiography(), tvBiography, tvBiographyTitle);
+        if (noAnyInfo) {
+            tvNoBio.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initText(String text, TextView textView, TextView textViewTitle) {
         if (text != null && text.length() > 0) {
+            noAnyInfo = false;
             textView.setText(text);
         } else {
             textView.setVisibility(View.GONE);

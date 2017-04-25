@@ -444,6 +444,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     tvImdbRatingCount.setTextColor(bodyTextColor);
                     tvOverview.setTextColor(bodyTextColor);
                     tvTagline.setTextColor(bodyTextColor);
+                    tvNoCrew.setTextColor(bodyTextColor);
 
                     int titleTextColor = mainSwatch.getTitleTextColor();
                     tvMovieTitleText.setTextColor(titleTextColor);
@@ -760,7 +761,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     @Override
     protected void onError(Exception e) {
-        // TODO: 2017/4/25 需要展示crew获取数据失败和comment获取数据失败时的点击retry 
+        // TODO: 2017/4/25 需要展示crew获取数据失败和comment获取数据失败时的点击retry
     }
 
     @Override
