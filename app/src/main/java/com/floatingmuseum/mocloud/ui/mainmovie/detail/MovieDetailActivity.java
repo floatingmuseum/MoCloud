@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.ui.mainmovie.detail;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -63,6 +65,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.ToDoubleBiFunction;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,14 +85,14 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     ScrollView svMovieDetail;
     @BindView(R.id.ll_movie_detail)
     LinearLayout movieDetailContainer;
-    @BindView(R.id.iv_tomato_popcorn_state)
-    ImageView ivTomatoPopcornState;
+    @BindView(R.id.iv_tomato_state)
+    ImageView ivTomatoState;
     @BindView(R.id.tv_tomato_rating)
     TextView tvTomatoRating;
-    @BindView(R.id.tv_tomato_rating_count)
-    TextView tvTomatoRatingCount;
     @BindView(R.id.ll_tomato_rating)
     LinearLayout llTomatoRating;
+    @BindView(R.id.iv_trakt_rating)
+    ImageView ivTraktRating;
     @BindView(R.id.tv_trakt_rating)
     TextView tvTraktRating;
     @BindView(R.id.tv_trakt_rating_count)
@@ -102,6 +105,10 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     TextView tvImdbRatingCount;
     @BindView(R.id.ll_imdb_rating)
     LinearLayout llImdbRating;
+    @BindView(R.id.ll_meta_score)
+    LinearLayout llMetaScore;
+    @BindView(R.id.tv_meta_score)
+    TextView tvMetaScore;
     @BindView(R.id.ll_ratings)
     LinearLayout llRatings;
     @BindView(R.id.ll_sync)
@@ -437,7 +444,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     tvCertification.setTextColor(bodyTextColor);
                     tvOverview.setTextColor(bodyTextColor);
                     tvTomatoRating.setTextColor(bodyTextColor);
-                    tvTomatoRatingCount.setTextColor(bodyTextColor);
                     tvTraktRating.setTextColor(bodyTextColor);
                     tvTraktRatingCount.setTextColor(bodyTextColor);
                     tvImdbRating.setTextColor(bodyTextColor);
@@ -680,6 +686,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     }
 
     public void onOtherRatingsSuccess(OmdbInfo omdbInfo) {
+        // TODO: 2017/4/13 部分投票人数超多的影片可能造成trakt和imdb的投票人数显示重叠，暂时没出现，理论上猜测 
+        //imdb score
         String imdbRating = omdbInfo.getImdbRating();
         tvImdbRating.setText(imdbRating == null ? "N/A" : imdbRating);
         String imdbVotes = omdbInfo.getImdbVotes();
@@ -692,20 +700,45 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                 openInBrowser("http://www.imdb.com/title/" + movie.getIds().getImdb());
             }
         });
-        /**
-         * OMDB的tomatoes评分都变成了N/A
-         */
-        String tomatoUserRating = omdbInfo.getTomatoUserRating();
-        double tomatoRating = Double.valueOf(tomatoUserRating);
-        if (tomatoRating < 3.5) {
-            Glide.with(this).load(R.drawable.popcorn_bad).into(ivTomatoPopcornState);
-        } else {
-            Glide.with(this).load(R.drawable.popcorn_good).into(ivTomatoPopcornState);
+
+        //metacritic score
+        String metaScore = omdbInfo.getMetascore();
+        if (metaScore != null && !"N/A".equals(metaScore)) {
+            int height = ivTraktRating.getHeight();
+            int metaInt = Integer.valueOf(metaScore);
+            if (metaInt >= 75) {
+                tvMetaScore.setBackgroundColor(Color.parseColor("#66CC33"));
+            } else if (metaInt >= 50) {
+                tvMetaScore.setBackgroundColor(Color.parseColor("#FFCC33"));
+            } else {
+                tvMetaScore.setBackgroundColor(Color.parseColor("#FF0000"));
+            }
+            tvMetaScore.setText(metaScore);
+            tvMetaScore.setWidth(height);
+            llMetaScore.setVisibility(View.VISIBLE);
         }
-        tvTomatoRating.setText(tomatoUserRating);
-        // TODO: 2017/2/13 西红柿的userReview应该不是rating count
-        tvTomatoRatingCount.setText(omdbInfo.getTomatoUserReviews() + "votes");
-        llTomatoRating.setVisibility(View.VISIBLE);
+
+        //rotten tomato score
+        List<OmdbInfo.RatingsBean> ratingsBeans = omdbInfo.getRatings();
+        if (ratingsBeans != null) {
+            for (OmdbInfo.RatingsBean ratingsBean : ratingsBeans) {
+                if ("Rotten Tomatoes".equals(ratingsBean.getSource())) {
+                    String tomatoRating = ratingsBean.getValue();
+                    String value = tomatoRating.substring(0, tomatoRating.indexOf("%"));
+                    Logger.d("Value:" + value);
+                    int valueInt = Integer.valueOf(value);
+                    if (valueInt >= 75) {
+                        Glide.with(this).load(R.drawable.tomato_certified).into(ivTomatoState);
+                    } else if (valueInt >= 60) {
+                        Glide.with(this).load(R.drawable.tomato_fresh).into(ivTomatoState);
+                    } else {
+                        Glide.with(this).load(R.drawable.tomato_rot).into(ivTomatoState);
+                    }
+                    tvTomatoRating.setText(tomatoRating);
+                    llTomatoRating.setVisibility(View.VISIBLE);
+                }
+            }
+        }
     }
 
     public void onAddMovieToWatchedSuccess() {
