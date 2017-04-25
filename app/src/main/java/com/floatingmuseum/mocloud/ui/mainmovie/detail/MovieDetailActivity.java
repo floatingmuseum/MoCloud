@@ -34,7 +34,6 @@ import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
-import com.floatingmuseum.mocloud.data.entity.SyncData;
 import com.floatingmuseum.mocloud.data.entity.Ids;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.MovieSyncItem;
@@ -42,6 +41,7 @@ import com.floatingmuseum.mocloud.data.entity.MovieTeam;
 import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.entity.SyncData;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.utils.ColorUtil;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
@@ -180,6 +180,8 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     AVLoadingIndicatorView avlCrew;
     @BindView(R.id.avl_comments)
     AVLoadingIndicatorView avlComments;
+    @BindView(R.id.tv_no_crew)
+    TextView tvNoCrew;
 
     private Movie movie;
     private MovieDetailPresenter presenter;
@@ -240,6 +242,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         tvRuntime.setText(movie.getRuntime() + " mins");
         tvLanguage.setText(movie.getLanguage());
         String overView = movie.getOverview();
+
         tvOverview.setText(TextUtils.isEmpty(overView) ? ResUtil.getString(R.string.empty_data) : overView);
         String tagline = movie.getTagline();
         if (StringUtil.hasData(tagline)) {
@@ -465,6 +468,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     public void onMovieTeamSuccess(MovieTeam movieTeam) {
         List<Staff> detailShowList = movieTeam.getDetailShowList();
         if (detailShowList == null || detailShowList.size() == 0) {
+            avlCrew.setVisibility(View.GONE);
+            tvNoCrew.setVisibility(View.VISIBLE);
+            tvNoCrew.setText(R.string.no_data);
             return;
         }
         avlCrew.setVisibility(View.GONE);
@@ -754,7 +760,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
     @Override
     protected void onError(Exception e) {
-
+        // TODO: 2017/4/25 需要展示crew获取数据失败和comment获取数据失败时的点击retry 
     }
 
     @Override

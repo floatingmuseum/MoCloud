@@ -16,11 +16,11 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:padding="3dp"
             android:id="@+id/ll_movie_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="3dp">
 
             <LinearLayout
                 android:id="@+id/ll_movie_header"
@@ -324,18 +324,18 @@
 
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/tv_tagline_title"
                 style="@style/detail_title"
-                android:text="@string/tagline" />
+                android:text="@string/tagline"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_tagline"
                 style="@style/detail_content"
-                android:padding="10dp"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
+                android:padding="10dp"
                 android:textSize="17sp"
                 android:textStyle="italic"
                 tools:text="Kevin has 23 distinct personalities. The 24th is about to be unleashed." />
@@ -371,6 +371,15 @@
                 android:orientation="horizontal"
                 android:visibility="gone"
                 android:weightSum="4" />
+
+            <TextView
+                android:id="@+id/tv_no_crew"
+                style="@style/detail_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:visibility="gone"
+                tools:text="Get data failure,click to retry." />
 
             <TextView
                 android:id="@+id/tv_comments_title"
