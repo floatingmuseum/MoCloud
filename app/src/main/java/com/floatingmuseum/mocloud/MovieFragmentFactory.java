@@ -15,23 +15,21 @@ import com.floatingmuseum.mocloud.ui.mainmovie.watched.MovieWatchedFragment;
  * Created by Floatingmuseum on 2016/4/13.
  */
 public class MovieFragmentFactory {
-    public static Fragment create(int position){
+    public static Fragment create(int position) {
         Fragment fragment = null;
-        switch (position){
+        switch (position) {
             case 0:
-//                fragment = TmdbMoviePopularFragment.newInstance();
                 fragment = MovieTrendingFragment.newInstance();
                 break;
             case 1:
-//                fragment = MovieNowPlayingFragment.newInstance();
-                fragment = MoviePopularFragment.newInstance();
+//                fragment = MoviePopularFragment.newInstance();
+                fragment = MovieAnticipatedFragment.newInstance();
                 break;
             case 2:
-//                fragment = MovieTopRatedFragment.newInstance();
-                fragment = MoviePlayedFragment.newInstance();
+//                fragment = MoviePlayedFragment.newInstance();
+                fragment = MovieBoxOfficeFragment.newInstance();
                 break;
             case 3:
-//                fragment = MovieUpcomingFragment.newInstance();
                 fragment = MovieWatchedFragment.newInstance();
                 break;
             case 4:

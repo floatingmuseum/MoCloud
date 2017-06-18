@@ -50,10 +50,10 @@
 
     <string-array name="tab_names">
         <item>Trending</item>
-        <item>Popular</item>
-        <item>Played</item>
-        <item>Watched</item>
-        <item>Collected</item>
+        <!--<item>Popular</item>-->
+        <!--<item>Played</item>-->
+        <!--<item>Watched</item>-->
+        <!--<item>Collected</item>-->
         <item>Anticipated</item>
         <item>Box Office</item>
     </string-array>

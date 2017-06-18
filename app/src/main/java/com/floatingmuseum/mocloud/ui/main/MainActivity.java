@@ -58,7 +58,7 @@ public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.mainViewPager)
     ViewPager mainViewPager;
-    @BindView(R.id.mainTablayout)
+    @BindView(R.id.mainTabLayout)
     TabLayout mainTabLayout;
     @BindView(R.id.nav_view)
     NavigationView navView;
