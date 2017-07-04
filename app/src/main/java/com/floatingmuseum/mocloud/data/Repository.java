@@ -8,6 +8,7 @@ import com.bumptech.glide.request.target.Target;
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.Constants;
 import com.floatingmuseum.mocloud.MoCloud;
+import com.floatingmuseum.mocloud.MovieObserver;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.callback.CommentsCallback;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
@@ -101,20 +102,18 @@ public class Repository {
      * 首页数据
      ********************************************************/
 
+
     /**
      * 趋势
      */
     public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
         Logger.d("getMovieTrendingData...pageNum:" + pageNum);
         final List<BaseMovie> movies = new ArrayList<>();
+
         service.getMovieTrending(pageNum, limit)
                 .compose(getEachPoster(movies))
                 .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new Observer<List<BaseMovie>>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
+                .subscribe(new MovieObserver<List<BaseMovie>>() {
                     @Override
                     public void onError(Throwable e) {
                         Logger.d("getMovieTrendingData...onError");
