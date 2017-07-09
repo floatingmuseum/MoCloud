@@ -353,6 +353,56 @@ public class Repository {
         };
     }
 
+    private Observable.Transformer<List<BaseMovie>, List<BaseMovie>> getEachBackdrops(final List<BaseMovie> movies) {
+        return new Observable.Transformer<List<BaseMovie>, List<BaseMovie>>() {
+            @Override
+            public Observable<List<BaseMovie>> call(Observable<List<BaseMovie>> listObservable) {
+                return listObservable.flatMap(new Func1<List<BaseMovie>, Observable<BaseMovie>>() {
+                    @Override
+                    public Observable<BaseMovie> call(List<BaseMovie> baseMovies) {
+                        movies.addAll(baseMovies);
+                        return Observable.from(movies);
+                    }
+                })
+                        .flatMap(new Func1<BaseMovie, Observable<TmdbMovieImage>>() {
+                            @Override
+                            public Observable<TmdbMovieImage> call(BaseMovie baseMovie) {
+                                return getTmdbMovieBackdropsObservable(baseMovie.getMovie()).subscribeOn(Schedulers.io());
+                            }
+                        })
+                        .map(new Func1<TmdbMovieImage, BaseMovie>() {
+                            @Override
+                            public BaseMovie call(TmdbMovieImage tmdbMovieImage) {
+                                return mergeMovieAndImage1(tmdbMovieImage, movies);
+                            }
+                        })
+                        .toList();
+            }
+        };
+    }
+
+    private Observable<TmdbMovieImage> getTmdbMovieBackdropsObservable(final Movie movie) {
+        Logger.d("getTmdbMovieBackdropsObservable...Movie:" + movie.getTitle() + "...TmdbId:" + movie.getIds().getTmdb());
+        int tmdbId = movie.getIds().getTmdb();
+        File file = ImageCacheManager.hasCacheImage(tmdbId, ImageCacheManager.TYPE_BACKDROP);
+        if (file != null) {
+            return ImageCacheManager.localPosterImage(tmdbId, file);
+        }
+        return service.getTmdbImages(tmdbId, BuildConfig.TmdbApiKey)
+                .onErrorReturn(new Func1<Throwable, TmdbMovieImage>() {
+                    @Override
+                    public TmdbMovieImage call(Throwable throwable) {
+                        Logger.d("getTmdbImages...onErrorReturn");
+                        throwable.printStackTrace();
+                        TmdbMovieImage tmdbMovieImage = new TmdbMovieImage();
+                        tmdbMovieImage.setId(movie.getIds().getTmdb());
+                        tmdbMovieImage.setHasPoster(false);
+                        tmdbMovieImage.setHasCache(false);
+                        return tmdbMovieImage;
+                    }
+                });
+    }
+
     /**
      * 从本地or网络获取电影海报
      */

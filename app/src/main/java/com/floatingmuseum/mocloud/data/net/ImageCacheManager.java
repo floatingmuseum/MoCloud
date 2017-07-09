@@ -30,18 +30,24 @@ import rx.Observable;
 public class ImageCacheManager {
     public static final int TYPE_POSTER = 0;
     public static final int TYPE_AVATAR = 1;
+    public static final int TYPE_BACKDROP = 2;
 
     private static final String POSTER_DIR_NAME = "imageDirName";
     private static final String AVATAR_DIR_NAME = "avatarDirName";
+    private static final String BACKDROP_DIR_NAME = "backdropDirName";
+
     private static final String IMAGE_DIR_SIZE = "imageDirSize";
+
     private static File posterDir;
     private static File avatarDir;
+    private static File backdropDir;
     private static long dirSize;
     private static boolean reducing = false;
 
     public static void init(Context context) {
         String posterDirName = SPUtil.getString(POSTER_DIR_NAME, "poster");
         String avatarDirName = SPUtil.getString(AVATAR_DIR_NAME, "avatar");
+        String backdropDirName = SPUtil.getString(BACKDROP_DIR_NAME, "backdrop");
 //        MoCloudImageCache/
         //默认大小10mb
         long cacheDirSize = SPUtil.getLong(IMAGE_DIR_SIZE, 10 * 1024 * 1024);
@@ -49,6 +55,7 @@ public class ImageCacheManager {
         dirSize = cacheDirSize / 2;
         posterDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), posterDirName);
         avatarDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), avatarDirName);
+        backdropDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), backdropDirName);
         initDir();
     }
 
@@ -58,6 +65,9 @@ public class ImageCacheManager {
         }
         if (!avatarDir.exists()) {
             avatarDir.mkdirs();
+        }
+        if (!backdropDir.exists()) {
+            backdropDir.mkdirs();
         }
     }
 
@@ -70,10 +80,12 @@ public class ImageCacheManager {
 
         File[] files;
         initDir();
-        if (imageType == TYPE_POSTER) {
+        if (TYPE_POSTER == imageType) {
             files = posterDir.listFiles();
-        } else {
+        } else if (TYPE_AVATAR == imageType) {
             files = avatarDir.listFiles();
+        } else {
+            files = backdropDir.listFiles();
         }
 
         for (File file : files) {
