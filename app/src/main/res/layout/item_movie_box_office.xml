@@ -9,9 +9,11 @@
         android:id="@+id/iv_boxoffice_poster"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        mocloud:image_ratio="1.42"
+        android:scaleType="fitXY"
+        mocloud:image_ratio="0.56"
         tools:src="@drawable/default_fanart" />
+    <!--mocloud:image_ratio="1.42"-->
+
 
     <TextView
         android:id="@+id/tv_box_movie_title"

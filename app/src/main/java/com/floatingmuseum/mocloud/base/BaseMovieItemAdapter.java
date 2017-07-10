@@ -35,9 +35,10 @@ public abstract class BaseMovieItemAdapter<T extends Object, K extends BaseViewH
         } else if (image.getRemoteImageUrl() != null) {
             ImageLoader.load(mContext, image.getRemoteImageUrl(), posterView, R.drawable.default_movie_poster);
             Logger.d("图片从网络加载:" + movie.getTitle() + "..." + image.getTmdbID() + "...tmdbPosterUrl:" + image.getRemoteImageUrl());
+        } else {
+            Logger.d("没有图片showImage:" + movie.getTitle());
+            ImageLoader.loadDefault(mContext, posterView);
         }
-        Logger.d("没有图片showImage:" + movie.getTitle());
-        ImageLoader.loadDefault(mContext, posterView);
     }
 
     protected void showTitle(TextView titleView, Movie movie) {

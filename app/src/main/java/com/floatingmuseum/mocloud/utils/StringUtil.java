@@ -1,5 +1,7 @@
 package com.floatingmuseum.mocloud.utils;
 
+import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
+
 /**
  * Created by Floatingmuseum on 2016/8/29.
  */
@@ -9,12 +11,16 @@ public class StringUtil {
         return content.replaceAll(" ", "");
     }
 
-    public static String buildPosterUrl(String url) {
-        return "https://image.tmdb.org/t/p/w185" + url;
+    public static String buildPosterUrl(String url,int type) {
+        if (ImageCacheManager.TYPE_POSTER==type){
+            return "https://image.tmdb.org/t/p/w342" + url;
+        }else{
+            return "https://image.tmdb.org/t/p/w300" + url;
+        }
     }
 
     public static String buildPeopleHeadshotUrl(String url) {
-        return "https://image.tmdb.org/t/p/w185" + url;
+        return "https://image.tmdb.org/t/p/w300" + url;
     }
 
     /**

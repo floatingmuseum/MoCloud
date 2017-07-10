@@ -80,25 +80,26 @@ public class ImageCacheManager {
             return null;
         }
 
-        File[] files;
+        File[] files = null;
         initDir();
         if (TYPE_POSTER == imageType) {
             files = posterDir.listFiles();
         } else if (TYPE_AVATAR == imageType) {
             files = avatarDir.listFiles();
-        } else {
+        } else if (TYPE_BACKDROP == imageType) {
             files = backdropDir.listFiles();
         }
-
-        for (File file : files) {
-            String fileName = file.getName();
-            String id = fileName.substring(fileName.indexOf("-") + 1, fileName.indexOf("."));
+        if (files != null) {
+            for (File file : files) {
+                String fileName = file.getName();
+                String id = fileName.substring(fileName.indexOf("-") + 1, fileName.indexOf("."));
 //            Logger.d("文件名:" + file.getName() + "...TmdbID:" + tmdbID +"切割后:"+id+ "...lastModifiedTime:" + file.lastModified());
-            if (id.equals(String.valueOf(tmdbID))) {
+                if (id.equals(String.valueOf(tmdbID))) {
 //                Logger.d("文件已存在:" + tmdbID+"...Uri:"+file.toURI().toString());
-                long endTime = System.currentTimeMillis();
+                    long endTime = System.currentTimeMillis();
 //                Logger.d("图片耗时...文件检索成功耗时:"+(endTime-startTime));
-                return file;
+                    return file;
+                }
             }
         }
 //        Logger.d("文件不存在:" + tmdbID);
@@ -107,7 +108,7 @@ public class ImageCacheManager {
         return null;
     }
 
-    public static Observable<ArtImage> localPosterImage(int tmdbID, File file) {
+    public static Observable<ArtImage> localArtImage(int tmdbID, File file) {
         ArtImage image = new ArtImage();
         image.setTmdbID(tmdbID);
         image.setLocalImageUri(Uri.fromFile(file));
@@ -127,7 +128,14 @@ public class ImageCacheManager {
     }
 
     public static void writeToDisk(ResponseBody body, String fileName, int imageType) {
-        File dir = imageType == TYPE_POSTER ? posterDir : avatarDir;
+        File dir;
+        if (TYPE_POSTER == imageType) {
+            dir = posterDir;
+        } else if (TYPE_BACKDROP == imageType) {
+            dir = backdropDir;
+        } else {
+            dir = avatarDir;
+        }
         long nowDirSize = getDirSize(dir);
         Logger.d("图片缓存文件夹当前大小:" + nowDirSize + "...配置大小:" + dirSize + "...KB大小:" + FileUtil.bytesToKb(nowDirSize) + "...MB大小:" + FileUtil.bytesToMb(nowDirSize));
 //        Logger.d("图片耗时...reducing:"+reducing+"...文件夹大小MB:"+FileUtil.bytesToMb(nowDirSize));
@@ -158,9 +166,7 @@ public class ImageCacheManager {
                         e.printStackTrace();
                     }
                 }
-                if (body != null) {
-                    body.close();
-                }
+                body.close();
             }
         }
     }
