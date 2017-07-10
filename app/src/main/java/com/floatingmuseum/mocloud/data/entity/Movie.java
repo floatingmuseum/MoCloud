@@ -1,7 +1,9 @@
 package com.floatingmuseum.mocloud.data.entity;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import java.util.List;
 
 /**
@@ -12,7 +14,7 @@ public class Movie implements Parcelable{
     private int year;
     private Ids ids;
     private MovieImage images;
-    private TmdbMovieImage image;
+    private ArtImage image;
     private String tagline;
     private String overview;
     private String released;
@@ -119,7 +121,7 @@ public class Movie implements Parcelable{
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
@@ -163,13 +165,14 @@ public class Movie implements Parcelable{
         this.genres = genres;
     }
 
-    public TmdbMovieImage getImage() {
+    public ArtImage getImage() {
         return image;
     }
 
-    public void setImage(TmdbMovieImage image) {
+    public void setImage(ArtImage image) {
         this.image = image;
     }
+
 
     @Override
     public int describeContents() {
@@ -198,14 +201,15 @@ public class Movie implements Parcelable{
         dest.writeStringList(this.genres);
     }
 
-    public Movie(){}
+    public Movie() {
+    }
 
     protected Movie(Parcel in) {
         this.title = in.readString();
         this.year = in.readInt();
         this.ids = in.readParcelable(Ids.class.getClassLoader());
         this.images = in.readParcelable(MovieImage.class.getClassLoader());
-        this.image = in.readParcelable(TmdbMovieImage.class.getClassLoader());
+        this.image = in.readParcelable(ArtImage.class.getClassLoader());
         this.tagline = in.readString();
         this.overview = in.readString();
         this.released = in.readString();

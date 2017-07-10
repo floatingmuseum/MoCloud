@@ -39,7 +39,7 @@ public class RecommendationsAdapter extends BaseItemDraggableAdapter<Movie, Base
         CardView cardView = baseViewHolder.getView(R.id.cardview);
 //        cardView.setForeground(android.R.attr.selectableItemBackground);
         RatioImageView ivPoster = baseViewHolder.getView(R.id.iv_poster);
-        ImageLoader.loadFromTmdbMovieImage(mContext, movie.getImage(), ivPoster, R.drawable.default_movie_poster);
+        ImageLoader.loadArtImage(mContext, movie.getImage(), ivPoster, R.drawable.default_movie_poster);
 //        Bitmap bitmap = movie.getImage().getBitmap();
 //        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
 //            @Override

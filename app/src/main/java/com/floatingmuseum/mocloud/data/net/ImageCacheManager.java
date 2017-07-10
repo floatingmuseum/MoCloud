@@ -2,8 +2,10 @@ package com.floatingmuseum.mocloud.data.net;
 
 import android.Manifest;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Environment;
 
+import com.floatingmuseum.mocloud.data.entity.ArtImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.entity.TmdbPersonImage;
 import com.floatingmuseum.mocloud.utils.FileUtil;
@@ -105,12 +107,15 @@ public class ImageCacheManager {
         return null;
     }
 
-    public static Observable<TmdbMovieImage> localPosterImage(int tmdbID, File file) {
-        TmdbMovieImage tmdbMovieImage = new TmdbMovieImage();
-        tmdbMovieImage.setHasCache(true);
-        tmdbMovieImage.setId(tmdbID);
-        tmdbMovieImage.setCacheFile(file);
-        return Observable.just(tmdbMovieImage);
+    public static Observable<ArtImage> localPosterImage(int tmdbID, File file) {
+        ArtImage image = new ArtImage();
+        image.setTmdbID(tmdbID);
+        image.setLocalImageUri(Uri.fromFile(file));
+//        TmdbMovieImage tmdbMovieImage = new TmdbMovieImage();
+//        tmdbMovieImage.setHasCache(true);
+//        tmdbMovieImage.setId(tmdbID);
+//        tmdbMovieImage.setCacheFile(file);
+        return Observable.just(image);
     }
 
     public static Observable<TmdbPersonImage> localAvatarImage(int tmdbID, File file) {

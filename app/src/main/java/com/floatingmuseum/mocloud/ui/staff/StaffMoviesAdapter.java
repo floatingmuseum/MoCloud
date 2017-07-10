@@ -72,21 +72,21 @@ public class StaffMoviesAdapter extends BaseQuickAdapter<Staff, BaseViewHolder> 
     }
 
     protected void loadPoster(RatioImageView posterView, Movie movie) {
-        TmdbMovieImage image = movie.getImage();
-        Logger.d("MovieName:" + movie.getTitle() + "..." + image);
-        if (image != null) {
-            if (image.isHasCache()) {
-                File file = image.getCacheFile();
-                ImageLoader.load(mContext, file, posterView, R.drawable.default_movie_poster);
-                Logger.d("图片从本地加载:" + movie.getTitle() + "..." + file.getName());
-                return;
-            } else if (image.isHasPoster()) {
-                String tmdbPosterUrl = StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path());
-                ImageLoader.load(mContext, tmdbPosterUrl, posterView, R.drawable.default_movie_poster);
-                Logger.d("图片从网络加载:" + movie.getTitle() + "..." + image.getId() + "...tmdbPosterUrl:" + tmdbPosterUrl);
-                return;
-            }
-        }
+//        TmdbMovieImage image = movie.getImage();
+//        Logger.d("MovieName:" + movie.getTitle() + "..." + image);
+//        if (image != null) {
+//            if (image.isHasCache()) {
+//                File file = image.getCacheFile();
+//                ImageLoader.load(mContext, file, posterView, R.drawable.default_movie_poster);
+//                Logger.d("图片从本地加载:" + movie.getTitle() + "..." + file.getName());
+//                return;
+//            } else if (image.isHasPoster()) {
+//                String tmdbPosterUrl = StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path());
+//                ImageLoader.load(mContext, tmdbPosterUrl, posterView, R.drawable.default_movie_poster);
+//                Logger.d("图片从网络加载:" + movie.getTitle() + "..." + image.getId() + "...tmdbPosterUrl:" + tmdbPosterUrl);
+//                return;
+//            }
+//        }
         Logger.d("没有图片showImage:" + movie.getTitle());
         ImageLoader.loadDefault(mContext, posterView);
     }

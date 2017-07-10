@@ -65,7 +65,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.ToDoubleBiFunction;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

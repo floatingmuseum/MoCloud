@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.data.entity.ArtImage;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
@@ -51,35 +52,35 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.TestHolder> {
 
     protected void loadPoster(TestHolder holder, Movie movie) {
         holder.tv_title.setVisibility(View.GONE);
-        TmdbMovieImage image = movie.getImage();
+        ArtImage image = movie.getImage();
         Logger.d("MovieName:" + movie.getTitle() + "..." + image);
-        if (image != null) {
-            if (image.isHasCache()) {
-                File file = image.getCacheFile();
-                ImageLoader.load(context, file, holder.iv_poster, R.drawable.default_movie_poster);
-                Logger.d("图片从本地加载:" + movie.getTitle() + "..." + file.getName());
-                return;
-            } else if (image.isHasPoster()) {
-                String tmdbPosterUrl = StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path());
-                ImageLoader.load(context, tmdbPosterUrl, holder.iv_poster, R.drawable.default_movie_poster);
-                Logger.d("图片从网络加载:" + movie.getTitle() + "..." + image.getId() + "...tmdbPosterUrl:" + tmdbPosterUrl);
-                return;
-            }
-        } else {
-            Logger.d("没有图片showImage:" + movie.getTitle());
-            ImageLoader.loadDefault(context, holder.iv_poster);
-            holder.tv_title.setVisibility(View.VISIBLE);
-            holder.tv_title.setText(movie.getTitle());
-        }
+//        if (image != null) {
+//            if (image.isHasCache()) {
+//                File file = image.getCacheFile();
+//                ImageLoader.load(context, file, holder.iv_poster, R.drawable.default_movie_poster);
+//                Logger.d("图片从本地加载:" + movie.getTitle() + "..." + file.getName());
+//                return;
+//            } else if (image.isHasPoster()) {
+//                String tmdbPosterUrl = StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path());
+//                ImageLoader.load(context, tmdbPosterUrl, holder.iv_poster, R.drawable.default_movie_poster);
+//                Logger.d("图片从网络加载:" + movie.getTitle() + "..." + image.getId() + "...tmdbPosterUrl:" + tmdbPosterUrl);
+//                return;
+//            }
+//        } else {
+//            Logger.d("没有图片showImage:" + movie.getTitle());
+//            ImageLoader.loadDefault(context, holder.iv_poster);
+//            holder.tv_title.setVisibility(View.VISIBLE);
+//            holder.tv_title.setText(movie.getTitle());
+//        }
     }
 
     protected void showTitle(TextView titleView, Movie movie) {
-        TmdbMovieImage image = movie.getImage();
-        if (image == null || (!image.isHasPoster() & !image.isHasCache())) {
-            Logger.d("没有图片showTitle:" + movie.getTitle());
-            titleView.setVisibility(View.VISIBLE);
-            titleView.setText(movie.getTitle());
-        }
+//        TmdbMovieImage image = movie.getImage();
+//        if (image == null || (!image.isHasPoster() & !image.isHasCache())) {
+//            Logger.d("没有图片showTitle:" + movie.getTitle());
+//            titleView.setVisibility(View.VISIBLE);
+//            titleView.setText(movie.getTitle());
+//        }
     }
 
     @Override
