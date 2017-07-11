@@ -3,12 +3,16 @@ package com.floatingmuseum.mocloud.ui.recommendations;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.callback.ItemDragAndSwipeCallback;
@@ -20,6 +24,7 @@ import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
+import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +42,17 @@ public class RecommendationsActivity extends BaseActivity implements SwipeRefres
     RecyclerView rvRecommendations;
     @BindView(R.id.srl_recommendations)
     SwipeRefreshLayout srlRecommendations;
+
+    @BindView(R.id.tv_list_name)
+    TextView tvListName;
+    @BindView(R.id.tv_list_owner)
+    TextView tvListOwner;
+    @BindView(R.id.tv_list_desc)
+    TextView tvListDesc;
+    @BindView(R.id.dsv_movie_picker)
+    DiscreteScrollView dsvMoviePicker;
+    @BindView(R.id.tv_list_more)
+    TextView tvListMore;
 
     private RecommendationsPresenter presenter;
     private List<Movie> data;
@@ -109,8 +125,30 @@ public class RecommendationsActivity extends BaseActivity implements SwipeRefres
                 Logger.d("SimpleOnItemClick:" + data.get(position).getTitle() + "...position:" + position + "...size:" + data.size());
                 Movie movie = data.get(position);
                 Intent intent = new Intent(RecommendationsActivity.this, MovieDetailActivity.class);
-                intent.putExtra(MovieDetailActivity.MOVIE_OBJECT,movie);
+                intent.putExtra(MovieDetailActivity.MOVIE_OBJECT, movie);
                 startActivity(intent);
+            }
+        });
+
+
+        PickerAdapter adapter = new PickerAdapter(data);
+        dsvMoviePicker.setOffscreenItems(1);
+        dsvMoviePicker.setAdapter(adapter);
+        dsvMoviePicker.addScrollStateChangeListener(new DiscreteScrollView.ScrollStateChangeListener<RecyclerView.ViewHolder>() {
+            @Override
+            public void onScrollStart(@NonNull RecyclerView.ViewHolder currentItemHolder, int adapterPosition) {
+                Logger.d("Picker...onScrollStart:" + adapterPosition);
+
+            }
+
+            @Override
+            public void onScrollEnd(@NonNull RecyclerView.ViewHolder currentItemHolder, int adapterPosition) {
+                Logger.d("Picker...onScrollEnd:" + adapterPosition);
+            }
+
+            @Override
+            public void onScroll(float scrollPosition, @NonNull RecyclerView.ViewHolder currentHolder, @NonNull RecyclerView.ViewHolder newCurrent) {
+                Logger.d("Picker...onScroll:" + scrollPosition);
             }
         });
     }

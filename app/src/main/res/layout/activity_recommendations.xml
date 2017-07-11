@@ -7,6 +7,8 @@
 
     <include layout="@layout/layout_appbar" />
     <!--<include layout="@layout/layout_under_construction" />-->
+    <include layout="@layout/item_feature_list" />
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srl_recommendations"
         android:layout_width="match_parent"

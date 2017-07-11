@@ -82,7 +82,6 @@ public class Repository {
 
     private static Repository repository;
     private MoCloudService service;
-    private MovieTeam team;
 
     public Repository() {
         service = MoCloudFactory.getInstance();
@@ -426,12 +425,15 @@ public class Repository {
      * 获取电影团队
      */
     public Subscription getMovieTeam(String slug, final MovieDetailCallback callback) {
+        final MovieTeam team = new MovieTeam();
         return service.getMovieTeam(slug)
                 .map(new Func1<PeopleCredit, MovieTeam>() {
                     @Override
                     public MovieTeam call(PeopleCredit credit) {
                         //这里去DataMachine里处理一下数据，旨在提取出1个导演3个主演用于MovieDetail显示，剩下一个原始List用于MovieDetail中点击more时使用
-                        team = DataMachine.mixingStaffsWorks(credit);
+                        MovieTeam tempTeam = DataMachine.mixingStaffsWorks(credit);
+                        team.setDetailShowList(tempTeam.getDetailShowList());
+                        team.setPeopleCredit(credit);
                         return team;
                     }
                 })
@@ -512,8 +514,8 @@ public class Repository {
     /**
      * 电影其他评分
      */
-    public Subscription getMovieOtherRatings(String imdbId, final MovieDetailCallback callback) {
-        return service.getMovieOtherRatings(imdbId, "true")
+    public Subscription getMovieOtherRatings(String imdbID, final MovieDetailCallback callback) {
+        return service.getMovieOtherRatings(imdbID, "true")
                 .compose(RxUtil.<OmdbInfo>threadSwitch())
                 .subscribe(new SimpleObserver<OmdbInfo>() {
                     @Override

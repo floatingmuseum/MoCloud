@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_list_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Rotten Tomatoes: Best of 2017" />
+
+    <TextView
+        android:id="@+id/tv_list_owner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="LISH" />
+
+    <TextView
+        android:id="@+id/tv_list_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Pulled from Rotten Tomatoes Top Movies section:
+http://www.rottentomatoes.com/top/bestofrt/?year=2017" />
+
+    <com.yarolegovich.discretescrollview.DiscreteScrollView
+        android:id="@+id/dsv_movie_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_list_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        tools:text="More..." />
+</LinearLayout>
