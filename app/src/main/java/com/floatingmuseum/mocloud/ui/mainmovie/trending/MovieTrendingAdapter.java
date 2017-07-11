@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/4/22.
  */
-public class MovieTrendingAdapter extends BaseMovieItemAdapter<BaseMovie,BaseViewHolder> {
+public class MovieTrendingAdapter extends BaseMovieItemAdapter<BaseMovie, BaseViewHolder> {
 
     public MovieTrendingAdapter(List<BaseMovie> data) {
         super(R.layout.item_movie_trending, data);
@@ -23,7 +23,8 @@ public class MovieTrendingAdapter extends BaseMovieItemAdapter<BaseMovie,BaseVie
     @Override
     protected void convert(BaseViewHolder holder, BaseMovie baseMovie) {
         Movie movie = baseMovie.getMovie();
-        loadPoster((RatioImageView) holder.getView(R.id.iv_poster),movie);
-        showTitle((TextView) holder.getView(R.id.tv_title),movie);
+        loadPoster((RatioImageView) holder.getView(R.id.iv_poster), movie);
+        showTitle((TextView) holder.getView(R.id.tv_title), movie);
+        holder.setText(R.id.tv_people_watching, baseMovie.getWatchers()+" watching");
     }
 }
