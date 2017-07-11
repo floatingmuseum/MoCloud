@@ -201,6 +201,30 @@ public class Movie implements Parcelable{
         dest.writeStringList(this.genres);
     }
 
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "title='" + title + '\'' +
+                ", year=" + year +
+                ", ids=" + ids +
+                ", images=" + images +
+                ", image=" + image +
+                ", tagline='" + tagline + '\'' +
+                ", overview='" + overview + '\'' +
+                ", released='" + released + '\'' +
+                ", runtime=" + runtime +
+                ", updated_at='" + updated_at + '\'' +
+                ", trailer='" + trailer + '\'' +
+                ", homepage='" + homepage + '\'' +
+                ", rating=" + rating +
+                ", votes=" + votes +
+                ", language='" + language + '\'' +
+                ", certification='" + certification + '\'' +
+                ", available_translations=" + available_translations +
+                ", genres=" + genres +
+                '}';
+    }
+
     public Movie() {
     }
 

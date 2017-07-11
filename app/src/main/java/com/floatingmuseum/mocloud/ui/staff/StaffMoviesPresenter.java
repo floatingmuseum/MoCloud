@@ -47,18 +47,25 @@ public class StaffMoviesPresenter extends Presenter implements StaffWorksCallbac
         getWorksImages();
     }
 
-    public void getWorksImages() {
+    private void getWorksImages() {
         List<Staff> subWorks = ListUtil.subList(originalWorks, pageNum, limit);
         if (subWorks == null) {
             onGetWorksImagesSuccess(null);
             return;
         }
+        for (Staff staff : subWorks) {
+            Logger.d("StaffMoviesPresenter...Staff:" + staff.toString());
+        }
+
         compositeSubscription.add(repository.getWorksImages(subWorks, this));
     }
 
     @Override
     public void onGetWorksImagesSuccess(List<Staff> staffs) {
-        Logger.d("StaffMoviesPresenter...onGetWorksImagesSucceed");
+        Logger.d("StaffMoviesPresenter...onGetWorksImagesSuccess:" + staffs);
+        for (Staff staff : staffs) {
+            Logger.d("StaffMoviesPresenter...Staff:" + staff.toString());
+        }
         fragment.onGetWorksImagesSuccess(staffs, isLoadMore);
     }
 

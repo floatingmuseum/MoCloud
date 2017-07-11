@@ -9,7 +9,7 @@ import android.os.Parcelable;
  * Created by Floatingmuseum on 2017/7/10.
  */
 
-public class ArtImage implements Parcelable{
+public class ArtImage implements Parcelable {
 
     private int tmdbID;
     private Uri localImageUri;
@@ -48,6 +48,15 @@ public class ArtImage implements Parcelable{
         this.bitmap = bitmap;
     }
 
+    @Override
+    public String toString() {
+        return "ArtImage{" +
+                "tmdbID=" + tmdbID +
+                ", localImageUri=" + localImageUri +
+                ", remoteImageUrl='" + remoteImageUrl + '\'' +
+                ", bitmap=" + bitmap +
+                '}';
+    }
 
     @Override
     public int describeContents() {

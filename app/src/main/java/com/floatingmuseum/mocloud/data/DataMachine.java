@@ -175,7 +175,7 @@ public class DataMachine {
 //    }
 
     public static MovieTeam mixingStaffsWorks(PeopleCredit people) {
-        ArrayList<Staff> team = new ArrayList();
+        ArrayList<Staff> team = new ArrayList<>();
         if (people != null) {
             if (people.getCrew() != null) {
                 List<Staff> directors = people.getCrew().getDirecting();
@@ -208,7 +208,7 @@ public class DataMachine {
     }
 
     public static List<Staff> mixingPersonWorks(PeopleCredit people) {
-        List<Staff> works = new ArrayList();
+        List<Staff> works = new ArrayList<>();
         List<Staff> casts = people.getCast();
         if (casts != null && casts.size() > 0) {
             sort(casts);
@@ -276,10 +276,6 @@ public class DataMachine {
     }
 
     private static boolean hasDate(String date) {
-        if (date == null || date.length() == 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(date == null || date.length() == 0);
     }
 }

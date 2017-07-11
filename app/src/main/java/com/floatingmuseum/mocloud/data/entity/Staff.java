@@ -79,6 +79,18 @@ public class Staff implements Parcelable{
     }
 
     @Override
+    public String toString() {
+        return "Staff{" +
+                "person=" + person +
+                ", character='" + character + '\'' +
+                ", job='" + job + '\'' +
+                ", itemType='" + itemType + '\'' +
+                ", tmdbPersonImage=" + tmdbPersonImage +
+                ", movie=" + movie +
+                '}';
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
