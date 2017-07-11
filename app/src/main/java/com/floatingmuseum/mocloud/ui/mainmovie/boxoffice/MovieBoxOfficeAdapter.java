@@ -12,16 +12,17 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/5/6.
  */
-public class MovieBoxOfficeAdapter extends BaseMovieItemAdapter<BaseMovie,BaseViewHolder> {
+public class MovieBoxOfficeAdapter extends BaseMovieItemAdapter<BaseMovie, BaseViewHolder> {
 
-    public MovieBoxOfficeAdapter(List<BaseMovie> data){
-        super(R.layout.item_movie_box_office,data);
+    public MovieBoxOfficeAdapter(List<BaseMovie> data) {
+        super(R.layout.item_movie_box_office, data);
     }
 
     @Override
     protected void convert(BaseViewHolder holder, BaseMovie baseMovie) {
         Movie movie = baseMovie.getMovie();
-        holder.setText(R.id.tv_box_movie_title,movie.getTitle());
-        loadPoster((RatioImageView) holder.getView(R.id.iv_boxoffice_poster),movie);
+        holder.setText(R.id.tv_box_movie_title, movie.getTitle())
+                .setText(R.id.tv_revenue, "$"+baseMovie.getRevenue());
+        loadPoster((RatioImageView) holder.getView(R.id.iv_boxoffice_poster), movie);
     }
 }

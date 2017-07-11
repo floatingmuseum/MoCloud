@@ -14,17 +14,29 @@
         tools:src="@drawable/default_fanart" />
     <!--mocloud:image_ratio="1.42"-->
 
+    <TextView
+        android:id="@+id/tv_revenue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_box_movie_title"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="2dp"
+        android:background="@drawable/poster_tag_round_corner_bg"
+        android:padding="2dp"
+        android:textColor="@color/poster_tag_text_white"
+        android:textStyle="bold"
+        tools:text="$117000000" />
 
     <TextView
         android:id="@+id/tv_box_movie_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/iv_boxoffice_poster"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_margin="2dp"
-        android:textSize="24sp"
-        android:maxLines="1"
         android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="@color/white_text"
+        android:textSize="24sp"
         tools:text="Captain America: Civil War" />
 </RelativeLayout>
