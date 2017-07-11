@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/8/15.
  */
-public interface MovieDetailCallback extends CommentsCallback {
+public interface MovieDetailCallback<T> extends CommentsCallback<T> {
     void onMovieTeamSuccess(MovieTeam movieTeam);
 
     void onCommentsSuccess(List<Comment> comments);
