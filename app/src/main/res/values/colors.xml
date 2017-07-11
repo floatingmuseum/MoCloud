@@ -28,4 +28,6 @@
     <color name="watched_color">#8e44ad</color>
     <color name="watchlist_color">#009edf</color>
     <color name="collection_color">#16a085</color>
+    <color name="poster_tag_bg_red">#ED1C24</color>
+    <color name="poster_tag_text_white">#FFFFFF</color>
 </resources>

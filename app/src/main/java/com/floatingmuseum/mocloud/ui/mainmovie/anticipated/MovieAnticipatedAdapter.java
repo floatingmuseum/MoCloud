@@ -22,7 +22,7 @@ import java.util.List;
 public class MovieAnticipatedAdapter extends BaseMovieItemAdapter<BaseMovie, BaseViewHolder> {
 
     public MovieAnticipatedAdapter(List<BaseMovie> data) {
-        super(R.layout.item_movie_trending, data);
+        super(R.layout.item_movie_anticipated, data);
 
     }
 
@@ -41,5 +41,6 @@ public class MovieAnticipatedAdapter extends BaseMovieItemAdapter<BaseMovie, Bas
             ImageLoader.loadDefault(mContext, (ImageView) holder.getView(R.id.iv_poster));
             holder.setVisible(R.id.tv_title, true).setText(R.id.tv_title, movie.getTitle());
         }
+        holder.setText(R.id.tv_released_time, movie.getReleased());
     }
 }

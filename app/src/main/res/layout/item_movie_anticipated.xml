@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mocloud="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="1dp">
+
+    <com.floatingmuseum.mocloud.widgets.RatioImageView
+        android:id="@+id/iv_poster"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        mocloud:image_ratio="1.42"
+        tools:src="@drawable/default_movie_poster" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:textColor="@color/main_movie_item_title"
+        android:textSize="@dimen/item_title_size"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_released_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/poster_tag_round_corner_bg"
+        android:padding="2dp"
+        android:textStyle="bold"
+        android:textColor="@color/poster_tag_text_white"
+        tools:text="2019-04-23" />
+
+</RelativeLayout>
