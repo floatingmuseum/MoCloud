@@ -1,38 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    xmlns:mocloud="http://schemas.android.com/apk/res-auto"
+    style="@style/card_style"
+    android:layout_width="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_list_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Rotten Tomatoes: Best of 2017" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_list_owner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="LISH" />
+        <TextView
+            android:id="@+id/tv_list_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:text="Rotten Tomatoes: Best of 2017" />
 
-    <TextView
-        android:id="@+id/tv_list_desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Pulled from Rotten Tomatoes Top Movies section:
+        <TextView
+            android:id="@+id/tv_list_owner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:text="LISH" />
+
+        <TextView
+            android:id="@+id/tv_list_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:text="Pulled from Rotten Tomatoes Top Movies section:
 http://www.rottentomatoes.com/top/bestofrt/?year=2017" />
 
-    <com.yarolegovich.discretescrollview.DiscreteScrollView
-        android:id="@+id/dsv_movie_picker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <com.floatingmuseum.mocloud.widgets.RatioImageView
+            android:id="@+id/iv_poster"
+            mocloud:image_ratio="1.42"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY" />
 
-    <TextView
-        android:id="@+id/tv_list_more"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="end"
-        tools:text="More..." />
-</LinearLayout>
+        <TextView
+            android:id="@+id/tv_list_more"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:visibility="gone"
+            tools:text="More..." />
+    </LinearLayout>
+</android.support.v7.widget.CardView>

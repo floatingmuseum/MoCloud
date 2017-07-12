@@ -1,10 +1,15 @@
 package com.floatingmuseum.mocloud.ui.recommendations;
 
 
+import android.widget.ImageView;
+
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseMovieItemAdapter;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.utils.ImageLoader;
+import com.floatingmuseum.mocloud.widgets.RatioImageView;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -12,14 +17,15 @@ import java.util.List;
  * Created by Floatingmuseum on 2017/7/11.
  */
 
-public class PickerAdapter extends BaseMovieItemAdapter<Movie,BaseViewHolder> {
+class PickerAdapter extends BaseMovieItemAdapter<Movie, BaseViewHolder> {
 
-    public PickerAdapter( List data) {
-        super(R.layout.item_picker, data);
+    PickerAdapter(List data) {
+        super(R.layout.item_feature_list, data);
     }
 
     @Override
     protected void convert(BaseViewHolder helper, Movie item) {
-
+        Logger.d("Picker...convert:" + item.getImage().toString());
+        ImageLoader.loadArtImage(mContext, item.getImage(), (RatioImageView) helper.getView(R.id.iv_poster), R.drawable.default_movie_poster);
     }
 }

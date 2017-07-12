@@ -4,6 +4,7 @@ package com.floatingmuseum.mocloud.data.net;
 import android.content.Loader;
 
 import com.floatingmuseum.mocloud.data.entity.Comment;
+import com.floatingmuseum.mocloud.data.entity.ExpireTime;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.SyncData;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;

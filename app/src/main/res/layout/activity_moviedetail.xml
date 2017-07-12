@@ -6,6 +6,7 @@
     android:id="@+id/ll_movie_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/default_bg_color"
     android:orientation="vertical">
 
     <include layout="@layout/layout_appbar" />
@@ -18,7 +19,7 @@
         <LinearLayout
             android:id="@+id/ll_movie_detail"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="3dp">
 
@@ -275,6 +276,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_weight="2"
+                        android:textColor="@color/default_detail_title"
                         tools:text="8.3" />
 
                     <TextView
@@ -282,6 +284,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_weight="2"
+                        android:textColor="@color/default_detail_title"
                         tools:text="21103votes" />
                 </LinearLayout>
 
@@ -356,7 +359,7 @@
                 android:id="@+id/show_youtube"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Trailer"
+                android:text="@string/trailer"
                 android:visibility="gone" />
 
 
@@ -398,7 +401,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                mocloud:indicatorColor="#727374"
+                mocloud:indicatorColor="@color/default_loading_color"
                 mocloud:indicatorName="BallPulseIndicator" />
 
             <LinearLayout
@@ -428,7 +431,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                mocloud:indicatorColor="#727374"
+                mocloud:indicatorColor="@color/default_loading_color"
                 mocloud:indicatorName="BallPulseIndicator" />
 
             <LinearLayout
@@ -443,8 +446,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center"
-                android:text="There is no more comments,add one?"
-                android:textColor="@color/detail_content"
+                android:text="@string/no_more_comments"
+                android:textColor="@color/default_detail_content"
                 android:visibility="gone" />
 
             <TextView
@@ -452,7 +455,7 @@
                 style="@style/detail_title"
                 android:layout_width="match_parent"
                 android:gravity="right"
-                android:text="@string/see_more"
+                android:text="@string/see_more_comments"
                 android:visibility="gone" />
         </LinearLayout>
     </ScrollView>

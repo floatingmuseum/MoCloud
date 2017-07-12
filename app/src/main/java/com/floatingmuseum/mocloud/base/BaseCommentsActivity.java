@@ -48,6 +48,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
         TextView tvCommentsLikes = (TextView) commentItem.findViewById(R.id.tv_comment_likes);
         ImageView ivCommentLikes = (ImageView) commentItem.findViewById(R.id.iv_comment_likes);
         LinearLayout llCommentLikes = (LinearLayout) commentItem.findViewById(R.id.ll_comment_likes);
+        LinearLayout llCommentReplies= (LinearLayout) commentItem.findViewById(R.id.ll_comment_replies);
         tvCommentReplies = (TextView) commentItem.findViewById(R.id.tv_comments_replies);
         TextView tvComment = (TextView) commentItem.findViewById(R.id.tv_comment);
         LinearLayout llTip = (LinearLayout) commentItem.findViewById(R.id.ll_tip);

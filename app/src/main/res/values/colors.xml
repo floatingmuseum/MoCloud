@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ED1C24</color>
-    <color name="colorPrimaryDark">#BD161C</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#596673</color>
+    <color name="colorPrimaryDark">#434C56</color>
+    <color name="colorAccent">#434C56</color>
 
-    <color name="detail_title">#000000</color>
-    <color name="detail_content">#778899</color>
+    <!-- default color-->
+    <color name="default_status_bar">#434C56</color>
+    <color name="default_toolbar">#596673</color>
+    <color name="default_bg_color">#708090</color>
+    <color name="default_detail_title">#30373E</color>
+    <color name="default_detail_content">#131618</color>
+    <color name="default_comment_title_bg">#324048</color>
+    <color name="default_comment_content_bg">#2C3940</color>
+    <color name="default_comment_title_text">#868F93</color>
+    <color name="default_comment_content_text">#A9AEB1</color>
+    <color name="default_comment_update_time_text">#838B8F</color>
+    <color name="default_loading_color">#324048</color>
 
     <color name="widgets_background">#1D1D1D</color>
 

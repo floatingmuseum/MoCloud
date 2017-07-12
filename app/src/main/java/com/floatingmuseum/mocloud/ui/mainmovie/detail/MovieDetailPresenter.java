@@ -27,9 +27,9 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/7/14.
  */
-public class MovieDetailPresenter extends BaseCommentsPresenter implements MovieDetailCallback {
+public class MovieDetailPresenter extends BaseCommentsPresenter implements MovieDetailCallback<List<Comment>> {
 
-    MovieDetailActivity activity;
+    private MovieDetailActivity activity;
     private int limit = 4;
     private int page = 1;
     private boolean isTraktItem = false;
@@ -38,29 +38,29 @@ public class MovieDetailPresenter extends BaseCommentsPresenter implements Movie
         this.activity = activity;
     }
 
-    public void getData(Movie movie) {
+    void getData(Movie movie) {
         compositeSubscription.add(repository.getMovieTeam(movie.getIds().getSlug(), this));
         compositeSubscription.add(repository.getMovieComments(movie.getIds().getSlug(), CommentsActivity.SORT_BY_LIKES, limit, page, this, null));
         compositeSubscription.add(repository.getMovieOtherRatings(movie.getIds().getImdb(), this));
     }
 
-    public void loadUserData(int traktId) {
-        RealmMovieWatched realmMovieWatched = RealmManager.query(RealmMovieWatched.class, "trakt_id", traktId);
+    void loadUserData(int traktID) {
+        RealmMovieWatched realmMovieWatched = RealmManager.query(RealmMovieWatched.class, "trakt_id", traktID);
         if (realmMovieWatched != null) {
             activity.updateLoginView(R.id.fb_watched, realmMovieWatched);
             Logger.d("本地查询RealmMovieWatched:" + realmMovieWatched.getTitle() + "..." + realmMovieWatched.getLast_watched_at());
         }
-        RealmMovieWatchlist realmMovieWatchlist = RealmManager.query(RealmMovieWatchlist.class, "trakt_id", traktId);
+        RealmMovieWatchlist realmMovieWatchlist = RealmManager.query(RealmMovieWatchlist.class, "trakt_id", traktID);
         if (realmMovieWatchlist != null) {
             activity.updateLoginView(R.id.fb_watchlist, realmMovieWatchlist);
             Logger.d("本地查询RealmMovieWatchlist:" + realmMovieWatchlist.getTitle() + "..." + realmMovieWatchlist.getListed_at());
         }
-        RealmMovieCollection realmMovieCollection = RealmManager.query(RealmMovieCollection.class, "trakt_id", traktId);
+        RealmMovieCollection realmMovieCollection = RealmManager.query(RealmMovieCollection.class, "trakt_id", traktID);
         if (realmMovieCollection != null) {
             activity.updateLoginView(R.id.fb_collection, realmMovieCollection);
             Logger.d("本地查询RealmMovieCollection:" + realmMovieCollection.getTitle() + "..." + realmMovieCollection.getCollected_at());
         }
-        RealmMovieRating realmMovieRating = RealmManager.query(RealmMovieRating.class, "trakt_id", traktId);
+        RealmMovieRating realmMovieRating = RealmManager.query(RealmMovieRating.class, "trakt_id", traktID);
         if (realmMovieRating != null) {
 //            activity.updateLoginView(R.id.,realmMovieRating);
             Logger.d("本地查询RealmMovieRating:" + realmMovieRating.getTitle() + "..." + realmMovieRating.getRated_at() + "..." + realmMovieRating.getRating());
@@ -87,7 +87,7 @@ public class MovieDetailPresenter extends BaseCommentsPresenter implements Movie
         activity.onOtherRatingsSuccess(omdbInfo);
     }
 
-    public void sendComment(Comment comment, String imdb_id) {
+    void sendComment(Comment comment, String imdb_id) {
         repository.sendComment(comment, imdb_id, this);
     }
 
@@ -96,7 +96,7 @@ public class MovieDetailPresenter extends BaseCommentsPresenter implements Movie
         activity.onSendCommentSuccess(comment);
     }
 
-    public void syncMovieWatchedState(boolean hasWatched, SyncData item) {
+    void syncMovieWatchedState(boolean hasWatched, SyncData item) {
         Logger.d("看过测试:syncMovieWatchedState...是否看过:" + hasWatched);
         if (!hasWatched) {
             repository.addMovieToWatched(item, this);
@@ -105,7 +105,7 @@ public class MovieDetailPresenter extends BaseCommentsPresenter implements Movie
         }
     }
 
-    public void syncMovieWatchlistState(boolean hasWatchlist, SyncData item) {
+    void syncMovieWatchlistState(boolean hasWatchlist, SyncData item) {
         Logger.d("想看测试:syncMovieWatchlistState...是否想看:" + hasWatchlist);
         if (!hasWatchlist) {
             repository.addMovieToWatchlist(item, this);
@@ -114,7 +114,7 @@ public class MovieDetailPresenter extends BaseCommentsPresenter implements Movie
         }
     }
 
-    public void syncMovieCollectedState(boolean hasCollection, SyncData item) {
+    void syncMovieCollectedState(boolean hasCollection, SyncData item) {
         Logger.d("收藏测试:syncMovieCollectedState...是否想看:" + hasCollection);
         if (!hasCollection) {
             repository.addMovieToCollection(item, this);
@@ -173,7 +173,7 @@ public class MovieDetailPresenter extends BaseCommentsPresenter implements Movie
     }
 
     @Override
-    public void onBaseDataSuccess(Object o) {
+    public void onBaseDataSuccess(List<Comment> comments) {
 
     }
 

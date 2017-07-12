@@ -25,6 +25,7 @@ import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
+import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,21 +44,15 @@ public class RecommendationsActivity extends BaseActivity implements SwipeRefres
     @BindView(R.id.srl_recommendations)
     SwipeRefreshLayout srlRecommendations;
 
-    @BindView(R.id.tv_list_name)
-    TextView tvListName;
-    @BindView(R.id.tv_list_owner)
-    TextView tvListOwner;
-    @BindView(R.id.tv_list_desc)
-    TextView tvListDesc;
-    @BindView(R.id.dsv_movie_picker)
-    DiscreteScrollView dsvMoviePicker;
-    @BindView(R.id.tv_list_more)
-    TextView tvListMore;
+    @BindView(R.id.dsv_picker)
+    DiscreteScrollView dsvPicker;
+
 
     private RecommendationsPresenter presenter;
     private List<Movie> data;
     private RecommendationsAdapter adapter;
     private LinearLayoutManager manager;
+    private PickerAdapter pickerAdapter;
 
     @Override
     protected int currentLayoutId() {
@@ -131,14 +126,14 @@ public class RecommendationsActivity extends BaseActivity implements SwipeRefres
         });
 
 
-        PickerAdapter adapter = new PickerAdapter(data);
-        dsvMoviePicker.setOffscreenItems(1);
-        dsvMoviePicker.setAdapter(adapter);
-        dsvMoviePicker.addScrollStateChangeListener(new DiscreteScrollView.ScrollStateChangeListener<RecyclerView.ViewHolder>() {
+        pickerAdapter = new PickerAdapter(data);
+        dsvPicker.setOffscreenItems(1);
+        dsvPicker.setItemTransformer(new ScaleTransformer.Builder().setMinScale(0.8f).build());
+        dsvPicker.setAdapter(pickerAdapter);
+        dsvPicker.addScrollStateChangeListener(new DiscreteScrollView.ScrollStateChangeListener<RecyclerView.ViewHolder>() {
             @Override
             public void onScrollStart(@NonNull RecyclerView.ViewHolder currentItemHolder, int adapterPosition) {
                 Logger.d("Picker...onScrollStart:" + adapterPosition);
-
             }
 
             @Override
@@ -168,6 +163,7 @@ public class RecommendationsActivity extends BaseActivity implements SwipeRefres
         data.clear();
         data.addAll(movies);
         adapter.notifyDataSetChanged();
+        pickerAdapter.notifyDataSetChanged();
     }
 
     public void onHideMovieSuccess() {

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -463,7 +464,6 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     tvTaglineTitle.setTextColor(titleTextColor);
                     tvCrewTitle.setTextColor(titleTextColor);
                     tvCommentsTitle.setTextColor(titleTextColor);
-
                     avlCrew.setIndicatorColor(itemSwatch.getRgb());
                     avlComments.setIndicatorColor(itemSwatch.getRgb());
                 }

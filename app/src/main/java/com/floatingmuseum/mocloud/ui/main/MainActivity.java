@@ -2,15 +2,12 @@ package com.floatingmuseum.mocloud.ui.main;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -21,14 +18,13 @@ import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.floatingmuseum.mocloud.MainMovieAdapter;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
-import com.floatingmuseum.mocloud.data.bus.EventBusManager;
+import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.bus.SyncEvent;
 import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.ui.about.AboutActivity;
@@ -37,9 +33,8 @@ import com.floatingmuseum.mocloud.ui.recommendations.RecommendationsActivity;
 import com.floatingmuseum.mocloud.ui.login.LoginActivity;
 import com.floatingmuseum.mocloud.ui.settings.SettingsActivity;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
-import com.floatingmuseum.mocloud.utils.ImageLoader;
-import com.floatingmuseum.mocloud.utils.ListUtil;
 import com.floatingmuseum.mocloud.utils.PermissionsUtil;
+import com.floatingmuseum.mocloud.utils.RxUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
@@ -47,12 +42,14 @@ import com.orhanobut.logger.Logger;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.Calendar;
-import java.util.List;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.Observable;
+import rx.functions.Action1;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {

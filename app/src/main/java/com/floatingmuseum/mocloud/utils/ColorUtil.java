@@ -27,6 +27,7 @@ public class ColorUtil {
         int red = color >> 16 & 0xFF;
         int green = color >> 8 & 0xFF;
         int blue = color & 0xFF;
+        Logger.d("颜色ARGB...alpha:" + alpha + "...red:" + red + "...green:" + green + "...blue:" + blue);
         red = (int) Math.floor(red * (1 - level));
         green = (int) Math.floor(green * (1 - level));
         blue = (int) Math.floor(blue * (1 - level));

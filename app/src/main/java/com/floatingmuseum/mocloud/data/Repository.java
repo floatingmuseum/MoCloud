@@ -23,6 +23,7 @@ import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.ArtImage;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
+import com.floatingmuseum.mocloud.data.entity.ExpireTime;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.MovieSyncItem;
 import com.floatingmuseum.mocloud.data.entity.SyncData;
@@ -58,10 +59,12 @@ import com.floatingmuseum.mocloud.utils.RxUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
+import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -1563,7 +1566,7 @@ public class Repository {
         }
     }
 
-    private void downloadPersonImage(List<Staff> staffs,int imageType) {
+    private void downloadPersonImage(List<Staff> staffs, int imageType) {
         if (staffs != null) {
             for (Staff staff : staffs) {
 //                ArtImage image = staff.getTmdbPersonImage();

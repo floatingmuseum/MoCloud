@@ -13,7 +13,7 @@
     <string name="rating">Rating</string>
     <string name="overview">Over view</string>
     <string name="comments">Comments</string>
-    <string name="see_more">More...</string>
+    <string name="see_more_comments">More...</string>
     <string name="crew">Crew</string>
     <string name="spoiler_alert">Spoiler</string>
     <string name="action_type_switch">Switch to TV</string>
@@ -47,6 +47,8 @@
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="already_get_all_data">Already get all data.</string>
     <string name="empty_data">No data.</string>
+    <string name="no_more_comments">There is no more comments,add one?</string>
+    <string name="trailer">Trailer</string>
 
     <string-array name="tab_names">
         <item>Trending</item>
