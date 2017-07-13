@@ -256,10 +256,10 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     }
 
     private void setCheckedMenuItem() {
-        miSortByNewest.setChecked(currentSortCondition.equals(SORT_BY_NEWEST) ? true : false);
-        miSortByOldest.setChecked(currentSortCondition.equals(SORT_BY_OLDEST) ? true : false);
-        miSortByLikes.setChecked(currentSortCondition.equals(SORT_BY_LIKES) ? true : false);
-        miSortByReplies.setChecked(currentSortCondition.equals(SORT_BY_REPLIES) ? true : false);
+        miSortByNewest.setChecked(currentSortCondition.equals(SORT_BY_NEWEST));
+        miSortByOldest.setChecked(currentSortCondition.equals(SORT_BY_OLDEST));
+        miSortByLikes.setChecked(currentSortCondition.equals(SORT_BY_LIKES));
+        miSortByReplies.setChecked(currentSortCondition.equals(SORT_BY_REPLIES));
     }
 
     @Override

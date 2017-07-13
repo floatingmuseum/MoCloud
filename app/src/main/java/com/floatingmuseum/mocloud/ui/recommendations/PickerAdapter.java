@@ -1,7 +1,6 @@
 package com.floatingmuseum.mocloud.ui.recommendations;
 
 
-import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
@@ -20,7 +19,7 @@ import java.util.List;
 class PickerAdapter extends BaseMovieItemAdapter<Movie, BaseViewHolder> {
 
     PickerAdapter(List data) {
-        super(R.layout.item_feature_list, data);
+        super(R.layout.item_recommend_picker, data);
     }
 
     @Override

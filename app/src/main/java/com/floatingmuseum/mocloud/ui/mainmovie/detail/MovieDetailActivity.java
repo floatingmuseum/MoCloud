@@ -270,7 +270,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     if (i == (genres.size() - 1)) {
                         sbGenre.append(genres.get(i));
                     } else {
-                        sbGenre.append(genres.get(i) + ",");
+                        sbGenre.append(genres.get(i)).append(",");
                     }
                 }
                 tvGenresTitleText.setVisibility(View.VISIBLE);
@@ -625,8 +625,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
         // TODO: 2017/4/9 添加点击阴影效果不成功 
         ImageView ivReply = (ImageView) llCommentsReply.findViewById(R.id.iv_reply);
-        Drawable icon1 = OneDrawable.createBgDrawableWithDarkMode(this, R.drawable.send);
-        ivReply.setBackgroundDrawable(icon1);
+        Drawable icon1 = OneDrawable.createBgDrawableWithDarkMode(this, R.drawable.ic_send_black_48dp);
+//        ivReply.setBackgroundDrawable(icon1);
+        ivReply.setBackground(icon1);
 
         movieDetailContainer.addView(llCommentsReply);
         tvNoMoreComments.setVisibility(View.GONE);

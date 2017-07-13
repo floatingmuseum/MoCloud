@@ -51,16 +51,16 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment, BaseViewH
                 .setText(R.id.tv_comment, comment.getComment())
                 .setText(R.id.tv_username, username)
                 .setText(R.id.tv_rating_tip, userRating + "/10")
-                .setImageDrawable(R.id.iv_comment_likes, comment.isLike() ? ResUtil.getDrawable(R.drawable.appreciate_fill) : ResUtil.getDrawable(R.drawable.appreciate))
+                .setImageDrawable(R.id.iv_comment_likes, comment.isLike() ? ResUtil.getDrawable(R.drawable.ic_thumb_up_fill_blue_48dp) : ResUtil.getDrawable(R.drawable.ic_thumb_up_stroke_blue_48dp))
                 .addOnClickListener(R.id.iv_userhead)
                 .addOnClickListener(R.id.ll_comment_likes)
-                .setVisible(R.id.iv_replies, commentOwner != null ? false : true)
-                .setVisible(R.id.tv_comments_replies, commentOwner != null ? false : true)
-                .setVisible(R.id.tv_spoiler_tip, comment.isSpoiler() ? true : false)
-                .setVisible(R.id.tv_review_tip, comment.isReview() ? true : false)
-                .setVisible(R.id.tv_rating_tip, userRating == null ? false : true)
-                .setVisible(R.id.ll_tip, comment.isSpoiler() || comment.isReview() || userRating != null ? true : false)
-                .setVisible(R.id.tv_updatetime, comment.getCreated_at().equals(comment.getUpdated_at()) ? false : true);
+                .setVisible(R.id.iv_replies, commentOwner == null)
+                .setVisible(R.id.tv_comments_replies, commentOwner == null)
+                .setVisible(R.id.tv_spoiler_tip, comment.isSpoiler())
+                .setVisible(R.id.tv_review_tip, comment.isReview())
+                .setVisible(R.id.tv_rating_tip, userRating != null)
+                .setVisible(R.id.ll_tip, comment.isSpoiler() || comment.isReview() || userRating != null)
+                .setVisible(R.id.tv_updatetime, !comment.getCreated_at().equals(comment.getUpdated_at()));
         ImageView iv_userhead = baseViewHolder.getView(R.id.iv_userhead);
         ImageLoader.loadDontAnimate(mContext, MoCloudUtil.getUserAvatar(user), iv_userhead, R.drawable.default_userhead);
         TextView tvUsername = baseViewHolder.getView(R.id.tv_username);

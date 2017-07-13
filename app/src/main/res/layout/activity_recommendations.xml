@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:mocloud="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/default_bg_color"
@@ -8,23 +8,43 @@
 
     <include layout="@layout/layout_appbar" />
     <!--<include layout="@layout/layout_under_construction" />-->
-    <com.yarolegovich.discretescrollview.DiscreteScrollView
-        android:id="@+id/dsv_picker"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/srl_recommendations"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="3dp"
-        android:visibility="gone">
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/avl_recommend_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            mocloud:indicatorColor="@color/default_loading_color"
+            mocloud:indicatorName="BallPulseIndicator" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_recommendations"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_recommendations" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+            android:background="@color/default_bg_color"
+            android:orientation="vertical">
 
+            <TextView
+                style="@style/detail_title"
+                android:text="@string/recommendation_recommendation_title" />
+
+            <com.yarolegovich.discretescrollview.DiscreteScrollView
+                android:id="@+id/dsv_picker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                style="@style/detail_title"
+                android:text="@string/feature_lists" />
+
+            <LinearLayout
+                android:id="@+id/ll_feature_lists_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+
+    </RelativeLayout>
 </LinearLayout>

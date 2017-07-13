@@ -50,6 +50,8 @@
     <string name="no_more_comments">There is no more comments,add one?</string>
     <string name="trailer">Trailer</string>
     <string name="spoiler">Spoiler</string>
+    <string name="recommendation_recommendation_title">Recommendations</string>
+    <string name="feature_lists">Feature lists</string>
 
     <string-array name="tab_names">
         <item>Trending</item>

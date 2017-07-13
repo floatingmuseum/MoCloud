@@ -87,7 +87,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
 //        tvCommentReplies.setText("" + 999);
         tvComment.setText(comment.getComment());
         if (comment.isLike()) {
-            ivCommentLikes.setImageResource(R.drawable.appreciate_fill);
+            ivCommentLikes.setImageResource(R.drawable.ic_thumb_up_fill_blue_48dp);
         }
         tvUpdatetime.setVisibility(comment.getCreated_at().equals(comment.getUpdated_at()) ? View.GONE : View.VISIBLE);
         tvUpdatetime.setText("---updated at " + TimeUtil.formatGmtTime(comment.getUpdated_at()));
@@ -174,7 +174,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
 
     protected void updateCommentLikesView(boolean isLike, CardView commentView, Comment comment) {
         ImageView likesView = (ImageView) commentView.findViewById(R.id.iv_comment_likes);
-        likesView.setImageResource(isLike ? R.drawable.appreciate_fill : R.drawable.appreciate);
+        likesView.setImageResource(isLike ? R.drawable.ic_thumb_up_fill_blue_48dp : R.drawable.ic_thumb_up_stroke_blue_48dp);
         comment.setLike(isLike);
         int likes = comment.getLikes();
         comment.setLikes(isLike ? ++likes : --likes);

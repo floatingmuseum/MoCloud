@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/default_comment_content_bg"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/detail_content"
+        tools:text="Rotten Tomatoes: Best of 2017" />
+
+    <TextView
+        style="@style/detail_content"
+        tools:text="Pulled from Rotten Tomatoes Top Movies section:\r\nhttp://www.rottentomatoes.com/top/bestofrt/?year=2017\r\n\r\nUPDATED: 7/7/17" />
+
+    <TextView
+        style="@style/detail_content"
+        tools:text="LISH" />
+
+    <TextView
+        style="@style/detail_content"
+        tools:text="2017-07-12T15:45:32.000Z" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_content_copy_blue_48dp" />
+
+        <TextView
+            android:id="@+id/tv_list_items_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="250" />
+
+        <ImageView
+            android:id="@+id/iv_list_likes"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_thumb_up_stroke_blue_48dp" />
+
+        <TextView
+            android:id="@+id/tv_list_likes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="42" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_comment_blue_48dp" />
+
+        <TextView
+            android:id="@+id/tv_list_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="6" />
+    </LinearLayout>
+</LinearLayout>

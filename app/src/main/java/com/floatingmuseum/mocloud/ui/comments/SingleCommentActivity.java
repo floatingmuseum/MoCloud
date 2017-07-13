@@ -211,7 +211,7 @@ public class SingleCommentActivity extends BaseCommentsActivity {
     }
 
     public void onBaseDataSuccess(List<Comment> replies) {
-        if (replies == null && replies.size() == 0) {
+        if (replies == null || replies.size() == 0) {
             return;
         }
 

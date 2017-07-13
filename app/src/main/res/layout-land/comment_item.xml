@@ -132,7 +132,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
                     android:layout_toLeftOf="@+id/tv_comment_likes"
-                    android:src="@drawable/appreciate" />
+                    android:src="@drawable/ic_thumb_up_stroke_blue_48dp" />
 
                 <TextView
                     android:id="@+id/tv_comment_likes"
@@ -150,7 +150,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
                     android:layout_toLeftOf="@+id/tv_comments_replies"
-                    android:src="@drawable/reply" />
+                    android:src="@drawable/ic_reply_blue_48dp" />
 
                 <TextView
                     android:id="@+id/tv_comments_replies"
