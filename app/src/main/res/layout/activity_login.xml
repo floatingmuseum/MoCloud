@@ -47,6 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/loading_token_request"
+            android:background="@color/default_bg_color"
             android:gravity="center_horizontal"
             android:orientation="vertical" />
     </RelativeLayout>

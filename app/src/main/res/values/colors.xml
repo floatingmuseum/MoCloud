@@ -16,6 +16,7 @@
     <color name="default_comment_content_text">#A9AEB1</color>
     <color name="default_comment_update_time_text">#838B8F</color>
     <color name="default_loading_color">#324048</color>
+    <color name="default_comment_layout_bg">#434C56</color>
 
     <color name="widgets_background">#1D1D1D</color>
 

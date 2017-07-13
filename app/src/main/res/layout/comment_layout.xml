@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:background="@android:color/white"
+    android:background="@color/default_comment_layout_bg"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
@@ -25,7 +25,7 @@
             android:id="@+id/tv_spoiler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Spoiler" />
+            android:text="@string/spoiler" />
     </LinearLayout>
 
     <EditText

@@ -32,9 +32,11 @@ public class MovieAnticipatedAdapter extends BaseMovieItemAdapter<BaseMovie, Bas
         ArtImage image = movie.getImage();
         if (image.getLocalImageUri() != null) {
             ImageLoader.load(mContext, image.getLocalImageUri(), (ImageView) holder.getView(R.id.iv_poster), R.drawable.default_movie_poster);
+            holder.setVisible(R.id.tv_title, false);
             Logger.d("图片从本地加载:" + movie.getTitle() + "...Uri:" + image.getLocalImageUri());
         } else if (image.getRemoteImageUrl() != null) {
             ImageLoader.load(mContext, image.getRemoteImageUrl(), (ImageView) holder.getView(R.id.iv_poster), R.drawable.default_movie_poster);
+            holder.setVisible(R.id.tv_title, false);
             Logger.d("图片从网络加载:" + movie.getTitle() + "..." + image.getTmdbID() + "...tmdbPosterUrl:" + image.getRemoteImageUrl());
         } else {
             Logger.d("没有图片showImage:" + movie.getTitle());

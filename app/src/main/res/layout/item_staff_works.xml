@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/default_bg_color"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -11,13 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <TextView
             android:id="@+id/tv_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:textColor="@color/default_detail_title"
             android:textSize="20sp"
             tools:text="Actor" />
     </RelativeLayout>
@@ -27,6 +29,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/default_comment_content_bg"
             android:orientation="horizontal"
             android:padding="1dp">
 
@@ -49,7 +52,8 @@
 
                 <TextView
                     style="@style/detail_title"
-                    android:text="@string/movie_title" />
+                    android:text="@string/movie_title"
+                    android:textColor="@color/default_comment_title_text" />
 
                 <TextView
                     android:id="@+id/tv_art_title"
@@ -57,24 +61,29 @@
                     android:ellipsize="end"
                     android:gravity="center"
                     android:maxLines="2"
+                    android:textColor="@color/default_comment_content_text"
                     tools:text="Man vs animalssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss" />
 
                 <TextView
                     style="@style/detail_title"
-                    android:text="@string/staff_role" />
+                    android:text="@string/staff_role"
+                    android:textColor="@color/default_comment_title_text" />
 
                 <TextView
                     android:id="@+id/tv_role"
                     style="@style/detail_content"
+                    android:textColor="@color/default_comment_content_text"
                     tools:text="Hansen" />
 
                 <TextView
                     style="@style/detail_title"
-                    android:text="@string/released" />
+                    android:text="@string/released"
+                    android:textColor="@color/default_comment_title_text" />
 
                 <TextView
                     android:id="@+id/tv_released_year"
                     style="@style/detail_content"
+                    android:textColor="@color/default_comment_content_text"
                     tools:text="1999-09-22" />
             </LinearLayout>
         </LinearLayout>
