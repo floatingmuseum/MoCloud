@@ -13,7 +13,7 @@
             android:id="@+id/comment_title"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@color/comment_title_grey"
+            android:background="@color/default_comment_title_bg"
             android:orientation="horizontal">
 
 
@@ -51,7 +51,7 @@
                     android:ellipsize="end"
                     android:gravity="center_vertical"
                     android:maxLines="1"
-                    android:textColor="@color/comment_user"
+                    android:textColor="@color/default_comment_title_text"
                     tools:text="Serggyo Alejandro" />
 
                 <TextView
@@ -61,6 +61,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
+                    android:textColor="@color/default_comment_title_text"
                     tools:text="2014-12-27T17:32:52.000Z" />
 
                 <LinearLayout
@@ -154,6 +155,7 @@
                         android:layout_width="25dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:textColor="@color/default_comment_title_text"
                         tools:text="166" />
                 </LinearLayout>
                 <!--android:layout_toLeftOf="@+id/ll_comment_replies"-->
@@ -161,8 +163,8 @@
                     android:id="@+id/ll_comment_likes"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="end"
+                    android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal">
 
@@ -179,6 +181,7 @@
                         android:layout_width="25dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:textColor="@color/default_comment_title_text"
                         tools:text="137" />
                 </LinearLayout>
             </LinearLayout>
@@ -189,8 +192,9 @@
             android:id="@+id/tv_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/comment_content_grey"
+            android:background="@color/default_comment_content_bg"
             android:padding="6dp"
+            android:textColor="@color/default_comment_content_text"
             android:textIsSelectable="true"
             tools:text="Everyone keeps suggesting there is a paradox concerning the 5D future humans and their ability to save humanity in the past. It's really not a paradox at all. Everyone assumes humanity survived to ascend to the 5th dimension but how could humanity exist in the future if not for the actions of Cooper.. who was guided by future humans (begin endless loop).\n\nDid anyone ever consider the other important character in the movie? Amelia Brand carried on with the rest of her mission (thanks to Cooper). I postulate that Brand used the human seeds as intended and set up a colony. A colony that would thrive and eventually evolve beyond human. Thus Earth is of little importance, and may have indeed died. These colonists, and the generations that followed, would have been told the story of a great man (Cooper) who saved them from extinction. With the ability to manipulate space-time, they would pay homage to their hero God by helping him in the past so he may fulfill the mission most important to him, to once again see his daughter. Plan B worked beautifully. But the 5d humans, having the power to bend space-time, decided there's no reason why Plan A had to fail." />
 
@@ -198,7 +202,7 @@
             android:id="@+id/tv_updatetime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/comment_content_grey"
+            android:background="@color/default_comment_content_bg"
             android:gravity="end"
             android:padding="6dp"
             android:textColor="@color/default_comment_update_time_text"
