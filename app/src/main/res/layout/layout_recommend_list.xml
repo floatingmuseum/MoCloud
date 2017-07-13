@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,7 +25,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -36,6 +37,7 @@
             android:id="@+id/tv_list_items_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             tools:text="250" />
 
         <ImageView
@@ -48,6 +50,7 @@
             android:id="@+id/tv_list_likes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             tools:text="42" />
 
         <ImageView
@@ -59,6 +62,18 @@
             android:id="@+id/tv_list_comments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             tools:text="6" />
+
+        <at.grabner.circleprogress.CircleProgressView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:cpv_autoTextSize="true"
+            app:cpv_barColor="@color/default_tag_color"
+            app:cpv_barWidth="1dp"
+            app:cpv_rimColor="@color/comment_content_grey"
+            app:cpv_rimWidth="1dp"
+            app:cpv_seekMode="false"
+            app:cpv_value="30" />
     </LinearLayout>
 </LinearLayout>
