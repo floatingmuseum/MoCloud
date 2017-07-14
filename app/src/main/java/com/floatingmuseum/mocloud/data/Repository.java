@@ -24,6 +24,7 @@ import com.floatingmuseum.mocloud.data.entity.ArtImage;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.ExpireTime;
+import com.floatingmuseum.mocloud.data.entity.FeatureList;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.MovieSyncItem;
 import com.floatingmuseum.mocloud.data.entity.SyncData;
@@ -52,6 +53,7 @@ import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
 import com.floatingmuseum.mocloud.data.net.MoCloudService;
+import com.floatingmuseum.mocloud.ui.recommendations.RecommendationsPresenter;
 import com.floatingmuseum.mocloud.utils.ErrorUtil;
 import com.floatingmuseum.mocloud.utils.ListUtil;
 import com.floatingmuseum.mocloud.utils.PermissionsUtil;
@@ -950,7 +952,7 @@ public class Repository {
     }
 
     /**
-     * 获取电影推荐
+     * 获取当前用户推荐
      */
     public Subscription getRecommendations(final RecommendationsCallback<List<Movie>> callback) {
         final List<Movie> movies = new ArrayList<>();
@@ -988,6 +990,26 @@ public class Repository {
                     public void onNext(List<Movie> movies) {
                         callback.onBaseDataSuccess(movies);
                         downloadMovieImage(null, movies, ImageCacheManager.TYPE_POSTER);
+                    }
+                });
+    }
+
+    public Subscription getFeatureList(final String userID, final String listID, final RecommendationsCallback callback) {
+        return service.getFeatureList(userID, listID)
+                .onErrorResumeNext(refreshTokenAndRetry(service.getFeatureList(userID, listID)))
+                .compose(RxUtil.<FeatureList>threadSwitch())
+                .subscribe(new SimpleObserver<FeatureList>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("FeatureList...onError:" + userID + "..." + listID);
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(FeatureList featureList) {
+                        Logger.d("FeatureList...onNext:" + userID + "..." + listID);
+                        callback.onGetFeatureListSuccess(featureList);
                     }
                 });
     }

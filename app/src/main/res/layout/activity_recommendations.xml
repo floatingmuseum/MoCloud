@@ -8,43 +8,50 @@
 
     <include layout="@layout/layout_appbar" />
     <!--<include layout="@layout/layout_under_construction" />-->
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.wang.avi.AVLoadingIndicatorView
-            android:id="@+id/avl_recommend_loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            mocloud:indicatorColor="@color/default_loading_color"
-            mocloud:indicatorName="BallPulseIndicator" />
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/default_bg_color"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <TextView
-                style="@style/detail_title"
-                android:text="@string/recommendation_recommendation_title" />
-
-            <com.yarolegovich.discretescrollview.DiscreteScrollView
-                android:id="@+id/dsv_picker"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                style="@style/detail_title"
-                android:text="@string/feature_lists" />
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/avl_recommend_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                mocloud:indicatorColor="@color/default_loading_color"
+                mocloud:indicatorName="BallPulseIndicator" />
 
             <LinearLayout
-                android:id="@+id/ll_feature_lists_container"
+                android:id="@+id/ll_recommend_list_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:background="@color/default_bg_color"
+                android:orientation="vertical"
+                android:visibility="gone">
 
-    </RelativeLayout>
+                <TextView
+                    style="@style/detail_title"
+                    android:text="@string/recommendation_recommendation_title" />
+
+                <com.yarolegovich.discretescrollview.DiscreteScrollView
+                    android:id="@+id/dsv_picker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    style="@style/detail_title"
+                    android:text="@string/feature_lists" />
+
+                <LinearLayout
+                    android:id="@+id/ll_feature_lists_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
 </LinearLayout>

@@ -5,6 +5,7 @@ import android.content.Loader;
 
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.ExpireTime;
+import com.floatingmuseum.mocloud.data.entity.FeatureList;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.SyncData;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
@@ -141,16 +142,16 @@ public interface MoCloudService {
     Observable<ResponseBody> removeCommentFromLikes(@Path("id") long commentId);
 
     @GET("users/{id}/following")
-    Observable<List<Follower>> syncUserFollowing(@Path("id")String slug);
+    Observable<List<Follower>> syncUserFollowing(@Path("id") String slug);
 
     @GET("users/{id}/followers")
-    Observable<List<Follower>> syncUserFollowers(@Path("id")String slug);
+    Observable<List<Follower>> syncUserFollowers(@Path("id") String slug);
 
     @POST("users/{id}/follow")
-    Observable followUser(@Path("id")String slug);
+    Observable followUser(@Path("id") String slug);
 
     @DELETE("users/{id}/follow")
-    Observable unfollowUser(@Path("id")String slug);
+    Observable unfollowUser(@Path("id") String slug);
 
 //*******************************************电  影*******************************************
 
@@ -274,6 +275,9 @@ public interface MoCloudService {
     @GET("recommendations/movies?extended=full")
     Observable<List<Movie>> getRecommendations();
 
+    @GET("users/{userID}/lists/{listID}")
+    Observable<FeatureList> getFeatureList(@Path("userID") String userID, @Path("listID") String listID);
+
     @DELETE("recommendations/movies/{id}")
     Observable<ResponseBody> hideMovie(@Path("id") String slug);
 
@@ -339,4 +343,5 @@ public interface MoCloudService {
     @Streaming
     @GET
     Observable<ResponseBody> downloadImage(@Url String url);
+
 }
