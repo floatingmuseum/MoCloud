@@ -8,21 +8,23 @@
 
     <include layout="@layout/layout_appbar" />
     <!--<include layout="@layout/layout_under_construction" />-->
-    <ScrollView
+
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/avl_recommend_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            mocloud:indicatorColor="@color/default_loading_color"
+            mocloud:indicatorName="BallPulseIndicator" />
 
-            <com.wang.avi.AVLoadingIndicatorView
-                android:id="@+id/avl_recommend_loading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                mocloud:indicatorColor="@color/default_loading_color"
-                mocloud:indicatorName="BallPulseIndicator" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:id="@+id/ll_recommend_list_container"
@@ -51,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
             </LinearLayout>
+        </ScrollView>
 
-        </RelativeLayout>
-    </ScrollView>
+    </RelativeLayout>
 </LinearLayout>
