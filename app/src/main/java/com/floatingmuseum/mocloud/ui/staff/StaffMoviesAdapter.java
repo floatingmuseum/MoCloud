@@ -6,6 +6,7 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.ArtImage;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.Staff;
+import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
@@ -16,11 +17,11 @@ import java.util.List;
  * Created by Floatingmuseum on 2016/12/27.
  */
 
-public class StaffMoviesAdapter extends BaseQuickAdapter<Staff, BaseViewHolder> {
+class StaffMoviesAdapter extends BaseQuickAdapter<Staff, BaseViewHolder> {
 
     List<Staff> data;
 
-    public StaffMoviesAdapter(List<Staff> data) {
+    StaffMoviesAdapter(List<Staff> data) {
         super(R.layout.item_staff_works, data);
         this.data = data;
     }
@@ -66,7 +67,7 @@ public class StaffMoviesAdapter extends BaseQuickAdapter<Staff, BaseViewHolder> 
 
     protected void loadPoster(RatioImageView posterView, Movie movie) {
         ArtImage image = movie.getImage();
-        ImageLoader.loadArtImage(mContext,image,posterView,R.drawable.default_movie_poster);
+        ImageLoader.loadArtImage(mContext, image, posterView, ImageCacheManager.TYPE_AVATAR);
         Logger.d("没有图片showImage:" + movie.getTitle());
     }
 }

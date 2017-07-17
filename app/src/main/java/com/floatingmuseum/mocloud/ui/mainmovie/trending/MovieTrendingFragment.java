@@ -8,15 +8,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
-import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +31,11 @@ public class MovieTrendingFragment extends BaseFragment {
     RecyclerView rv;
     @BindView(R.id.srl)
     SwipeRefreshLayout srl;
+    @BindView(R.id.tv_loaded_failed)
+    TextView tvLoadedFailed;
 
     public final static String MOVIE_TRENDING_FRAGMENT = "MovieTrendingFragment";
+
     private List<BaseMovie> trendingList;
     private MovieTrendingAdapter adapter;
 
@@ -41,8 +43,7 @@ public class MovieTrendingFragment extends BaseFragment {
     private GridLayoutManager manager;
 
     public static MovieTrendingFragment newInstance() {
-        MovieTrendingFragment fragment = new MovieTrendingFragment();
-        return fragment;
+        return new MovieTrendingFragment();
     }
 
     @Nullable
@@ -86,6 +87,15 @@ public class MovieTrendingFragment extends BaseFragment {
             }
         });
 
+        tvLoadedFailed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvLoadedFailed.setVisibility(View.GONE);
+                srl.setVisibility(View.VISIBLE);
+                requestBaseDataIfUserNotScrollToFragments(srl, presenter);
+            }
+        });
+
 
         /**
          * 虽然这里通过View.post方法在SwipeRefreshLayout初始化完毕后显示刷新，
@@ -115,6 +125,7 @@ public class MovieTrendingFragment extends BaseFragment {
 
 
     public void refreshData(List<BaseMovie> newData, boolean shouldClean) {
+        stopRefresh(srl);
         checkDataSize(newData, presenter.getLimit());
         if (shouldClean) {
             trendingList.clear();
@@ -123,8 +134,8 @@ public class MovieTrendingFragment extends BaseFragment {
         adapter.notifyDataSetChanged();
     }
 
-    public void stopRefresh() {
-        stopRefresh(srl);
+    public void onError() {
+        showErrorInfo(srl, tvLoadedFailed, trendingList);
     }
 
     @Override

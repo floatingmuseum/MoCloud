@@ -48,7 +48,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
         TextView tvCommentsLikes = (TextView) commentItem.findViewById(R.id.tv_comment_likes);
         ImageView ivCommentLikes = (ImageView) commentItem.findViewById(R.id.iv_comment_likes);
         LinearLayout llCommentLikes = (LinearLayout) commentItem.findViewById(R.id.ll_comment_likes);
-        LinearLayout llCommentReplies= (LinearLayout) commentItem.findViewById(R.id.ll_comment_replies);
+        LinearLayout llCommentReplies = (LinearLayout) commentItem.findViewById(R.id.ll_comment_replies);
         tvCommentReplies = (TextView) commentItem.findViewById(R.id.tv_comments_replies);
         TextView tvComment = (TextView) commentItem.findViewById(R.id.tv_comment);
         LinearLayout llTip = (LinearLayout) commentItem.findViewById(R.id.ll_tip);
@@ -81,9 +81,9 @@ public abstract class BaseCommentsActivity extends BaseActivity {
 
         tvCreatetime.setText(TimeUtil.formatGmtTime(comment.getCreated_at()));
         // TODO: 2017/3/22 如果超过3位数显示会有问题
-        tvCommentsLikes.setText("" + comment.getLikes());
+        tvCommentsLikes.setText(String.valueOf(comment.getLikes()));
 //        tvCommentsLikes.setText("" + 999);
-        tvCommentReplies.setText("" + comment.getReplies());
+        tvCommentReplies.setText(String.valueOf(comment.getReplies()));
 //        tvCommentReplies.setText("" + 999);
         tvComment.setText(comment.getComment());
         if (comment.isLike()) {

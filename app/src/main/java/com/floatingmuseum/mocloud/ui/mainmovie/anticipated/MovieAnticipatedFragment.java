@@ -7,14 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
-import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +30,11 @@ public class MovieAnticipatedFragment extends BaseFragment {
     RecyclerView rv;
     @BindView(R.id.srl)
     SwipeRefreshLayout srl;
+    @BindView(R.id.tv_loaded_failed)
+    TextView tvLoadedFailed;
 
     public final static String MOVIE_ANTICIPATED_FRAGMENT = "MovieAnticipatedFragment";
+
     private List<BaseMovie> anticipatedList;
     private MovieAnticipatedAdapter adapter;
     //    private TestAdapter testAdapter;
@@ -40,8 +42,7 @@ public class MovieAnticipatedFragment extends BaseFragment {
     private GridLayoutManager manager;
 
     public static MovieAnticipatedFragment newInstance() {
-        MovieAnticipatedFragment fragment = new MovieAnticipatedFragment();
-        return fragment;
+        return new MovieAnticipatedFragment();
     }
 
     @Override
@@ -95,6 +96,7 @@ public class MovieAnticipatedFragment extends BaseFragment {
     }
 
     public void refreshData(List<BaseMovie> newData, boolean shouldClean) {
+        stopRefresh(srl);
         checkDataSize(newData, presenter.getLimit());
         if (shouldClean) {
             anticipatedList.clear();
@@ -103,7 +105,12 @@ public class MovieAnticipatedFragment extends BaseFragment {
         adapter.notifyDataSetChanged();
     }
 
-    public void stopRefresh() {
-        stopRefresh(srl);
+    public void onError() {
+        showErrorInfo(srl, tvLoadedFailed, anticipatedList);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

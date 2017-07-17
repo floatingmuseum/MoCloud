@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
+import android.view.View;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
@@ -101,7 +103,7 @@ abstract public class BaseFragment extends Fragment {
 
     protected void openMovieDetailActivity(Movie movie) {
         Intent intent = new Intent(context, MovieDetailActivity.class);
-        intent.putExtra(MovieDetailActivity.MOVIE_OBJECT, movie);
+        intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie);
         context.startActivity(intent);
     }
 
@@ -120,17 +122,13 @@ abstract public class BaseFragment extends Fragment {
     /**
      * 如果用户进入当前Fragment不是通过滑动页面，且当前Fragment不是之前Fragment的左右邻，
      * 则isViewPrepared会为false，导致第一次可见时不加载数据
-     *
-     * @param srl
-     * @param presenter
      */
     protected void requestBaseDataIfUserNotScrollToFragments(SwipeRefreshLayout srl, ListPresenter presenter) {
         isViewPrepared = true;
-        if (isViewPrepared && isFirstVisibleToUser && isVisibleToUser) {
+        if (isFirstVisibleToUser && isVisibleToUser) {
             isFirstVisibleToUser = false;
             Logger.d("请求数据...requestBaseDataIfUserNotScrollToFragments");
             srl.setRefreshing(true);
-//        requestBaseData();
             presenter.start(true);
         }
     }
@@ -144,6 +142,17 @@ abstract public class BaseFragment extends Fragment {
             alreadyGetAllData = true;
         } else {
             alreadyGetAllData = false;
+        }
+    }
+
+    protected void showErrorInfo(SwipeRefreshLayout srl, TextView tvLoadedFailed,List data){
+        stopRefresh(srl);
+        if (data.size() == 0) {
+            isFirstVisibleToUser = true;
+            tvLoadedFailed.setVisibility(View.VISIBLE);
+            srl.setVisibility(View.GONE);
+        } else {
+            ToastUtil.showToast(R.string.loading_failed);
         }
     }
 

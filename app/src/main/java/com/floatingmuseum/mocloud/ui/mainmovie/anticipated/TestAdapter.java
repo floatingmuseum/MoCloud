@@ -61,7 +61,7 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.TestHolder> {
 //                Logger.d("图片从本地加载:" + movie.getTitle() + "..." + file.getName());
 //                return;
 //            } else if (image.isHasPoster()) {
-//                String tmdbPosterUrl = StringUtil.buildPosterUrl(image.getPosters().get(0).getFile_path());
+//                String tmdbPosterUrl = StringUtil.buildImageUrl(image.getPosters().get(0).getFile_path());
 //                ImageLoader.load(context, tmdbPosterUrl, holder.iv_poster, R.drawable.default_movie_poster);
 //                Logger.d("图片从网络加载:" + movie.getTitle() + "..." + image.getId() + "...tmdbPosterUrl:" + tmdbPosterUrl);
 //                return;

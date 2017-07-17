@@ -108,14 +108,16 @@ public class ImageCacheManager {
         return null;
     }
 
-    public static Observable<ArtImage> localArtImage(int tmdbID, File file) {
+    public static Observable<ArtImage> localArtImage(int tmdbID, File file, int type) {
         ArtImage image = new ArtImage();
         image.setTmdbID(tmdbID);
-        image.setLocalImageUri(Uri.fromFile(file));
-//        TmdbMovieImage tmdbMovieImage = new TmdbMovieImage();
-//        tmdbMovieImage.setHasCache(true);
-//        tmdbMovieImage.setId(tmdbID);
-//        tmdbMovieImage.setCacheFile(file);
+        if (TYPE_POSTER == type) {
+            image.setLocalPosterUri(Uri.fromFile(file));
+        } else if (TYPE_AVATAR == type) {
+            image.setLocalAvatarUri(Uri.fromFile(file));
+        } else {
+            image.setLocalBackdropUri(Uri.fromFile(file));
+        }
         return Observable.just(image);
     }
 

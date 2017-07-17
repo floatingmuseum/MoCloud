@@ -9,42 +9,61 @@
         android:layout_height="wrap_content"
         android:background="@color/default_comment_content_bg"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="6dp">
 
         <TextView
             android:id="@+id/tv_feature_list_name"
             style="@style/detail_content"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
             android:textColor="@color/default_comment_title_text"
+            android:textSize="17sp"
             tools:text="Rotten Tomatoes: Best of 2017" />
+
+        <TextView
+            android:id="@+id/tv_feature_list_desc_title"
+            style="@style/detail_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="6dp"
+            android:text="@string/overview"
+            android:textColor="@color/default_comment_title_text" />
 
         <TextView
             android:id="@+id/tv_feature_list_desc"
             style="@style/detail_content"
-            android:textColor="@color/default_comment_title_text"
+            android:ellipsize="end"
+            android:maxLines="5"
+            android:paddingTop="3dp"
+            android:textColor="@color/default_comment_content_text"
             tools:text="Pulled from Rotten Tomatoes Top Movies section:\r\nhttp://www.rottentomatoes.com/top/bestofrt/?year=2017\r\n\r\nUPDATED: 7/7/17" />
 
         <TextView
             android:id="@+id/tv_feature_list_username"
             style="@style/detail_content"
+            android:paddingTop="6dp"
             android:textColor="@color/default_comment_title_text"
-            tools:text="LISH" />
+            tools:text="User: LISH" />
 
         <TextView
             android:id="@+id/tv_feature_list_update_time"
             style="@style/detail_content"
+            android:paddingTop="6dp"
             android:textColor="@color/default_comment_title_text"
-            tools:text="2017-07-12T15:45:32.000Z" />
+            tools:text="Last updated: 2017-07-12 10:53:24" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:orientation="horizontal">
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:paddingTop="6dp">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="5dp"
                 android:src="@drawable/ic_content_copy_blue_48dp" />
 
             <TextView
@@ -58,20 +77,20 @@
 
             <com.github.lzyzsd.circleprogress.DonutProgress
                 android:id="@+id/dt_feature_list_progress"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
                 app:donut_circle_starting_degree="270"
                 app:donut_finished_color="@color/default_tag_color"
                 app:donut_finished_stroke_width="3dp"
-                app:donut_text="30"
                 app:donut_text_color="@color/default_comment_title_text"
-                app:donut_text_size="6sp"
+                app:donut_text_size="10sp"
                 app:donut_unfinished_color="@color/white_text"
                 app:donut_unfinished_stroke_width="2dp"
                 tools:donut_max="100"
-                tools:donut_progress="30" />
+                tools:donut_progress="30"
+                tools:donut_text="30" />
 
             <TextView
                 android:id="@+id/tv_feature_list_progress"
@@ -84,8 +103,8 @@
 
             <ImageView
                 android:id="@+id/iv_list_likes"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
                 android:src="@drawable/ic_thumb_up_stroke_blue_48dp" />
@@ -100,8 +119,8 @@
                 tools:text="42" />
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
                 android:src="@drawable/ic_comment_blue_48dp" />

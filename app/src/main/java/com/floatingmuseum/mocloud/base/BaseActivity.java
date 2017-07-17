@@ -16,10 +16,12 @@ import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbPersonImage;
 import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.ui.comments.CommentsPresenter;
+import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
 import com.floatingmuseum.mocloud.ui.staff.StaffDetailActivity;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
@@ -114,7 +116,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
                 return;
             }
         }
-        ImageLoader.loadDefault(this, headView);
+        ImageLoader.loadDefault(this, headView,R.drawable.default_userhead);
     }
 
     protected void stopRefresh(SwipeRefreshLayout srl) {
@@ -127,6 +129,12 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     protected void openUserActivity(Context context, User user) {
         Intent intent = new Intent(context, UserActivity.class);
         intent.putExtra(UserActivity.USER_OBJECT, user);
+        startActivity(intent);
+    }
+
+    protected void openMovieDetailActivity(Movie movie) {
+        Intent intent = new Intent(this, MovieDetailActivity.class);
+        intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie);
         startActivity(intent);
     }
 

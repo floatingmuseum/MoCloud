@@ -12,8 +12,12 @@ import android.os.Parcelable;
 public class ArtImage implements Parcelable {
 
     private int tmdbID;
-    private Uri localImageUri;
-    private String remoteImageUrl;
+    private Uri localPosterUri;
+    private Uri localBackdropUri;
+    private Uri localAvatarUri;
+    private String remotePosterUrl;
+    private String remoteBackdropUrl;
+    private String remoteAvatarUrl;
     private Bitmap bitmap;
 
     public int getTmdbID() {
@@ -24,20 +28,52 @@ public class ArtImage implements Parcelable {
         this.tmdbID = tmdbID;
     }
 
-    public Uri getLocalImageUri() {
-        return localImageUri;
+    public Uri getLocalPosterUri() {
+        return localPosterUri;
     }
 
-    public void setLocalImageUri(Uri localImageUri) {
-        this.localImageUri = localImageUri;
+    public void setLocalPosterUri(Uri localPosterUri) {
+        this.localPosterUri = localPosterUri;
     }
 
-    public String getRemoteImageUrl() {
-        return remoteImageUrl;
+    public Uri getLocalBackdropUri() {
+        return localBackdropUri;
     }
 
-    public void setRemoteImageUrl(String remoteImageUrl) {
-        this.remoteImageUrl = remoteImageUrl;
+    public void setLocalBackdropUri(Uri localBackdropUri) {
+        this.localBackdropUri = localBackdropUri;
+    }
+
+    public String getRemotePosterUrl() {
+        return remotePosterUrl;
+    }
+
+    public void setRemotePosterUrl(String remotePosterUrl) {
+        this.remotePosterUrl = remotePosterUrl;
+    }
+
+    public String getRemoteBackdropUrl() {
+        return remoteBackdropUrl;
+    }
+
+    public void setRemoteBackdropUrl(String remoteBackdropUrl) {
+        this.remoteBackdropUrl = remoteBackdropUrl;
+    }
+
+    public Uri getLocalAvatarUri() {
+        return localAvatarUri;
+    }
+
+    public void setLocalAvatarUri(Uri localAvatarUri) {
+        this.localAvatarUri = localAvatarUri;
+    }
+
+    public String getRemoteAvatarUrl() {
+        return remoteAvatarUrl;
+    }
+
+    public void setRemoteAvatarUrl(String remoteAvatarUrl) {
+        this.remoteAvatarUrl = remoteAvatarUrl;
     }
 
     public Bitmap getBitmap() {
@@ -52,11 +88,16 @@ public class ArtImage implements Parcelable {
     public String toString() {
         return "ArtImage{" +
                 "tmdbID=" + tmdbID +
-                ", localImageUri=" + localImageUri +
-                ", remoteImageUrl='" + remoteImageUrl + '\'' +
+                ", localPosterUri=" + localPosterUri +
+                ", localBackdropUri=" + localBackdropUri +
+                ", localAvatarUri=" + localAvatarUri +
+                ", remotePosterUrl='" + remotePosterUrl + '\'' +
+                ", remoteBackdropUrl='" + remoteBackdropUrl + '\'' +
+                ", remoteAvatarUrl='" + remoteAvatarUrl + '\'' +
                 ", bitmap=" + bitmap +
                 '}';
     }
+
 
     @Override
     public int describeContents() {
@@ -66,8 +107,12 @@ public class ArtImage implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.tmdbID);
-        dest.writeParcelable(this.localImageUri, flags);
-        dest.writeString(this.remoteImageUrl);
+        dest.writeParcelable(this.localPosterUri, flags);
+        dest.writeParcelable(this.localBackdropUri, flags);
+        dest.writeParcelable(this.localAvatarUri, flags);
+        dest.writeString(this.remotePosterUrl);
+        dest.writeString(this.remoteBackdropUrl);
+        dest.writeString(this.remoteAvatarUrl);
         dest.writeParcelable(this.bitmap, flags);
     }
 
@@ -76,8 +121,12 @@ public class ArtImage implements Parcelable {
 
     protected ArtImage(Parcel in) {
         this.tmdbID = in.readInt();
-        this.localImageUri = in.readParcelable(Uri.class.getClassLoader());
-        this.remoteImageUrl = in.readString();
+        this.localPosterUri = in.readParcelable(Uri.class.getClassLoader());
+        this.localBackdropUri = in.readParcelable(Uri.class.getClassLoader());
+        this.localAvatarUri = in.readParcelable(Uri.class.getClassLoader());
+        this.remotePosterUrl = in.readString();
+        this.remoteBackdropUrl = in.readString();
+        this.remoteAvatarUrl = in.readString();
         this.bitmap = in.readParcelable(Bitmap.class.getClassLoader());
     }
 

@@ -455,7 +455,7 @@
                 style="@style/detail_title"
                 android:layout_width="match_parent"
                 android:gravity="right"
-                android:text="@string/see_more_comments"
+                android:text="@string/see_more"
                 android:visibility="gone" />
         </LinearLayout>
     </ScrollView>

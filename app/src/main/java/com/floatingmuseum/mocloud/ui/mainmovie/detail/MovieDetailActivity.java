@@ -8,10 +8,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -78,7 +76,7 @@ import name.gudong.statebackground.OneDrawable;
  * Created by Floatingmuseum on 2016/6/20.
  */
 public class MovieDetailActivity extends BaseCommentsActivity implements BaseDetailActivity {
-    public static final String MOVIE_OBJECT = "movie_object";
+    public static final String EXTRA_MOVIE = "extra_movie";
 //    public static final String MOVIE_OBJECT_TRAKT= "movie_object_trakt";
 
     @BindView(R.id.sv_movie_detail)
@@ -216,7 +214,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-        movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
+        movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
         EventBusManager.register(this);
         presenter = new MovieDetailPresenter(this);
         presenter.getData(movie);
@@ -523,11 +521,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     }
 
     private boolean enableColorful() {
-        if (mainSwatch != null && itemSwatch != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return mainSwatch != null && itemSwatch != null;
     }
 
     public void onCommentsSuccess(final List<Comment> commentsResult) {

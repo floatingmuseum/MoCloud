@@ -11,9 +11,8 @@
     <string name="language">Language</string>
     <string name="movie_title">Title</string>
     <string name="rating">Rating</string>
-    <string name="overview">Over view</string>
+    <string name="overview">Overview</string>
     <string name="comments">Comments</string>
-    <string name="see_more_comments">More...</string>
     <string name="crew">Crew</string>
     <string name="spoiler_alert">Spoiler</string>
     <string name="action_type_switch">Switch to TV</string>
@@ -39,10 +38,10 @@
     <string name="not_login">Please login first.</string>
     <string name="under_construction">This is under construction.</string>
     <string name="staff_role">Role</string>
-    <string name="sync_state">Syncing data...</string>
+    <string name="sync_state">Syncing data…</string>
     <string name="certification">Certification</string>
     <string name="genres">Genres</string>
-    <string name="logging_in">Logging in...</string>
+    <string name="logging_in">Logging in…</string>
     <string name="tagline">Tagline</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="already_get_all_data">Already get all data.</string>
@@ -52,6 +51,9 @@
     <string name="spoiler">Spoiler</string>
     <string name="recommendation_recommendation_title">Recommendations</string>
     <string name="feature_lists">Feature lists</string>
+    <string name="loaded_failed">Loaded failed,click to refresh.</string>
+    <string name="loading_failed">Loading failed,try it later.</string>
+    <string name="see_more">More…</string>
 
     <string-array name="tab_names">
         <item>Trending</item>

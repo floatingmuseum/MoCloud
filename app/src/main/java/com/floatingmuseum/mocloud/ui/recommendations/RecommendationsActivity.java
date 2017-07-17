@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -16,6 +17,7 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.data.db.RealmManager;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
+import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.FeatureList;
 import com.floatingmuseum.mocloud.data.entity.FeatureListItem;
 import com.floatingmuseum.mocloud.data.entity.Movie;
@@ -77,11 +79,13 @@ public class RecommendationsActivity extends BaseActivity {
         featureList.put("rotten-tomatoes-best-of-2017", "lish408");
         featureList.put("imdb-top-rated-movies", "justin");
         featureList.put("reddit-top-250-2017-edition", "philrivers");
-
+        featureList.put("2017-golden-globe-nominees-winners", "andreofgyn");
+        featureList.put("2017-oscar-nominees-winners", "andreofgyn");
     }
 
     @Override
     protected void initView() {
+        actionBar.setTitle("Recommendations");
         recommendData = new ArrayList<>();
         pickerAdapter = new PickerAdapter(recommendData);
         dsvPicker.setOffscreenItems(1);
@@ -106,7 +110,7 @@ public class RecommendationsActivity extends BaseActivity {
         dsvPicker.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Logger.d("特色List...被点击:" + position + "..." + recommendData.get(position));
+                openMovieDetailActivity(recommendData.get(position));
             }
         });
     }
@@ -138,6 +142,7 @@ public class RecommendationsActivity extends BaseActivity {
 
         CardView cvFeatureList = (CardView) LayoutInflater.from(this).inflate(R.layout.layout_recommend_list, llFeatureListsContainer, false);
         TextView listName = (TextView) cvFeatureList.findViewById(R.id.tv_feature_list_name);
+        TextView listDescTitle = (TextView) cvFeatureList.findViewById(R.id.tv_feature_list_desc_title);
         TextView listDesc = (TextView) cvFeatureList.findViewById(R.id.tv_feature_list_desc);
         TextView listUsername = (TextView) cvFeatureList.findViewById(R.id.tv_feature_list_username);
         TextView listUpdateTime = (TextView) cvFeatureList.findViewById(R.id.tv_feature_list_update_time);
@@ -148,16 +153,38 @@ public class RecommendationsActivity extends BaseActivity {
         TextView listComments = (TextView) cvFeatureList.findViewById(R.id.tv_feature_list_comments);
 
         listName.setText(list.getName());
-        listDesc.setText(list.getDescription());
-        listUsername.setText(list.getUser().getName());
-        listUpdateTime.setText(TimeUtil.formatGmtTime(list.getUpdated_at()));
+        if (!TextUtils.isEmpty(list.getDescription())) {
+            listDesc.setText(list.getDescription());
+        } else {
+            listDesc.setVisibility(View.GONE);
+            listDescTitle.setVisibility(View.GONE);
+        }
+        listUsername.setText("Username: " + list.getUser().getName());
+        listUpdateTime.setText("Last updated at: " + TimeUtil.formatGmtTime(list.getUpdated_at()));
         listItemsCount.setText(String.valueOf(list.getItem_count()));
         int watched = calculateWatched(data);
         dtListProgress.setMax(data.size());
         dtListProgress.setProgress(watched);
+//        dtListProgress.setText(String.valueOf(watched));
+        dtListProgress.setText("");
         tvListProgress.setText(watched + "/" + list.getItem_count());
         listLikes.setText(String.valueOf(list.getLikes()));
         listComments.setText(String.valueOf(list.getComment_count()));
+
+        listLikes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        cvFeatureList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         llFeatureListsContainer.addView(cvFeatureList);
     }
 

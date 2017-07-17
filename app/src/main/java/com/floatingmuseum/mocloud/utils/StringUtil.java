@@ -11,7 +11,7 @@ public class StringUtil {
         return content.replaceAll(" ", "");
     }
 
-    public static String buildPosterUrl(String url,int type) {
+    public static String buildImageUrl(String url, int type) {
         if (ImageCacheManager.TYPE_POSTER==type){
             return "https://image.tmdb.org/t/p/w342" + url;
         }else{

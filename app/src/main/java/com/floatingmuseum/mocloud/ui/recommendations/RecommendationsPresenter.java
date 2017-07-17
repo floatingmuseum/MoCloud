@@ -3,10 +3,10 @@ package com.floatingmuseum.mocloud.ui.recommendations;
 
 import com.floatingmuseum.mocloud.base.Presenter;
 import com.floatingmuseum.mocloud.data.callback.RecommendationsCallback;
+import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.FeatureList;
 import com.floatingmuseum.mocloud.data.entity.FeatureListItem;
 import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.orhanobut.logger.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -52,7 +52,6 @@ public class RecommendationsPresenter extends Presenter implements Recommendatio
     @Override
     public void onGetFeatureListDataSuccess(String listID, List<FeatureListItem> data) {
         activity.onGetFeatureListDataSuccess(listID,data);
-        Logger.d("特色List...onGetFeatureListDataSuccess:" + listID + "..." + data.size());
     }
 
     @Override

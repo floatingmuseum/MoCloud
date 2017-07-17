@@ -14,12 +14,12 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/5/6.
  */
-public class MovieBoxOfficePresenter extends ListPresenter implements DataCallback<List<BaseMovie>> {
+class MovieBoxOfficePresenter extends ListPresenter implements DataCallback<List<BaseMovie>> {
 
     private MovieBoxOfficeFragment fragment;
     protected boolean shouldClean;
 
-    public MovieBoxOfficePresenter(@NonNull MovieBoxOfficeFragment fragment){
+    MovieBoxOfficePresenter(@NonNull MovieBoxOfficeFragment fragment){
         this.fragment = fragment;
     }
 
@@ -31,12 +31,11 @@ public class MovieBoxOfficePresenter extends ListPresenter implements DataCallba
     @Override
     public void onBaseDataSuccess(List<BaseMovie> baseMovies) {
         fragment.refreshData(baseMovies);
-        fragment.stopRefresh();
     }
 
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        fragment.stopRefresh();
+        fragment.onError();
     }
 }

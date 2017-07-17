@@ -14,12 +14,12 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/5/6.
  */
-public class MovieAnticipatedPresenter extends ListPresenter implements DataCallback<List<BaseMovie>> {
+class MovieAnticipatedPresenter extends ListPresenter implements DataCallback<List<BaseMovie>> {
 
     private MovieAnticipatedFragment fragment;
 
 
-    public MovieAnticipatedPresenter(@NonNull MovieAnticipatedFragment fragment){
+    MovieAnticipatedPresenter(@NonNull MovieAnticipatedFragment fragment){
         this.fragment = fragment;
     }
 
@@ -30,11 +30,7 @@ public class MovieAnticipatedPresenter extends ListPresenter implements DataCall
 
     @Override
     public void onBaseDataSuccess(List<BaseMovie> baseMovies) {
-//        for (BaseMovie baseMovie : baseMovies) {
-//            Logger.d("Error测试...Movie:"+baseMovie.getMovie().getTitle()+"...Image:"+baseMovie.getMovie().getImage());
-//        }
         fragment.refreshData(baseMovies,shouldClean);
-        fragment.stopRefresh();
         if (!shouldClean){
             pageNum+=1;
         }
@@ -47,6 +43,6 @@ public class MovieAnticipatedPresenter extends ListPresenter implements DataCall
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        fragment.stopRefresh();
+        fragment.onError();
     }
 }

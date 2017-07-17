@@ -15,37 +15,36 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/4/19.
  */
-public class MovieTrendingPresenter extends ListPresenter implements DataCallback<List<BaseMovie>> {
+class MovieTrendingPresenter extends ListPresenter implements DataCallback<List<BaseMovie>> {
 
     private MovieTrendingFragment fragment;
 
-    MovieTrendingPresenter(@NonNull MovieTrendingFragment fragment){
+    MovieTrendingPresenter(@NonNull MovieTrendingFragment fragment) {
         this.fragment = fragment;
     }
 
     @Override
     public void start(final boolean shouldClean) {
-        Logger.d("刷新...start:"+shouldClean);
-        repository.getMovieTrendingData(getPageNum(shouldClean),limit,this);
+        Logger.d("刷新...start:" + shouldClean);
+        repository.getMovieTrendingData(getPageNum(shouldClean), limit, this);
     }
 
     @Override
     public void onBaseDataSuccess(List<BaseMovie> data) {
-        fragment.refreshData(data,shouldClean);
-        fragment.stopRefresh();
+        fragment.refreshData(data, shouldClean);
         //请求成功后，页码永久+1
-        if (!shouldClean){
-            pageNum+=1;
+        if (!shouldClean) {
+            pageNum += 1;
         }
     }
 
-    public int getLimit(){
+    public int getLimit() {
         return limit;
     }
 
     @Override
     public void onError(Throwable e) {
-        fragment.stopRefresh();
+        fragment.onError();
         Logger.d("onError");
         e.printStackTrace();
     }

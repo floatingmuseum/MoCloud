@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:mocloud="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/default_bg_color"
@@ -12,7 +13,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="3dp">
 
         <com.wang.avi.AVLoadingIndicatorView
             android:id="@+id/avl_recommend_loading"
@@ -20,7 +22,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             mocloud:indicatorColor="@color/default_loading_color"
-            mocloud:indicatorName="BallPulseIndicator" />
+            mocloud:indicatorName="BallPulseIndicator"
+            tools:visibility="gone" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -32,7 +35,8 @@
                 android:layout_height="match_parent"
                 android:background="@color/default_bg_color"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <TextView
                     style="@style/detail_title"
@@ -42,6 +46,12 @@
                     android:id="@+id/dsv_picker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
+
+                <TextView
+                    android:text="@string/see_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end" />
 
                 <TextView
                     style="@style/detail_title"

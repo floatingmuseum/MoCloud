@@ -3,20 +3,18 @@ package com.floatingmuseum.mocloud.ui.mainmovie.boxoffice;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
-import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,17 +33,16 @@ public class MovieBoxOfficeFragment extends BaseFragment {
     SwipeRefreshLayout srl;
 
     public final static String MOVIE_BOXOFFICE_FRAGMENT = "MovieBoxOfficeFragment";
+    @BindView(R.id.tv_loaded_failed)
+    TextView tvLoadedFailed;
     private List<BaseMovie> boxOfficeList;
     private MovieBoxOfficeAdapter adapter;
 
     private MovieBoxOfficePresenter presenter;
-    //    private GridLayoutManager manager;
-    private LinearLayoutManager manager;
 
 
     public static MovieBoxOfficeFragment newInstance() {
-        MovieBoxOfficeFragment fragment = new MovieBoxOfficeFragment();
-        return fragment;
+        return new MovieBoxOfficeFragment();
     }
 
     @Nullable
@@ -65,7 +62,7 @@ public class MovieBoxOfficeFragment extends BaseFragment {
         adapter = new MovieBoxOfficeAdapter(boxOfficeList);
         rv.setHasFixedSize(true);
 //        manager = new GridLayoutManager(context,2);
-        manager = new LinearLayoutManager(context);
+        LinearLayoutManager manager = new LinearLayoutManager(context);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -94,12 +91,18 @@ public class MovieBoxOfficeFragment extends BaseFragment {
     }
 
     public void refreshData(List<BaseMovie> newData) {
+        stopRefresh(srl);
         boxOfficeList.clear();
         boxOfficeList.addAll(newData);
         adapter.notifyDataSetChanged();
     }
 
-    public void stopRefresh() {
-        stopRefresh(srl);
+    public void onError() {
+        showErrorInfo(srl, tvLoadedFailed, boxOfficeList);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

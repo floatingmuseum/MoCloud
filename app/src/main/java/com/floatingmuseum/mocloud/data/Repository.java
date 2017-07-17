@@ -2,6 +2,7 @@ package com.floatingmuseum.mocloud.data;
 
 import android.Manifest;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
@@ -23,7 +24,6 @@ import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.ArtImage;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
-import com.floatingmuseum.mocloud.data.entity.ExpireTime;
 import com.floatingmuseum.mocloud.data.entity.FeatureList;
 import com.floatingmuseum.mocloud.data.entity.FeatureListItem;
 import com.floatingmuseum.mocloud.data.entity.Follower;
@@ -54,7 +54,6 @@ import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.data.net.MoCloudFactory;
 import com.floatingmuseum.mocloud.data.net.MoCloudService;
-import com.floatingmuseum.mocloud.ui.recommendations.RecommendationsPresenter;
 import com.floatingmuseum.mocloud.utils.ErrorUtil;
 import com.floatingmuseum.mocloud.utils.ListUtil;
 import com.floatingmuseum.mocloud.utils.PermissionsUtil;
@@ -62,12 +61,10 @@ import com.floatingmuseum.mocloud.utils.RxUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
-import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -128,7 +125,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
                         Logger.d("getMovieTrendingData...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
-                        downloadMovieImage(movies, null, ImageCacheManager.TYPE_POSTER);
+                        downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
@@ -170,7 +167,7 @@ public class Repository {
                     @Override
                     public void onNext(List<Movie> movies) {
                         callback.onBaseDataSuccess(movies);
-                        downloadMovieImage(null, movies, ImageCacheManager.TYPE_POSTER);
+//                        downloadMovieImage(null, movies, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
@@ -195,7 +192,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> baseMovies) {
                         Logger.d("getMoviePlayedData...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
-                        downloadMovieImage(movies, null, ImageCacheManager.TYPE_POSTER);
+                        downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
@@ -220,7 +217,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> baseMovies) {
                         Logger.d("getMovieWatchedData...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
-                        downloadMovieImage(movies, null, ImageCacheManager.TYPE_POSTER);
+                        downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
@@ -245,7 +242,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
                         Logger.d("getMovieCollectedData...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
-                        downloadMovieImage(movies, null, ImageCacheManager.TYPE_POSTER);
+                        downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
@@ -270,7 +267,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
                         Logger.d("getMovieAnticipated...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
-                        downloadMovieImage(movies, null, ImageCacheManager.TYPE_POSTER);
+                        downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
                     }
                 });
     }
@@ -295,7 +292,7 @@ public class Repository {
                     public void onNext(List<BaseMovie> movies) {
                         Logger.d("getMovieBoxOfficeData...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
-                        downloadMovieImage(movies, null, ImageCacheManager.TYPE_BACKDROP);
+                        downloadMovieImage(movies, ImageCacheManager.TYPE_BACKDROP);
                     }
                 });
     }
@@ -334,7 +331,7 @@ public class Repository {
     private Observable<ArtImage> getArtImageObservable(final int tmdbID, final int type) {
         File file = ImageCacheManager.hasCacheImage(tmdbID, type);
         if (file != null) {
-            return ImageCacheManager.localArtImage(tmdbID, file);
+            return ImageCacheManager.localArtImage(tmdbID, file,type);
         } else {
             return service.getTmdbImages(tmdbID, BuildConfig.TmdbApiKey)
                     .onErrorReturn(new Func1<Throwable, TmdbMovieImage>() {
@@ -351,9 +348,8 @@ public class Repository {
                         public ArtImage call(TmdbMovieImage tmdbMovieImage) {
                             ArtImage image = new ArtImage();
                             image.setTmdbID(tmdbMovieImage.getId());
-                            if (ListUtil.hasData(tmdbMovieImage.getPosters())) {
-                                image.setRemoteImageUrl(getImageUrl(tmdbMovieImage, type));
-                            }
+                            getPosterImageUrl(image, tmdbMovieImage.getPosters());
+                            getBackdropImageUrl(image, tmdbMovieImage.getBackdrops());
                             return image;
                         }
                     });
@@ -369,7 +365,7 @@ public class Repository {
         int tmdbId = movie.getIds().getTmdb();
         File file = ImageCacheManager.hasCacheImage(tmdbId, ImageCacheManager.TYPE_POSTER);
         if (file != null) {
-            return ImageCacheManager.localArtImage(tmdbId, file);
+            return ImageCacheManager.localArtImage(tmdbId, file,ImageCacheManager.TYPE_POSTER);
         }
         return service.getTmdbImages(tmdbId, BuildConfig.TmdbApiKey)
                 .onErrorReturn(new Func1<Throwable, TmdbMovieImage>() {
@@ -990,7 +986,9 @@ public class Repository {
                     @Override
                     public void onNext(List<Movie> movies) {
                         callback.onBaseDataSuccess(movies);
-                        downloadMovieImage(null, movies, ImageCacheManager.TYPE_POSTER);
+                        for (Movie movie : movies) {
+                            downloadImage(movie.getIds().getTmdb(), movie.getImage().getRemotePosterUrl(), ImageCacheManager.TYPE_POSTER);
+                        }
                     }
                 });
     }
@@ -1030,7 +1028,7 @@ public class Repository {
                     @Override
                     public void onNext(List<FeatureListItem> data) {
                         Logger.d("FeatureList...onNext:" + userID + "..." + listID);
-                        callback.onGetFeatureListDataSuccess(listID,data);
+                        callback.onGetFeatureListDataSuccess(listID, data);
                     }
                 });
     }
@@ -1522,33 +1520,31 @@ public class Repository {
     /**
      * 获取电影海报url
      */
-    private String getImageUrl(TmdbMovieImage image, int type) {
-        if (image != null) {
-            if (ImageCacheManager.TYPE_POSTER == type) {
-                List<TmdbMovieImage.Posters> posters = image.getPosters();
-                if (ListUtil.hasData(posters)) {
-                    for (TmdbMovieImage.Posters poster : posters) {
-                        // TODO: 2017/4/12 默认优先选择英文海报，之后可以优化为根据影片语言优先选择对应海报
-                        if ("en".equals(poster.getIso_639_1())) {
-                            return StringUtil.buildPosterUrl(poster.getFile_path(), type);
-                        }
-                    }
-                    return StringUtil.buildPosterUrl(posters.get(0).getFile_path(), type);
-                }
-            } else {
-                List<TmdbMovieImage.Backdrops> backdrops = image.getBackdrops();
-                if (ListUtil.hasData(backdrops)) {
-                    for (TmdbMovieImage.Backdrops backdrop : backdrops) {
-                        // TODO: 2017/4/12 默认优先选择英文海报，之后可以优化为根据影片语言优先选择对应海报
-                        if ("en".equals(backdrop.getIso_639_1())) {
-                            return StringUtil.buildPosterUrl(backdrop.getFile_path(), type);
-                        }
-                    }
-                    return StringUtil.buildPosterUrl(backdrops.get(0).getFile_path(), type);
+    private void getPosterImageUrl(ArtImage image, List<TmdbMovieImage.Posters> data) {
+        if (ListUtil.hasData(data)) {
+            for (TmdbMovieImage.Posters poster : data) {
+                // TODO: 2017/4/12 默认优先选择英文海报，之后可以优化为根据影片语言优先选择对应海报
+                if ("en".equals(poster.getIso_639_1())) {
+                    image.setRemotePosterUrl(StringUtil.buildImageUrl(poster.getFile_path(), ImageCacheManager.TYPE_POSTER));
                 }
             }
+            image.setRemotePosterUrl(StringUtil.buildImageUrl(data.get(0).getFile_path(), ImageCacheManager.TYPE_POSTER));
         }
-        return null;
+    }
+
+    /**
+     * 获取电影背景url
+     */
+    private void getBackdropImageUrl(ArtImage image, List<TmdbMovieImage.Backdrops> data) {
+        if (ListUtil.hasData(data)) {
+            for (TmdbMovieImage.Backdrops backdrop : data) {
+                // TODO: 2017/4/12 默认优先选择英文海报，之后可以优化为根据影片语言优先选择对应海报
+                if ("en".equals(backdrop.getIso_639_1())) {
+                    image.setRemotePosterUrl(StringUtil.buildImageUrl(backdrop.getFile_path(), ImageCacheManager.TYPE_BACKDROP));
+                }
+            }
+            image.setRemotePosterUrl(StringUtil.buildImageUrl(data.get(0).getFile_path(), ImageCacheManager.TYPE_BACKDROP));
+        }
     }
 
     private BaseMovie mergeMovieAndImage1(ArtImage image, List<BaseMovie> movies) {
@@ -1580,13 +1576,12 @@ public class Repository {
      * 获取图片bitmap
      */
     private Bitmap getBitmap(ArtImage image) {
-        Logger.d("获取bitmap:" + image.getLocalImageUri() + "..." + image.getRemoteImageUrl());
         Bitmap bitmap = null;
         try {
-            if (image.getLocalImageUri() != null) {
-                bitmap = Glide.with(MoCloud.context).load(image.getLocalImageUri()).asBitmap().into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
+            if (image.getLocalPosterUri() != null) {
+                bitmap = Glide.with(MoCloud.context).load(image.getLocalPosterUri()).asBitmap().into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
             } else {
-                bitmap = Glide.with(MoCloud.context).load(image.getRemoteImageUrl()).asBitmap().into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
+                bitmap = Glide.with(MoCloud.context).load(image.getRemotePosterUrl()).asBitmap().into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
             }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
@@ -1595,16 +1590,14 @@ public class Repository {
 
     }
 
-    private void downloadMovieImage(List<BaseMovie> baseMovies, List<Movie> movies, int imageType) {
-        if (baseMovies != null) {
-            for (BaseMovie baseMovie : baseMovies) {
-                ArtImage image = baseMovie.getMovie().getImage();
-                downloadImage(image, imageType);
+    private void downloadMovieImage(List<BaseMovie> baseMovies, int type) {
+        for (BaseMovie baseMovie : baseMovies) {
+            ArtImage image = baseMovie.getMovie().getImage();
+            if (!TextUtils.isEmpty(image.getRemotePosterUrl())) {
+                downloadImage(image.getTmdbID(), image.getRemotePosterUrl(), type);
             }
-        } else {
-            for (Movie movie : movies) {
-                ArtImage image = movie.getImage();
-                downloadImage(image, imageType);
+            if (!TextUtils.isEmpty(image.getRemoteBackdropUrl()) && ImageCacheManager.TYPE_BACKDROP == type) {
+                downloadImage(image.getTmdbID(), image.getRemoteBackdropUrl(), type);
             }
         }
     }
@@ -1618,9 +1611,9 @@ public class Repository {
         }
     }
 
-    private void downloadImage(ArtImage image, final int imageType) {
+    private void downloadImage(int tmdbID, String imageUrl, final int imageType) {
         //imageUrl等于null表示图片已缓存在本地，不需要下载
-        if (image.getRemoteImageUrl() == null) {
+        if (TextUtils.isEmpty(imageUrl)) {
             return;
         }
 
@@ -1629,8 +1622,8 @@ public class Repository {
             return;
         }
 
-        final String fileName = "TMDB-" + image.getTmdbID() + StringUtil.getFileSuffix(image.getRemoteImageUrl());
-        service.downloadImage(image.getRemoteImageUrl())
+        final String fileName = "TMDB-" + tmdbID + StringUtil.getFileSuffix(imageUrl);
+        service.downloadImage(imageUrl)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new SimpleObserver<ResponseBody>() {
                     @Override

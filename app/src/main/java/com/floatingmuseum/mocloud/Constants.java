@@ -19,7 +19,7 @@ public interface Constants {
     int STATUS_CODE_FORBIDDEN = 403;//invalid API key or unapproved app
     int STATUS_CODE_NOT_FOUND = 404;//method exists, but no record found
     int STATUS_CODE_METHOD_NOT_FOUND = 405;//method doesn't exist
-    int STATUS_CODE_METHOD_Conflict = 409;//resource already created
+    int STATUS_CODE_METHOD_CONFLICT = 409;//resource already created
     int STATUS_CODE_PRECONDITION_FAILED = 412;//use application/json content type
     int STATUS_CODE_UNPROCESSIBLE_ENTITY = 422;//validation errors
     int STATUS_CODE_RATE_LIMIT_EXCEEDED = 429;
