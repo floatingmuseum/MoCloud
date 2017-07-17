@@ -104,23 +104,23 @@ public class ImageLoader {
         if (ImageCacheManager.TYPE_BACKDROP == type) {
             if (image.getLocalBackdropUri() != null) {
                 load(context, image.getLocalBackdropUri(), view, R.drawable.default_fanart);
-            } else if (TextUtils.isEmpty(image.getRemoteBackdropUrl())) {
+            } else if (!TextUtils.isEmpty(image.getRemoteBackdropUrl())) {
                 load(context, image.getRemoteBackdropUrl(), view, R.drawable.default_fanart);
             } else {
                 loadDefault(context, view, R.drawable.default_fanart);
             }
         } else if (ImageCacheManager.TYPE_POSTER == type) {
-            if (image.getLocalBackdropUri() != null) {
+            if (image.getLocalPosterUri() != null) {
                 load(context, image.getLocalPosterUri(), view, R.drawable.default_movie_poster);
-            } else if (TextUtils.isEmpty(image.getRemoteBackdropUrl())) {
+            } else if (!TextUtils.isEmpty(image.getRemotePosterUrl())) {
                 load(context, image.getRemotePosterUrl(), view, R.drawable.default_movie_poster);
             } else {
                 loadDefault(context, view, R.drawable.default_movie_poster);
             }
         } else {
-            if (image.getLocalBackdropUri() != null) {
+            if (image.getLocalAvatarUri() != null) {
                 load(context, image.getLocalAvatarUri(), view, R.drawable.default_movie_poster);
-            } else if (TextUtils.isEmpty(image.getRemoteBackdropUrl())) {
+            } else if (!TextUtils.isEmpty(image.getRemoteAvatarUrl())) {
                 load(context, image.getRemoteAvatarUrl(), view, R.drawable.default_movie_poster);
             } else {
                 loadDefault(context, view, R.drawable.default_movie_poster);

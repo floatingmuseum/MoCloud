@@ -1540,10 +1540,10 @@ public class Repository {
             for (TmdbMovieImage.Backdrops backdrop : data) {
                 // TODO: 2017/4/12 默认优先选择英文海报，之后可以优化为根据影片语言优先选择对应海报
                 if ("en".equals(backdrop.getIso_639_1())) {
-                    image.setRemotePosterUrl(StringUtil.buildImageUrl(backdrop.getFile_path(), ImageCacheManager.TYPE_BACKDROP));
+                    image.setRemoteBackdropUrl(StringUtil.buildImageUrl(backdrop.getFile_path(), ImageCacheManager.TYPE_BACKDROP));
                 }
             }
-            image.setRemotePosterUrl(StringUtil.buildImageUrl(data.get(0).getFile_path(), ImageCacheManager.TYPE_BACKDROP));
+            image.setRemoteBackdropUrl(StringUtil.buildImageUrl(data.get(0).getFile_path(), ImageCacheManager.TYPE_BACKDROP));
         }
     }
 
