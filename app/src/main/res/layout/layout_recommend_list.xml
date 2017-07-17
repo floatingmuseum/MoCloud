@@ -43,6 +43,7 @@
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
                 android:src="@drawable/ic_content_copy_blue_48dp" />
 
@@ -50,7 +51,7 @@
                 android:id="@+id/tv_feature_list_items_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="1dp"
                 android:textColor="@color/default_comment_title_text"
                 tools:text="250" />
@@ -59,23 +60,24 @@
                 android:id="@+id/dt_feature_list_progress"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
                 app:donut_circle_starting_degree="270"
                 app:donut_finished_color="@color/default_tag_color"
                 app:donut_finished_stroke_width="3dp"
-                app:donut_max="100"
-                app:donut_progress="30"
                 app:donut_text="30"
                 app:donut_text_color="@color/default_comment_title_text"
                 app:donut_text_size="6sp"
                 app:donut_unfinished_color="@color/white_text"
-                app:donut_unfinished_stroke_width="2dp" />
+                app:donut_unfinished_stroke_width="2dp"
+                tools:donut_max="100"
+                tools:donut_progress="30" />
 
             <TextView
                 android:id="@+id/tv_feature_list_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="1dp"
                 android:textColor="@color/default_comment_title_text"
                 tools:text="6/250" />
@@ -84,6 +86,7 @@
                 android:id="@+id/iv_list_likes"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
                 android:src="@drawable/ic_thumb_up_stroke_blue_48dp" />
 
@@ -91,7 +94,7 @@
                 android:id="@+id/tv_feature_list_likes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="1dp"
                 android:textColor="@color/default_comment_title_text"
                 tools:text="42" />
@@ -99,6 +102,7 @@
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
                 android:src="@drawable/ic_comment_blue_48dp" />
 
@@ -106,7 +110,7 @@
                 android:id="@+id/tv_feature_list_comments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="1dp"
                 android:textColor="@color/default_comment_title_text"
                 tools:text="6" />

@@ -6,6 +6,7 @@ import android.content.Loader;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.ExpireTime;
 import com.floatingmuseum.mocloud.data.entity.FeatureList;
+import com.floatingmuseum.mocloud.data.entity.FeatureListItem;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.SyncData;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
@@ -277,6 +278,9 @@ public interface MoCloudService {
 
     @GET("users/{userID}/lists/{listID}")
     Observable<FeatureList> getFeatureList(@Path("userID") String userID, @Path("listID") String listID);
+
+    @GET("users/{userID}/lists/{listID}/items?extended=full")
+    Observable<List<FeatureListItem>> getFeatureListData(@Path("userID") String userID, @Path("listID") String listID);
 
     @DELETE("recommendations/movies/{id}")
     Observable<ResponseBody> hideMovie(@Path("id") String slug);

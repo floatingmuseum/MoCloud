@@ -25,6 +25,7 @@ import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.ExpireTime;
 import com.floatingmuseum.mocloud.data.entity.FeatureList;
+import com.floatingmuseum.mocloud.data.entity.FeatureListItem;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.MovieSyncItem;
 import com.floatingmuseum.mocloud.data.entity.SyncData;
@@ -1010,6 +1011,26 @@ public class Repository {
                     public void onNext(FeatureList featureList) {
                         Logger.d("FeatureList...onNext:" + userID + "..." + listID);
                         callback.onGetFeatureListSuccess(featureList);
+                    }
+                });
+    }
+
+    public Subscription getFeatureListData(final String userID, final String listID, final RecommendationsCallback callback) {
+        return service.getFeatureListData(userID, listID)
+                .onErrorResumeNext(refreshTokenAndRetry(service.getFeatureListData(userID, listID)))
+                .compose(RxUtil.<List<FeatureListItem>>threadSwitch())
+                .subscribe(new SimpleObserver<List<FeatureListItem>>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("FeatureList...onError:" + userID + "..." + listID);
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(List<FeatureListItem> data) {
+                        Logger.d("FeatureList...onNext:" + userID + "..." + listID);
+                        callback.onGetFeatureListDataSuccess(listID,data);
                     }
                 });
     }

@@ -254,4 +254,12 @@ public class RealmManager {
                 .findFirst();
         return (T) model;
     }
+
+    public static boolean isExist(Class<? extends RealmModel> clazz, String filedName, final int value) {
+        RealmModel model = Realm.getDefaultInstance()
+                .where(clazz)
+                .equalTo(filedName, value)
+                .findFirst();
+        return model != null;
+    }
 }

@@ -10,9 +10,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
+import com.floatingmuseum.mocloud.data.db.RealmManager;
+import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.entity.FeatureList;
+import com.floatingmuseum.mocloud.data.entity.FeatureListItem;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
@@ -23,7 +28,9 @@ import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,8 +52,11 @@ public class RecommendationsActivity extends BaseActivity {
 
 
     private RecommendationsPresenter presenter;
-    private List<Movie> data;
+    private List<Movie> recommendData;
     private PickerAdapter pickerAdapter;
+    private Map<String, String> featureList = new HashMap<>();
+    private Map<String, FeatureList> featureBio = new HashMap<>();
+    private Map<String, List<FeatureListItem>> featureData = new HashMap<>();
 
     @Override
     protected int currentLayoutId() {
@@ -58,14 +68,22 @@ public class RecommendationsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         presenter = new RecommendationsPresenter(this);
+        initFeatureList();
         initView();
         triggerRefreshRequest();
     }
 
+    private void initFeatureList() {
+        featureList.put("rotten-tomatoes-best-of-2017", "lish408");
+        featureList.put("imdb-top-rated-movies", "justin");
+        featureList.put("reddit-top-250-2017-edition", "philrivers");
+
+    }
+
     @Override
     protected void initView() {
-        data = new ArrayList<>();
-        pickerAdapter = new PickerAdapter(data);
+        recommendData = new ArrayList<>();
+        pickerAdapter = new PickerAdapter(recommendData);
         dsvPicker.setOffscreenItems(1);
         dsvPicker.setItemTransformer(new ScaleTransformer.Builder().setMinScale(0.8f).build());
         dsvPicker.setAdapter(pickerAdapter);
@@ -85,23 +103,39 @@ public class RecommendationsActivity extends BaseActivity {
                 Logger.d("Picker...onScroll:" + scrollPosition);
             }
         });
-
+        dsvPicker.addOnItemTouchListener(new OnItemClickListener() {
+            @Override
+            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Logger.d("特色List...被点击:" + position + "..." + recommendData.get(position));
+            }
+        });
     }
 
     private void triggerRefreshRequest() {
         avlRecommendLoading.smoothToShow();
-        presenter.getData();
+        presenter.getData(featureList);
     }
 
     public void onBaseDataSuccess(List<Movie> movies) {
         avlRecommendLoading.smoothToHide();
-        data.clear();
-        data.addAll(movies);
+        recommendData.clear();
+        recommendData.addAll(movies);
         pickerAdapter.notifyDataSetChanged();
         llRecommendListContainer.setVisibility(View.VISIBLE);
     }
 
     public void onGetFeatureListSuccess(FeatureList list) {
+        String listID = list.getIds().getSlug();
+        featureBio.put(listID, list);
+        if (featureData.containsKey(listID)) {
+            initFeatureListCard(listID);
+        }
+    }
+
+    private void initFeatureListCard(String listID) {
+        FeatureList list = featureBio.get(listID);
+        List<FeatureListItem> data = featureData.get(listID);
+
         CardView cvFeatureList = (CardView) LayoutInflater.from(this).inflate(R.layout.layout_recommend_list, llFeatureListsContainer, false);
         TextView listName = (TextView) cvFeatureList.findViewById(R.id.tv_feature_list_name);
         TextView listDesc = (TextView) cvFeatureList.findViewById(R.id.tv_feature_list_desc);
@@ -118,11 +152,31 @@ public class RecommendationsActivity extends BaseActivity {
         listUsername.setText(list.getUser().getName());
         listUpdateTime.setText(TimeUtil.formatGmtTime(list.getUpdated_at()));
         listItemsCount.setText(String.valueOf(list.getItem_count()));
-        dtListProgress.setProgress(42f);
-        tvListProgress.setText("42/" + list.getItem_count());
+        int watched = calculateWatched(data);
+        dtListProgress.setMax(data.size());
+        dtListProgress.setProgress(watched);
+        tvListProgress.setText(watched + "/" + list.getItem_count());
         listLikes.setText(String.valueOf(list.getLikes()));
         listComments.setText(String.valueOf(list.getComment_count()));
         llFeatureListsContainer.addView(cvFeatureList);
+    }
+
+    public void onGetFeatureListDataSuccess(String listID, List<FeatureListItem> data) {
+        featureData.put(listID, data);
+        if (featureBio.containsKey(listID)) {
+            initFeatureListCard(listID);
+        }
+    }
+
+    private int calculateWatched(List<FeatureListItem> data) {
+        int watched = 0;
+        for (FeatureListItem item : data) {
+            boolean isExist = RealmManager.isExist(RealmMovieWatched.class, "trakt_id", item.getMovie().getIds().getTrakt());
+            if (isExist) {
+                watched++;
+            }
+        }
+        return watched;
     }
 
     public void onHideMovieSuccess() {
