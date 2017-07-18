@@ -11,10 +11,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,6 +71,7 @@ public class MainActivity extends BaseActivity
     MainPresenter mainPresenter;
 
     private MenuItem syncState;
+    private SearchView searchView;
     //    private ImageView iv_avatar;
 
     @Override
@@ -181,7 +184,25 @@ public class MainActivity extends BaseActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         syncState = menu.findItem(R.id.sync_state);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        initSearchView();
         return true;
+    }
+
+    private void initSearchView() {
+        //        searchView.setIconified(true);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {//when text change
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 
     @Override
@@ -194,7 +215,10 @@ public class MainActivity extends BaseActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_type_switch) {
             return true;
+        } else if (id == R.id.action_search) {
+            return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }

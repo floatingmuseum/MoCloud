@@ -68,7 +68,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
     @BindView(R.id.ll_comments)
     LinearLayout llComments;
 
-    public static final String MOVIE_OBJECT = "movie_object";
+    public static final String EXTRA_MOVIE = "extra_movie";
     public static final String SORT_BY_NEWEST = "newest";
     public static final String SORT_BY_OLDEST = "oldest";
     public static final String SORT_BY_LIKES = "likes";
@@ -100,7 +100,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
 
-        movie = getIntent().getParcelableExtra(MOVIE_OBJECT);
+        movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
         mainColors = getIntent().getParcelableExtra(MAIN_COLORS);
         itemColors = getIntent().getParcelableExtra(ITEM_COLORS);
         actionBar.setTitle(movie.getTitle());

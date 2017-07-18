@@ -40,7 +40,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
     public static final String ITEM_COLORS = "item_colors";
     protected TextView tvCommentReplies;
 
-    protected void initCommentItem(final Context context, final CardView commentItem, final Comment comment, final Palette.Swatch mainSwatch, final Palette.Swatch itemSwatch, final String movieTtile, boolean isSingleCommentActivity) {
+    protected void initCommentItem(final Context context, final CardView commentItem, final Comment comment, final Palette.Swatch mainSwatch, final Palette.Swatch itemSwatch, final String movieTitle, boolean isSingleCommentActivity) {
         CircleImageView ivUserhead = (CircleImageView) commentItem.findViewById(R.id.iv_userhead);
         TextView tvUsername = (TextView) commentItem.findViewById(R.id.tv_username);
         TextView tvCreatetime = (TextView) commentItem.findViewById(R.id.tv_createtime);
@@ -145,7 +145,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
                     intent.putExtra(MAIN_COLORS, mainColors);
                     intent.putExtra(ITEM_COLORS, itemColors);
                 }
-                intent.putExtra(MOVIE_TITLE, movieTtile);
+                intent.putExtra(MOVIE_TITLE, movieTitle);
                 intent.putExtra(SingleCommentActivity.MAIN_COMMENT, comment);
                 startActivity(intent);
             }

@@ -535,7 +535,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MovieDetailActivity.this, CommentsActivity.class);
-                    intent.putExtra(CommentsActivity.MOVIE_OBJECT, movie);
+                    intent.putExtra(CommentsActivity.EXTRA_MOVIE, movie);
                     if (enableColorful()) {
                         Colors mainColors = buildColors(mainSwatch);
                         Colors itemColors = buildColors(itemSwatch);
@@ -573,6 +573,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     private CardView buildCommentItem(final Comment comment) {
         // TODO: 2017/3/28 want switch likes and replies position
         CardView commentItem = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, commentContainer, false);
+
+//        CardView commentItem = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item,commentContainer);
+//        CardView commentItem = (CardView)getLayoutInflater().inflate(R.layout.comment_item, commentContainer, false);
         if (enableColorful()) {
             initCommentItem(this, commentItem, comment, mainSwatch, itemSwatch, movie.getTitle(), false);
         } else {
