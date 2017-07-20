@@ -2,13 +2,11 @@ package com.floatingmuseum.mocloud;
 
 import android.support.v4.app.Fragment;
 
-import com.floatingmuseum.mocloud.ui.mainmovie.anticipated.MovieAnticipatedFragment;
-import com.floatingmuseum.mocloud.ui.mainmovie.boxoffice.MovieBoxOfficeFragment;
-import com.floatingmuseum.mocloud.ui.mainmovie.collected.MovieCollectedFragment;
-import com.floatingmuseum.mocloud.ui.mainmovie.played.MoviePlayedFragment;
-import com.floatingmuseum.mocloud.ui.mainmovie.popular.MoviePopularFragment;
-import com.floatingmuseum.mocloud.ui.mainmovie.trending.MovieTrendingFragment;
-import com.floatingmuseum.mocloud.ui.mainmovie.watched.MovieWatchedFragment;
+import com.floatingmuseum.mocloud.ui.movie.anticipated.MovieAnticipatedFragment;
+import com.floatingmuseum.mocloud.ui.movie.boxoffice.MovieBoxOfficeFragment;
+import com.floatingmuseum.mocloud.ui.movie.collected.MovieCollectedFragment;
+import com.floatingmuseum.mocloud.ui.movie.trending.MovieTrendingFragment;
+import com.floatingmuseum.mocloud.ui.movie.watched.MovieWatchedFragment;
 
 
 /**

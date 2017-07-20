@@ -85,7 +85,7 @@ public class MainActivity extends BaseActivity
 
         ButterKnife.bind(this);
         registerEventBusHere();
-        mainPresenter = new MainPresenter(this);
+//        mainPresenter = new MainPresenter(this);
         initView();
     }
 

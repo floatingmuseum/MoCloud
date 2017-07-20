@@ -19,16 +19,16 @@ import rx.Subscription;
 /**
  * Created by Floatingmuseum on 2016/9/18.
  */
-public class MainPresenter extends Presenter implements DataCallback<UserSettings> {
+class MainPresenter extends Presenter implements DataCallback<UserSettings> {
 
-    MainActivity mainActivity;
+    private MainActivity1 mainActivity;
 
 
-    public MainPresenter(@NonNull MainActivity mainActivity) {
+    MainPresenter(@NonNull MainActivity1 mainActivity) {
         this.mainActivity = mainActivity;
     }
 
-    public void syncUserData(Context context) {
+    void syncUserData(Context context) {
         Intent intent = new Intent(context, SyncService.class);
         context.startService(intent);
     }

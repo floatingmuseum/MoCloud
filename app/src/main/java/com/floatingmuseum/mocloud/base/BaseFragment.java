@@ -15,7 +15,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.Movie;
-import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
+import com.floatingmuseum.mocloud.ui.movie.detail.MovieDetailActivity;
 import com.floatingmuseum.mocloud.data.bus.EventBusManager;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;

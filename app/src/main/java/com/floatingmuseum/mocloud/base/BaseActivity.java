@@ -21,7 +21,7 @@ import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.TmdbPersonImage;
 import com.floatingmuseum.mocloud.data.entity.User;
 import com.floatingmuseum.mocloud.ui.comments.CommentsPresenter;
-import com.floatingmuseum.mocloud.ui.mainmovie.detail.MovieDetailActivity;
+import com.floatingmuseum.mocloud.ui.movie.detail.MovieDetailActivity;
 import com.floatingmuseum.mocloud.ui.staff.StaffDetailActivity;
 import com.floatingmuseum.mocloud.ui.user.UserActivity;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
@@ -33,7 +33,7 @@ import java.io.File;
 /**
  * Created by Floatingmuseum on 2016/8/31.
  */
-public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
+public abstract class BaseActivity extends AppCompatActivity {
 
     protected AppBarLayout appBarLayout;
     protected Toolbar toolbar;
@@ -59,8 +59,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         if (canGoBack()) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-        toolbar.setOnClickListener(this);
     }
 
     protected boolean canGoBack() {
@@ -69,11 +67,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
     protected void registerEventBusHere() {
         EventBusManager.register(this);
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 
     /**

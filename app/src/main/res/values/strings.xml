@@ -54,6 +54,9 @@
     <string name="loaded_failed">Loaded failed,click to refresh.</string>
     <string name="loading_failed">Loading failed,try it later.</string>
     <string name="see_more">More…</string>
+    <string name="navigation_title_movie">Movie</string>
+    <string name="navigation_title_tv">TV</string>
+    <string name="navigation_title_user">User</string>
 
     <string-array name="tab_names">
         <item>Trending</item>
@@ -61,6 +64,12 @@
         <!--<item>Played</item>-->
         <!--<item>Watched</item>-->
         <!--<item>Collected</item>-->
+        <item>Anticipated</item>
+        <item>Box Office</item>
+    </string-array>
+
+    <string-array name="tab_movie_names">
+        <item>Trending</item>
         <item>Anticipated</item>
         <item>Box Office</item>
     </string-array>
@@ -77,5 +86,9 @@
         <item>Biography</item>
         <item>Movie</item>
         <!--<item>Show</item>-->
+    </string-array>
+    <string-array name="tab_tv_names" >
+        <item>Trending</item>
+        <item>Anticipated</item>
     </string-array>
 </resources>
