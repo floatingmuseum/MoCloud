@@ -10,7 +10,6 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -18,7 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="240dp"
             android:background="?attr/colorPrimary"
-            android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:contentScrim="@color/colorPrimary"
             app:expandedTitleTextAppearance="@style/transparentText"
@@ -36,6 +34,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:scaleType="centerCrop"
+                    android:src="@drawable/default_userhead"
                     app:civ_border_color="#FF000000"
                     app:civ_border_width="2dp"
                     tools:src="@drawable/default_userhead" />
@@ -119,6 +118,7 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/default_bg_color"
         android:overScrollMode="never"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -179,14 +179,15 @@
 
                 <TextView
                     android:id="@+id/tv_see_collection"
-                    style="@style/title_text"
+                    style="@style/detail_content"
+                    android:padding="5dp"
                     android:text="See Floatingmuseum's collections" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_user_private"
                 style="@style/detail_content"
-                android:gravity="center"
+                android:layout_gravity="center"
                 android:padding="5dp"
                 android:text="This is Private User."
                 android:visibility="gone" />

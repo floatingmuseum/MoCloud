@@ -27,12 +27,14 @@ public class UserFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.i("生命周期", "UserFragment...onCreateView");
         View rootView = inflater.inflate(R.layout.fragment_user, container, false);
         return rootView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Log.i("生命周期", "UserFragment...onViewCreated");
         super.onViewCreated(view, savedInstanceState);
     }
 
