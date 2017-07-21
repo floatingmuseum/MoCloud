@@ -11,7 +11,7 @@ import com.orhanobut.logger.Logger;
 /**
  * Created by Floatingmuseum on 2016/4/22.
  */
-public class RatioImageView extends ImageView{
+public class RatioImageView extends android.support.v7.widget.AppCompatImageView{
 
     private float attrValue;
 

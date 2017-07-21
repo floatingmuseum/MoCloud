@@ -13,14 +13,14 @@ public class StringUtil {
 
     public static String buildImageUrl(String url, int type) {
         if (ImageCacheManager.TYPE_POSTER==type){
-            return "https://image.tmdb.org/t/p/w342" + url;
+            return "https://image.tmdb.org/t/p/w500" + url;
         }else{
-            return "https://image.tmdb.org/t/p/w300" + url;
+            return "https://image.tmdb.org/t/p/w780" + url;
         }
     }
 
     public static String buildPeopleHeadshotUrl(String url) {
-        return "https://image.tmdb.org/t/p/w300" + url;
+        return "https://image.tmdb.org/t/p/w632" + url;
     }
 
     /**

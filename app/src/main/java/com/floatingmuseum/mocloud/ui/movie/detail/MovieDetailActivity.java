@@ -43,6 +43,7 @@ import com.floatingmuseum.mocloud.data.entity.OmdbInfo;
 import com.floatingmuseum.mocloud.data.entity.Ratings;
 import com.floatingmuseum.mocloud.data.entity.Staff;
 import com.floatingmuseum.mocloud.data.entity.SyncData;
+import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.ui.comments.CommentsActivity;
 import com.floatingmuseum.mocloud.utils.ColorUtil;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
@@ -188,6 +189,35 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     @BindView(R.id.tv_no_crew)
     TextView tvNoCrew;
 
+    @BindView(R.id.ll_movie_header_with_backdrop)
+    LinearLayout llMovieHeaderWithBackdrop;
+    @BindView(R.id.backdrop)
+    RatioImageView backdrop;
+    @BindView(R.id.tv_title_text_backdrop)
+    TextView tvTitleTextBackdrop;
+    @BindView(R.id.tv_title_backdrop)
+    TextView tvTitleBackdrop;
+    @BindView(R.id.tv_released_title_text_backdrop)
+    TextView tvReleasedTitleTextBackdrop;
+    @BindView(R.id.tv_released_backdrop)
+    TextView tvReleasedBackdrop;
+    @BindView(R.id.tv_runtime_title_text_backdrop)
+    TextView tvRuntimeTitleTextBackdrop;
+    @BindView(R.id.tv_runtime_backdrop)
+    TextView tvRuntimeBackdrop;
+    @BindView(R.id.tv_language_title_text_backdrop)
+    TextView tvLanguageTitleTextBackdrop;
+    @BindView(R.id.tv_language_backdrop)
+    TextView tvLanguageBackdrop;
+    @BindView(R.id.tv_certification_title_text_backdrop)
+    TextView tvCertificationTitleTextBackdrop;
+    @BindView(R.id.tv_certification_backdrop)
+    TextView tvCertificationBackdrop;
+    @BindView(R.id.tv_genres_title_text_backdrop)
+    TextView tvGenresTitleTextBackdrop;
+    @BindView(R.id.tv_genres_backdrop)
+    TextView tvGenresBackdrop;
+
     private Movie movie;
     private MovieDetailPresenter presenter;
     private CheckBox isSpoiler;
@@ -228,6 +258,10 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         }
     }
 
+    private boolean isHaveBackdrop() {
+        return movie.getImage().getLocalBackdropUri() != null || !TextUtils.isEmpty(movie.getImage().getRemoteBackdropUrl());
+    }
+
     @Override
     protected void initView() {
         initLoginView();
@@ -236,16 +270,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 //        ImageLoader.load(this, movie.getImage().getBitmap(), ivPoster, R.drawable.default_movie_poster);
         Bitmap bitmap = movie.getImage().getBitmap();
         initColors(bitmap);
-        if (bitmap != null) {
-            ivPoster.setImageBitmap(movie.getImage().getBitmap());
-        } else {
-            ivPoster.setImageResource(R.drawable.default_movie_poster);
-        }
+
         actionBar.setTitle(movie.getTitle());
-        tvMovieTitle.setText(movie.getTitle());
-        tvReleased.setText(movie.getReleased());
-        tvRuntime.setText(movie.getRuntime() + " mins");
-        tvLanguage.setText(movie.getLanguage());
+        initHeaderInfo();
         String overView = movie.getOverview();
 
         tvOverview.setText(TextUtils.isEmpty(overView) ? ResUtil.getString(R.string.empty_data) : overView);
@@ -256,26 +283,30 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
             tvTaglineTitle.setVisibility(View.GONE);
             tvTagline.setVisibility(View.GONE);
         }
-        if (movie.getCertification() != null && movie.getCertification().length() > 0) {
-            tvCertificationTitleText.setVisibility(View.VISIBLE);
-            tvCertification.setVisibility(View.VISIBLE);
-            tvCertification.setText(movie.getCertification());
-        } else {
-            List<String> genres = movie.getGenres();
-            if (genres != null && genres.size() > 0) {
-                StringBuffer sbGenre = new StringBuffer();
-                for (int i = 0; i < genres.size(); i++) {
-                    if (i == (genres.size() - 1)) {
-                        sbGenre.append(genres.get(i));
-                    } else {
-                        sbGenre.append(genres.get(i)).append(",");
-                    }
-                }
-                tvGenresTitleText.setVisibility(View.VISIBLE);
-                tvGenres.setVisibility(View.VISIBLE);
-                tvGenres.setText(sbGenre);
-            }
-        }
+
+
+//        if (movie.getCertification() != null && movie.getCertification().length() > 0) {
+//            tvCertificationTitleText.setVisibility(View.VISIBLE);
+//            tvCertification.setVisibility(View.VISIBLE);
+//            tvCertification.setText(movie.getCertification());
+//        } else {
+//            List<String> genres = movie.getGenres();
+//            if (genres != null && genres.size() > 0) {
+//                StringBuffer sbGenre = new StringBuffer();
+//                for (int i = 0; i < genres.size(); i++) {
+//                    if (i == (genres.size() - 1)) {
+//                        sbGenre.append(genres.get(i));
+//                    } else {
+//                        sbGenre.append(genres.get(i)).append(",");
+//                    }
+//                }
+//                tvGenresTitleText.setVisibility(View.VISIBLE);
+//                tvGenres.setVisibility(View.VISIBLE);
+//                tvGenres.setText(sbGenre);
+//            }
+//        }
+
+
 //        tvRating.setText(movie.getCertification());
 //        tvRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2) + "/" + movie.getVotes() + "votes");
         tvTraktRating.setText(NumberFormatUtil.doubleFormatToString(movie.getRating(), false, 2));
@@ -310,6 +341,68 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     startActivity(intent);
                 }
             });
+        }
+    }
+
+    private void initHeaderInfo() {
+        if (isHaveBackdrop()) {
+            llMovieHeaderWithBackdrop.setVisibility(View.VISIBLE);
+            llMovieHeader.setVisibility(View.GONE);
+            ImageLoader.loadArtImage(this, movie.getImage(), backdrop, ImageCacheManager.TYPE_BACKDROP);
+            tvTitleBackdrop.setText(movie.getTitle());
+            tvReleasedBackdrop.setText(movie.getReleased());
+            tvRuntimeBackdrop.setText(movie.getRuntime() + " mins");
+            tvLanguageBackdrop.setText(movie.getLanguage());
+
+            if (movie.getCertification() != null && movie.getCertification().length() > 0) {
+                tvCertificationTitleTextBackdrop.setVisibility(View.VISIBLE);
+                tvCertificationBackdrop.setVisibility(View.VISIBLE);
+                tvCertificationBackdrop.setText(movie.getCertification());
+            } else {
+                List<String> genres = movie.getGenres();
+                if (genres != null && genres.size() > 0) {
+                    StringBuffer sbGenre = new StringBuffer();
+                    for (int i = 0; i < genres.size(); i++) {
+                        if (i == (genres.size() - 1)) {
+                            sbGenre.append(genres.get(i));
+                        } else {
+                            sbGenre.append(genres.get(i)).append(",");
+                        }
+                    }
+                    tvGenresTitleTextBackdrop.setVisibility(View.VISIBLE);
+                    tvGenresBackdrop.setVisibility(View.VISIBLE);
+                    tvGenresBackdrop.setText(sbGenre);
+                }
+            }
+        } else {
+            llMovieHeader.setVisibility(View.VISIBLE);
+            llMovieHeaderWithBackdrop.setVisibility(View.GONE);
+            ImageLoader.loadArtImage(this, movie.getImage(), ivPoster, ImageCacheManager.TYPE_POSTER);
+            tvMovieTitle.setText(movie.getTitle());
+            tvReleased.setText(movie.getReleased());
+            tvRuntime.setText(movie.getRuntime() + " mins");
+            tvLanguage.setText(movie.getLanguage());
+
+            if (movie.getCertification() != null && movie.getCertification().length() > 0) {
+                tvCertificationTitleText.setVisibility(View.VISIBLE);
+                tvCertification.setVisibility(View.VISIBLE);
+                tvCertification.setText(movie.getCertification());
+            } else {
+                List<String> genres = movie.getGenres();
+                if (genres != null && genres.size() > 0) {
+                    StringBuffer sbGenre = new StringBuffer();
+                    for (int i = 0; i < genres.size(); i++) {
+                        if (i == (genres.size() - 1)) {
+                            sbGenre.append(genres.get(i));
+                        } else {
+                            sbGenre.append(genres.get(i)).append(",");
+                        }
+                    }
+                    tvGenresTitleText.setVisibility(View.VISIBLE);
+                    tvGenres.setVisibility(View.VISIBLE);
+                    tvGenres.setText(sbGenre);
+                }
+            }
         }
     }
 
@@ -434,12 +527,23 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
                     int bodyTextColor = mainSwatch.getBodyTextColor();
                     itemSwatch.getTitleTextColor();
-                    tvMovieTitle.setTextColor(bodyTextColor);
-                    tvReleased.setTextColor(bodyTextColor);
-                    tvRuntime.setTextColor(bodyTextColor);
-                    tvLanguage.setTextColor(bodyTextColor);
-                    tvGenres.setTextColor(bodyTextColor);
-                    tvCertification.setTextColor(bodyTextColor);
+
+                    if (isHaveBackdrop()) {
+                        tvTitleBackdrop.setTextColor(bodyTextColor);
+                        tvReleasedBackdrop.setTextColor(bodyTextColor);
+                        tvRuntimeBackdrop.setTextColor(bodyTextColor);
+                        tvLanguageBackdrop.setTextColor(bodyTextColor);
+                        tvGenresBackdrop.setTextColor(bodyTextColor);
+                        tvCertificationBackdrop.setTextColor(bodyTextColor);
+                    } else {
+                        tvMovieTitle.setTextColor(bodyTextColor);
+                        tvReleased.setTextColor(bodyTextColor);
+                        tvRuntime.setTextColor(bodyTextColor);
+                        tvLanguage.setTextColor(bodyTextColor);
+                        tvGenres.setTextColor(bodyTextColor);
+                        tvCertification.setTextColor(bodyTextColor);
+                    }
+
                     tvOverview.setTextColor(bodyTextColor);
                     tvTomatoRating.setTextColor(bodyTextColor);
                     tvTraktRating.setTextColor(bodyTextColor);
@@ -451,13 +555,23 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
                     tvNoCrew.setTextColor(bodyTextColor);
 
                     int titleTextColor = mainSwatch.getTitleTextColor();
-                    tvMovieTitleText.setTextColor(titleTextColor);
-                    tvReleasedTitleText.setTextColor(titleTextColor);
-                    tvRuntimeTitleText.setTextColor(titleTextColor);
-                    tvLanguageTitleText.setTextColor(titleTextColor);
+                    if (isHaveBackdrop()) {
+                        tvTitleTextBackdrop.setTextColor(titleTextColor);
+                        tvReleasedTitleTextBackdrop.setTextColor(titleTextColor);
+                        tvRuntimeTitleTextBackdrop.setTextColor(titleTextColor);
+                        tvLanguageTitleTextBackdrop.setTextColor(titleTextColor);
 //                    tvRatingTitleText.setTextColor(titleTextColor);
-                    tvGenresTitleText.setTextColor(titleTextColor);
-                    tvCertificationTitleText.setTextColor(titleTextColor);
+                        tvGenresTitleTextBackdrop.setTextColor(titleTextColor);
+                        tvCertificationTitleTextBackdrop.setTextColor(titleTextColor);
+                    } else {
+                        tvMovieTitleText.setTextColor(titleTextColor);
+                        tvReleasedTitleText.setTextColor(titleTextColor);
+                        tvRuntimeTitleText.setTextColor(titleTextColor);
+                        tvLanguageTitleText.setTextColor(titleTextColor);
+//                    tvRatingTitleText.setTextColor(titleTextColor);
+                        tvGenresTitleText.setTextColor(titleTextColor);
+                        tvCertificationTitleText.setTextColor(titleTextColor);
+                    }
                     tvOverviewTitle.setTextColor(titleTextColor);
                     tvTaglineTitle.setTextColor(titleTextColor);
                     tvCrewTitle.setTextColor(titleTextColor);

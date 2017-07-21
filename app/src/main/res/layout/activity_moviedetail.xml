@@ -49,13 +49,13 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/tv_movie_title_text_backdrop"
+                            android:id="@+id/tv_title_text_backdrop"
                             style="@style/detail_title"
                             android:layout_gravity="center"
                             android:text="@string/movie_title" />
 
                         <TextView
-                            android:id="@+id/tv__movie_title_backdrop"
+                            android:id="@+id/tv_title_backdrop"
                             style="@style/detail_content"
                             android:layout_gravity="center"
                             android:ellipsize="end"
