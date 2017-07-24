@@ -101,29 +101,33 @@ public class ImageLoader {
     }
 
     public static void loadArtImage(Context context, ArtImage image, final ImageView view, int type) {
-        if (ImageCacheManager.TYPE_BACKDROP == type) {
-            if (image.getLocalBackdropUri() != null) {
-                load(context, image.getLocalBackdropUri(), view, R.drawable.default_fanart);
-            } else if (!TextUtils.isEmpty(image.getRemoteBackdropUrl())) {
-                load(context, image.getRemoteBackdropUrl(), view, R.drawable.default_fanart);
-            } else {
-                loadDefault(context, view, R.drawable.default_fanart);
-            }
-        } else if (ImageCacheManager.TYPE_POSTER == type) {
-            if (image.getLocalPosterUri() != null) {
-                load(context, image.getLocalPosterUri(), view, R.drawable.default_movie_poster);
-            } else if (!TextUtils.isEmpty(image.getRemotePosterUrl())) {
-                load(context, image.getRemotePosterUrl(), view, R.drawable.default_movie_poster);
-            } else {
-                loadDefault(context, view, R.drawable.default_movie_poster);
-            }
+        if (image == null) {
+            loadDefault(context, view, R.drawable.default_movie_poster);
         } else {
-            if (image.getLocalAvatarUri() != null) {
-                load(context, image.getLocalAvatarUri(), view, R.drawable.default_movie_poster);
-            } else if (!TextUtils.isEmpty(image.getRemoteAvatarUrl())) {
-                load(context, image.getRemoteAvatarUrl(), view, R.drawable.default_movie_poster);
+            if (ImageCacheManager.TYPE_BACKDROP == type) {
+                if (image.getLocalBackdropUri() != null) {
+                    load(context, image.getLocalBackdropUri(), view, R.drawable.default_fanart);
+                } else if (!TextUtils.isEmpty(image.getRemoteBackdropUrl())) {
+                    load(context, image.getRemoteBackdropUrl(), view, R.drawable.default_fanart);
+                } else {
+                    loadDefault(context, view, R.drawable.default_fanart);
+                }
+            } else if (ImageCacheManager.TYPE_POSTER == type) {
+                if (image.getLocalPosterUri() != null) {
+                    load(context, image.getLocalPosterUri(), view, R.drawable.default_movie_poster);
+                } else if (!TextUtils.isEmpty(image.getRemotePosterUrl())) {
+                    load(context, image.getRemotePosterUrl(), view, R.drawable.default_movie_poster);
+                } else {
+                    loadDefault(context, view, R.drawable.default_movie_poster);
+                }
             } else {
-                loadDefault(context, view, R.drawable.default_movie_poster);
+                if (image.getLocalAvatarUri() != null) {
+                    load(context, image.getLocalAvatarUri(), view, R.drawable.default_movie_poster);
+                } else if (!TextUtils.isEmpty(image.getRemoteAvatarUrl())) {
+                    load(context, image.getRemoteAvatarUrl(), view, R.drawable.default_movie_poster);
+                } else {
+                    loadDefault(context, view, R.drawable.default_movie_poster);
+                }
             }
         }
     }
@@ -136,7 +140,7 @@ public class ImageLoader {
             Logger.d("Load from web");
             load(context, StringUtil.buildPeopleHeadshotUrl(image.getProfiles().get(0).getFile_path()), view, placeHolder);
         } else {
-            loadDefault(context, view,placeHolder);
+            loadDefault(context, view, placeHolder);
         }
     }
 
@@ -157,7 +161,7 @@ public class ImageLoader {
 //            }
 //        }
         Logger.d("没有图片showImage:" + movie.getTitle());
-        loadDefault(context, posterView,placeHolder);
+        loadDefault(context, posterView, placeHolder);
     }
 
     public static void loadFromDrawable(Context context, int drawable, ImageView view) {

@@ -107,6 +107,7 @@ public class Repository {
      * 趋势
      */
     public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
+        final long startTime = System.currentTimeMillis();
         Logger.d("getMovieTrendingData...pageNum:" + pageNum);
         final List<BaseMovie> movies = new ArrayList<>();
 
@@ -124,6 +125,8 @@ public class Repository {
                     @Override
                     public void onNext(List<BaseMovie> movies) {
                         Logger.d("getMovieTrendingData...onNext:" + movies);
+                        long endTime = System.currentTimeMillis();
+                        Logger.d("获取Trending数据时间:" + (endTime - startTime));
                         callback.onBaseDataSuccess(movies);
                         downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
                     }
@@ -152,7 +155,7 @@ public class Repository {
                 .map(new Func1<ArtImage, Movie>() {
                     @Override
                     public Movie call(ArtImage image) {
-                        return mergeMovieAndImage2(image, movies);
+                        return mergeMovieAndImage2(image, movies, ImageCacheManager.TYPE_POSTER);
                     }
                 })
                 .toList()
@@ -320,7 +323,7 @@ public class Repository {
                         .map(new Func1<ArtImage, BaseMovie>() {
                             @Override
                             public BaseMovie call(ArtImage image) {
-                                return mergeMovieAndImage1(image, movies);
+                                return mergeMovieAndImage1(image, movies, type);
                             }
                         })
                         .toList();
@@ -331,8 +334,9 @@ public class Repository {
     private Observable<ArtImage> getArtImageObservable(final int tmdbID, final int type) {
         File file = ImageCacheManager.hasCacheImage(tmdbID, type);
         if (file != null) {
-            return ImageCacheManager.localArtImage(tmdbID, file,type);
+            return ImageCacheManager.localArtImage(tmdbID, file, type);
         } else {
+            final long startTime = System.currentTimeMillis();
             return service.getTmdbImages(tmdbID, BuildConfig.TmdbApiKey)
                     .onErrorReturn(new Func1<Throwable, TmdbMovieImage>() {
                         @Override
@@ -348,12 +352,15 @@ public class Repository {
                         public ArtImage call(TmdbMovieImage tmdbMovieImage) {
                             ArtImage image = new ArtImage();
                             image.setTmdbID(tmdbMovieImage.getId());
-                            getPosterImageUrl(image, tmdbMovieImage.getPosters());
-                            getBackdropImageUrl(image, tmdbMovieImage.getBackdrops());
+                            if (ImageCacheManager.TYPE_POSTER == type) {
+                                getPosterImageUrl(image, tmdbMovieImage.getPosters());
+                            } else {
+                                getBackdropImageUrl(image, tmdbMovieImage.getBackdrops());
+                            }
+                            Logger.d("获取网络图片耗时:...TMDB-ID:" + tmdbID + "..." + (System.currentTimeMillis() - startTime));
                             return image;
                         }
                     });
-//            }
         }
     }
 
@@ -365,7 +372,7 @@ public class Repository {
         int tmdbId = movie.getIds().getTmdb();
         File file = ImageCacheManager.hasCacheImage(tmdbId, ImageCacheManager.TYPE_POSTER);
         if (file != null) {
-            return ImageCacheManager.localArtImage(tmdbId, file,ImageCacheManager.TYPE_POSTER);
+            return ImageCacheManager.localArtImage(tmdbId, file, ImageCacheManager.TYPE_POSTER);
         }
         return service.getTmdbImages(tmdbId, BuildConfig.TmdbApiKey)
                 .onErrorReturn(new Func1<Throwable, TmdbMovieImage>() {
@@ -758,7 +765,7 @@ public class Repository {
                             Movie movie = staff.getMovie();
                             if (movie.getIds().getTmdb() == image.getTmdbID()) {
                                 Logger.d("getWorksImages...movieId:" + movie.getIds().getTmdb() + "...imageId:" + image.getTmdbID());
-                                staff.setMovie(getMergedMovie(movie, image));
+                                staff.setMovie(getMergedMovie(movie, image, ImageCacheManager.TYPE_AVATAR));
                                 return staff;
                             }
                         }
@@ -971,7 +978,7 @@ public class Repository {
                 .map(new Func1<ArtImage, Movie>() {
                     @Override
                     public Movie call(ArtImage image) {
-                        return mergeMovieAndImage2(image, movies);
+                        return mergeMovieAndImage2(image, movies, ImageCacheManager.TYPE_POSTER);
                     }
                 })
                 .toList()
@@ -1547,27 +1554,29 @@ public class Repository {
         }
     }
 
-    private BaseMovie mergeMovieAndImage1(ArtImage image, List<BaseMovie> movies) {
+    private BaseMovie mergeMovieAndImage1(ArtImage image, List<BaseMovie> movies, int type) {
         for (BaseMovie movie : movies) {
             if (movie.getMovie().getIds().getTmdb() == image.getTmdbID()) {
-                getMergedMovie(movie.getMovie(), image);
+                getMergedMovie(movie.getMovie(), image, type);
                 return movie;
             }
         }
         return null;
     }
 
-    private Movie mergeMovieAndImage2(ArtImage image, List<Movie> movies) {
+    private Movie mergeMovieAndImage2(ArtImage image, List<Movie> movies, int type) {
         for (Movie movie : movies) {
             if (movie.getIds().getTmdb() == image.getTmdbID()) {
-                return getMergedMovie(movie, image);
+                return getMergedMovie(movie, image, type);
             }
         }
         return null;
     }
 
-    private Movie getMergedMovie(Movie movie, ArtImage image) {
-        image.setBitmap(getBitmap(image));
+    private Movie getMergedMovie(Movie movie, ArtImage image, int type) {
+        if (ImageCacheManager.TYPE_AVATAR != type) {
+            image.setBitmap(getBitmap(image, type));
+        }
         movie.setImage(image);
         return movie;
     }
@@ -1575,28 +1584,32 @@ public class Repository {
     /**
      * 获取图片bitmap
      */
-    private Bitmap getBitmap(ArtImage image) {
+    private Bitmap getBitmap(ArtImage image, int type) {
         Bitmap bitmap = null;
+        long startTime = System.currentTimeMillis();
         try {
-            if (image.getLocalPosterUri() != null) {
-                bitmap = Glide.with(MoCloud.context).load(image.getLocalPosterUri()).asBitmap().into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
-            } else {
-                bitmap = Glide.with(MoCloud.context).load(image.getRemotePosterUrl()).asBitmap().into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
+            if (ImageCacheManager.TYPE_POSTER == type) {
+                if (image.getLocalPosterUri() != null) {
+                    bitmap = Glide.with(MoCloud.context).load(image.getLocalPosterUri()).asBitmap().into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
+                }
+            } else if (ImageCacheManager.TYPE_BACKDROP == type) {
+                if (image.getLocalPosterUri() != null) {
+                    bitmap = Glide.with(MoCloud.context).load(image.getLocalBackdropUri()).asBitmap().into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
+                }
             }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
+        Logger.d("获取Bitmap耗时:" + (System.currentTimeMillis() - startTime));
         return bitmap;
-
     }
 
     private void downloadMovieImage(List<BaseMovie> baseMovies, int type) {
         for (BaseMovie baseMovie : baseMovies) {
             ArtImage image = baseMovie.getMovie().getImage();
-            if (!TextUtils.isEmpty(image.getRemotePosterUrl())) {
+            if (ImageCacheManager.TYPE_POSTER == type && !TextUtils.isEmpty(image.getRemotePosterUrl())) {
                 downloadImage(image.getTmdbID(), image.getRemotePosterUrl(), type);
-            }
-            if (!TextUtils.isEmpty(image.getRemoteBackdropUrl()) && ImageCacheManager.TYPE_BACKDROP == type) {
+            } else if (ImageCacheManager.TYPE_BACKDROP == type && !TextUtils.isEmpty(image.getRemoteBackdropUrl())) {
                 downloadImage(image.getTmdbID(), image.getRemoteBackdropUrl(), type);
             }
         }

@@ -33,6 +33,7 @@ import com.floatingmuseum.mocloud.data.bus.EventBusManager;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieCollection;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
+import com.floatingmuseum.mocloud.data.entity.ArtImage;
 import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.Ids;
@@ -78,6 +79,7 @@ import name.gudong.statebackground.OneDrawable;
  */
 public class MovieDetailActivity extends BaseCommentsActivity implements BaseDetailActivity {
     public static final String EXTRA_MOVIE = "extra_movie";
+    public static final String EXTRA_ART_IMAGE = "extra_art_image";
 //    public static final String MOVIE_OBJECT_TRAKT= "movie_object_trakt";
 
     @BindView(R.id.sv_movie_detail)
@@ -233,6 +235,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     private String nowCollectedTime;
     private String nowListedTime;
     private List<Comment> comments = new ArrayList<>();
+    private ArtImage artImage;
 
 
     @Override
@@ -245,6 +248,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
+        artImage = getIntent().getParcelableExtra(EXTRA_ART_IMAGE);
         EventBusManager.register(this);
         presenter = new MovieDetailPresenter(this);
         presenter.getData(movie);
@@ -259,7 +263,11 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
     }
 
     private boolean isHaveBackdrop() {
-        return movie.getImage().getLocalBackdropUri() != null || !TextUtils.isEmpty(movie.getImage().getRemoteBackdropUrl());
+        if (artImage == null) {
+            return false;
+        } else {
+            return artImage.getLocalBackdropUri() != null || !TextUtils.isEmpty(artImage.getRemoteBackdropUrl());
+        }
     }
 
     @Override
@@ -268,8 +276,11 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         avlComments.smoothToShow();
         avlCrew.smoothToShow();
 //        ImageLoader.load(this, movie.getImage().getBitmap(), ivPoster, R.drawable.default_movie_poster);
-        Bitmap bitmap = movie.getImage().getBitmap();
-        initColors(bitmap);
+//        artImage = movie.getImage();
+        if (artImage != null) {
+            Bitmap bitmap = artImage.getBitmap();
+            initColors(bitmap);
+        }
 
         actionBar.setTitle(movie.getTitle());
         initHeaderInfo();
@@ -348,7 +359,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         if (isHaveBackdrop()) {
             llMovieHeaderWithBackdrop.setVisibility(View.VISIBLE);
             llMovieHeader.setVisibility(View.GONE);
-            ImageLoader.loadArtImage(this, movie.getImage(), backdrop, ImageCacheManager.TYPE_BACKDROP);
+            ImageLoader.loadArtImage(this, artImage, backdrop, ImageCacheManager.TYPE_BACKDROP);
             tvTitleBackdrop.setText(movie.getTitle());
             tvReleasedBackdrop.setText(movie.getReleased());
             tvRuntimeBackdrop.setText(movie.getRuntime() + " mins");
@@ -377,7 +388,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         } else {
             llMovieHeader.setVisibility(View.VISIBLE);
             llMovieHeaderWithBackdrop.setVisibility(View.GONE);
-            ImageLoader.loadArtImage(this, movie.getImage(), ivPoster, ImageCacheManager.TYPE_POSTER);
+            ImageLoader.loadArtImage(this, artImage, ivPoster, ImageCacheManager.TYPE_POSTER);
             tvMovieTitle.setText(movie.getTitle());
             tvReleased.setText(movie.getReleased());
             tvRuntime.setText(movie.getRuntime() + " mins");

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.data.entity.ArtImage;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.ui.movie.detail.MovieDetailActivity;
 import com.floatingmuseum.mocloud.data.bus.EventBusManager;
@@ -103,7 +104,12 @@ abstract public class BaseFragment extends Fragment {
 
     protected void openMovieDetailActivity(Movie movie) {
         Intent intent = new Intent(context, MovieDetailActivity.class);
+        ArtImage image = movie.getImage();
+        image.setBitmap(null);
+        intent.putExtra(MovieDetailActivity.EXTRA_ART_IMAGE, image);
+        movie.setImage(null);
         intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie);
+        Logger.d("Activity传递数据:" + image + "..." + movie);
         context.startActivity(intent);
     }
 
@@ -145,7 +151,7 @@ abstract public class BaseFragment extends Fragment {
         }
     }
 
-    protected void showErrorInfo(SwipeRefreshLayout srl, TextView tvLoadedFailed,List data){
+    protected void showErrorInfo(SwipeRefreshLayout srl, TextView tvLoadedFailed, List data) {
         stopRefresh(srl);
         if (data.size() == 0) {
             isFirstVisibleToUser = true;
