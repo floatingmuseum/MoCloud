@@ -104,12 +104,7 @@ abstract public class BaseFragment extends Fragment {
 
     protected void openMovieDetailActivity(Movie movie) {
         Intent intent = new Intent(context, MovieDetailActivity.class);
-        ArtImage image = movie.getImage();
-        image.setBitmap(null);
-        intent.putExtra(MovieDetailActivity.EXTRA_ART_IMAGE, image);
-        movie.setImage(null);
         intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie);
-        Logger.d("Activity传递数据:" + image + "..." + movie);
         context.startActivity(intent);
     }
 

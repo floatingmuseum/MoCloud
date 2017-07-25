@@ -28,6 +28,7 @@ import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseCommentsActivity;
 import com.floatingmuseum.mocloud.base.BaseDetailActivity;
+import com.floatingmuseum.mocloud.data.PaletteManager;
 import com.floatingmuseum.mocloud.data.bus.CommentLikeEvent;
 import com.floatingmuseum.mocloud.data.bus.EventBusManager;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieCollection;
@@ -79,7 +80,6 @@ import name.gudong.statebackground.OneDrawable;
  */
 public class MovieDetailActivity extends BaseCommentsActivity implements BaseDetailActivity {
     public static final String EXTRA_MOVIE = "extra_movie";
-    public static final String EXTRA_ART_IMAGE = "extra_art_image";
 //    public static final String MOVIE_OBJECT_TRAKT= "movie_object_trakt";
 
     @BindView(R.id.sv_movie_detail)
@@ -248,7 +248,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
-        artImage = getIntent().getParcelableExtra(EXTRA_ART_IMAGE);
+        artImage = movie.getImage();
         EventBusManager.register(this);
         presenter = new MovieDetailPresenter(this);
         presenter.getData(movie);
@@ -277,10 +277,7 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
         avlCrew.smoothToShow();
 //        ImageLoader.load(this, movie.getImage().getBitmap(), ivPoster, R.drawable.default_movie_poster);
 //        artImage = movie.getImage();
-        if (artImage != null) {
-            Bitmap bitmap = artImage.getBitmap();
-            initColors(bitmap);
-        }
+        initColors(PaletteManager.getInstance().getBitmap(movie.getIds().getTmdb()));
 
         actionBar.setTitle(movie.getTitle());
         initHeaderInfo();

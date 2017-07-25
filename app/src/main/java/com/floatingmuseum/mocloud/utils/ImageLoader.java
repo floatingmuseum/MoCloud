@@ -136,8 +136,8 @@ public class ImageLoader {
         if (image.isHasCache()) {
             Logger.d("Load from sdcard");
             load(context, image.getCacheFile(), view, placeHolder);
-        } else if (image != null && image.getProfiles() != null && image.getProfiles().size() > 0) {
-            Logger.d("Load from web");
+        } else if (image.getProfiles() != null && image.getProfiles().size() > 0) {
+            Logger.d("Load from web..."+StringUtil.buildPeopleHeadshotUrl(image.getProfiles().get(0).getFile_path()));
             load(context, StringUtil.buildPeopleHeadshotUrl(image.getProfiles().get(0).getFile_path()), view, placeHolder);
         } else {
             loadDefault(context, view, placeHolder);

@@ -18,7 +18,6 @@ public class ArtImage implements Parcelable {
     private String remotePosterUrl;
     private String remoteBackdropUrl;
     private String remoteAvatarUrl;
-    private Bitmap bitmap;
 
     public int getTmdbID() {
         return tmdbID;
@@ -76,14 +75,6 @@ public class ArtImage implements Parcelable {
         this.remoteAvatarUrl = remoteAvatarUrl;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
-
     @Override
     public String toString() {
         return "ArtImage{" +
@@ -94,7 +85,6 @@ public class ArtImage implements Parcelable {
                 ", remotePosterUrl='" + remotePosterUrl + '\'' +
                 ", remoteBackdropUrl='" + remoteBackdropUrl + '\'' +
                 ", remoteAvatarUrl='" + remoteAvatarUrl + '\'' +
-                ", bitmap=" + bitmap +
                 '}';
     }
 
@@ -113,7 +103,6 @@ public class ArtImage implements Parcelable {
         dest.writeString(this.remotePosterUrl);
         dest.writeString(this.remoteBackdropUrl);
         dest.writeString(this.remoteAvatarUrl);
-        dest.writeParcelable(this.bitmap, flags);
     }
 
     public ArtImage() {
@@ -127,7 +116,6 @@ public class ArtImage implements Parcelable {
         this.remotePosterUrl = in.readString();
         this.remoteBackdropUrl = in.readString();
         this.remoteAvatarUrl = in.readString();
-        this.bitmap = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
     public static final Creator<ArtImage> CREATOR = new Creator<ArtImage>() {

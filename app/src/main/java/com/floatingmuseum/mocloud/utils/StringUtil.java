@@ -30,8 +30,8 @@ public class StringUtil {
 
     public static String buildPeopleHeadshotUrl(String url) {
 //        return "https://image.tmdb.org/t/p/w45" + url;
-//        return "https://image.tmdb.org/t/p/w185" + url;
-        return "https://image.tmdb.org/t/p/w632" + url;
+        return "https://image.tmdb.org/t/p/w185" + url;
+//        return "https://image.tmdb.org/t/p/h632" + url;
 //        return "https://image.tmdb.org/t/p/original" + url;
     }
 

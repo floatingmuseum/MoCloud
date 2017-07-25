@@ -1,14 +1,10 @@
 package com.floatingmuseum.mocloud.data;
 
 import android.Manifest;
-import android.graphics.Bitmap;
 import android.text.TextUtils;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.Target;
 import com.floatingmuseum.mocloud.BuildConfig;
 import com.floatingmuseum.mocloud.Constants;
-import com.floatingmuseum.mocloud.MoCloud;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.callback.CommentsCallback;
 import com.floatingmuseum.mocloud.data.callback.MovieDetailCallback;
@@ -1575,7 +1571,7 @@ public class Repository {
 
     private Movie getMergedMovie(Movie movie, ArtImage image, int type) {
         if (ImageCacheManager.TYPE_AVATAR != type) {
-            image.setBitmap(getBitmap(image, type));
+            createBitmap(image, type);
         }
         movie.setImage(image);
         return movie;
@@ -1584,24 +1580,18 @@ public class Repository {
     /**
      * 获取图片bitmap
      */
-    private Bitmap getBitmap(ArtImage image, int type) {
-        Bitmap bitmap = null;
-        long startTime = System.currentTimeMillis();
-        try {
-            if (ImageCacheManager.TYPE_POSTER == type) {
-                if (image.getLocalPosterUri() != null) {
-                    bitmap = Glide.with(MoCloud.context).load(image.getLocalPosterUri()).asBitmap().into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
-                }
-            } else if (ImageCacheManager.TYPE_BACKDROP == type) {
-                if (image.getLocalPosterUri() != null) {
-                    bitmap = Glide.with(MoCloud.context).load(image.getLocalBackdropUri()).asBitmap().into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
-                }
+    private void createBitmap(ArtImage image, int type) {
+        if (ImageCacheManager.TYPE_POSTER == type) {
+            if (image.getLocalPosterUri() != null) {
+                PaletteManager.getInstance().createBitmap(image.getTmdbID(), image.getLocalPosterUri());
+//                    bitmap = Glide.with(MoCloud.context).load(image.getLocalPosterUri()).asBitmap().into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
             }
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
+        } else if (ImageCacheManager.TYPE_BACKDROP == type) {
+            if (image.getLocalBackdropUri() != null) {
+                PaletteManager.getInstance().createBitmap(image.getTmdbID(), image.getLocalBackdropUri());
+//                    bitmap = Glide.with(MoCloud.context).load(image.getLocalBackdropUri()).asBitmap().into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
+            }
         }
-        Logger.d("获取Bitmap耗时:" + (System.currentTimeMillis() - startTime));
-        return bitmap;
     }
 
     private void downloadMovieImage(List<BaseMovie> baseMovies, int type) {
@@ -1618,8 +1608,10 @@ public class Repository {
     private void downloadPersonImage(List<Staff> staffs, int imageType) {
         if (staffs != null) {
             for (Staff staff : staffs) {
-//                ArtImage image = staff.getTmdbPersonImage();
-//                downloadImage(image, imageType);
+                TmdbPersonImage image = staff.getTmdbPersonImage();
+                if (image != null) {
+                    downloadImage(staff.getPerson().getIds().getTmdb(), StringUtil.buildPeopleHeadshotUrl(image.getProfiles().get(0).getFile_path()), imageType);
+                }
             }
         }
     }
