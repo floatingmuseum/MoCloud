@@ -67,7 +67,7 @@ class StaffMoviesAdapter extends BaseQuickAdapter<Staff, BaseViewHolder> {
 
     protected void loadPoster(RatioImageView posterView, Movie movie) {
         ArtImage image = movie.getImage();
-        ImageLoader.loadArtImage(mContext, image, posterView, ImageCacheManager.TYPE_AVATAR);
+        ImageLoader.loadArtImage(mContext, image, posterView, ImageCacheManager.TYPE_POSTER);
         Logger.d("没有图片showImage:" + movie.getTitle());
     }
 }

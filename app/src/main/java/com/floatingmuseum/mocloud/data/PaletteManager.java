@@ -33,7 +33,7 @@ public class PaletteManager {
         return paletteManager;
     }
 
-    public void createBitmap(int id, Uri uri) {
+    void createBitmap(int id, Uri uri) {
         try {
             int index = bitmaps.indexOfKey(id);
             if (0 > index) {
@@ -42,9 +42,7 @@ public class PaletteManager {
                 Logger.d("获取Bitmap耗时:" + (System.currentTimeMillis() - startTime));
                 bitmaps.put(id, bitmap);
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
     }
