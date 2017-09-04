@@ -37,10 +37,10 @@ public class CommentsAdapter extends BaseQuickAdapter<Comment,BaseViewHolder> {
                 .setText(R.id.tv_comment, comment.getComment())
                 .setText(R.id.tv_username, MoCloudUtil.getUsername(user))
                 .addOnClickListener(R.id.iv_userhead)
-                .setVisible(R.id.tv_spoiler_tip, comment.isSpoiler() ? true : false)
-                .setVisible(R.id.tv_review_tip, comment.isReview() ? true : false)
-                .setVisible(R.id.ll_tip, comment.isSpoiler() || comment.isReview() ? true : false)
-                .setVisible(R.id.tv_updatetime, comment.getCreated_at().equals(comment.getUpdated_at()) ? false : true);
+                .setVisible(R.id.tv_spoiler_tip, comment.isSpoiler())
+                .setVisible(R.id.tv_review_tip, comment.isReview())
+                .setVisible(R.id.ll_tip, comment.isSpoiler() || comment.isReview())
+                .setVisible(R.id.tv_updatetime, !comment.getCreated_at().equals(comment.getUpdated_at()));
         ImageView iv_userhead = baseViewHolder.getView(R.id.iv_userhead);
         ImageLoader.loadDontAnimate(mContext, MoCloudUtil.getUserAvatar(user), iv_userhead, R.drawable.default_userhead);
 //        TextView tv_comment = baseViewHolder.getView(R.id.tv_comment);

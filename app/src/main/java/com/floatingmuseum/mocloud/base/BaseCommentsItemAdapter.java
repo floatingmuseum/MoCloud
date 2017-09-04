@@ -1,6 +1,11 @@
 package com.floatingmuseum.mocloud.base;
 
+import android.graphics.BlurMaskFilter;
 import android.graphics.Typeface;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.MaskFilterSpan;
+import android.util.Pair;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,6 +49,8 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment, BaseViewH
         User user = comment.getUser();
         String username = MoCloudUtil.getUsername(user);
         Integer userRating = comment.getUser_rating();
+        Logger.d("是否剧透:" + comment.isSpoiler() + "...评论内容:" + comment.getComment());
+        SpannableString finalComment = blurSpoilerComment(comment);
         baseViewHolder.setText(R.id.tv_createtime, TimeUtil.formatGmtTime(comment.getCreated_at()))
                 .setText(R.id.tv_updatetime, "---updated at " + TimeUtil.formatGmtTime(comment.getUpdated_at()))
                 .setText(R.id.tv_comments_replies, "" + comment.getReplies())
@@ -75,6 +82,27 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment, BaseViewH
             tvUsername.setTypeface(Typeface.DEFAULT);
         }
     }
+
+    private SpannableString blurSpoilerComment(Comment comment) {
+        String rawComment = comment.getComment();
+        SpannableString blurComment = new SpannableString(rawComment);
+        if (comment.isSpoiler() || comment.getComment().contains("[spoiler]")) {
+
+            if (comment.isSpoiler()) {
+                MaskFilterSpan maskFilterSpan = new MaskFilterSpan(new BlurMaskFilter(20, BlurMaskFilter.Blur.NORMAL));
+                blurComment.setSpan(maskFilterSpan, 0, blurComment.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            } else {
+                Pair<Integer, Integer> spoilers = getSpoilerIndex(rawComment);
+            }
+        }
+        return blurComment;
+    }
+
+    private Pair<Integer, Integer> getSpoilerIndex(String rawComment) {
+//        通过indexOf("",fromIndex) 递归遍历出所有需要模糊的索引
+        return null;
+    }
+
 
     private void initColors(BaseViewHolder holder) {
         if (itemColors != null) {
