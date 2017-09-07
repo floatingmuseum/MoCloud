@@ -1,6 +1,17 @@
 package com.floatingmuseum.mocloud.utils;
 
+import android.graphics.BlurMaskFilter;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.MaskFilterSpan;
+import android.util.Pair;
+
+import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
+import com.orhanobut.logger.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Floatingmuseum on 2016/8/29.
@@ -73,6 +84,34 @@ public class StringUtil {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public static SpannableString getBlurSpan(Comment comment){
+        String rawComment = comment.getComment();
+        SpannableString maskComment = new SpannableString(rawComment);
+
+        if (comment.isSpoiler()) {
+            maskComment.setSpan(new MaskFilterSpan(new BlurMaskFilter(20, BlurMaskFilter.Blur.NORMAL)), 0, maskComment.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        } else if (comment.getComment().contains("[spoiler]") && comment.getComment().contains("[/spoiler]")) {
+            List<Pair<Integer, Integer>> spoilersContainer = new ArrayList<>();
+            getSpoilerIndex(rawComment, 0, spoilersContainer);
+            for (Pair<Integer, Integer> pair : spoilersContainer) {
+                maskComment.setSpan(new MaskFilterSpan(new BlurMaskFilter(20, BlurMaskFilter.Blur.NORMAL)), pair.first, pair.second, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+//                maskComment.setSpan(new BackgroundColorSpan(itemColors.getBodyTextColor()), pair.first, pair.second, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+//                maskComment.setSpan(new StrikethroughSpan(), pair.first, pair.second, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                Logger.d("评论内容...剧透位置:" + pair.toString());
+            }
+        }
+        return maskComment;
+    }
+
+    private static void getSpoilerIndex(String rawComment, int beginIndex, List<Pair<Integer, Integer>> spoilersContainer) {
+        int startIndex = rawComment.indexOf("[spoiler]", beginIndex);
+        int endIndex = rawComment.indexOf("[/spoiler]", beginIndex);
+        if (startIndex != -1 && endIndex != -1) {
+            spoilersContainer.add(new Pair<>(startIndex, endIndex + "[/spoiler]".length()));
+            getSpoilerIndex(rawComment, endIndex + "[/spoiler]".length(), spoilersContainer);
         }
     }
 }

@@ -24,6 +24,7 @@ import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.KeyboardUtil;
 import com.floatingmuseum.mocloud.utils.MoCloudUtil;
 import com.floatingmuseum.mocloud.utils.ResUtil;
+import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.orhanobut.logger.Logger;
 
@@ -85,7 +86,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
 //        tvCommentsLikes.setText("" + 999);
         tvCommentReplies.setText(String.valueOf(comment.getReplies()));
 //        tvCommentReplies.setText("" + 999);
-        tvComment.setText(comment.getComment());
+        tvComment.setText(StringUtil.getBlurSpan(comment));
         if (comment.isLike()) {
             ivCommentLikes.setImageResource(R.drawable.ic_thumb_up_fill_blue_48dp);
         }

@@ -4,8 +4,10 @@ import android.graphics.BlurMaskFilter;
 import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.MaskFilterSpan;
 import android.util.Pair;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,9 +21,11 @@ import com.floatingmuseum.mocloud.utils.ColorUtil;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.MoCloudUtil;
 import com.floatingmuseum.mocloud.utils.ResUtil;
+import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.orhanobut.logger.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,12 +54,13 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment, BaseViewH
         String username = MoCloudUtil.getUsername(user);
         Integer userRating = comment.getUser_rating();
         Logger.d("是否剧透:" + comment.isSpoiler() + "...评论内容:" + comment.getComment());
-        SpannableString finalComment = blurSpoilerComment(comment);
+//        SpannableString finalComment = maskSpoilerComment(comment);
+        SpannableString finalComment = StringUtil.getBlurSpan(comment);
         baseViewHolder.setText(R.id.tv_createtime, TimeUtil.formatGmtTime(comment.getCreated_at()))
                 .setText(R.id.tv_updatetime, "---updated at " + TimeUtil.formatGmtTime(comment.getUpdated_at()))
                 .setText(R.id.tv_comments_replies, "" + comment.getReplies())
                 .setText(R.id.tv_comment_likes, "" + comment.getLikes())
-                .setText(R.id.tv_comment, comment.getComment())
+                .setText(R.id.tv_comment, finalComment)
                 .setText(R.id.tv_username, username)
                 .setText(R.id.tv_rating_tip, userRating + "/10")
                 .setImageDrawable(R.id.iv_comment_likes, comment.isLike() ? ResUtil.getDrawable(R.drawable.ic_thumb_up_fill_blue_48dp) : ResUtil.getDrawable(R.drawable.ic_thumb_up_stroke_blue_48dp))
@@ -83,24 +88,32 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment, BaseViewH
         }
     }
 
-    private SpannableString blurSpoilerComment(Comment comment) {
+    private SpannableString maskSpoilerComment(Comment comment) {
         String rawComment = comment.getComment();
-        SpannableString blurComment = new SpannableString(rawComment);
-        if (comment.isSpoiler() || comment.getComment().contains("[spoiler]")) {
+        SpannableString maskComment = new SpannableString(rawComment);
 
-            if (comment.isSpoiler()) {
-                MaskFilterSpan maskFilterSpan = new MaskFilterSpan(new BlurMaskFilter(20, BlurMaskFilter.Blur.NORMAL));
-                blurComment.setSpan(maskFilterSpan, 0, blurComment.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            } else {
-                Pair<Integer, Integer> spoilers = getSpoilerIndex(rawComment);
+        if (comment.isSpoiler()) {
+            maskComment.setSpan(new MaskFilterSpan(new BlurMaskFilter(20, BlurMaskFilter.Blur.NORMAL)), 0, maskComment.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        } else if (comment.getComment().contains("[spoiler]") && comment.getComment().contains("[/spoiler]")) {
+            List<Pair<Integer, Integer>> spoilersContainer = new ArrayList<>();
+            getSpoilerIndex(rawComment, 0, spoilersContainer);
+            for (Pair<Integer, Integer> pair : spoilersContainer) {
+                maskComment.setSpan(new MaskFilterSpan(new BlurMaskFilter(20, BlurMaskFilter.Blur.NORMAL)), pair.first, pair.second, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+//                maskComment.setSpan(new BackgroundColorSpan(itemColors.getBodyTextColor()), pair.first, pair.second, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+//                maskComment.setSpan(new StrikethroughSpan(), pair.first, pair.second, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                Logger.d("评论内容...剧透位置:" + pair.toString());
             }
         }
-        return blurComment;
+        return maskComment;
     }
 
-    private Pair<Integer, Integer> getSpoilerIndex(String rawComment) {
-//        通过indexOf("",fromIndex) 递归遍历出所有需要模糊的索引
-        return null;
+    private void getSpoilerIndex(String rawComment, int beginIndex, List<Pair<Integer, Integer>> spoilersContainer) {
+        int startIndex = rawComment.indexOf("[spoiler]", beginIndex);
+        int endIndex = rawComment.indexOf("[/spoiler]", beginIndex);
+        if (startIndex != -1 && endIndex != -1) {
+            spoilersContainer.add(new Pair<>(startIndex, endIndex + "[/spoiler]".length()));
+            getSpoilerIndex(rawComment, endIndex + "[/spoiler]".length(), spoilersContainer);
+        }
     }
 
 
@@ -115,6 +128,7 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment, BaseViewH
                     .setTextColor(R.id.tv_comments_replies, itemColors.getTitleTextColor())
                     .setTextColor(R.id.tv_comment_likes, itemColors.getTitleTextColor())
                     .setTextColor(R.id.tv_comment, itemColors.getBodyTextColor());
+            Logger.d("评论颜色:...2:" + itemColors.getBodyTextColor());
         }
     }
 }

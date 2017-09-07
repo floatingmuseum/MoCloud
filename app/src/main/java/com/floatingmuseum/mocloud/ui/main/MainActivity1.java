@@ -81,6 +81,11 @@ public class MainActivity1 extends BaseActivity implements BottomNavigationView.
         initView();
         mainPresenter = new MainPresenter(this);
         initData();
+        String text = "[spoiler]The chemistry between the two leads feels so natural [/spoiler]and [spoiler]it is because of this chemistry that Steve's sacrifice is so heartbreaking[/spoiler].";
+        Logger.d("TextLength:" + text.length() + "...first:" + text.indexOf("[spoiler]") + "...second:" + text.indexOf("[/spoiler]") + "..." + text.indexOf("[spoiler]", text.indexOf("[/spoiler]") + 1));
+        String text1 = "hello java java world.";
+        int index = text1.indexOf("java") + "java".length();
+        Logger.d("TextLength:" + text1.length() + "...java:" + text1.indexOf("java") + "...world:" + text1.indexOf("world") + "...fromIndex:" + index + "...secondJava:" + text1.indexOf("java", index));
     }
 
     @Override
