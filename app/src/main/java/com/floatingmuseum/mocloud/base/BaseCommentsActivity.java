@@ -3,11 +3,16 @@ package com.floatingmuseum.mocloud.base;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.util.Pair;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -16,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.data.SpoilerManager;
 import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.ui.comments.SingleCommentActivity;
@@ -27,6 +33,9 @@ import com.floatingmuseum.mocloud.utils.ResUtil;
 import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.orhanobut.logger.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -86,7 +95,9 @@ public abstract class BaseCommentsActivity extends BaseActivity {
 //        tvCommentsLikes.setText("" + 999);
         tvCommentReplies.setText(String.valueOf(comment.getReplies()));
 //        tvCommentReplies.setText("" + 999);
-        tvComment.setText(StringUtil.getBlurSpan(comment));
+//        SpannableString blurSpan = StringUtil.getBlurSpan(comment);
+        SpoilerManager.getInstance().setBlurSpan(comment,tvComment,itemSwatch.getBodyTextColor(),true);
+//        tvComment.setText(blurSpan);
         if (comment.isLike()) {
             ivCommentLikes.setImageResource(R.drawable.ic_thumb_up_fill_blue_48dp);
         }
@@ -130,6 +141,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
 
         if (isSingleCommentActivity) {
             tvUsername.setTypeface(null, Typeface.BOLD);
+            tvComment.setMovementMethod(LinkMovementMethod.getInstance());
             return;
         }
 

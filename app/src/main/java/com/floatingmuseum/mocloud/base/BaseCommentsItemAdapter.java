@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
+import com.floatingmuseum.mocloud.data.SpoilerManager;
 import com.floatingmuseum.mocloud.data.entity.Colors;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.User;
@@ -55,12 +56,13 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment, BaseViewH
         Integer userRating = comment.getUser_rating();
         Logger.d("是否剧透:" + comment.isSpoiler() + "...评论内容:" + comment.getComment());
 //        SpannableString finalComment = maskSpoilerComment(comment);
-        SpannableString finalComment = StringUtil.getBlurSpan(comment);
+//        SpannableString finalComment = StringUtil.getBlurSpan(comment);
+        SpoilerManager.getInstance().setBlurSpan(comment, (TextView) baseViewHolder.getView(R.id.tv_comment), itemColors.getBodyTextColor(), false);
         baseViewHolder.setText(R.id.tv_createtime, TimeUtil.formatGmtTime(comment.getCreated_at()))
                 .setText(R.id.tv_updatetime, "---updated at " + TimeUtil.formatGmtTime(comment.getUpdated_at()))
                 .setText(R.id.tv_comments_replies, "" + comment.getReplies())
                 .setText(R.id.tv_comment_likes, "" + comment.getLikes())
-                .setText(R.id.tv_comment, finalComment)
+//                .setText(R.id.tv_comment, finalComment)
                 .setText(R.id.tv_username, username)
                 .setText(R.id.tv_rating_tip, userRating + "/10")
                 .setImageDrawable(R.id.iv_comment_likes, comment.isLike() ? ResUtil.getDrawable(R.drawable.ic_thumb_up_fill_blue_48dp) : ResUtil.getDrawable(R.drawable.ic_thumb_up_stroke_blue_48dp))

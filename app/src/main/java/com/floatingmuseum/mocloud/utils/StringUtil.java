@@ -106,7 +106,7 @@ public class StringUtil {
         return maskComment;
     }
 
-    private static void getSpoilerIndex(String rawComment, int beginIndex, List<Pair<Integer, Integer>> spoilersContainer) {
+    public static void getSpoilerIndex(String rawComment, int beginIndex, List<Pair<Integer, Integer>> spoilersContainer) {
         int startIndex = rawComment.indexOf("[spoiler]", beginIndex);
         int endIndex = rawComment.indexOf("[/spoiler]", beginIndex);
         if (startIndex != -1 && endIndex != -1) {
