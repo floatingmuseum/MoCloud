@@ -19,6 +19,10 @@
         android:theme="@style/AppTheme">
         <!--android4.2有一个新特性 layoutRtl，当然是对于开发者而言的，主要是方便开发者去支持阿拉伯语/波斯语等阅读习惯是从右往左的。-->
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="84b999d3e2f06998f02151710e7acde952a5d5e6" />
+
         <activity android:name=".ui.main.MainActivity" />
         <activity
             android:name=".ui.main.MainActivity1"

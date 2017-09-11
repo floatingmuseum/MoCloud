@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
+apply plugin: 'io.fabric'
 //apply plugin: 'com.neenbedankt.android-apt'
 
 android {
@@ -123,4 +124,7 @@ dependencies {
     compile 'com.github.maoruibin:OneDrawable:1.0.2'
     compile 'com.yarolegovich:discrete-scrollview:1.2.0'
     compile 'com.github.lzyzsd:circleprogress:1.2.1'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
 }
