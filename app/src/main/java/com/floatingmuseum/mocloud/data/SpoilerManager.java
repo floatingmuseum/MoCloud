@@ -131,7 +131,7 @@ public class SpoilerManager {
 
     private boolean isSpoilerUnBlurred(long commentID, int startIndex, int endIndex) {
         int key = unBlurredContents.indexOfKey(commentID);
-        if (key != -1) {
+        if (key >= 0) {
             List<Pair<Integer, Integer>> blurIndexes = unBlurredContents.get(commentID);
             for (Pair<Integer, Integer> blurIndex : blurIndexes) {
                 if (blurIndex.first == startIndex && blurIndex.second == endIndex) {
