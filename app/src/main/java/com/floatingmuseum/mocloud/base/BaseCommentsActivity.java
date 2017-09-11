@@ -96,6 +96,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
         tvCommentReplies.setText(String.valueOf(comment.getReplies()));
 //        tvCommentReplies.setText("" + 999);
 //        SpannableString blurSpan = StringUtil.getBlurSpan(comment);
+        // TODO: 2017/9/11 java.lang.NullPointerException: Attempt to invoke virtual method 'int android.support.v7.graphics.Palette$Swatch.getBodyTextColor()' on a null object reference 
         SpoilerManager.getInstance().setBlurSpan(comment,tvComment,itemSwatch.getBodyTextColor(),true);
 //        tvComment.setText(blurSpan);
         if (comment.isLike()) {
