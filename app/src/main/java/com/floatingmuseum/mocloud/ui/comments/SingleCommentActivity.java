@@ -130,12 +130,8 @@ public class SingleCommentActivity extends BaseCommentsActivity {
         rvReplies.setLayoutManager(manager);
         headerView = (CardView) LayoutInflater.from(this).inflate(R.layout.comment_item, rvReplies, false);
 
-        if (mainColors != null && itemColors != null) {
-            Palette.Swatch commentItemSwatch = new Palette.Swatch(itemColors.getRgb(), itemColors.getPopulation());
-            initCommentItem(this, headerView, mainCommentContent, null, commentItemSwatch, null, true);
-        } else {
-            initCommentItem(this, headerView, mainCommentContent, null, null, null, true);
-        }
+        Palette.Swatch commentItemSwatch = new Palette.Swatch(itemColors.getRgb(), itemColors.getPopulation());
+        initCommentItem(this, headerView, mainCommentContent, null, commentItemSwatch, null, true);
 
         repliesList = new ArrayList<>();
         adapter = new BaseCommentsItemAdapter(repliesList, username, itemColors);

@@ -108,9 +108,7 @@ public class CommentsActivity extends BaseCommentsActivity implements SwipeRefre
         EventBusManager.register(this);
         currentSortCondition = SPUtil.getString(SPUtil.KEY_COMMENTS_SORT_CONDITION, SORT_BY_NEWEST);
         initView();
-        if (mainColors != null && itemColors != null) {
-            initColors();
-        }
+        initColors();
     }
 
     protected void initView() {

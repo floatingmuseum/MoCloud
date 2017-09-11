@@ -69,19 +69,18 @@ public abstract class BaseCommentsActivity extends BaseActivity {
 
         LinearLayout commentTitle = (LinearLayout) commentItem.findViewById(R.id.comment_title);
 
-        if (itemSwatch != null) {
-            commentTitle.setBackgroundColor(ColorUtil.darkerColor(itemSwatch.getRgb(), 0.1));
-            tvComment.setBackgroundColor(ColorUtil.darkerColor(itemSwatch.getRgb(), 0.2));
-            tvUpdatetime.setBackgroundColor(ColorUtil.darkerColor(itemSwatch.getRgb(), 0.2));
 
-            tvUsername.setTextColor(itemSwatch.getTitleTextColor());
-            tvCreatetime.setTextColor(itemSwatch.getTitleTextColor());
-            tvUpdatetime.setTextColor(itemSwatch.getTitleTextColor());
-            tvCommentsLikes.setTextColor(itemSwatch.getTitleTextColor());
-            tvCommentReplies.setTextColor(itemSwatch.getTitleTextColor());
+        commentTitle.setBackgroundColor(ColorUtil.darkerColor(itemSwatch.getRgb(), 0.1));
+        tvComment.setBackgroundColor(ColorUtil.darkerColor(itemSwatch.getRgb(), 0.2));
+        tvUpdatetime.setBackgroundColor(ColorUtil.darkerColor(itemSwatch.getRgb(), 0.2));
 
-            tvComment.setTextColor(itemSwatch.getBodyTextColor());
-        }
+        tvUsername.setTextColor(itemSwatch.getTitleTextColor());
+        tvCreatetime.setTextColor(itemSwatch.getTitleTextColor());
+        tvUpdatetime.setTextColor(itemSwatch.getTitleTextColor());
+        tvCommentsLikes.setTextColor(itemSwatch.getTitleTextColor());
+        tvCommentReplies.setTextColor(itemSwatch.getTitleTextColor());
+
+        tvComment.setTextColor(itemSwatch.getBodyTextColor());
 
         String avatarUrl = MoCloudUtil.getUserAvatar(comment.getUser());
         ImageLoader.loadDontAnimate(this, avatarUrl, ivUserhead, R.drawable.default_userhead);
@@ -96,8 +95,7 @@ public abstract class BaseCommentsActivity extends BaseActivity {
         tvCommentReplies.setText(String.valueOf(comment.getReplies()));
 //        tvCommentReplies.setText("" + 999);
 //        SpannableString blurSpan = StringUtil.getBlurSpan(comment);
-        // TODO: 2017/9/11 java.lang.NullPointerException: Attempt to invoke virtual method 'int android.support.v7.graphics.Palette$Swatch.getBodyTextColor()' on a null object reference 
-        SpoilerManager.getInstance().setBlurSpan(comment,tvComment,itemSwatch.getBodyTextColor(),true);
+        SpoilerManager.getInstance().setBlurSpan(comment, tvComment, itemSwatch.getBodyTextColor(), true);
 //        tvComment.setText(blurSpan);
         if (comment.isLike()) {
             ivCommentLikes.setImageResource(R.drawable.ic_thumb_up_fill_blue_48dp);
@@ -153,12 +151,11 @@ public abstract class BaseCommentsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, SingleCommentActivity.class);
-                if (itemSwatch != null) {
-                    Colors mainColors = buildColors(mainSwatch);
-                    Colors itemColors = buildColors(itemSwatch);
-                    intent.putExtra(MAIN_COLORS, mainColors);
-                    intent.putExtra(ITEM_COLORS, itemColors);
-                }
+
+                Colors mainColors = buildColors(mainSwatch);
+                Colors itemColors = buildColors(itemSwatch);
+                intent.putExtra(MAIN_COLORS, mainColors);
+                intent.putExtra(ITEM_COLORS, itemColors);
                 intent.putExtra(MOVIE_TITLE, movieTitle);
                 intent.putExtra(SingleCommentActivity.MAIN_COMMENT, comment);
                 startActivity(intent);
