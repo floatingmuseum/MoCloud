@@ -1609,7 +1609,7 @@ public class Repository {
         if (staffs != null) {
             for (Staff staff : staffs) {
                 TmdbPersonImage image = staff.getTmdbPersonImage();
-                if (image != null && image.getProfiles().size() > 0) {
+                if (image != null && ListUtil.hasData(image.getProfiles())) {
                     downloadImage(staff.getPerson().getIds().getTmdb(), StringUtil.buildPeopleHeadshotUrl(image.getProfiles().get(0).getFile_path()), imageType);
                 }
             }
