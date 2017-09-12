@@ -11,6 +11,7 @@ public class Ids implements Parcelable{
     private int trakt;
     private String slug;
     private String imdb;
+    private int tvdb;
     private int tmdb;
     private int tvrage;
 
@@ -38,6 +39,14 @@ public class Ids implements Parcelable{
         this.imdb = imdb;
     }
 
+    public int getTvdb() {
+        return tvdb;
+    }
+
+    public void setTvdb(int tvdb) {
+        this.tvdb = tvdb;
+    }
+
     public int getTmdb() {
         return tmdb;
     }
@@ -54,6 +63,7 @@ public class Ids implements Parcelable{
         this.tvrage = tvrage;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -64,6 +74,7 @@ public class Ids implements Parcelable{
         dest.writeInt(this.trakt);
         dest.writeString(this.slug);
         dest.writeString(this.imdb);
+        dest.writeInt(this.tvdb);
         dest.writeInt(this.tmdb);
         dest.writeInt(this.tvrage);
     }
@@ -75,6 +86,7 @@ public class Ids implements Parcelable{
         this.trakt = in.readInt();
         this.slug = in.readString();
         this.imdb = in.readString();
+        this.tvdb = in.readInt();
         this.tmdb = in.readInt();
         this.tvrage = in.readInt();
     }

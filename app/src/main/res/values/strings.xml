@@ -85,7 +85,7 @@
     <string-array name="staff_tab_names">
         <item>Biography</item>
         <item>Movie</item>
-        <!--<item>Show</item>-->
+        <!--<item>BaseShow</item>-->
     </string-array>
     <string-array name="tab_tv_names" >
         <item>Trending</item>
