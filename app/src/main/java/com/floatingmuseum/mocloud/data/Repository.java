@@ -95,7 +95,6 @@ public class Repository {
     public static Repository getInstance() {
         return repository;
     }
-    
 
     /**
      * 获取列表中各个电影的海报
