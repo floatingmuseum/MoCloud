@@ -33,7 +33,7 @@ public class MoviePlayedFragment extends BaseFragment {
 
     public final static String MOVIE_PLAYED_FRAGMENT = "MoviePlayedFragment";
     private List<BaseMovie> playedList;
-    private MoviePlayedAdapter adapter;
+    private PlayedAdapter adapter;
 
     private MoviePlayedPresenter presenter;
     private GridLayoutManager manager;
@@ -57,7 +57,7 @@ public class MoviePlayedFragment extends BaseFragment {
 
     protected void initView() {
         playedList = new ArrayList<>();
-        adapter = new MoviePlayedAdapter(playedList);
+        adapter = new PlayedAdapter(playedList);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context, 2);
         rv.setLayoutManager(manager);

@@ -4,7 +4,7 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
-import com.floatingmuseum.mocloud.base.BaseMovieItemAdapter;
+import com.floatingmuseum.mocloud.base.BaseItemAdapter;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
@@ -15,9 +15,9 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/4/22.
  */
-class MovieTrendingAdapter extends BaseMovieItemAdapter<BaseMovie, BaseViewHolder> {
+class TrendingAdapter extends BaseItemAdapter<BaseMovie, BaseViewHolder> {
 
-    MovieTrendingAdapter(List<BaseMovie> data) {
+    TrendingAdapter(List<BaseMovie> data) {
         super(R.layout.item_movie_trending, data);
     }
 

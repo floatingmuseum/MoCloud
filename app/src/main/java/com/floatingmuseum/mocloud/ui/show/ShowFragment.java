@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.ui.tv;
+package com.floatingmuseum.mocloud.ui.show;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,9 +22,9 @@ import butterknife.Unbinder;
  * Created by Floatingmuseum on 2017/7/19.
  */
 
-public class TVFragment extends Fragment {
+public class ShowFragment extends Fragment {
 
-    public static final String TAG = TVFragment.class.getSimpleName();
+    public static final String TAG = ShowFragment.class.getSimpleName();
     @BindView(R.id.tab_tv)
     TabLayout tabTv;
     @BindView(R.id.viewpager_tv)
@@ -38,13 +38,13 @@ public class TVFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("生命周期", "TVFragment...onCreate");
+        Log.i("生命周期", "ShowFragment...onCreate");
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.i("生命周期", "TVFragment...onCreateView");
+        Log.i("生命周期", "ShowFragment...onCreateView");
         View rootView = inflater.inflate(R.layout.fragment_tv, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         initView();
@@ -53,13 +53,13 @@ public class TVFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Log.i("生命周期", "TVFragment...onViewCreated");
+        Log.i("生命周期", "ShowFragment...onViewCreated");
         super.onViewCreated(view, savedInstanceState);
     }
 
     private void initView() {
         toolbar.setTitle("MoCloud");
-        vpTv.setAdapter(new TVPagerAdapter(getFragmentManager()));
+        vpTv.setAdapter(new ShowPagerAdapter(getFragmentManager()));
         tabTv.setupWithViewPager(vpTv);
     }
 
@@ -72,6 +72,6 @@ public class TVFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i("生命周期", "TVFragment...onDestroy");
+        Log.i("生命周期", "ShowFragment...onDestroy");
     }
 }

@@ -8,12 +8,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.MenuItem;
@@ -26,7 +23,7 @@ import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
 import com.floatingmuseum.mocloud.data.bus.SyncEvent;
 import com.floatingmuseum.mocloud.ui.movie.MovieFragment;
-import com.floatingmuseum.mocloud.ui.tv.TVFragment;
+import com.floatingmuseum.mocloud.ui.show.ShowFragment;
 import com.floatingmuseum.mocloud.ui.user.UserFragment;
 import com.floatingmuseum.mocloud.utils.PermissionsUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
@@ -65,7 +62,7 @@ public class MainActivity1 extends BaseActivity implements BottomNavigationView.
     private MainPresenter mainPresenter;
     private final int REQUEST_CODE_ASK_PERMISSIONS = 233;
     private MovieFragment movieFragment;
-    private TVFragment tvFragment;
+    private ShowFragment showFragment;
     private UserFragment userFragment;
     private FragmentManager fragmentManager;
 
@@ -95,13 +92,13 @@ public class MainActivity1 extends BaseActivity implements BottomNavigationView.
     protected void initView() {
         fragmentManager = getSupportFragmentManager();
         movieFragment = new MovieFragment();
-        tvFragment = new TVFragment();
+        showFragment = new ShowFragment();
         userFragment = new UserFragment();
         fragmentManager.beginTransaction()
                 .add(R.id.fl_main, movieFragment, MovieFragment.TAG)
-                .add(R.id.fl_main, tvFragment, TVFragment.TAG)
+                .add(R.id.fl_main, showFragment, ShowFragment.TAG)
                 .add(R.id.fl_main, userFragment, UserFragment.TAG)
-                .hide(tvFragment)
+                .hide(showFragment)
                 .hide(userFragment)
                 .commit();
         navigation.setOnNavigationItemSelectedListener(this);
@@ -110,16 +107,16 @@ public class MainActivity1 extends BaseActivity implements BottomNavigationView.
     private void setCurrentFragment(int position) {
         if (position == 0) {
             fragmentManager.beginTransaction().show(movieFragment).commit();
-            fragmentManager.beginTransaction().hide(tvFragment).commit();
+            fragmentManager.beginTransaction().hide(showFragment).commit();
             fragmentManager.beginTransaction().hide(userFragment).commit();
         } else if (position == 1) {
-            fragmentManager.beginTransaction().show(tvFragment).commit();
+            fragmentManager.beginTransaction().show(showFragment).commit();
             fragmentManager.beginTransaction().hide(movieFragment).commit();
             fragmentManager.beginTransaction().hide(userFragment).commit();
 
         } else if (position == 2) {
             fragmentManager.beginTransaction().show(userFragment).commit();
-            fragmentManager.beginTransaction().hide(tvFragment).commit();
+            fragmentManager.beginTransaction().hide(showFragment).commit();
             fragmentManager.beginTransaction().hide(movieFragment).commit();
         }
     }

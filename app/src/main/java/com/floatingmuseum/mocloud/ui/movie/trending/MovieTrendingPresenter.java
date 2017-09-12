@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.floatingmuseum.mocloud.base.ListPresenter;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.floatingmuseum.mocloud.data.repo.MovieRepository;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -24,7 +25,8 @@ class MovieTrendingPresenter extends ListPresenter implements DataCallback<List<
     @Override
     public void start(final boolean shouldClean) {
         Logger.d("刷新...start:" + shouldClean);
-        repository.getMovieTrendingData(getPageNum(shouldClean), limit, this);
+        MovieRepository.getInstance().getMovieTrendingData(getPageNum(shouldClean), limit, this);
+//        repository.getMovieTrendingData(getPageNum(shouldClean), limit, this);
     }
 
     @Override

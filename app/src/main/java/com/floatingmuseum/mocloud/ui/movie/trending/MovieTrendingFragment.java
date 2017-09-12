@@ -36,7 +36,7 @@ public class MovieTrendingFragment extends BaseFragment {
     public final static String MOVIE_TRENDING_FRAGMENT = "MovieTrendingFragment";
 
     private List<BaseMovie> trendingList;
-    private MovieTrendingAdapter adapter;
+    private TrendingAdapter adapter;
 
     private MovieTrendingPresenter presenter;
     private GridLayoutManager manager;
@@ -59,7 +59,7 @@ public class MovieTrendingFragment extends BaseFragment {
 
     protected void initView() {
         trendingList = new ArrayList<>();
-        adapter = new MovieTrendingAdapter(trendingList);
+        adapter = new TrendingAdapter(trendingList);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context, 2);
         rv.setLayoutManager(manager);

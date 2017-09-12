@@ -1,8 +1,8 @@
-package com.floatingmuseum.mocloud.ui.movie.watched;
+package com.floatingmuseum.mocloud.ui.movie.collected;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
-import com.floatingmuseum.mocloud.base.BaseMovieItemAdapter;
+import com.floatingmuseum.mocloud.base.BaseItemAdapter;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
@@ -10,11 +10,10 @@ import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import java.util.List;
 
 /**
- * Created by Floatingmuseum on 2016/5/5.
+ * Created by Floatingmuseum on 2016/5/6.
  */
-public class MovieWatchedAdapter extends BaseMovieItemAdapter<BaseMovie,BaseViewHolder> {
-
-    public MovieWatchedAdapter(List<BaseMovie> data){
+public class CollectedAdapter extends BaseItemAdapter<BaseMovie,BaseViewHolder> {
+    public CollectedAdapter(List<BaseMovie> data){
         super(R.layout.item_movie_trending,data);
     }
 

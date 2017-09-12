@@ -3,8 +3,7 @@ package com.floatingmuseum.mocloud.ui.recommendations;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
-import com.floatingmuseum.mocloud.base.BaseMovieItemAdapter;
-import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.floatingmuseum.mocloud.base.BaseItemAdapter;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
@@ -17,7 +16,7 @@ import java.util.List;
  * Created by Floatingmuseum on 2017/7/11.
  */
 
-class PickerAdapter extends BaseMovieItemAdapter<Movie, BaseViewHolder> {
+class PickerAdapter extends BaseItemAdapter<Movie, BaseViewHolder> {
 
     PickerAdapter(List data) {
         super(R.layout.item_recommend_picker, data);

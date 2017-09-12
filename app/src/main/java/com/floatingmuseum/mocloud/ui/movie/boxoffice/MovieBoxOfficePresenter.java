@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.floatingmuseum.mocloud.base.ListPresenter;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.floatingmuseum.mocloud.data.repo.MovieRepository;
 
 import java.util.List;
 
@@ -23,7 +24,8 @@ class MovieBoxOfficePresenter extends ListPresenter implements DataCallback<List
 
     @Override
     public void start(boolean shouldClean) {
-        repository.getMovieBoxOfficeData(this);
+//        repository.getMovieBoxOfficeData(this);
+        MovieRepository.getInstance().getMovieBoxOfficeData(this);
     }
 
     @Override

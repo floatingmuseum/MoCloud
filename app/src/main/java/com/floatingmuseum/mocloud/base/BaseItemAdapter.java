@@ -9,6 +9,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.data.entity.ArtImage;
 import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.Show;
 import com.floatingmuseum.mocloud.data.entity.TmdbMovieImage;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
@@ -23,8 +24,8 @@ import java.util.List;
  * Created by Floatingmuseum on 2016/12/1.
  */
 
-public abstract class BaseMovieItemAdapter<T extends Object, K extends BaseViewHolder> extends BaseQuickAdapter<T, K> {
-    public BaseMovieItemAdapter(int layoutResId, List data) {
+public abstract class BaseItemAdapter<T, K extends BaseViewHolder> extends BaseQuickAdapter<T, K> {
+    public BaseItemAdapter(int layoutResId, List<T> data) {
         super(layoutResId, data);
     }
 
@@ -41,5 +42,10 @@ public abstract class BaseMovieItemAdapter<T extends Object, K extends BaseViewH
             titleView.setVisibility(View.VISIBLE);
             titleView.setText(movie.getTitle());
         }
+    }
+
+    protected void showTitle(TextView titleView, Show show) {
+        titleView.setVisibility(View.VISIBLE);
+        titleView.setText(show.getTitle());
     }
 }

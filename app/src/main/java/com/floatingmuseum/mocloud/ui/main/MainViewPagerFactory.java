@@ -3,7 +3,7 @@ package com.floatingmuseum.mocloud.ui.main;
 import android.support.v4.app.Fragment;
 
 import com.floatingmuseum.mocloud.ui.movie.MovieFragment;
-import com.floatingmuseum.mocloud.ui.tv.TVFragment;
+import com.floatingmuseum.mocloud.ui.show.ShowFragment;
 import com.floatingmuseum.mocloud.ui.user.UserFragment;
 
 /**
@@ -19,7 +19,7 @@ class MainViewPagerFactory {
                 fragment = new MovieFragment();
                 break;
             case 1:
-                fragment = new TVFragment();
+                fragment = new ShowFragment();
                 break;
             case 2:
                 fragment = new UserFragment();

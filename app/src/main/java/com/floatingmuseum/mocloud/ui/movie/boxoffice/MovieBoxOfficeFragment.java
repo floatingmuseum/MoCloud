@@ -36,7 +36,7 @@ public class MovieBoxOfficeFragment extends BaseFragment {
     @BindView(R.id.tv_loaded_failed)
     TextView tvLoadedFailed;
     private List<BaseMovie> boxOfficeList;
-    private MovieBoxOfficeAdapter adapter;
+    private BoxOfficeAdapter adapter;
 
     private MovieBoxOfficePresenter presenter;
 
@@ -59,7 +59,7 @@ public class MovieBoxOfficeFragment extends BaseFragment {
 
     protected void initView() {
         boxOfficeList = new ArrayList<>();
-        adapter = new MovieBoxOfficeAdapter(boxOfficeList);
+        adapter = new BoxOfficeAdapter(boxOfficeList);
         rv.setHasFixedSize(true);
 //        manager = new GridLayoutManager(context,2);
         LinearLayoutManager manager = new LinearLayoutManager(context);

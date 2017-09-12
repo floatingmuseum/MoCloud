@@ -34,7 +34,7 @@ public class MovieCollectedFragment extends BaseFragment {
 
     public final static String MOVIE_COLLECTED_FRAGMENT = "MovieCollectedFragment";
     private List<BaseMovie> collectedList;
-    private MovieCollectedAdapter adapter;
+    private CollectedAdapter adapter;
 
     private MovieCollectedPresenter presenter;
     private GridLayoutManager manager;
@@ -58,7 +58,7 @@ public class MovieCollectedFragment extends BaseFragment {
 
     protected void initView() {
         collectedList = new ArrayList<>();
-        adapter = new MovieCollectedAdapter(collectedList);
+        adapter = new CollectedAdapter(collectedList);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context, 2);
         rv.setLayoutManager(manager);

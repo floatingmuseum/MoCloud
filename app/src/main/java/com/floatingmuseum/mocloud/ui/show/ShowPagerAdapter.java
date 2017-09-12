@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.ui.tv;
+package com.floatingmuseum.mocloud.ui.show;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,15 +12,15 @@ import com.floatingmuseum.mocloud.utils.ResUtil;
  * Created by Floatingmuseum on 2017/7/19.
  */
 
-class TVPagerAdapter extends FragmentPagerAdapter {
+class ShowPagerAdapter extends FragmentPagerAdapter {
 
-    TVPagerAdapter(FragmentManager fm) {
+    ShowPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
     @Override
     public Fragment getItem(int position) {
-        return TVPagerFactory.create(position);
+        return ShowPagerFactory.create(position);
     }
 
     @Override

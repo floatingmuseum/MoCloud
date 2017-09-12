@@ -4,6 +4,7 @@ package com.floatingmuseum.mocloud.ui.movie.played;
 import com.floatingmuseum.mocloud.base.ListPresenter;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.floatingmuseum.mocloud.data.repo.MovieRepository;
 
 import java.util.List;
 
@@ -21,7 +22,8 @@ public class MoviePlayedPresenter extends ListPresenter implements  DataCallback
 
     @Override
     public void start(boolean shouldClean) {
-        repository.getMoviePlayedData(period,getPageNum(shouldClean),limit,this);
+        MovieRepository.getInstance().getMoviePlayedData(period,getPageNum(shouldClean),limit,this);
+//        repository.getMoviePlayedData(period,getPageNum(shouldClean),limit,this);
     }
 
     public int getLimit(){

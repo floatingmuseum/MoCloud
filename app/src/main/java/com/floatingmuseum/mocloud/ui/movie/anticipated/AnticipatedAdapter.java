@@ -4,8 +4,7 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
-import com.floatingmuseum.mocloud.base.BaseMovieItemAdapter;
-import com.floatingmuseum.mocloud.data.entity.ArtImage;
+import com.floatingmuseum.mocloud.base.BaseItemAdapter;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.widgets.RatioImageView;
@@ -16,9 +15,9 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/5/6.
  */
-public class MovieAnticipatedAdapter extends BaseMovieItemAdapter<BaseMovie, BaseViewHolder> {
+public class AnticipatedAdapter extends BaseItemAdapter<BaseMovie, BaseViewHolder> {
 
-    public MovieAnticipatedAdapter(List<BaseMovie> data) {
+    public AnticipatedAdapter(List<BaseMovie> data) {
         super(R.layout.item_movie_anticipated, data);
 
     }

@@ -1,4 +1,4 @@
-package com.floatingmuseum.mocloud.ui.movie.popular;
+package com.floatingmuseum.mocloud.ui.show.trending;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,55 +8,55 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseFragment;
-import com.floatingmuseum.mocloud.data.entity.Movie;
+import com.floatingmuseum.mocloud.data.entity.BaseShow;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
- * Created by Floatingmuseum on 2016/4/13.
+ * Created by Floatingmuseum on 2017/7/20.
  */
-public class MoviePopularFragment extends BaseFragment {
+
+public class ShowTrendingFragment extends BaseFragment {
+
+    @BindView(R.id.tv_loaded_failed)
+    TextView tvLoadedFailed;
     @BindView(R.id.rv)
     RecyclerView rv;
     @BindView(R.id.srl)
     SwipeRefreshLayout srl;
+    Unbinder unbinder;
 
-    public final static String MOVIE_POPILAR_FRAGMENT = "MoviePopularFragment";
-    private List<Movie> popularList;
-    private PopularAdapter adapter;
+    private List<BaseShow> trendingList;
+    private ShowTrendingAdapter adapter;
 
-    private MoviePopularPresenter presenter;
+    private ShowTrendingPresenter presenter;
     private GridLayoutManager manager;
-
-    public static MoviePopularFragment newInstance() {
-        MoviePopularFragment fragment = new MoviePopularFragment();
-        return fragment;
-    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_movie_trending, container, false);
-        ButterKnife.bind(this, rootView);
-
-        presenter = new MoviePopularPresenter(this);
-
+        View rootView = inflater.inflate(R.layout.fragment_show_trending, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
+        presenter = new ShowTrendingPresenter(this);
         initView();
         return rootView;
     }
 
+    @Override
     protected void initView() {
-        popularList = new ArrayList<>();
-        adapter = new PopularAdapter(popularList);
+        trendingList = new ArrayList<>();
+        adapter = new ShowTrendingAdapter(trendingList);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context, 2);
         rv.setLayoutManager(manager);
@@ -79,43 +79,58 @@ public class MoviePopularFragment extends BaseFragment {
         rv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
-                openMovieDetailActivity(popularList.get(position));
+//                openShowDetailActivity();
             }
         });
+
+        tvLoadedFailed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvLoadedFailed.setVisibility(View.GONE);
+                srl.setVisibility(View.VISIBLE);
+                requestBaseDataIfUserNotScrollToFragments(srl, presenter);
+            }
+        });
+
+
+        /**
+         * 虽然这里通过View.post方法在SwipeRefreshLayout初始化完毕后显示刷新，
+         * 但是刷新监听中的onRefresh方法并不会被执行，所以下面手动调用一下
+         */
+//        srl.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                srl.setRefreshing(true);
+//                isViewPrepared = true;
+//                requestBaseData();
+//            }
+//        });
+        isViewPrepared = true;
         requestBaseDataIfUserNotScrollToFragments(srl, presenter);
     }
 
     @Override
     protected void requestBaseData() {
-        srl.setRefreshing(true);
         presenter.start(true);
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    public void refreshData(List<Movie> newData, boolean shouldClean) {
+    public void refreshData(List<BaseShow> newData, boolean shouldClean) {
+        stopRefresh(srl);
         checkDataSize(newData, presenter.getLimit());
         if (shouldClean) {
-            popularList.clear();
+            trendingList.clear();
         }
-        popularList.addAll(newData);
+        trendingList.addAll(newData);
         adapter.notifyDataSetChanged();
     }
 
-    public void stopRefresh() {
-        stopRefresh(srl);
+    public void onError() {
+        showErrorInfo(srl, tvLoadedFailed, trendingList);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+        unbinder.unbind();
     }
 }

@@ -19,11 +19,13 @@ import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.ArtImage;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
+import com.floatingmuseum.mocloud.data.entity.BaseShow;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.FeatureList;
 import com.floatingmuseum.mocloud.data.entity.FeatureListItem;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.MovieSyncItem;
+import com.floatingmuseum.mocloud.data.entity.Show;
 import com.floatingmuseum.mocloud.data.entity.SyncData;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.Movie;
@@ -93,213 +95,12 @@ public class Repository {
     public static Repository getInstance() {
         return repository;
     }
-
-    /******************************************
-     * 首页数据
-     ********************************************************/
-
-
-    /**
-     * 趋势
-     */
-    public void getMovieTrendingData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
-        final long startTime = System.currentTimeMillis();
-        Logger.d("getMovieTrendingData...pageNum:" + pageNum);
-        final List<BaseMovie> movies = new ArrayList<>();
-
-        service.getMovieTrending(pageNum, limit)
-                .compose(getEachPoster(movies, ImageCacheManager.TYPE_POSTER))
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<BaseMovie>>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieTrendingData...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<BaseMovie> movies) {
-                        Logger.d("getMovieTrendingData...onNext:" + movies);
-                        long endTime = System.currentTimeMillis();
-                        Logger.d("获取Trending数据时间:" + (endTime - startTime));
-                        callback.onBaseDataSuccess(movies);
-                        downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
-                    }
-                });
-    }
-
-    /**
-     * 流行
-     */
-    public void getMoviePopularData(int pageNum, int limit, final DataCallback<List<Movie>> callback) {
-        final List<Movie> movies = new ArrayList<>();
-        service.getMoviePopular(pageNum, limit)
-                .flatMap(new Func1<List<Movie>, Observable<Movie>>() {
-                    @Override
-                    public Observable<Movie> call(List<Movie> movieData) {
-                        movies.addAll(movieData);
-                        return Observable.from(movies);
-                    }
-                })
-                .flatMap(new Func1<Movie, Observable<ArtImage>>() {
-                    @Override
-                    public Observable<ArtImage> call(Movie movie) {
-                        return getTmdbMovieImageObservable(movie);
-                    }
-                })
-                .map(new Func1<ArtImage, Movie>() {
-                    @Override
-                    public Movie call(ArtImage image) {
-                        return mergeMovieAndImage2(image, movies, ImageCacheManager.TYPE_POSTER);
-                    }
-                })
-                .toList()
-                .compose(RxUtil.<List<Movie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<Movie>>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<Movie> movies) {
-                        callback.onBaseDataSuccess(movies);
-//                        downloadMovieImage(null, movies, ImageCacheManager.TYPE_POSTER);
-                    }
-                });
-    }
-
-    /**
-     * 最多play
-     */
-    public void getMoviePlayedData(String period, int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
-        final List<BaseMovie> movies = new ArrayList<>();
-        service.getMoviePlayed(period, pageNum, limit)
-                .compose(getEachPoster(movies, ImageCacheManager.TYPE_POSTER))
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<BaseMovie>>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMoviePlayedData...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<BaseMovie> baseMovies) {
-                        Logger.d("getMoviePlayedData...onNext:" + movies);
-                        callback.onBaseDataSuccess(movies);
-                        downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
-                    }
-                });
-    }
-
-    /**
-     * 最多watch
-     */
-    public void getMovieWatchedData(String period, int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
-        final List<BaseMovie> movies = new ArrayList<>();
-        service.getMovieWatched(period, pageNum, limit)
-                .compose(getEachPoster(movies, ImageCacheManager.TYPE_POSTER))
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<BaseMovie>>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieWatchedData...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<BaseMovie> baseMovies) {
-                        Logger.d("getMovieWatchedData...onNext:" + movies);
-                        callback.onBaseDataSuccess(movies);
-                        downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
-                    }
-                });
-    }
-
-    /**
-     * 最多收藏
-     */
-    public void getMovieCollectedData(String period, int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
-        final List<BaseMovie> movies = new ArrayList<>();
-        service.getMovieCollected(period, pageNum, limit)
-                .compose(getEachPoster(movies, ImageCacheManager.TYPE_POSTER))
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<BaseMovie>>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieCollectedData...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<BaseMovie> movies) {
-                        Logger.d("getMovieCollectedData...onNext:" + movies);
-                        callback.onBaseDataSuccess(movies);
-                        downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
-                    }
-                });
-    }
-
-    /**
-     * 即将上映
-     */
-    public void getMovieAnticipatedData(int pageNum, int limit, final DataCallback<List<BaseMovie>> callback) {
-        final List<BaseMovie> movies = new ArrayList<>();
-        service.getMovieAnticipated(pageNum, limit)
-                .compose(getEachPoster(movies, ImageCacheManager.TYPE_POSTER))
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<BaseMovie>>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieAnticipated...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<BaseMovie> movies) {
-                        Logger.d("getMovieAnticipated...onNext:" + movies);
-                        callback.onBaseDataSuccess(movies);
-                        downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
-                    }
-                });
-    }
-
-    /**
-     * BoxOffice
-     */
-    public void getMovieBoxOfficeData(final DataCallback<List<BaseMovie>> callback) {
-        final List<BaseMovie> movies = new ArrayList<>();
-        service.getMovieBoxOffice()
-                .compose(getEachPoster(movies, ImageCacheManager.TYPE_BACKDROP))
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<BaseMovie>>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieBoxOfficeData...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<BaseMovie> movies) {
-                        Logger.d("getMovieBoxOfficeData...onNext:" + movies);
-                        callback.onBaseDataSuccess(movies);
-                        downloadMovieImage(movies, ImageCacheManager.TYPE_BACKDROP);
-                    }
-                });
-    }
+    
 
     /**
      * 获取列表中各个电影的海报
      */
-    private Observable.Transformer<List<BaseMovie>, List<BaseMovie>> getEachPoster(final List<BaseMovie> movies, final int type) {
+    protected Observable.Transformer<List<BaseMovie>, List<BaseMovie>> getEachPoster(final List<BaseMovie> movies, final int type) {
         return new Observable.Transformer<List<BaseMovie>, List<BaseMovie>>() {
             @Override
             public Observable<List<BaseMovie>> call(Observable<List<BaseMovie>> listObservable) {
@@ -363,7 +164,7 @@ public class Repository {
     /**
      * 从本地or网络获取电影海报
      */
-    private Observable<ArtImage> getTmdbMovieImageObservable(final Movie movie) {
+    protected Observable<ArtImage> getTmdbMovieImageObservable(final Movie movie) {
         Logger.d("getTmdbMovieImageObservable...Movie:" + movie.getTitle() + "...TmdbId:" + movie.getIds().getTmdb());
         int tmdbId = movie.getIds().getTmdb();
         File file = ImageCacheManager.hasCacheImage(tmdbId, ImageCacheManager.TYPE_POSTER);
@@ -1560,7 +1361,7 @@ public class Repository {
         return null;
     }
 
-    private Movie mergeMovieAndImage2(ArtImage image, List<Movie> movies, int type) {
+    protected Movie mergeMovieAndImage2(ArtImage image, List<Movie> movies, int type) {
         for (Movie movie : movies) {
             if (movie.getIds().getTmdb() == image.getTmdbID()) {
                 return getMergedMovie(movie, image, type);
@@ -1594,7 +1395,7 @@ public class Repository {
         }
     }
 
-    private void downloadMovieImage(List<BaseMovie> baseMovies, int type) {
+    protected void downloadMovieImage(List<BaseMovie> baseMovies, int type) {
         for (BaseMovie baseMovie : baseMovies) {
             ArtImage image = baseMovie.getMovie().getImage();
             if (ImageCacheManager.TYPE_POSTER == type && !TextUtils.isEmpty(image.getRemotePosterUrl())) {

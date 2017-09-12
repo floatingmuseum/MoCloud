@@ -36,7 +36,7 @@ public class MovieAnticipatedFragment extends BaseFragment {
     public final static String MOVIE_ANTICIPATED_FRAGMENT = "MovieAnticipatedFragment";
 
     private List<BaseMovie> anticipatedList;
-    private MovieAnticipatedAdapter adapter;
+    private AnticipatedAdapter adapter;
     //    private TestAdapter testAdapter;
     private MovieAnticipatedPresenter presenter;
     private GridLayoutManager manager;
@@ -58,7 +58,7 @@ public class MovieAnticipatedFragment extends BaseFragment {
 
     protected void initView() {
         anticipatedList = new ArrayList<>();
-        adapter = new MovieAnticipatedAdapter(anticipatedList);
+        adapter = new AnticipatedAdapter(anticipatedList);
 //        testAdapter = new TestAdapter(getActivity(),anticipatedList);
         rv.setHasFixedSize(true);
         manager = new GridLayoutManager(context, 2);

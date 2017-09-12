@@ -1,10 +1,8 @@
 package com.floatingmuseum.mocloud.data.net;
 
 
-import android.content.Loader;
-
+import com.floatingmuseum.mocloud.data.entity.BaseShow;
 import com.floatingmuseum.mocloud.data.entity.Comment;
-import com.floatingmuseum.mocloud.data.entity.ExpireTime;
 import com.floatingmuseum.mocloud.data.entity.FeatureList;
 import com.floatingmuseum.mocloud.data.entity.FeatureListItem;
 import com.floatingmuseum.mocloud.data.entity.Follower;
@@ -63,7 +61,10 @@ public interface MoCloudService {
     @GET("people/{id}")
     Observable<Person> getPerson(@Path("id") String name);
 
-    //*******************************************OAUTH*******************************************
+
+//*******************************************OAUTH*******************************************
+
+
     @POST("oauth/token")
     Observable<TraktToken> getToken(@Body TokenRequest tokenRequest);
 
@@ -80,7 +81,10 @@ public interface MoCloudService {
     @POST("oauth/revoke")
     Observable<Response> revokeToken(@Body String accessToken);
 
-    //*******************************************用 户*******************************************
+
+//*******************************************用 户*******************************************
+
+
     @GET("users/{id}?extended=full")
     Observable<User> getUserProfile(@Path("id") String slug);
 
@@ -94,7 +98,9 @@ public interface MoCloudService {
     @GET("users/{id}/stats")
     Observable<Stats> getUserStats(@Path("id") String slug);
 
-    //******************************************* Sync *******************************************
+
+//******************************************* Sync *******************************************
+
 
     //用户最新变动
     @GET("sync/last_activities")
@@ -154,7 +160,9 @@ public interface MoCloudService {
     @DELETE("users/{id}/follow")
     Observable unfollowUser(@Path("id") String slug);
 
+
 //*******************************************电  影*******************************************
+
 
     /**
      * 电影趋势
@@ -285,6 +293,17 @@ public interface MoCloudService {
     @DELETE("recommendations/movies/{id}")
     Observable<ResponseBody> hideMovie(@Path("id") String slug);
 
+
+//******************************************影 人*******************************************
+
+
+    @GET("shows/trending?extended=full")
+    Observable<List<BaseShow>> getShowsTrending(@Query("page")int page,@Query("limit")int limit);
+
+
+//******************************************影 人*******************************************
+
+
     /**
      * 影人详情 from TMDB
      */
@@ -305,7 +324,9 @@ public interface MoCloudService {
     @GET("https://api.themoviedb.org/3/person/{tmdbID}/images")
     Observable<StaffImages> getStaffImages(@Path("tmdbID") int tmdbId, @Query("api_key") String tmdbApiKey);
 
+
 //******************************************评 论*******************************************
+
 
     /**
      * 获取电影评论
@@ -331,6 +352,7 @@ public interface MoCloudService {
 
 
 //******************************************图 片*******************************************
+
 
     @GET("")
     Observable<TmdbImagesConfiguration> getTmdbImagesConfiguration(@Query("api_key") String tmdbApiKey);

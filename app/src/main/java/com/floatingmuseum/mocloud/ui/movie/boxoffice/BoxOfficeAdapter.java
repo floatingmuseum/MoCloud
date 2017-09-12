@@ -4,13 +4,12 @@ import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.floatingmuseum.mocloud.R;
-import com.floatingmuseum.mocloud.base.BaseMovieItemAdapter;
+import com.floatingmuseum.mocloud.base.BaseItemAdapter;
 import com.floatingmuseum.mocloud.data.entity.ArtImage;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
 import com.floatingmuseum.mocloud.data.entity.Movie;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.floatingmuseum.mocloud.utils.ImageLoader;
-import com.floatingmuseum.mocloud.widgets.RatioImageView;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -18,9 +17,9 @@ import java.util.List;
 /**
  * Created by Floatingmuseum on 2016/5/6.
  */
-class MovieBoxOfficeAdapter extends BaseMovieItemAdapter<BaseMovie, BaseViewHolder> {
+class BoxOfficeAdapter extends BaseItemAdapter<BaseMovie, BaseViewHolder> {
 
-    MovieBoxOfficeAdapter(List<BaseMovie> data) {
+    BoxOfficeAdapter(List<BaseMovie> data) {
         super(R.layout.item_movie_box_office, data);
     }
 
