@@ -4,8 +4,8 @@ apply plugin: 'io.fabric'
 //apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId rootProject.ext.android.applicationId
@@ -84,8 +84,10 @@ dependencies {
     compile rootProject.ext.dependencies["appcompat-v7"]
     compile rootProject.ext.dependencies["design"]
     compile rootProject.ext.dependencies["cardview-v7"]
+    compile rootProject.ext.dependencies["support-v4"]
+    compile rootProject.ext.dependencies["palette"]
     compile rootProject.ext.dependencies["butterknife"]
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile rootProject.ext.dependencies["okhttp"]
     compile rootProject.ext.dependencies["glide"]
     compile rootProject.ext.dependencies["retrofit"]
@@ -96,9 +98,8 @@ dependencies {
     compile rootProject.ext.dependencies["rxjava"]
     compile rootProject.ext.dependencies["rxandroid"]
     compile rootProject.ext.dependencies["adapter-rxjava"]
-    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v2.7.8'
-    compile 'de.hdodenhof:circleimageview:2.1.0'
-    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
+    compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.daimajia.numberprogressbar:library:1.2'
     //    compile 'com.flyco.labelview:FlycoLabelView_Lib:1.0.2@aar'
 
@@ -106,26 +107,22 @@ dependencies {
 
     //加载动画
     compile 'com.wang.avi:library:2.1.3'
-    compile 'com.squareup.okio:okio:1.11.0'
+    compile 'com.squareup.okio:okio:1.13.0'
     //多主题
     compile 'com.bilibili:magicasakura:0.1.5@aar'
     //阻塞检查
-    debugCompile 'com.github.markzhai:blockcanary-android:1.4.0'
-    releaseCompile 'com.github.markzhai:blockcanary-no-op:1.4.0'
+    debugCompile 'com.github.markzhai:blockcanary-android:1.5.0'
+    releaseCompile 'com.github.markzhai:blockcanary-no-op:1.5.0'
     //内存泄漏检查
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    compile 'com.android.support:palette-v7:25.3.1'
-    compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'com.facebook.stetho:stetho:1.4.1'
-    compile 'com.uphyca:stetho_realm:2.0.0'
-    compile 'com.github.medyo:fancybuttons:1.8.3'
-    compile 'com.github.anzaizai:EasyRefreshLayout:1.1.5'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+
+    compile 'org.greenrobot:eventbus:3.1.1'
+    compile 'com.github.medyo:fancybuttons:1.8.4'
     compile 'com.github.maoruibin:OneDrawable:1.0.2'
     compile 'com.yarolegovich:discrete-scrollview:1.2.0'
     compile 'com.github.lzyzsd:circleprogress:1.2.1'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-        transitive = true;
+        transitive = true
     }
 }

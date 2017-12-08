@@ -8,12 +8,10 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 
 import com.bilibili.magicasakura.utils.ThemeUtils;
-import com.facebook.stetho.Stetho;
 import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.net.ImageCacheManager;
 import com.github.moduth.blockcanary.BlockCanary;
 import com.squareup.leakcanary.LeakCanary;
-import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -40,11 +38,11 @@ public class MoCloud extends Application implements ThemeUtils.switchColor {
     private void initRealm() {
         Realm.init(this);
 
-        Stetho.initialize(
-                Stetho.newInitializerBuilder(this)
-                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).withLimit(5000).build())
-                        .build());
+//        Stetho.initialize(
+//                Stetho.newInitializerBuilder(this)
+//                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+//                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).withLimit(5000).build())
+//                        .build());
     }
 
     @Override
