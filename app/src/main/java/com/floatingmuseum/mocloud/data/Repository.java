@@ -19,13 +19,11 @@ import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatched;
 import com.floatingmuseum.mocloud.data.db.entity.RealmMovieWatchlist;
 import com.floatingmuseum.mocloud.data.entity.ArtImage;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
-import com.floatingmuseum.mocloud.data.entity.BaseShow;
 import com.floatingmuseum.mocloud.data.entity.Comment;
 import com.floatingmuseum.mocloud.data.entity.FeatureList;
 import com.floatingmuseum.mocloud.data.entity.FeatureListItem;
 import com.floatingmuseum.mocloud.data.entity.Follower;
 import com.floatingmuseum.mocloud.data.entity.MovieSyncItem;
-import com.floatingmuseum.mocloud.data.entity.Show;
 import com.floatingmuseum.mocloud.data.entity.SyncData;
 import com.floatingmuseum.mocloud.data.entity.LastActivities;
 import com.floatingmuseum.mocloud.data.entity.Movie;
@@ -61,18 +59,21 @@ import com.floatingmuseum.mocloud.utils.StringUtil;
 import com.floatingmuseum.mocloud.utils.TimeUtil;
 import com.orhanobut.logger.Logger;
 
+import io.reactivex.disposables.Disposable;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 
 /**
@@ -99,30 +100,32 @@ public class Repository {
     /**
      * 获取列表中各个电影的海报
      */
-    protected Observable.Transformer<List<BaseMovie>, List<BaseMovie>> getEachPoster(final List<BaseMovie> movies, final int type) {
-        return new Observable.Transformer<List<BaseMovie>, List<BaseMovie>>() {
+    protected ObservableTransformer<List<BaseMovie>, List<BaseMovie>> getEachPoster(final List<BaseMovie> movies, final int type) {
+        return new ObservableTransformer<List<BaseMovie>, List<BaseMovie>>() {
             @Override
-            public Observable<List<BaseMovie>> call(Observable<List<BaseMovie>> listObservable) {
-                return listObservable.flatMap(new Func1<List<BaseMovie>, Observable<BaseMovie>>() {
+            public ObservableSource<List<BaseMovie>> apply(Observable<List<BaseMovie>> upstream) {
+                return upstream.flatMap(new Function<List<BaseMovie>, ObservableSource<BaseMovie>>() {
                     @Override
-                    public Observable<BaseMovie> call(List<BaseMovie> baseMovies) {
+                    public ObservableSource<BaseMovie> apply(List<BaseMovie> baseMovies) throws Exception {
                         movies.addAll(baseMovies);
-                        return Observable.from(movies);
+                        return Observable.fromIterable(movies);
                     }
                 })
-                        .flatMap(new Func1<BaseMovie, Observable<ArtImage>>() {
+                        .flatMap(new Function<BaseMovie, ObservableSource<ArtImage>>() {
                             @Override
-                            public Observable<ArtImage> call(BaseMovie baseMovie) {
+                            public ObservableSource<ArtImage> apply(BaseMovie baseMovie) throws Exception {
                                 return getArtImageObservable(baseMovie.getMovie().getIds().getTmdb(), type).subscribeOn(Schedulers.io());
                             }
                         })
-                        .map(new Func1<ArtImage, BaseMovie>() {
+                        .map(new Function<ArtImage, BaseMovie>() {
                             @Override
-                            public BaseMovie call(ArtImage image) {
+                            public BaseMovie apply(ArtImage image) throws Exception {
                                 return mergeMovieAndImage1(image, movies, type);
+
                             }
                         })
-                        .toList();
+                        .toList()
+                        .toObservable();
             }
         };
     }
@@ -134,18 +137,18 @@ public class Repository {
         } else {
             final long startTime = System.currentTimeMillis();
             return service.getTmdbImages(tmdbID, BuildConfig.TmdbApiKey)
-                    .onErrorReturn(new Func1<Throwable, TmdbMovieImage>() {
+                    .onErrorReturn(new Function<Throwable, TmdbMovieImage>() {
                         @Override
-                        public TmdbMovieImage call(Throwable throwable) {
+                        public TmdbMovieImage apply(Throwable throwable) throws Exception {
                             Logger.d("getTmdbImages...onErrorReturn");
                             throwable.printStackTrace();
                             TmdbMovieImage tmdbMovieImage = new TmdbMovieImage();
                             tmdbMovieImage.setId(tmdbID);
                             return tmdbMovieImage;
                         }
-                    }).map(new Func1<TmdbMovieImage, ArtImage>() {
+                    }).map(new Function<TmdbMovieImage, ArtImage>() {
                         @Override
-                        public ArtImage call(TmdbMovieImage tmdbMovieImage) {
+                        public ArtImage apply(TmdbMovieImage tmdbMovieImage) throws Exception {
                             ArtImage image = new ArtImage();
                             image.setTmdbID(tmdbMovieImage.getId());
                             if (ImageCacheManager.TYPE_POSTER == type) {
@@ -171,18 +174,18 @@ public class Repository {
             return ImageCacheManager.localArtImage(tmdbId, file, ImageCacheManager.TYPE_POSTER);
         }
         return service.getTmdbImages(tmdbId, BuildConfig.TmdbApiKey)
-                .onErrorReturn(new Func1<Throwable, TmdbMovieImage>() {
+                .onErrorReturn(new Function<Throwable, TmdbMovieImage>() {
                     @Override
-                    public TmdbMovieImage call(Throwable throwable) {
+                    public TmdbMovieImage apply(Throwable throwable) {
                         Logger.d("getTmdbImages...onErrorReturn");
                         throwable.printStackTrace();
                         TmdbMovieImage tmdbMovieImage = new TmdbMovieImage();
                         tmdbMovieImage.setId(movie.getIds().getTmdb());
                         return tmdbMovieImage;
                     }
-                }).map(new Func1<TmdbMovieImage, ArtImage>() {
+                }).map(new Function<TmdbMovieImage, ArtImage>() {
                     @Override
-                    public ArtImage call(TmdbMovieImage tmdbMovieImage) {
+                    public ArtImage apply(TmdbMovieImage tmdbMovieImage) {
                         ArtImage image = new ArtImage();
                         image.setTmdbID(tmdbMovieImage.getId());
                         if (ListUtil.hasData(tmdbMovieImage.getPosters())) {
@@ -209,32 +212,34 @@ public class Repository {
      * 剧目详情
      ********************************************************/
 
-    public Subscription getMovieDetail(String movieId, final MovieDetailCallback<Movie> callback) {
-        return service.getMovieDetail(movieId)
-                .compose(RxUtil.<Movie>threadSwitch())
-                .subscribe(new SimpleObserver<Movie>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        callback.onError(e);
-                    }
+    public Disposable getMovieDetail(String movieId, final MovieDetailCallback<Movie> callback) {
+//        return service.getMovieDetail(movieId)
+//                .compose(RxUtil.<Movie>observableTransformer()())
+//                .subscribe(new Consumer<Movie>() {
+//                    @Override
+//                    public void accept(Movie movie) throws Exception {
+//
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable throwable) throws Exception {
+//
+//                    }
+//                });
 
-                    @Override
-                    public void onNext(Movie movie) {
-                        callback.onBaseDataSuccess(movie);
-                    }
-                });
+        return null;
     }
 
 
     /**
      * 获取电影团队
      */
-    public Subscription getMovieTeam(String slug, final MovieDetailCallback callback) {
+    public Disposable getMovieTeam(String slug, final MovieDetailCallback callback) {
         final MovieTeam team = new MovieTeam();
         return service.getMovieTeam(slug)
-                .map(new Func1<PeopleCredit, MovieTeam>() {
+                .map(new Function<PeopleCredit, MovieTeam>() {
                     @Override
-                    public MovieTeam call(PeopleCredit credit) {
+                    public MovieTeam apply(PeopleCredit credit) {
                         //这里去DataMachine里处理一下数据，旨在提取出1个导演3个主演用于MovieDetail显示，剩下一个原始List用于MovieDetail中点击more时使用
                         MovieTeam tempTeam = DataMachine.mixingStaffsWorks(credit);
                         team.setDetailShowList(tempTeam.getDetailShowList());
@@ -242,21 +247,22 @@ public class Repository {
                         return team;
                     }
                 })
-                .flatMap(new Func1<MovieTeam, Observable<Staff>>() {
+                .flatMap(new Function<MovieTeam, ObservableSource<Staff>>() {
                     @Override
-                    public Observable<Staff> call(MovieTeam movieTeam) {
-                        return Observable.from(movieTeam.getDetailShowList());
+                    public ObservableSource<Staff> apply(MovieTeam movieTeam) throws Exception {
+                        return Observable.fromIterable(movieTeam.getDetailShowList());
+
                     }
                 })
-                .flatMap(new Func1<Staff, Observable<TmdbPersonImage>>() {
+                .flatMap(new Function<Staff, ObservableSource<TmdbPersonImage>>() {
                     @Override
-                    public Observable<TmdbPersonImage> call(Staff staff) {
+                    public Observable<TmdbPersonImage> apply(Staff staff) {
                         return getTmdbStaffImageObservable(staff);
                     }
                 })
-                .map(new Func1<TmdbPersonImage, Staff>() {
+                .map(new Function<TmdbPersonImage, Staff>() {
                     @Override
-                    public Staff call(TmdbPersonImage tmdbPersonImage) {
+                    public Staff apply(TmdbPersonImage tmdbPersonImage) {
                         List<Staff> detailShowList = team.getDetailShowList();
                         for (Staff staff : detailShowList) {
                             if (staff.getPerson().getIds().getTmdb() == tmdbPersonImage.getId()) {
@@ -271,9 +277,9 @@ public class Repository {
                     }
                 })
                 .toList()
-                .map(new Func1<List<Staff>, List<Staff>>() {
+                .map(new Function<List<Staff>, List<Staff>>() {
                     @Override
-                    public List<Staff> call(List<Staff> staffs) {
+                    public List<Staff> apply(List<Staff> staffs) {
                         //因为上面getTmdbStaffImageObservable方法中4个人物获取图片的线程是同时运行的，所以返回的数据可能与之前的顺序不同，需要将导演放到第一位(如果有导演的话)
                         Staff director = null;
                         for (Staff staff : staffs) {
@@ -291,17 +297,10 @@ public class Repository {
                         return staffs;
                     }
                 })
-                .compose(RxUtil.<List<Staff>>threadSwitch())
-                .subscribe(new SimpleObserver<List<Staff>>() {
+                .compose(RxUtil.<List<Staff>>singleTransformer())
+                .subscribe(new Consumer<List<Staff>>() {
                     @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieTeam...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<Staff> staffs) {
+                    public void accept(List<Staff> staffs) throws Exception {
                         // TODO: 2017/2/13 confused here.
                         /*
                           这里按理说上面的对staff的操作可以直接影响MovieTeam里的staff对象，大多数结果也的确如此
@@ -313,28 +312,37 @@ public class Repository {
                         callback.onMovieTeamSuccess(team);
                         downloadPersonImage(staffs, ImageCacheManager.TYPE_AVATAR);
                     }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
+                        Logger.d("getMovieTeam...onError");
+                        e.printStackTrace();
+                        callback.onError(e);
+                    }
                 });
     }
 
     /**
      * 电影其他评分
      */
-    public Subscription getMovieOtherRatings(String imdbID, final MovieDetailCallback callback) {
-        return service.getMovieOtherRatings(imdbID, "true")
-                .compose(RxUtil.<OmdbInfo>threadSwitch())
-                .subscribe(new SimpleObserver<OmdbInfo>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieImdbRatings...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
+    public Disposable getMovieOtherRatings(String imdbID, final MovieDetailCallback callback) {
+//        return service.getMovieOtherRatings(imdbID, "true")
+//                .compose(RxUtil.<OmdbInfo>observableTransformer()())
+//                .subscribe(new Consumer<OmdbInfo>() {
+//                    @Override
+//                    public void accept(OmdbInfo omdbInfo) throws Exception {
+//                        callback.onOtherRatingsSuccess(omdbInfo);
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable e) throws Exception {
+//                        Logger.d("getMovieImdbRatings...onError");
+//                        e.printStackTrace();
+//                        callback.onError(e);
+//                    }
+//                });
 
-                    @Override
-                    public void onNext(OmdbInfo omdbInfo) {
-                        callback.onOtherRatingsSuccess(omdbInfo);
-                    }
-                });
+        return null;
     }
 
     /******************************************
@@ -344,28 +352,28 @@ public class Repository {
     /**
      * 获取电影评论
      */
-    public Subscription getMovieComments(String movieId, String sortCondition, int limit, int page, final MovieDetailCallback movieDetailCallback, final CommentsCallback<List<Comment>> commentsCallback) {
+    public Disposable getMovieComments(String movieId, String sortCondition, int limit, int page, final MovieDetailCallback movieDetailCallback, final CommentsCallback<List<Comment>> commentsCallback) {
         Logger.d("加载Comment:" + movieId + "..." + sortCondition + "..." + limit + "..." + page + "..." + movieDetailCallback + "..." + commentsCallback);
         return service.getComments(movieId, sortCondition, limit, page)
                 .doOnNext(RxUtil.updateCommentsResultLikesState())
-                .compose(RxUtil.<List<Comment>>threadSwitch())
-                .subscribe(new SimpleObserver<List<Comment>>() {
+                .compose(RxUtil.<List<Comment>>observableTransformer())
+                .subscribe(new Consumer<List<Comment>>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(List<Comment> comments) throws Exception {
+                        if (movieDetailCallback != null) {
+                            movieDetailCallback.onCommentsSuccess(comments);
+                        } else {
+                            commentsCallback.onBaseDataSuccess(comments);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         e.printStackTrace();
                         if (movieDetailCallback != null) {
                             movieDetailCallback.onError(e);
                         } else {
                             commentsCallback.onError(e);
-                        }
-                    }
-
-                    @Override
-                    public void onNext(List<Comment> comments) {
-                        if (movieDetailCallback != null) {
-                            movieDetailCallback.onCommentsSuccess(comments);
-                        } else {
-                            commentsCallback.onBaseDataSuccess(comments);
                         }
                     }
                 });
@@ -374,21 +382,21 @@ public class Repository {
     /**
      * 获取单个评论的回复
      */
-    public Subscription getCommentReplies(long commentId, final DataCallback<List<Comment>> callback) {
+    public Disposable getCommentReplies(long commentId, final DataCallback<List<Comment>> callback) {
         return service.getCommentReplies(commentId)
                 .doOnNext(RxUtil.updateCommentsResultLikesState())
-                .compose(RxUtil.<List<Comment>>threadSwitch())
-                .subscribe(new SimpleObserver<List<Comment>>() {
+                .compose(RxUtil.<List<Comment>>observableTransformer())
+                .subscribe(new Consumer<List<Comment>>() {
                     @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getCommentReplies...onError");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(List<Comment> comments) {
+                    public void accept(List<Comment> comments) throws Exception {
                         Logger.d("getCommentReplies...onNext");
                         callback.onBaseDataSuccess(comments);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
+                        Logger.d("getCommentReplies...onError");
+                        e.printStackTrace();
                     }
                 });
     }
@@ -396,21 +404,21 @@ public class Repository {
     /**
      * 发送针对单个评论的回复
      */
-    public Subscription sendReply(long id, Reply reply, final CommentsCallback callback) {
+    public Disposable sendReply(long id, Reply reply, final CommentsCallback callback) {
         Logger.d("sendReply:" + id + "..." + reply.getComment());
         return service.sendReply(id, reply)
                 .onErrorResumeNext(refreshTokenAndRetry(service.sendReply(id, reply)))
-                .compose(RxUtil.<Comment>threadSwitch())
-                .subscribe(new SimpleObserver<Comment>() {
+                .compose(RxUtil.<Comment>observableTransformer())
+                .subscribe(new Consumer<Comment>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(Comment comment) throws Exception {
+                        callback.onSendCommentSuccess(comment);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("sendReply...onError");
                         e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Comment comment) {
-                        callback.onSendCommentSuccess(comment);
                     }
                 });
     }
@@ -418,27 +426,27 @@ public class Repository {
     /**
      * 发送针对电影的评论
      */
-    public Subscription sendComment(final Comment comment, String imdb_id, final CommentsCallback callback) {
+    public Disposable sendComment(final Comment comment, String imdb_id, final CommentsCallback callback) {
         // TODO: 2017/1/3 comment在设置了movie后，在refresh方法中的comment理论上应该也是带有movie对象的，待测试 
-        return service.getMovieDetail(imdb_id).flatMap(new Func1<Movie, Observable<Comment>>() {
+        return service.getMovieDetail(imdb_id).flatMap(new Function<Movie, Observable<Comment>>() {
             @Override
-            public Observable<Comment> call(Movie movie) {
+            public Observable<Comment> apply(Movie movie) {
                 comment.setMovie(movie);
                 return service.sendComment(comment);
             }
         })
                 .onErrorResumeNext(refreshTokenAndRetry(service.sendComment(comment)))
-                .compose(RxUtil.<Comment>threadSwitch())
-                .subscribe(new SimpleObserver<Comment>() {
+                .compose(RxUtil.<Comment>observableTransformer())
+                .subscribe(new Consumer<Comment>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(Comment comment) throws Exception {
+                        callback.onSendCommentSuccess(comment);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         callback.onError(e);
                         e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Comment comment) {
-                        callback.onSendCommentSuccess(comment);
                     }
                 });
     }
@@ -446,9 +454,9 @@ public class Repository {
     public void addCommentToLikes(final Comment comment, final CommentsCallback callback) {
         service.addCommentToLikes(comment.getId())
                 .onErrorResumeNext(refreshTokenAndRetry(service.addCommentToLikes(comment.getId())))
-                .doOnNext(new Action1<ResponseBody>() {
+                .doOnNext(new Consumer<ResponseBody>() {
                     @Override
-                    public void call(ResponseBody responseBody) {
+                    public void accept(ResponseBody responseBody) {
                         RealmCommentLike realmCommentLike = new RealmCommentLike();
                         User user = comment.getUser();
                         realmCommentLike.setLiked_at(TimeUtil.getNowUTCTime());
@@ -472,19 +480,19 @@ public class Repository {
                         RealmManager.insertOrUpdate(realmCommentLike);
                     }
                 })
-                .compose(RxUtil.<ResponseBody>threadSwitch())
-                .subscribe(new SimpleObserver<ResponseBody>() {
+                .compose(RxUtil.<ResponseBody>observableTransformer())
+                .subscribe(new Consumer<ResponseBody>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        Logger.d("评论点赞测试:addCommentToLikes...点赞成功");
+                        callback.onAddCommentToLikesSuccess(comment.getId());
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("评论点赞测试:addCommentToLikes...点赞失败");
                         e.printStackTrace();
                         callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(ResponseBody responseBody) {
-                        Logger.d("评论点赞测试:addCommentToLikes...点赞成功");
-                        callback.onAddCommentToLikesSuccess(comment.getId());
                     }
                 });
     }
@@ -492,25 +500,25 @@ public class Repository {
     public void removeCommentFromLikes(final Comment comment, final CommentsCallback callback) {
         service.removeCommentFromLikes(comment.getId())
                 .onErrorResumeNext(refreshTokenAndRetry(service.removeCommentFromLikes(comment.getId())))
-                .doOnNext(new Action1<ResponseBody>() {
+                .doOnNext(new Consumer<ResponseBody>() {
                     @Override
-                    public void call(ResponseBody responseBody) {
+                    public void accept(ResponseBody responseBody) throws Exception {
                         RealmManager.delete(RealmCommentLike.class, "id", comment.getId());
                     }
                 })
-                .compose(RxUtil.<ResponseBody>threadSwitch())
-                .subscribe(new SimpleObserver<ResponseBody>() {
+                .compose(RxUtil.<ResponseBody>observableTransformer())
+                .subscribe(new Consumer<ResponseBody>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        Logger.d("评论点赞测试:removeCommentFromLikes...取消点赞成功");
+                        callback.onRemoveCommentFromLikesSuccess(comment.getId());
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("评论点赞测试:removeCommentFromLikes...取消点赞失败");
                         e.printStackTrace();
                         callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(ResponseBody responseBody) {
-                        Logger.d("评论点赞测试:removeCommentFromLikes...取消点赞成功");
-                        callback.onRemoveCommentFromLikesSuccess(comment.getId());
                     }
                 });
     }
@@ -522,40 +530,40 @@ public class Repository {
     /**
      * 获取人物电影作品
      */
-    public Subscription getStaffMovieCredits(int traktId, final DataCallback<List<Staff>> callback) {
+    public Disposable getStaffMovieCredits(int traktId, final DataCallback<List<Staff>> callback) {
         return service.getStaffMovieCredits(traktId)
-                .map(new Func1<PeopleCredit, List<Staff>>() {
+                .map(new Function<PeopleCredit, List<Staff>>() {
                     @Override
-                    public List<Staff> call(PeopleCredit credits) {
+                    public List<Staff> apply(PeopleCredit credits) {
                         return DataMachine.mixingPersonWorks(credits);
                     }
                 })
-                .compose(RxUtil.<List<Staff>>threadSwitch())
-                .subscribe(new SimpleObserver<List<Staff>>() {
+                .compose(RxUtil.<List<Staff>>observableTransformer())
+                .subscribe(new Consumer<List<Staff>>() {
                     @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(List<Staff> works) {
+                    public void accept(List<Staff> works) throws Exception {
                         callback.onBaseDataSuccess(works);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
                     }
                 });
     }
 
-    public Subscription getWorksImages(final List<Staff> subWorks, final StaffWorksCallback callback) {
-        return Observable.from(subWorks)
-                .flatMap(new Func1<Staff, Observable<ArtImage>>() {
+    public Disposable getWorksImages(final List<Staff> subWorks, final StaffWorksCallback callback) {
+        return Observable.fromIterable(subWorks)
+                .flatMap(new Function<Staff, Observable<ArtImage>>() {
                     @Override
-                    public Observable<ArtImage> call(Staff staff) {
+                    public Observable<ArtImage> apply(Staff staff) {
                         Logger.d("getWorksImages...getImage");
 //                        return getTmdbMovieImageObservable(staff.getMovie());
                         return getArtImageObservable(staff.getMovie().getIds().getTmdb(), ImageCacheManager.TYPE_POSTER);
                     }
-                }).map(new Func1<ArtImage, Staff>() {
+                }).map(new Function<ArtImage, Staff>() {
                     @Override
-                    public Staff call(ArtImage image) {
+                    public Staff apply(ArtImage image) {
                         Logger.d("getWorksImages...merge..." + image);
                         for (Staff staff : subWorks) {
                             Movie movie = staff.getMovie();
@@ -568,18 +576,18 @@ public class Repository {
                         return null;
                     }
                 }).toList()
-                .compose(RxUtil.<List<Staff>>threadSwitch())
-                .subscribe(new SimpleObserver<List<Staff>>() {
+                .compose(RxUtil.<List<Staff>>singleTransformer())
+                .subscribe(new Consumer<List<Staff>>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(List<Staff> staffs) throws Exception {
+                        callback.onGetWorksImagesSuccess(staffs);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("getWorksImages...onError");
                         e.printStackTrace();
                         callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<Staff> staffs) {
-                        callback.onGetWorksImagesSuccess(staffs);
                     }
                 });
     }
@@ -587,19 +595,19 @@ public class Repository {
     /**
      * 获取人物其他图片
      */
-    public Subscription getStaffImages(int tmdbId, final DataCallback<StaffImages> callback) {
+    public Disposable getStaffImages(int tmdbId, final DataCallback<StaffImages> callback) {
         return service.getStaffImages(tmdbId, BuildConfig.TmdbApiKey)
-                .compose(RxUtil.<StaffImages>threadSwitch())
-                .subscribe(new SimpleObserver<StaffImages>() {
+                .compose(RxUtil.<StaffImages>observableTransformer())
+                .subscribe(new Consumer<StaffImages>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(StaffImages staffImages) throws Exception {
+                        callback.onBaseDataSuccess(staffImages);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         e.printStackTrace();
                         callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(StaffImages staffImages) {
-                        callback.onBaseDataSuccess(staffImages);
                     }
                 });
     }
@@ -620,18 +628,18 @@ public class Repository {
         tokenRequest.setGrant_type(Constants.GRANT_TYPE_AUTHORIZATION_CODE);
 
         service.getToken(tokenRequest)
-                .compose(RxUtil.<TraktToken>threadSwitch())
-                .subscribe(new SimpleObserver<TraktToken>() {
+                .compose(RxUtil.<TraktToken>observableTransformer())
+                .subscribe(new Consumer<TraktToken>() {
                     @Override
-                    public void onError(Throwable e) {
-                        Logger.d("请求失败");
-                        dataCallback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(TraktToken traktToken) {
+                    public void accept(TraktToken traktToken) throws Exception {
                         Logger.d("请求成功");
                         dataCallback.onBaseDataSuccess(traktToken);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
+                        Logger.d("请求失败");
+                        dataCallback.onError(e);
                     }
                 });
     }
@@ -652,16 +660,16 @@ public class Repository {
     /**
      * 刷新AccessToken
      */
-    private <T> Func1<Throwable, ? extends Observable<? extends T>> refreshTokenAndRetry(final Observable<T> tobeResumed) {
-        return new Func1<Throwable, Observable<? extends T>>() {
+    private <T> Function<Throwable, ? extends Observable<? extends T>> refreshTokenAndRetry(final Observable<T> tobeResumed) {
+        return new Function<Throwable, Observable<? extends T>>() {
             @Override
-            public Observable<? extends T> call(Throwable throwable) {
+            public Observable<? extends T> apply(Throwable throwable) {
                 Logger.d("refreshTokenAndRetry:出现异常");
                 if (ErrorUtil.is401Error(throwable)) {
                     Logger.d("refreshTokenAndRetry:401异常");
-                    return getNewAccessToken().flatMap(new Func1<TraktToken, Observable<T>>() {
+                    return getNewAccessToken().flatMap(new Function<TraktToken, Observable<T>>() {
                         @Override
-                        public Observable<T> call(TraktToken traktToken) {
+                        public Observable<T> apply(TraktToken traktToken) {
                             Logger.d("refreshTokenAndRetry:获取新Token");
                             SPUtil.saveToken(traktToken);
                             return tobeResumed;
@@ -680,24 +688,20 @@ public class Repository {
      * /**
      * 获取UserFollowers
      */
-    public Subscription getUserFollowers(String slug, final UserDetailCallback callback) {
+    public Disposable getUserFollowers(String slug, final UserDetailCallback callback) {
         return service.getUserFollowers(slug)
                 .onErrorResumeNext(refreshTokenAndRetry(service.getUserFollowers(slug)))
-                .compose(RxUtil.<List<Follower>>threadSwitch())
-                .subscribe(new Observer<List<Follower>>() {
+                .compose(RxUtil.<List<Follower>>observableTransformer())
+                .subscribe(new Consumer<List<Follower>>() {
                     @Override
-                    public void onCompleted() {
+                    public void accept(List<Follower> followers) throws Exception {
 
                     }
-
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("UserData:getUserFollowers...onError");
                         e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(List<Follower> followers) {
                     }
                 });
     }
@@ -705,24 +709,20 @@ public class Repository {
     /**
      * 获取UserFollowing
      */
-    public Subscription getUserFollowing(String slug, final UserDetailCallback callback) {
+    public Disposable getUserFollowing(String slug, final UserDetailCallback callback) {
         return service.getUserFollowing(slug)
                 .onErrorResumeNext(refreshTokenAndRetry(service.getUserFollowing(slug)))
-                .compose(RxUtil.<List<Follower>>threadSwitch())
-                .subscribe(new Observer<List<Follower>>() {
+                .compose(RxUtil.<List<Follower>>observableTransformer())
+                .subscribe(new Consumer<List<Follower>>() {
                     @Override
-                    public void onCompleted() {
+                    public void accept(List<Follower> followers) throws Exception {
 
                     }
-
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("UserData:getUserFollowing...onError");
                         e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(List<Follower> followers) {
                     }
                 });
     }
@@ -730,23 +730,23 @@ public class Repository {
     /**
      * 获取UserStats
      */
-    public Subscription getUserStats(String slug, final UserDetailCallback callback) {
+    public Disposable getUserStats(String slug, final UserDetailCallback callback) {
         return service.getUserStats(slug)
                 .onErrorResumeNext(refreshTokenAndRetry(service.getUserStats(slug)))
-                .compose(RxUtil.<Stats>threadSwitch())
-                .subscribe(new SimpleObserver<Stats>() {
+                .compose(RxUtil.<Stats>observableTransformer())
+                .subscribe(new Consumer<Stats>() {
                     @Override
-                    public void onError(Throwable e) {
-                        Logger.d("UserData:getUserStats...onError");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Stats stats) {
+                    public void accept(Stats stats) throws Exception {
                         if (stats != null) {
                             Logger.d("UserData:getUserStats...onNext:" + stats.getMovies().getMinutes());
                         }
                         callback.onUserStatsSuccess(stats);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
+                        Logger.d("UserData:getUserStats...onError");
+                        e.printStackTrace();
                     }
                 });
     }
@@ -754,84 +754,84 @@ public class Repository {
     /**
      * 获取当前用户推荐
      */
-    public Subscription getRecommendations(final RecommendationsCallback<List<Movie>> callback) {
+    public Disposable getRecommendations(final RecommendationsCallback<List<Movie>> callback) {
         final List<Movie> movies = new ArrayList<>();
         return service.getRecommendations()
                 .onErrorResumeNext(refreshTokenAndRetry(service.getRecommendations()))
-                .flatMap(new Func1<List<Movie>, Observable<Movie>>() {
+                .flatMap(new Function<List<Movie>, Observable<Movie>>() {
                     @Override
-                    public Observable<Movie> call(List<Movie> movieData) {
+                    public Observable<Movie> apply(List<Movie> movieData) {
                         movies.addAll(movieData);
-                        return Observable.from(movies);
+                        return Observable.fromIterable(movies);
                     }
                 })
-                .flatMap(new Func1<Movie, Observable<ArtImage>>() {
+                .flatMap(new Function<Movie, Observable<ArtImage>>() {
                     @Override
-                    public Observable<ArtImage> call(Movie movie) {
+                    public Observable<ArtImage> apply(Movie movie) {
                         return getArtImageObservable(movie.getIds().getTmdb(), ImageCacheManager.TYPE_POSTER);
                     }
                 })
-                .map(new Func1<ArtImage, Movie>() {
+                .map(new Function<ArtImage, Movie>() {
                     @Override
-                    public Movie call(ArtImage image) {
+                    public Movie apply(ArtImage image) {
                         return mergeMovieAndImage2(image, movies, ImageCacheManager.TYPE_POSTER);
                     }
                 })
                 .toList()
-                .compose(RxUtil.<List<Movie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<Movie>>() {
+                .compose(RxUtil.<List<Movie>>singleTransformer())
+                .subscribe(new Consumer<List<Movie>>() {
                     @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<Movie> movies) {
+                    public void accept(List<Movie> movies) throws Exception {
                         callback.onBaseDataSuccess(movies);
                         for (Movie movie : movies) {
                             downloadImage(movie.getIds().getTmdb(), movie.getImage().getRemotePosterUrl(), ImageCacheManager.TYPE_POSTER);
                         }
                     }
-                });
-    }
-
-    public Subscription getFeatureList(final String userID, final String listID, final RecommendationsCallback callback) {
-        return service.getFeatureList(userID, listID)
-                .onErrorResumeNext(refreshTokenAndRetry(service.getFeatureList(userID, listID)))
-                .compose(RxUtil.<FeatureList>threadSwitch())
-                .subscribe(new SimpleObserver<FeatureList>() {
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void onError(Throwable e) {
-                        Logger.d("FeatureList...onError:" + userID + "..." + listID);
+                    public void accept(Throwable e) throws Exception {
                         e.printStackTrace();
                         callback.onError(e);
                     }
+                });
+    }
 
+    public Disposable getFeatureList(final String userID, final String listID, final RecommendationsCallback callback) {
+        return service.getFeatureList(userID, listID)
+                .onErrorResumeNext(refreshTokenAndRetry(service.getFeatureList(userID, listID)))
+                .compose(RxUtil.<FeatureList>observableTransformer())
+                .subscribe(new Consumer<FeatureList>() {
                     @Override
-                    public void onNext(FeatureList featureList) {
+                    public void accept(FeatureList featureList) throws Exception {
                         Logger.d("FeatureList...onNext:" + userID + "..." + listID);
                         callback.onGetFeatureListSuccess(featureList);
                     }
-                });
-    }
-
-    public Subscription getFeatureListData(final String userID, final String listID, final RecommendationsCallback callback) {
-        return service.getFeatureListData(userID, listID)
-                .onErrorResumeNext(refreshTokenAndRetry(service.getFeatureListData(userID, listID)))
-                .compose(RxUtil.<List<FeatureListItem>>threadSwitch())
-                .subscribe(new SimpleObserver<List<FeatureListItem>>() {
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("FeatureList...onError:" + userID + "..." + listID);
                         e.printStackTrace();
                         callback.onError(e);
                     }
+                });
+    }
 
+    public Disposable getFeatureListData(final String userID, final String listID, final RecommendationsCallback callback) {
+        return service.getFeatureListData(userID, listID)
+                .onErrorResumeNext(refreshTokenAndRetry(service.getFeatureListData(userID, listID)))
+                .compose(RxUtil.<List<FeatureListItem>>observableTransformer())
+                .subscribe(new Consumer<List<FeatureListItem>>() {
                     @Override
-                    public void onNext(List<FeatureListItem> data) {
+                    public void accept(List<FeatureListItem> featureListItems) throws Exception {
                         Logger.d("FeatureList...onNext:" + userID + "..." + listID);
-                        callback.onGetFeatureListDataSuccess(listID, data);
+                        callback.onGetFeatureListDataSuccess(listID, featureListItems);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
+                        Logger.d("FeatureList...onError:" + userID + "..." + listID);
+                        e.printStackTrace();
+                        callback.onError(e);
                     }
                 });
     }
@@ -839,20 +839,20 @@ public class Repository {
     /**
      * 从电影推荐中隐藏不感兴趣的电影
      */
-    public Subscription hideMovie(String slug, final RecommendationsCallback callback) {
+    public Disposable hideMovie(String slug, final RecommendationsCallback callback) {
         return service.hideMovie(slug)
                 .onErrorResumeNext(refreshTokenAndRetry(service.hideMovie(slug)))
-                .compose(RxUtil.<ResponseBody>threadSwitch())
-                .subscribe(new SimpleObserver<ResponseBody>() {
+                .compose(RxUtil.<ResponseBody>observableTransformer())
+                .subscribe(new Consumer<ResponseBody>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        callback.onHideMovieSuccess();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         e.printStackTrace();
                         callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(ResponseBody body) {
-                        callback.onHideMovieSuccess();
                     }
                 });
     }
@@ -863,64 +863,64 @@ public class Repository {
     void getLastActivities(final SyncCallback callback) {
         service.getLastActivities()
                 .onErrorResumeNext(refreshTokenAndRetry(service.getLastActivities()))
-                .compose(RxUtil.<LastActivities>threadSwitch())
-                .subscribe(new SimpleObserver<LastActivities>() {
+                .compose(RxUtil.<LastActivities>observableTransformer())
+                .subscribe(new Consumer<LastActivities>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(LastActivities lastActivities) throws Exception {
+                        callback.onLastActivitiesSuccess(lastActivities);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("Sync数据:getLastActivities...onError");
                         e.printStackTrace();
                         callback.onError(e);
                     }
-
-                    @Override
-                    public void onNext(LastActivities lastActivities) {
-                        callback.onLastActivitiesSuccess(lastActivities);
-                    }
                 });
     }
 
     /**
      * 获取UserSettings
      */
-    public Subscription getUserSettings(final DataCallback<UserSettings> callback) {
+    public Disposable getUserSettings(final DataCallback<UserSettings> callback) {
         return service.syncUserSettings()
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncUserSettings()))
-                .compose(RxUtil.<UserSettings>threadSwitch())
-                .subscribe(new SimpleObserver<UserSettings>() {
+                .compose(RxUtil.<UserSettings>observableTransformer())
+                .subscribe(new Consumer<UserSettings>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(UserSettings userSettings) throws Exception {
+                        Logger.d("UserSettings:onNext:" + userSettings);
+                        callback.onBaseDataSuccess(userSettings);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("UserSettings:onError");
                         e.printStackTrace();
                         callback.onError(e);
                     }
-
-                    @Override
-                    public void onNext(UserSettings userSettings) {
-                        Logger.d("UserSettings:onNext:" + userSettings);
-                        callback.onBaseDataSuccess(userSettings);
-                    }
                 });
     }
 
     /**
      * 获取UserSettings
      */
-    Subscription syncUserSettings(final SyncCallback callback) {
+    Disposable syncUserSettings(final SyncCallback callback) {
         return service.syncUserSettings()
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncUserSettings()))
-                .compose(RxUtil.<UserSettings>threadSwitch())
-                .subscribe(new SimpleObserver<UserSettings>() {
+                .compose(RxUtil.<UserSettings>observableTransformer())
+                .subscribe(new Consumer<UserSettings>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(UserSettings userSettings) throws Exception {
+                        Logger.d("UserSettings:onNext:" + userSettings);
+                        callback.onSyncUserSettingsSuccess(userSettings);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("Sync数据:syncUserSettings...onError");
                         e.printStackTrace();
                         callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(UserSettings userSettings) {
-                        Logger.d("UserSettings:onNext:" + userSettings);
-                        callback.onSyncUserSettingsSuccess(userSettings);
                     }
                 });
     }
@@ -928,25 +928,25 @@ public class Repository {
     void syncMovieWatched(final SyncCallback callback) {
         service.syncMovieWatched()
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncMovieWatched()))
-                .doOnNext(new Action1<List<MovieWatchedItem>>() {
+                .doOnNext(new Consumer<List<MovieWatchedItem>>() {
                     @Override
-                    public void call(List<MovieWatchedItem> movieWatchedItems) {
+                    public void accept(List<MovieWatchedItem> movieWatchedItems) {
                         Logger.d("Sync数据:看过:" + movieWatchedItems.size() + "电影");
                         RealmManager.insertOrUpdateMovieWatched(movieWatchedItems);
                     }
                 })
-                .compose(RxUtil.<List<MovieWatchedItem>>threadSwitch())
-                .subscribe(new SimpleObserver<List<MovieWatchedItem>>() {
+                .compose(RxUtil.<List<MovieWatchedItem>>observableTransformer())
+                .subscribe(new Consumer<List<MovieWatchedItem>>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(List<MovieWatchedItem> movieWatchedItems) throws Exception {
+                        callback.onSyncMovieWatchedSuccess(movieWatchedItems);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("Sync数据:syncMovieWatched...onError");
                         callback.onError(e);
                         e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(List<MovieWatchedItem> movieWatchedItems) {
-                        callback.onSyncMovieWatchedSuccess(movieWatchedItems);
                     }
                 });
     }
@@ -954,9 +954,9 @@ public class Repository {
     public void addMovieToWatched(final SyncData item, final MovieDetailCallback callback) {
         service.addMovieToWatched(item)
                 .onErrorResumeNext(refreshTokenAndRetry(service.addMovieToWatched(item)))
-                .doOnNext(new Action1<SyncResponse>() {
+                .doOnNext(new Consumer<SyncResponse>() {
                     @Override
-                    public void call(SyncResponse syncResponse) {
+                    public void accept(SyncResponse syncResponse) {
                         RealmMovieWatched realmMovieWatched = new RealmMovieWatched();
                         MovieSyncItem movieSyncItem = item.getMovies().get(0);
                         realmMovieWatched.setTitle(movieSyncItem.getTitle());
@@ -968,19 +968,19 @@ public class Repository {
                         RealmManager.delete(RealmMovieWatchlist.class, "trakt_id", movieSyncItem.getIds().getTrakt());
                     }
                 })
-                .compose(RxUtil.<SyncResponse>threadSwitch())
-                .subscribe(new SimpleObserver<SyncResponse>() {
+                .compose(RxUtil.<SyncResponse>observableTransformer())
+                .subscribe(new Consumer<SyncResponse>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(SyncResponse syncResponse) throws Exception {
+                        Logger.d("看过测试:addMovieToWatched:...add成功");
+                        callback.onAddMovieToWatchedSuccess(syncResponse);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("看过测试:addMovieToWatched:...add失败");
                         e.printStackTrace();
                         callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(SyncResponse syncResponse) {
-                        Logger.d("看过测试:addMovieToWatched:...add成功");
-                        callback.onAddMovieToWatchedSuccess(syncResponse);
                     }
                 });
     }
@@ -988,25 +988,25 @@ public class Repository {
     public void removeMovieFromWatched(final SyncData item, final MovieDetailCallback callback) {
         service.removeMovieFromWatched(item)
                 .onErrorResumeNext(refreshTokenAndRetry(service.removeMovieFromWatched(item)))
-                .doOnNext(new Action1<SyncResponse>() {
+                .doOnNext(new Consumer<SyncResponse>() {
                     @Override
-                    public void call(SyncResponse syncResponse) {
+                    public void accept(SyncResponse syncResponse) {
                         RealmManager.delete(RealmMovieWatched.class, "trakt_id", item.getMovies().get(0).getIds().getTrakt());
                     }
                 })
-                .compose(RxUtil.<SyncResponse>threadSwitch())
-                .subscribe(new SimpleObserver<SyncResponse>() {
+                .compose(RxUtil.<SyncResponse>observableTransformer())
+                .subscribe(new Consumer<SyncResponse>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(SyncResponse syncResponse) throws Exception {
+                        Logger.d("看过测试:addMovieToWatched:...remove成功..." + syncResponse.getDeleted().getMovies());
+                        callback.onRemoveMovieFromWatchedSuccess(syncResponse);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("看过测试:addMovieToWatched:...remove失败");
                         e.printStackTrace();
                         callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(SyncResponse syncResponse) {
-                        Logger.d("看过测试:addMovieToWatched:...remove成功..." + syncResponse.getDeleted().getMovies());
-                        callback.onRemoveMovieFromWatchedSuccess(syncResponse);
                     }
                 });
     }
@@ -1014,25 +1014,25 @@ public class Repository {
     void syncMovieWatchlist(final SyncCallback callback) {
         service.syncMovieWatchlist()
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncMovieWatchlist()))
-                .doOnNext(new Action1<List<MovieWatchlistItem>>() {
+                .doOnNext(new Consumer<List<MovieWatchlistItem>>() {
                     @Override
-                    public void call(List<MovieWatchlistItem> movieWatchlistItems) {
+                    public void accept(List<MovieWatchlistItem> movieWatchlistItems) {
                         Logger.d("Sync数据:想看:" + movieWatchlistItems.size() + "电影");
                         RealmManager.insertOrUpdateMovieWatchlist(movieWatchlistItems);
                     }
                 })
-                .compose(RxUtil.<List<MovieWatchlistItem>>threadSwitch())
-                .subscribe(new SimpleObserver<List<MovieWatchlistItem>>() {
+                .compose(RxUtil.<List<MovieWatchlistItem>>observableTransformer())
+                .subscribe(new Consumer<List<MovieWatchlistItem>>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(List<MovieWatchlistItem> movieWatchlistItems) throws Exception {
+                        callback.onSyncMovieWatchlistSuccess(movieWatchlistItems);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("Sync数据:syncMovieWatchlist...onError");
                         callback.onError(e);
                         e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(List<MovieWatchlistItem> movieWatchlistItems) {
-                        callback.onSyncMovieWatchlistSuccess(movieWatchlistItems);
                     }
                 });
     }
@@ -1040,9 +1040,9 @@ public class Repository {
     public void addMovieToWatchlist(final SyncData item, final MovieDetailCallback callback) {
         service.addMovieToWatchlist(item)
                 .onErrorResumeNext(refreshTokenAndRetry(service.addMovieToWatchlist(item)))
-                .doOnNext(new Action1<SyncResponse>() {
+                .doOnNext(new Consumer<SyncResponse>() {
                     @Override
-                    public void call(SyncResponse syncResponse) {
+                    public void accept(SyncResponse syncResponse) {
                         RealmMovieWatchlist realmMovieWatchlist = new RealmMovieWatchlist();
                         realmMovieWatchlist.setTitle(item.getMovies().get(0).getTitle());
                         realmMovieWatchlist.setYear(item.getMovies().get(0).getYear());
@@ -1051,19 +1051,19 @@ public class Repository {
                         RealmManager.insertOrUpdate(realmMovieWatchlist);
                     }
                 })
-                .compose(RxUtil.<SyncResponse>threadSwitch())
-                .subscribe(new SimpleObserver<SyncResponse>() {
+                .compose(RxUtil.<SyncResponse>observableTransformer())
+                .subscribe(new Consumer<SyncResponse>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(SyncResponse syncResponse) throws Exception {
+                        Logger.d("想看测试:addMovieToWatchlist:...add成功..." + syncResponse.getAdded().getMovies());
+                        callback.onAddMovieToWatchlistSuccess(syncResponse);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("想看测试:addMovieToWatchlist:...add失败");
                         e.printStackTrace();
                         callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(SyncResponse syncResponse) {
-                        Logger.d("想看测试:addMovieToWatchlist:...add成功..." + syncResponse.getAdded().getMovies());
-                        callback.onAddMovieToWatchlistSuccess(syncResponse);
                     }
                 });
     }
@@ -1071,25 +1071,26 @@ public class Repository {
     public void removeMovieFromWatchlist(final SyncData item, final MovieDetailCallback callback) {
         service.removeMovieFromWatchlist(item)
                 .onErrorResumeNext(refreshTokenAndRetry(service.removeMovieFromWatchlist(item)))
-                .doOnNext(new Action1<SyncResponse>() {
+                .doOnNext(new Consumer<SyncResponse>() {
+
                     @Override
-                    public void call(SyncResponse syncResponse) {
+                    public void accept(SyncResponse syncResponse) {
                         RealmManager.delete(RealmMovieWatchlist.class, "trakt_id", item.getMovies().get(0).getIds().getTrakt());
                     }
                 })
-                .compose(RxUtil.<SyncResponse>threadSwitch())
-                .subscribe(new SimpleObserver<SyncResponse>() {
+                .compose(RxUtil.<SyncResponse>observableTransformer())
+                .subscribe(new Consumer<SyncResponse>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(SyncResponse syncResponse) throws Exception {
+                        Logger.d("想看测试:removeMovieFromWatchlist:...remove成功..." + syncResponse.getDeleted().getMovies());
+                        callback.onRemoveMovieFromWatchlistSuccess(syncResponse);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("想看测试:removeMovieFromWatchlist:...remove失败");
                         e.printStackTrace();
                         callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(SyncResponse syncResponse) {
-                        Logger.d("想看测试:removeMovieFromWatchlist:...remove成功..." + syncResponse.getDeleted().getMovies());
-                        callback.onRemoveMovieFromWatchlistSuccess(syncResponse);
                     }
                 });
     }
@@ -1097,25 +1098,25 @@ public class Repository {
     void syncMovieRatings(final SyncCallback callback) {
         service.syncMovieRatings()
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncMovieRatings()))
-                .doOnNext(new Action1<List<MovieRatingItem>>() {
+                .doOnNext(new Consumer<List<MovieRatingItem>>() {
                     @Override
-                    public void call(List<MovieRatingItem> movieRatingItems) {
+                    public void accept(List<MovieRatingItem> movieRatingItems) {
                         Logger.d("Sync数据:评分:" + movieRatingItems.size() + "电影");
                         RealmManager.insertOrUpdateMovieRating(movieRatingItems);
                     }
                 })
-                .compose(RxUtil.<List<MovieRatingItem>>threadSwitch())
-                .subscribe(new SimpleObserver<List<MovieRatingItem>>() {
+                .compose(RxUtil.<List<MovieRatingItem>>observableTransformer())
+                .subscribe(new Consumer<List<MovieRatingItem>>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(List<MovieRatingItem> movieRatingItems) throws Exception {
+                        callback.onSyncMovieRatingsSuccess(movieRatingItems);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("Sync数据:syncMovieRatings...onError");
                         callback.onError(e);
                         e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(List<MovieRatingItem> movieRatingItems) {
-                        callback.onSyncMovieRatingsSuccess(movieRatingItems);
                     }
                 });
     }
@@ -1123,25 +1124,25 @@ public class Repository {
     void syncMovieCollection(final SyncCallback callback) {
         service.syncMoviesCollections()
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncMoviesCollections()))
-                .doOnNext(new Action1<List<MovieCollectionItem>>() {
+                .doOnNext(new Consumer<List<MovieCollectionItem>>() {
                     @Override
-                    public void call(List<MovieCollectionItem> movieCollectionItems) {
+                    public void accept(List<MovieCollectionItem> movieCollectionItems) {
                         Logger.d("Sync数据:收藏:" + movieCollectionItems.size() + "电影");
                         RealmManager.insertOrUpdateMovieCollection(movieCollectionItems);
                     }
                 })
-                .compose(RxUtil.<List<MovieCollectionItem>>threadSwitch())
-                .subscribe(new SimpleObserver<List<MovieCollectionItem>>() {
+                .compose(RxUtil.<List<MovieCollectionItem>>observableTransformer())
+                .subscribe(new Consumer<List<MovieCollectionItem>>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(List<MovieCollectionItem> movieCollectionItems) throws Exception {
+                        callback.onSyncMovieCollectionSuccess(movieCollectionItems);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("Sync数据:syncMovieCollection...onError");
                         callback.onError(e);
                         e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(List<MovieCollectionItem> movieCollectionItems) {
-                        callback.onSyncMovieCollectionSuccess(movieCollectionItems);
                     }
                 });
     }
@@ -1150,9 +1151,9 @@ public class Repository {
         // TODO: 2017/3/3 add various metadata
         service.addMovieToCollection(item)
                 .onErrorResumeNext(refreshTokenAndRetry(service.addMovieToCollection(item)))
-                .doOnNext(new Action1<SyncResponse>() {
+                .doOnNext(new Consumer<SyncResponse>() {
                     @Override
-                    public void call(SyncResponse syncResponse) {
+                    public void accept(SyncResponse syncResponse) {
                         RealmMovieCollection realmMovieCollection = new RealmMovieCollection();
                         realmMovieCollection.setTitle(item.getMovies().get(0).getTitle());
                         realmMovieCollection.setYear(item.getMovies().get(0).getYear());
@@ -1161,19 +1162,19 @@ public class Repository {
                         RealmManager.insertOrUpdate(realmMovieCollection);
                     }
                 })
-                .compose(RxUtil.<SyncResponse>threadSwitch())
-                .subscribe(new SimpleObserver<SyncResponse>() {
+                .compose(RxUtil.<SyncResponse>observableTransformer())
+                .subscribe(new Consumer<SyncResponse>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(SyncResponse syncResponse) throws Exception {
+                        Logger.d("收藏测试:addMovieToCollection:...add成功..." + syncResponse.getAdded().getMovies());
+                        callback.onAddMovieToCollectionSuccess(syncResponse);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("收藏测试:addMovieToCollection:...add");
                         e.printStackTrace();
                         callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(SyncResponse syncResponse) {
-                        Logger.d("收藏测试:addMovieToCollection:...add成功..." + syncResponse.getAdded().getMovies());
-                        callback.onAddMovieToCollectionSuccess(syncResponse);
                     }
                 });
     }
@@ -1181,25 +1182,25 @@ public class Repository {
     public void removeMovieFromCollection(final SyncData item, final MovieDetailCallback callback) {
         service.removeMovieFromCollection(item)
                 .onErrorResumeNext(refreshTokenAndRetry(service.removeMovieFromCollection(item)))
-                .doOnNext(new Action1<SyncResponse>() {
+                .doOnNext(new Consumer<SyncResponse>() {
                     @Override
-                    public void call(SyncResponse syncResponse) {
+                    public void accept(SyncResponse syncResponse) {
                         RealmManager.delete(RealmMovieCollection.class, "trakt_id", item.getMovies().get(0).getIds().getTrakt());
                     }
                 })
-                .compose(RxUtil.<SyncResponse>threadSwitch())
-                .subscribe(new SimpleObserver<SyncResponse>() {
+                .compose(RxUtil.<SyncResponse>observableTransformer())
+                .subscribe(new Consumer<SyncResponse>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(SyncResponse syncResponse) throws Exception {
+                        Logger.d("收藏测试:removeMovieFromCollection:...remove成功..." + syncResponse.getDeleted().getMovies());
+                        callback.onRemoveMovieFromCollectionSuccess(syncResponse);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("收藏测试:removeMovieFromCollection:...remove失败");
                         e.printStackTrace();
                         callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(SyncResponse syncResponse) {
-                        Logger.d("收藏测试:removeMovieFromCollection:...remove成功..." + syncResponse.getDeleted().getMovies());
-                        callback.onRemoveMovieFromCollectionSuccess(syncResponse);
                     }
                 });
     }
@@ -1207,25 +1208,25 @@ public class Repository {
     void syncUserCommentsLikes(final SyncCallback callback) {
         service.syncUserCommentsLikes()
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncUserCommentsLikes()))
-                .doOnNext(new Action1<List<UserCommentLike>>() {
+                .doOnNext(new Consumer<List<UserCommentLike>>() {
                     @Override
-                    public void call(List<UserCommentLike> userCommentLikes) {
+                    public void accept(List<UserCommentLike> userCommentLikes) {
                         Logger.d("Sync数据:评论点赞:" + userCommentLikes.size());
                         RealmManager.insertOrUpdateUserCommentsLikes(userCommentLikes);
                     }
                 })
-                .compose(RxUtil.<List<UserCommentLike>>threadSwitch())
-                .subscribe(new SimpleObserver<List<UserCommentLike>>() {
+                .compose(RxUtil.<List<UserCommentLike>>observableTransformer())
+                .subscribe(new Consumer<List<UserCommentLike>>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(List<UserCommentLike> userCommentLikes) throws Exception {
+                        callback.onSyncUserCommentsLikesSuccess(userCommentLikes);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("Sync数据:syncUserCommentsLikes...onError");
                         callback.onError(e);
                         e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(List<UserCommentLike> userCommentLikes) {
-                        callback.onSyncUserCommentsLikesSuccess(userCommentLikes);
                     }
                 });
     }
@@ -1233,25 +1234,25 @@ public class Repository {
     void syncUserListsLikes(final SyncCallback callback) {
         service.syncUserListsLikes()
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncUserListsLikes()))
-                .doOnNext(new Action1<List<UserListLike>>() {
+                .doOnNext(new Consumer<List<UserListLike>>() {
                     @Override
-                    public void call(List<UserListLike> userListLikes) {
+                    public void accept(List<UserListLike> userListLikes) {
                         Logger.d("Sync数据:列表点赞:" + userListLikes.size());
                         RealmManager.insertOrUpdateUserListsLikes(userListLikes);
                     }
                 })
-                .compose(RxUtil.<List<UserListLike>>threadSwitch())
-                .subscribe(new SimpleObserver<List<UserListLike>>() {
+                .compose(RxUtil.<List<UserListLike>>observableTransformer())
+                .subscribe(new Consumer<List<UserListLike>>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(List<UserListLike> userListLikes) throws Exception {
+                        callback.onSyncUserListLikesSuccess(userListLikes);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("Sync数据:syncUserListsLikes...onError");
                         callback.onError(e);
                         e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(List<UserListLike> userListLikes) {
-                        callback.onSyncUserListLikesSuccess(userListLikes);
                     }
                 });
     }
@@ -1259,23 +1260,24 @@ public class Repository {
     void syncUserFollowing(String slug, final SyncCallback callback) {
         service.syncUserFollowing(slug)
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncUserFollowing(slug)))
-                .doOnNext(new Action1<List<Follower>>() {
+                .doOnNext(new Consumer<List<Follower>>() {
                     @Override
-                    public void call(List<Follower> followers) {
+                    public void accept(List<Follower> followers) {
                         RealmManager.insertOrUpdateFollowings(followers);
                     }
-                }).compose(RxUtil.<List<Follower>>threadSwitch())
-                .subscribe(new SimpleObserver<List<Follower>>() {
+                }).compose(RxUtil.<List<Follower>>observableTransformer())
+                .subscribe(new Consumer<List<Follower>>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(List<Follower> followers) throws Exception {
+                        callback.onSyncUserFollowingSuccess(followers);
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("Sync数据:syncUserFollowing...onError");
                         callback.onError(e);
                         e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(List<Follower> followers) {
-                        callback.onSyncUserFollowingSuccess(followers);
                     }
                 });
     }
@@ -1283,23 +1285,23 @@ public class Repository {
     void syncUserFollowers(String slug, final SyncCallback callback) {
         service.syncUserFollowers(slug)
                 .onErrorResumeNext(refreshTokenAndRetry(service.syncUserFollowers(slug)))
-                .doOnNext(new Action1<List<Follower>>() {
+                .doOnNext(new Consumer<List<Follower>>() {
                     @Override
-                    public void call(List<Follower> followers) {
+                    public void accept(List<Follower> followers) {
                         RealmManager.insertOrUpdateFollowers(followers);
                     }
-                }).compose(RxUtil.<List<Follower>>threadSwitch())
-                .subscribe(new SimpleObserver<List<Follower>>() {
+                }).compose(RxUtil.<List<Follower>>observableTransformer())
+                .subscribe(new Consumer<List<Follower>>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(List<Follower> followers) throws Exception {
+                        callback.onSyncUserFollowersSuccess(followers);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("Sync数据:syncUserFollowers...onError");
                         callback.onError(e);
                         e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(List<Follower> followers) {
-                        callback.onSyncUserFollowersSuccess(followers);
                     }
                 });
     }
@@ -1430,16 +1432,16 @@ public class Repository {
         final String fileName = "TMDB-" + tmdbID + StringUtil.getFileSuffix(imageUrl);
         service.downloadImage(imageUrl)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new SimpleObserver<ResponseBody>() {
+                .subscribe(new Consumer<ResponseBody>() {
                     @Override
-                    public void onError(Throwable e) {
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        ImageCacheManager.writeToDisk(responseBody, fileName, imageType);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
                         Logger.d("图片下载出错:" + fileName);
                         e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(ResponseBody responseBody) {
-                        ImageCacheManager.writeToDisk(responseBody, fileName, imageType);
                     }
                 });
     }

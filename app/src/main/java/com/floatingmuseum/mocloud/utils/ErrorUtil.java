@@ -2,7 +2,7 @@ package com.floatingmuseum.mocloud.utils;
 
 import com.floatingmuseum.mocloud.Constants;
 
-import retrofit2.adapter.rxjava.HttpException;
+import retrofit2.HttpException;
 
 /**
  * Created by Floatingmuseum on 2016/12/15.

@@ -23,15 +23,15 @@ public class RecommendationsPresenter extends Presenter implements Recommendatio
     }
 
     void getData(Map<String, String> featureList) {
-        compositeSubscription.add(repository.getRecommendations(this));
+        compositeDisposable.add(repository.getRecommendations(this));
         for (String listID : featureList.keySet()) {
-            compositeSubscription.add(repository.getFeatureList(featureList.get(listID), listID, this));
-            compositeSubscription.add(repository.getFeatureListData(featureList.get(listID), listID, this));
+            compositeDisposable.add(repository.getFeatureList(featureList.get(listID), listID, this));
+            compositeDisposable.add(repository.getFeatureListData(featureList.get(listID), listID, this));
         }
     }
 
     public void hideMovie(String slug) {
-        compositeSubscription.add(repository.hideMovie(slug, this));
+        compositeDisposable.add(repository.hideMovie(slug, this));
     }
 
     @Override

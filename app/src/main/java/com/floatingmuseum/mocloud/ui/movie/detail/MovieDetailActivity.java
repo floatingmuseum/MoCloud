@@ -72,7 +72,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.RealmModel;
 import mehdi.sakout.fancybuttons.FancyButton;
-import name.gudong.statebackground.OneDrawable;
 
 
 /**
@@ -745,9 +744,9 @@ public class MovieDetailActivity extends BaseCommentsActivity implements BaseDet
 
         // TODO: 2017/4/9 添加点击阴影效果不成功 
         ImageView ivReply = (ImageView) llCommentsReply.findViewById(R.id.iv_reply);
-        Drawable icon1 = OneDrawable.createBgDrawableWithDarkMode(this, R.drawable.ic_send_black_48dp);
+//        Drawable icon1 = OneDrawable.createBgDrawableWithDarkMode(this, R.drawable.ic_send_black_48dp);
 //        ivReply.setBackgroundDrawable(icon1);
-        ivReply.setBackground(icon1);
+//        ivReply.setBackground(icon1);
 
         movieDetailContainer.addView(llCommentsReply);
         tvNoMoreComments.setVisibility(View.GONE);

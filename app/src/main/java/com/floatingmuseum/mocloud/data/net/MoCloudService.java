@@ -35,6 +35,7 @@ import com.floatingmuseum.mocloud.data.entity.UserSettings;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -46,7 +47,6 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
-import rx.Observable;
 
 /**
  * Created by Floatingmuseum on 2016/4/13.

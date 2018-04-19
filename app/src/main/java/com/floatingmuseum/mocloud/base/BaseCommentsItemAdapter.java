@@ -74,7 +74,7 @@ public class BaseCommentsItemAdapter extends BaseQuickAdapter<Comment, BaseViewH
                 .setVisible(R.id.tv_review_tip, comment.isReview())
                 .setVisible(R.id.tv_rating_tip, userRating != null)
                 .setVisible(R.id.ll_tip, comment.isSpoiler() || comment.isReview() || userRating != null)
-                .setVisible(R.id.tv_updatetime, !comment.getCreated_at().equals(comment.getUpdated_at()));
+                .setGone(R.id.tv_updatetime, !comment.getCreated_at().equals(comment.getUpdated_at()));
         ImageView iv_userhead = baseViewHolder.getView(R.id.iv_userhead);
         ImageLoader.loadDontAnimate(mContext, MoCloudUtil.getUserAvatar(user), iv_userhead, R.drawable.default_userhead);
         TextView tvUsername = baseViewHolder.getView(R.id.tv_username);

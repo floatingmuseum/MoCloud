@@ -38,8 +38,8 @@ public class MovieDetailPresenter extends BaseCommentsPresenter implements Movie
     }
 
     void getData(Movie movie) {
-        compositeSubscription.add(repository.getMovieTeam(movie.getIds().getSlug(), this));
-        compositeSubscription.add(repository.getMovieComments(movie.getIds().getSlug(), CommentsActivity.SORT_BY_LIKES, limit, page, this, null));
+        compositeDisposable.add(repository.getMovieTeam(movie.getIds().getSlug(), this));
+        compositeDisposable.add(repository.getMovieComments(movie.getIds().getSlug(), CommentsActivity.SORT_BY_LIKES, limit, page, this, null));
         // TODO: 2017/9/11 获取Imdb等其他评分的接口暂时不能用
 //        compositeSubscription.add(repository.getMovieOtherRatings(movie.getIds().getImdb(), this));
     }

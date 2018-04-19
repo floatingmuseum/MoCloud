@@ -35,7 +35,7 @@ public class StaffMoviesPresenter extends Presenter implements StaffWorksCallbac
             getWorksImages();
         } else {
             pageNum = 1;
-            compositeSubscription.add(repository.getStaffMovieCredits(traktId, this));
+            compositeDisposable.add(repository.getStaffMovieCredits(traktId, this));
         }
     }
 
@@ -57,7 +57,7 @@ public class StaffMoviesPresenter extends Presenter implements StaffWorksCallbac
             Logger.d("StaffMoviesPresenter...Staff:" + staff.toString());
         }
 
-        compositeSubscription.add(repository.getWorksImages(subWorks, this));
+        compositeDisposable.add(repository.getWorksImages(subWorks, this));
     }
 
     @Override

@@ -9,7 +9,7 @@ import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
-import rx.Subscription;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by Floatingmuseum on 2016/12/20.
@@ -24,13 +24,13 @@ public class SingleCommentPresenter extends BaseCommentsPresenter implements Com
     }
 
     public void getData(long commentId){
-        Subscription subscription = repository.getCommentReplies(commentId,this);
-        compositeSubscription.add(subscription);
+        Disposable disposable = repository.getCommentReplies(commentId,this);
+        compositeDisposable.remove(disposable);
     }
 
     public void sendReply(long id, Reply reply) {
-        Subscription subscription = repository.sendReply(id,reply,this);
-        compositeSubscription.add(subscription);
+        Disposable disposable = repository.sendReply(id,reply,this);
+        compositeDisposable.add(disposable);
     }
 
     @Override

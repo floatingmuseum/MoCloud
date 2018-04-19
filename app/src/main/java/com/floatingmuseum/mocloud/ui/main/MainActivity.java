@@ -3,40 +3,31 @@ package com.floatingmuseum.mocloud.ui.main;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.SearchView;
-import android.view.Menu;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.MenuItem;
-import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.floatingmuseum.mocloud.MainMovieAdapter;
+import com.crashlytics.android.Crashlytics;
 import com.floatingmuseum.mocloud.R;
 import com.floatingmuseum.mocloud.base.BaseActivity;
-import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.bus.SyncEvent;
-import com.floatingmuseum.mocloud.data.entity.User;
-import com.floatingmuseum.mocloud.ui.about.AboutActivity;
-import com.floatingmuseum.mocloud.ui.calendar.CalendarActivity;
-import com.floatingmuseum.mocloud.ui.recommendations.RecommendationsActivity;
-import com.floatingmuseum.mocloud.ui.login.LoginActivity;
-import com.floatingmuseum.mocloud.ui.settings.SettingsActivity;
-import com.floatingmuseum.mocloud.ui.user.UserActivity;
+import com.floatingmuseum.mocloud.ui.movie.MovieFragment;
+import com.floatingmuseum.mocloud.ui.show.ShowFragment;
+import com.floatingmuseum.mocloud.ui.user.UserFragment;
 import com.floatingmuseum.mocloud.utils.PermissionsUtil;
-import com.floatingmuseum.mocloud.utils.RxUtil;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.floatingmuseum.mocloud.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
@@ -44,35 +35,41 @@ import com.orhanobut.logger.Logger;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
-import rx.Observable;
-import rx.functions.Action1;
+import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-    @BindView(R.id.mainViewPager)
-    ViewPager mainViewPager;
-    @BindView(R.id.mainTabLayout)
-    TabLayout mainTabLayout;
+/**
+ * Created by Floatingmuseum on 2017/7/20.
+ */
+
+public class MainActivity extends BaseActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+
+    //    @BindView(R.id.viewpager)
+//    ViewPager vp;
+
+//    @BindView(R.id.appBarLayout)
+//    AppBarLayout appBarLayout;
+//    @BindView(R.id.toolbar)
+//    Toolbar toolbar;
+
+    @BindView(R.id.fl_main)
+    FrameLayout flMain;
+
     @BindView(R.id.nav_view)
-    NavigationView navView;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
+    BottomNavigationView navigation;
+    //    @BindView(R.id.app_bar_user)
+//    AppBarLayout appBarUser;
+//    @BindView(R.id.collapsing_toolbar)
+//    CollapsingToolbarLayout collapsingToolbar;
 
+    private MainPresenter mainPresenter;
     private final int REQUEST_CODE_ASK_PERMISSIONS = 233;
-    CircleImageView iv_avatar;
-    TextView tv_username;
+    private MovieFragment movieFragment;
+    private ShowFragment showFragment;
+    private UserFragment userFragment;
+    private FragmentManager fragmentManager;
 
-    MainPresenter mainPresenter;
-
-    private MenuItem syncState;
-    private SearchView searchView;
-    //    private ImageView iv_avatar;
 
     @Override
     protected int currentLayoutId() {
@@ -80,51 +77,88 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Fabric.with(this, new Crashlytics());
         ButterKnife.bind(this);
         registerEventBusHere();
-//        mainPresenter = new MainPresenter(this);
         initView();
+        mainPresenter = new MainPresenter(this);
+        initData();
+        String text = "[spoiler]The chemistry between the two leads feels so natural [/spoiler]and [spoiler]it is because of this chemistry that Steve's sacrifice is so heartbreaking[/spoiler].";
+        Logger.d("TextLength:" + text.length() + "...first:" + text.indexOf("[spoiler]") + "...second:" + text.indexOf("[/spoiler]") + "..." + text.indexOf("[spoiler]", text.indexOf("[/spoiler]") + 1));
+        String text1 = "hello java java world.";
+        int index = text1.indexOf("java") + "java".length();
+        Logger.d("TextLength:" + text1.length() + "...java:" + text1.indexOf("java") + "...world:" + text1.indexOf("world") + "...fromIndex:" + index + "...secondJava:" + text1.indexOf("java", index));
     }
 
+    @Override
     protected void initView() {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.setDrawerListener(toggle);
-        toggle.syncState();
+        fragmentManager = getSupportFragmentManager();
+        movieFragment = new MovieFragment();
+        showFragment = new ShowFragment();
+        userFragment = new UserFragment();
+        fragmentManager.beginTransaction()
+                .add(R.id.fl_main, movieFragment, MovieFragment.TAG)
+                .add(R.id.fl_main, showFragment, ShowFragment.TAG)
+                .add(R.id.fl_main, userFragment, UserFragment.TAG)
+                .hide(showFragment)
+                .hide(userFragment)
+                .commit();
+        navigation.setOnNavigationItemSelectedListener(this);
+    }
 
-        View nav_header_main = navView.getHeaderView(0);
-        iv_avatar = ButterKnife.findById(nav_header_main, R.id.iv_avatar);
-        tv_username = ButterKnife.findById(nav_header_main, R.id.tv_username);
+    private void setCurrentFragment(int position) {
+        if (position == 0) {
+            fragmentManager.beginTransaction().show(movieFragment).commit();
+            fragmentManager.beginTransaction().hide(showFragment).commit();
+            fragmentManager.beginTransaction().hide(userFragment).commit();
+        } else if (position == 1) {
+            fragmentManager.beginTransaction().show(showFragment).commit();
+            fragmentManager.beginTransaction().hide(movieFragment).commit();
+            fragmentManager.beginTransaction().hide(userFragment).commit();
 
-        navView.setNavigationItemSelectedListener(this);
+        } else if (position == 2) {
+            fragmentManager.beginTransaction().show(userFragment).commit();
+            fragmentManager.beginTransaction().hide(showFragment).commit();
+            fragmentManager.beginTransaction().hide(movieFragment).commit();
+        }
+    }
 
-//        View navHeaderView = navView.getHeaderView(0);
-//        iv_avatar = (ImageView) navHeaderView.findViewById(R.id.iv_avatar);
-//        TextView tv_username = (TextView) navHeaderView.findViewById(R.id.tv_username);
-        MainMovieAdapter adapter = new MainMovieAdapter(getSupportFragmentManager());
-        mainViewPager.setAdapter(adapter);
-        mainTabLayout.setupWithViewPager(mainViewPager);
+    private int getAttr() {
+        TypedValue outValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.actionBarSize, outValue, true);
+        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(outMetrics);
+        float out = outValue.getDimension(outMetrics);
 
-        iv_avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (SPUtil.isLogin()) {
-                    startUserActivity();
-                } else {
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    MainActivity.this.startActivityForResult(intent, LoginActivity.REQUEST_CODE);
-                }
-            }
-        });
+        TypedValue tv = new TypedValue();
+        getTheme().resolveAttribute(R.attr.actionBarSize, tv, true);
+        Logger.d("ActionBarSize:" + tv.toString() + "..." + out);
+        return (int) out;
+    }
 
-        updateUserRelatedViews();
+    private void hideAppBar(boolean isShow) {
+        Logger.d("显示AppBar:" + isShow);
+        if (isShow) {
+            ViewGroup.LayoutParams params = appBarLayout.getLayoutParams();
+            params.height = 0;
+            params.width = 0;
+            appBarLayout.setLayoutParams(params);
+        } else {
+            ViewGroup.LayoutParams params = appBarLayout.getLayoutParams();
+            params.height = getAttr();
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            appBarLayout.setLayoutParams(params);
+        }
+    }
+
+    private void initData() {
         if (SPUtil.isLogin()) {
             mainPresenter.syncUserData(this);
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             initPermissionRequestDialog();
         }
     }
@@ -171,137 +205,43 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        syncState = menu.findItem(R.id.sync_state);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        initSearchView();
-        return true;
-    }
-
-    private void initSearchView() {
-        //        searchView.setIconified(true);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {//when text change
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_type_switch) {
-            return true;
-        } else if (id == R.id.action_search) {
-            return true;
-        }
-
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        switch (id) {
-            case R.id.nav_my:
-                startUserActivity();
-                break;
-            case R.id.nav_recommendations:
-                startRecommendationsActivity();
-                break;
-            case R.id.nav_calendar:
-                startActivity(new Intent(this, CalendarActivity.class));
-                break;
-            case R.id.nav_setting:
-                startActivity(new Intent(this, SettingsActivity.class));
-                break;
-            case R.id.nav_about:
-                startActivity(new Intent(this, AboutActivity.class));
-                break;
-        }
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    private void startRecommendationsActivity() {
-        if (!SPUtil.isLogin()) {
-            ToastUtil.showToast(R.string.not_login);
-            return;
-        }
-        startActivity(new Intent(this, RecommendationsActivity.class));
-    }
-
-    private void startUserActivity() {
-        if (!SPUtil.isLogin()) {
-            ToastUtil.showToast(R.string.not_login);
-            return;
-        }
-        User user = SPUtil.loadUserFromSp();
-        Intent intent = new Intent(MainActivity.this, UserActivity.class);
-        intent.putExtra(UserActivity.USER_OBJECT, user);
-        startActivity(intent);
-    }
-
-    @Override
     protected boolean canGoBack() {
         return false;
     }
 
     @Override
-    protected void onError(Exception e) {
-
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.navigation_movie:
+                setCurrentFragment(0);
+//                vp.setCurrentItem(0, true);
+                return true;
+            case R.id.navigation_tv:
+                setCurrentFragment(1);
+//                vp.setCurrentItem(1, true);
+                return true;
+            case R.id.navigation_user:
+                setCurrentFragment(2);
+//                vp.setCurrentItem(2, true);
+                return true;
+        }
+        return false;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSyncEvent(SyncEvent syncEvent) {
         Logger.d("onSyncEvent:" + syncEvent.syncInfo);
         if ("Sync user settings finished.".equals(syncEvent.syncInfo)) {
-            updateUserRelatedViews();
+//            updateUserRelatedViews();
         }
         if (syncEvent.syncFinished) {
             ToastUtil.showToast(syncEvent.syncInfo);
         }
     }
 
-    private void updateUserRelatedViews() {
-        if (SPUtil.isLogin()) {
-            //已登录，获取头像和用户名
-            String avatarUrl = SPUtil.getString(SPUtil.SP_USER_SETTINGS, "avatar", "");
-            // TODO: 2017/2/26 昵称更新成功，头像不成功
-//            ImageLoader.load(this, avatarUrl, iv_avatar, R.drawable.default_userhead);
-            Glide.with(this).load(avatarUrl).into(iv_avatar);
-            tv_username.setText(SPUtil.getString(SPUtil.SP_USER_SETTINGS, "username", ""));
-            Logger.d("avatarUrl:" + avatarUrl + "...");
-            // TODO: 2017/2/7 空指针
-//            syncState.setVisible(true);
-        }
+    @Override
+    protected void onError(Exception e) {
+
     }
 
     @Override

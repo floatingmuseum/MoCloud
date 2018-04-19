@@ -5,26 +5,22 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.floatingmuseum.mocloud.base.Presenter;
-import com.floatingmuseum.mocloud.data.Repository;
 import com.floatingmuseum.mocloud.data.SyncService;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.UserSettings;
 import com.floatingmuseum.mocloud.utils.ErrorUtil;
-import com.floatingmuseum.mocloud.utils.ImageLoader;
 import com.floatingmuseum.mocloud.utils.SPUtil;
 import com.orhanobut.logger.Logger;
-
-import rx.Subscription;
 
 /**
  * Created by Floatingmuseum on 2016/9/18.
  */
 class MainPresenter extends Presenter implements DataCallback<UserSettings> {
 
-    private MainActivity1 mainActivity;
+    private MainActivity mainActivity;
 
 
-    MainPresenter(@NonNull MainActivity1 mainActivity) {
+    MainPresenter(@NonNull MainActivity mainActivity) {
         this.mainActivity = mainActivity;
     }
 

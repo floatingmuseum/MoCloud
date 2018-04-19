@@ -16,7 +16,7 @@ public class StaffDetailPresenter extends Presenter implements DataCallback<Staf
     }
 
     public void getStaffImages(int tmdbId) {
-        compositeSubscription.add(repository.getStaffImages(tmdbId,this));
+        compositeDisposable.add(repository.getStaffImages(tmdbId,this));
     }
 
     @Override

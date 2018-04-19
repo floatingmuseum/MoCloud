@@ -1,7 +1,6 @@
 package com.floatingmuseum.mocloud.data.repo;
 
 import com.floatingmuseum.mocloud.data.Repository;
-import com.floatingmuseum.mocloud.data.SimpleObserver;
 import com.floatingmuseum.mocloud.data.callback.DataCallback;
 import com.floatingmuseum.mocloud.data.entity.ArtImage;
 import com.floatingmuseum.mocloud.data.entity.BaseMovie;
@@ -15,8 +14,10 @@ import com.orhanobut.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-import rx.functions.Func1;
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+
 
 /**
  * Created by Floatingmuseum on 2017/9/12.
@@ -53,22 +54,22 @@ public class MovieRepository extends Repository {
 
         service.getMovieTrending(pageNum, limit)
                 .compose(getEachPoster(movies, ImageCacheManager.TYPE_POSTER))
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<BaseMovie>>() {
+                .compose(RxUtil.<List<BaseMovie>>observableTransformer())
+                .subscribe(new Consumer<List<BaseMovie>>() {
                     @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieTrendingData...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<BaseMovie> movies) {
+                    public void accept(List<BaseMovie> baseMovies) throws Exception {
                         Logger.d("getMovieTrendingData...onNext:" + movies);
                         long endTime = System.currentTimeMillis();
                         Logger.d("获取Trending数据时间:" + (endTime - startTime));
                         callback.onBaseDataSuccess(movies);
                         downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
+                        Logger.d("getMovieTrendingData...onError");
+                        e.printStackTrace();
+                        callback.onError(e);
                     }
                 });
     }
@@ -79,38 +80,38 @@ public class MovieRepository extends Repository {
     public void getMoviePopularData(int pageNum, int limit, final DataCallback<List<Movie>> callback) {
         final List<Movie> movies = new ArrayList<>();
         service.getMoviePopular(pageNum, limit)
-                .flatMap(new Func1<List<Movie>, Observable<Movie>>() {
+                .flatMap(new Function<List<Movie>, Observable<Movie>>() {
                     @Override
-                    public Observable<Movie> call(List<Movie> movieData) {
+                    public Observable<Movie> apply(List<Movie> movieData) {
                         movies.addAll(movieData);
-                        return Observable.from(movies);
+                        return Observable.fromIterable(movies);
                     }
                 })
-                .flatMap(new Func1<Movie, Observable<ArtImage>>() {
+                .flatMap(new Function<Movie, Observable<ArtImage>>() {
                     @Override
-                    public Observable<ArtImage> call(Movie movie) {
+                    public Observable<ArtImage> apply(Movie movie) {
                         return getTmdbMovieImageObservable(movie);
                     }
                 })
-                .map(new Func1<ArtImage, Movie>() {
+                .map(new Function<ArtImage, Movie>() {
                     @Override
-                    public Movie call(ArtImage image) {
+                    public Movie apply(ArtImage image) {
                         return mergeMovieAndImage2(image, movies, ImageCacheManager.TYPE_POSTER);
                     }
                 })
                 .toList()
-                .compose(RxUtil.<List<Movie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<Movie>>() {
+                .compose(RxUtil.<List<Movie>>singleTransformer())
+                .subscribe(new Consumer<List<Movie>>() {
                     @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<Movie> movies) {
+                    public void accept(List<Movie> movies) throws Exception {
                         callback.onBaseDataSuccess(movies);
 //                        downloadMovieImage(null, movies, ImageCacheManager.TYPE_POSTER);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
+                        e.printStackTrace();
+                        callback.onError(e);
                     }
                 });
     }
@@ -122,20 +123,20 @@ public class MovieRepository extends Repository {
         final List<BaseMovie> movies = new ArrayList<>();
         service.getMoviePlayed(period, pageNum, limit)
                 .compose(getEachPoster(movies, ImageCacheManager.TYPE_POSTER))
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<BaseMovie>>() {
+                .compose(RxUtil.<List<BaseMovie>>observableTransformer())
+                .subscribe(new Consumer<List<BaseMovie>>() {
                     @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMoviePlayedData...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<BaseMovie> baseMovies) {
+                    public void accept(List<BaseMovie> baseMovies) throws Exception {
                         Logger.d("getMoviePlayedData...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
                         downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
+                        Logger.d("getMoviePlayedData...onError");
+                        e.printStackTrace();
+                        callback.onError(e);
                     }
                 });
     }
@@ -147,20 +148,20 @@ public class MovieRepository extends Repository {
         final List<BaseMovie> movies = new ArrayList<>();
         service.getMovieWatched(period, pageNum, limit)
                 .compose(getEachPoster(movies, ImageCacheManager.TYPE_POSTER))
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<BaseMovie>>() {
+                .compose(RxUtil.<List<BaseMovie>>observableTransformer())
+                .subscribe(new Consumer<List<BaseMovie>>() {
                     @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieWatchedData...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<BaseMovie> baseMovies) {
+                    public void accept(List<BaseMovie> baseMovies) throws Exception {
                         Logger.d("getMovieWatchedData...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
                         downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
+                        Logger.d("getMovieWatchedData...onError");
+                        e.printStackTrace();
+                        callback.onError(e);
                     }
                 });
     }
@@ -172,20 +173,20 @@ public class MovieRepository extends Repository {
         final List<BaseMovie> movies = new ArrayList<>();
         service.getMovieCollected(period, pageNum, limit)
                 .compose(getEachPoster(movies, ImageCacheManager.TYPE_POSTER))
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<BaseMovie>>() {
+                .compose(RxUtil.<List<BaseMovie>>observableTransformer())
+                .subscribe(new Consumer<List<BaseMovie>>() {
                     @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieCollectedData...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<BaseMovie> movies) {
+                    public void accept(List<BaseMovie> baseMovies) throws Exception {
                         Logger.d("getMovieCollectedData...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
                         downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
+                        Logger.d("getMovieCollectedData...onError");
+                        e.printStackTrace();
+                        callback.onError(e);
                     }
                 });
     }
@@ -197,20 +198,20 @@ public class MovieRepository extends Repository {
         final List<BaseMovie> movies = new ArrayList<>();
         service.getMovieAnticipated(pageNum, limit)
                 .compose(getEachPoster(movies, ImageCacheManager.TYPE_POSTER))
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<BaseMovie>>() {
+                .compose(RxUtil.<List<BaseMovie>>observableTransformer())
+                .subscribe(new Consumer<List<BaseMovie>>() {
                     @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieAnticipated...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<BaseMovie> movies) {
+                    public void accept(List<BaseMovie> baseMovies) throws Exception {
                         Logger.d("getMovieAnticipated...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
                         downloadMovieImage(movies, ImageCacheManager.TYPE_POSTER);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
+                        Logger.d("getMovieAnticipated...onError");
+                        e.printStackTrace();
+                        callback.onError(e);
                     }
                 });
     }
@@ -222,20 +223,20 @@ public class MovieRepository extends Repository {
         final List<BaseMovie> movies = new ArrayList<>();
         service.getMovieBoxOffice()
                 .compose(getEachPoster(movies, ImageCacheManager.TYPE_BACKDROP))
-                .compose(RxUtil.<List<BaseMovie>>threadSwitch())
-                .subscribe(new SimpleObserver<List<BaseMovie>>() {
+                .compose(RxUtil.<List<BaseMovie>>observableTransformer())
+                .subscribe(new Consumer<List<BaseMovie>>() {
                     @Override
-                    public void onError(Throwable e) {
-                        Logger.d("getMovieBoxOfficeData...onError");
-                        e.printStackTrace();
-                        callback.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(List<BaseMovie> movies) {
+                    public void accept(List<BaseMovie> baseMovies) throws Exception {
                         Logger.d("getMovieBoxOfficeData...onNext:" + movies);
                         callback.onBaseDataSuccess(movies);
                         downloadMovieImage(movies, ImageCacheManager.TYPE_BACKDROP);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
+                        Logger.d("getMovieBoxOfficeData...onError");
+                        e.printStackTrace();
+                        callback.onError(e);
                     }
                 });
     }
